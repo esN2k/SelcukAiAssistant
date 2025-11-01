@@ -1,0 +1,145 @@
+openapi: 3.0.3
+info:
+  title: AI Assistant Speech Service
+  description: 语音识别服务API
+  version: 1.0.0
+  contact:
+    name: AI Assistant Team
+    email: support@ai-assistant.com
+
+servers:
+  - url: http://localhost:8080/api
+    description: 本地开发服务器
+  - url: https://your-domain.com/api
+    description: 生产环境服务器
+
+paths:
+  /speech-to-text:
+    post:
+      summary: 语音转文字
+      description: 将音频文件转换为文字
+      operationId: speechToText
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                audio:
+                  type: string
+                  format: binary
+                  description: 音频文件 (支持 wav, mp3, m4a 格式)
+                language:
+                  type: string
+                  description: 识别语言
+                  default: zh-CN
+                  enum:
+                    - zh-CN
+                    - en-US
+                    - ja-JP
+                    - ko-KR
+              required:
+                - audio
+      responses:
+        '200':
+          description: 识别成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  text:
+                    type: string
+                    description: 识别出的文字内容
+                    example: "你好，这是一段测试语音"
+                  confidence:
+                    type: number
+                    format: float
+                    description: 识别置信度 (0-1)
+                    example: 0.95
+                  duration:
+                    type: number
+                    format: float
+                    description: 音频时长（秒）
+                    example: 3.2
+        '400':
+          description: 请求参数错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '413':
+          description: 文件过大
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '415':
+          description: 不支持的音频格式
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /health:
+    get:
+      summary: 健康检查
+      description: 检查服务状态
+      operationId: healthCheck
+      responses:
+        '200':
+          description: 服务正常
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "healthy"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-01-15T10:30:00Z"
+                  version:
+                    type: string
+                    example: "1.0.0"
+
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          description: 错误信息
+          example: "音频文件格式不支持"
+        code:
+          type: string
+          description: 错误代码
+          example: "UNSUPPORTED_FORMAT"
+      required:
+        - success
+        - error
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+security:
+  - ApiKeyAuth: []
