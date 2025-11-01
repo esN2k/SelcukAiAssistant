@@ -28,6 +28,6 @@ extension MyHomeType on HomeType {
 
   //for navigation
   VoidCallback get onTap => switch (this) {
-        HomeType.aiChatBot => () => Get.to(() => const ChatBotFeature()),
+        HomeType.aiChatBot => () => Get.to<void>(() => const ChatBotFeature()),
       };
 }

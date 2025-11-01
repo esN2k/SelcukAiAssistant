@@ -21,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     // 直接跳转到聊天界面
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Get.off(() => const ChatBotFeature());
+      Get.off<void>(() => const ChatBotFeature());
     });
   }
 

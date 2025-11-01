@@ -31,7 +31,7 @@ class AdHelper {
       onDismissed: interstitialAd.destroy,
       onError: (i, e) {
         //hide loading
-        Get.back();
+        Get.back<dynamic>();
         onComplete();
 
         log('interstitial error: $e');

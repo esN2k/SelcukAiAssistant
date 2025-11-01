@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import 'package:selcukaiassistant/helper/global.dart';
 import 'package:selcukaiassistant/helper/pref.dart';
-import 'package:selcukaiassistant/widget/custom_loading.dart';
 import 'package:selcukaiassistant/screen/home_screen.dart';
 import 'package:selcukaiassistant/screen/onboarding_screen.dart';
+import 'package:selcukaiassistant/widget/custom_loading.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

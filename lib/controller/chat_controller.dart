@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:speech_to_text/speech_to_text.dart';
-
 import 'package:selcukaiassistant/apis/apis.dart';
 import 'package:selcukaiassistant/helper/my_dialog.dart';
 import 'package:selcukaiassistant/model/message.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 
 class ChatController extends GetxController {
   final textC = TextEditingController();

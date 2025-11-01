@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:lottie/lottie.dart';
-
 import 'package:selcukaiassistant/helper/global.dart';
 import 'package:selcukaiassistant/main.dart';
 import 'package:selcukaiassistant/model/onboard.dart';
-import 'package:selcukaiassistant/widget/custom_btn.dart';
 import 'package:selcukaiassistant/screen/home_screen.dart';
+import 'package:selcukaiassistant/widget/custom_btn.dart';
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});

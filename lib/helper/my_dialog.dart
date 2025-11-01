@@ -38,6 +38,6 @@ class MyDialog {
 
   //loading dialog
   static void showLoadingDialog() {
-    Get.dialog(const Center(child: CustomLoading()));
+    Get.dialog<void>(const Center(child: CustomLoading()));
   }
 }
