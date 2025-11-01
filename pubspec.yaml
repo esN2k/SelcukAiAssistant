@@ -10,40 +10,29 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # UI Components
-  cupertino_icons: ^1.0.8
-  flutter_animate: ^4.5.0
-  animated_text_kit: ^4.2.2
-  flutter_markdown_plus: ^1.0.5
-  lottie: ^3.1.2
-
-  # State Management
-  get: ^4.6.6
-
-  # Database & Storage
+  # Alphabetically sorted dependencies (A → Z)
   appwrite: ^20.2.1
+  animated_text_kit: ^4.2.2
+  cupertino_icons: ^1.0.8
+  easy_audience_network: ^0.0.6
+  flutter_animate: ^4.5.0
+  flutter_dotenv: ^6.0.0
+  flutter_markdown_plus: ^1.0.5
+  get: ^4.6.6
+  google_generative_ai: ^0.4.7
   hive: ^2.2.3
   hive_flutter: ^1.1.0
-  path_provider: ^2.1.3
-
-  # API & Network
   http: ^1.2.2
-  google_generative_ai: ^0.4.7
-
-  # Speech Recognition
-  speech_to_text: ^7.0.0
+  lottie: ^3.1.2
+  path_provider: ^2.1.3
   permission_handler: ^12.0.1
-
-  # Advertising
-  easy_audience_network: ^0.0.6
-
-  # Configuration
-  flutter_dotenv: ^6.0.0
+  speech_to_text: ^7.0.0
 
 dev_dependencies:
+  # Alphabetically sorted dev dependencies (A → Z)
+  flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
-  flutter_lints: ^6.0.0
   very_good_analysis: ^10.0.0
 
 flutter:
