@@ -16,17 +16,17 @@ class MessageCard extends StatelessWidget {
     const r = Radius.circular(15);
 
     return message.msgType == MessageType.bot
-        // AI机器人消息
+
         ? Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(width: 6),
               CircleAvatar(
                 radius: 18,
-                backgroundColor: Colors.blue.withOpacity(0.1),
+                backgroundColor: Colors.amber.withOpacity(0.1),
                 child: const Icon(
                   Icons.smart_toy,
-                  color: Colors.blue,
+                  color: Colors.amber,
                   size: 20,
                 ),
               ),
@@ -55,7 +55,7 @@ class MessageCard extends StatelessWidget {
                       ? AnimatedTextKit(
                           animatedTexts: [
                             TypewriterAnimatedText(
-                              '正在思考中...',
+                              'Bir şey daha var...',
                               speed: const Duration(milliseconds: 100),
                             ),
                           ],
@@ -89,12 +89,12 @@ class MessageCard extends StatelessWidget {
                             blockquoteDecoration: BoxDecoration(
                               color: Theme.of(context).brightness ==
                                       Brightness.dark
-                                  ? Colors.blue.withOpacity(0.1)
-                                  : Colors.blue.withOpacity(0.05),
+                                  ? Colors.amber.withOpacity(0.1)
+                                  : Colors.amber.withOpacity(0.05),
                               borderRadius: BorderRadius.circular(4),
                               border: const Border(
                                 left: BorderSide(
-                                  color: Colors.blue,
+                                  color: Colors.amber,
                                   width: 4,
                                 ),
                               ),
@@ -105,7 +105,7 @@ class MessageCard extends StatelessWidget {
               ),
             ],
           )
-        // 用户消息
+
         : Row(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -122,7 +122,7 @@ class MessageCard extends StatelessWidget {
                     horizontal: mq.width * .03,
                   ),
                   decoration: const BoxDecoration(
-                    color: Colors.blue,
+                    color: Colors.amber,
                     borderRadius: BorderRadius.only(
                       topLeft: r,
                       topRight: r,
@@ -141,7 +141,7 @@ class MessageCard extends StatelessWidget {
               ),
               const CircleAvatar(
                 radius: 18,
-                backgroundColor: Colors.blue,
+                backgroundColor: Colors.amber,
                 child: Icon(
                   Icons.person,
                   color: Colors.white,

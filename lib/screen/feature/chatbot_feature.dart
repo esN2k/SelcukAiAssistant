@@ -80,16 +80,16 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
                     decoration: BoxDecoration(
                       color: _c.isListening.value
                           ? Colors.red.withOpacity(0.1)
-                          : Colors.blue.withOpacity(0.1),
+                          : Colors.amber.withOpacity(0.1),
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: _c.isListening.value ? Colors.red : Colors.blue,
+                        color: _c.isListening.value ? Colors.red : Colors.amber,
                         width: 2,
                       ),
                     ),
                     child: Icon(
                       _c.isListening.value ? Icons.mic : Icons.mic_none,
-                      color: _c.isListening.value ? Colors.red : Colors.blue,
+                      color: _c.isListening.value ? Colors.red : Colors.amber,
                       size: 24,
                     ),
                   ),
@@ -141,7 +141,7 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
                   width: 48,
                   height: 48,
                   decoration: const BoxDecoration(
-                    color: Colors.blue,
+                    color: Colors.amber,
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(

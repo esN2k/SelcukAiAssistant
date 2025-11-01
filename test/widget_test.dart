@@ -10,7 +10,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:selcukaiassistant/main.dart';
 
 void main() {
-  testWidgets('AI Assistant app test', (WidgetTester tester) async {
+  testWidgets('AI Asistanı uygulama testi', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
 

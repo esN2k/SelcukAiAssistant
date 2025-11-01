@@ -87,7 +87,7 @@ class OnboardingScreen extends StatelessWidget {
                     width: i == ind ? 15 : 10,
                     height: 8,
                     decoration: BoxDecoration(
-                      color: i == ind ? Colors.blue : Colors.grey,
+                      color: i == ind ? Colors.amber : Colors.grey,
                       borderRadius: const BorderRadius.all(Radius.circular(5)),
                     ),
                   ),

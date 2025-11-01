@@ -11,7 +11,7 @@ class MyDialog {
     Get.snackbar(
       'Bilgi',
       msg,
-      backgroundColor: Colors.blue.withOpacity(.7),
+      backgroundColor: Colors.amber.withOpacity(.7),
       colorText: Colors.white,
     );
   }
