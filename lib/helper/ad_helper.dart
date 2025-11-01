@@ -4,7 +4,7 @@ import 'package:easy_audience_network/easy_audience_network.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'my_dialog.dart';
+import 'package:selcukaiassistant/helper/my_dialog.dart';
 
 class AdHelper {
   static void init() {
@@ -20,21 +20,23 @@ class AdHelper {
 
     final interstitialAd = InterstitialAd(InterstitialAd.testPlacementId);
 
-    interstitialAd.listener = InterstitialAdListener(onLoaded: () {
-      //hide loading
-      Get.back();
-      onComplete();
+    interstitialAd.listener = InterstitialAdListener(
+      onLoaded: () {
+        //hide loading
+        Get.back<dynamic>();
+        onComplete();
 
-      interstitialAd.show();
-    }, onDismissed: () {
-      interstitialAd.destroy();
-    }, onError: (i, e) {
-      //hide loading
-      Get.back();
-      onComplete();
+        interstitialAd.show();
+      },
+      onDismissed: interstitialAd.destroy,
+      onError: (i, e) {
+        //hide loading
+        Get.back();
+        onComplete();
 
-      log('interstitial error: $e');
-    });
+        log('interstitial error: $e');
+      },
+    );
 
     interstitialAd.load();
   }
@@ -42,7 +44,6 @@ class AdHelper {
   static Widget nativeAd() {
     return SafeArea(
       child: NativeAd(
-        placementId: NativeAd.testPlacementId,
         adType: NativeAdType.NATIVE_AD,
         keepExpandedWhileLoading: false,
         expandAnimationDuraion: 1000,
@@ -60,7 +61,6 @@ class AdHelper {
   static Widget nativeBannerAd() {
     return SafeArea(
       child: NativeAd(
-        placementId: NativeAd.testPlacementId,
         adType: NativeAdType.NATIVE_BANNER_AD,
         bannerAdSize: NativeBannerAdSize.HEIGHT_100,
         keepExpandedWhileLoading: false,

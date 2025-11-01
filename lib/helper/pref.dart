@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 
 class Pref {
-  static late Box _box;
+  static late Box<dynamic> _box;
 
   static Future<void> initialize() async {
     //for initializing hive to use app directory
@@ -16,7 +16,7 @@ class Pref {
   }
 
   static bool get showOnboarding =>
-      _box.get('showOnboarding', defaultValue: true);
+      _box.get('showOnboarding', defaultValue: true) as bool;
 
   static set showOnboarding(bool v) => _box.put('showOnboarding', v);
 
@@ -37,7 +37,7 @@ class Pref {
   // }
 
   //for storing theme data
-  static bool get isDarkMode => _box.get('isDarkMode') ?? false;
+  static bool get isDarkMode => (_box.get('isDarkMode') as bool?) ?? false;
 
   static set isDarkMode(bool v) => _box.put('isDarkMode', v);
 

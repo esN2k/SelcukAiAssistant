@@ -15,7 +15,7 @@ class VoiceService {
     try {
       log('开始语音识别，音频文件路径: $audioPath');
 
-      var request = http.MultipartRequest(
+      final request = http.MultipartRequest(
         'POST',
         Uri.parse('$_baseUrl/speech-to-text'),
       );
@@ -28,12 +28,12 @@ class VoiceService {
       // 添加其他参数
       request.fields['language'] = 'zh-CN'; // 中文识别
 
-      var response = await request.send();
-      var responseData = await response.stream.bytesToString();
+      final response = await request.send();
+      final responseData = await response.stream.bytesToString();
 
       if (response.statusCode == 200) {
-        var jsonData = json.decode(responseData);
-        String recognizedText = jsonData['text'] ?? '';
+        final jsonData = json.decode(responseData);
+        final recognizedText = (jsonData['text'] as String?) ?? '';
         log('语音识别成功: $recognizedText');
         return recognizedText;
       } else {
@@ -49,7 +49,7 @@ class VoiceService {
   /// 检查服务器连接状态
   static Future<bool> checkServerConnection() async {
     try {
-      var response = await http.get(
+      final response = await http.get(
         Uri.parse('$_baseUrl/health'),
         headers: {'Content-Type': 'application/json'},
       ).timeout(const Duration(seconds: 5));

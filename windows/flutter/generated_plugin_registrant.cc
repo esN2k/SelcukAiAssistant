@@ -12,15 +12,15 @@
 #include <url_launcher_windows/url_launcher_windows.h>
 #include <window_to_front/window_to_front_plugin.h>
 
-void RegisterPlugins(flutter::PluginRegistry *registry) {
-    DesktopWebviewWindowPluginRegisterWithRegistrar(
-            registry->GetRegistrarForPlugin("DesktopWebviewWindowPlugin"));
-    PermissionHandlerWindowsPluginRegisterWithRegistrar(
-            registry->GetRegistrarForPlugin("PermissionHandlerWindowsPlugin"));
-    SpeechToTextWindowsRegisterWithRegistrar(
-            registry->GetRegistrarForPlugin("SpeechToTextWindows"));
-    UrlLauncherWindowsRegisterWithRegistrar(
-            registry->GetRegistrarForPlugin("UrlLauncherWindows"));
-    WindowToFrontPluginRegisterWithRegistrar(
-            registry->GetRegistrarForPlugin("WindowToFrontPlugin"));
+void RegisterPlugins(flutter::PluginRegistry* registry) {
+  DesktopWebviewWindowPluginRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("DesktopWebviewWindowPlugin"));
+  PermissionHandlerWindowsPluginRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("PermissionHandlerWindowsPlugin"));
+  SpeechToTextWindowsRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("SpeechToTextWindows"));
+  UrlLauncherWindowsRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("UrlLauncherWindows"));
+  WindowToFrontPluginRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("WindowToFrontPlugin"));
 }

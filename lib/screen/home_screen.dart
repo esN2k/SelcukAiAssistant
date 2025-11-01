@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-import '../helper/pref.dart';
-import '../screen/feature/chatbot_feature.dart';
+import 'package:selcukaiassistant/helper/pref.dart';
+import 'package:selcukaiassistant/screen/feature/chatbot_feature.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

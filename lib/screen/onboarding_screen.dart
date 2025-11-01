@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:lottie/lottie.dart';
 
-import '../helper/global.dart';
-import '../main.dart';
-import '../model/onboard.dart';
-import '../widget/custom_btn.dart';
-import 'home_screen.dart';
+import 'package:selcukaiassistant/helper/global.dart';
+import 'package:selcukaiassistant/main.dart';
+import 'package:selcukaiassistant/model/onboard.dart';
+import 'package:selcukaiassistant/widget/custom_btn.dart';
+import 'package:selcukaiassistant/screen/home_screen.dart';
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
@@ -18,10 +18,11 @@ class OnboardingScreen extends StatelessWidget {
     final list = [
       //onboarding 1
       Onboard(
-          title: 'Ask me Anything',
-          subtitle:
-              'I can be your Best Friend & You can ask me anything & I will help you!',
-          lottie: 'ai_ask_me'),
+        title: 'Ask me Anything',
+        subtitle:
+            'I can be your Best Friend & You can ask me anything & I will help you!',
+        lottie: 'ai_ask_me',
+      ),
 
       //onboarding 2
       Onboard(
@@ -42,16 +43,20 @@ class OnboardingScreen extends StatelessWidget {
           return Column(
             children: [
               //lottie
-              Lottie.asset('assets/lottie/${list[ind].lottie}.json',
-                  height: mq.height * .6, width: isLast ? mq.width * .7 : null),
+              Lottie.asset(
+                'assets/lottie/${list[ind].lottie}.json',
+                height: mq.height * .6,
+                width: isLast ? mq.width * .7 : null,
+              ),
 
               //title
               Text(
                 list[ind].title,
                 style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: .5),
+                  fontSize: 18,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: .5,
+                ),
               ),
 
               //for adding some space
@@ -64,9 +69,10 @@ class OnboardingScreen extends StatelessWidget {
                   list[ind].subtitle,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      fontSize: 13.5,
-                      letterSpacing: .5,
-                      color: Theme.of(context).lightTextColor),
+                    fontSize: 13.5,
+                    letterSpacing: .5,
+                    color: Theme.of(context).lightTextColor,
+                  ),
                 ),
               ),
 
@@ -77,33 +83,36 @@ class OnboardingScreen extends StatelessWidget {
               Wrap(
                 spacing: 10,
                 children: List.generate(
-                    list.length,
-                    (i) => Container(
-                          width: i == ind ? 15 : 10,
-                          height: 8,
-                          decoration: BoxDecoration(
-                              color: i == ind ? Colors.blue : Colors.grey,
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(5))),
-                        )),
+                  list.length,
+                  (i) => Container(
+                    width: i == ind ? 15 : 10,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: i == ind ? Colors.blue : Colors.grey,
+                      borderRadius: const BorderRadius.all(Radius.circular(5)),
+                    ),
+                  ),
+                ),
               ),
 
               const Spacer(),
 
               //button
               CustomBtn(
-                  onTap: () {
-                    if (isLast) {
-                      Get.off(() => const HomeScreen());
-                      // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      //     builder: (_) => const HomeScreen()));
-                    } else {
-                      c.nextPage(
-                          duration: const Duration(milliseconds: 600),
-                          curve: Curves.ease);
-                    }
-                  },
-                  text: isLast ? 'Finish' : 'Next'),
+                onTap: () {
+                  if (isLast) {
+                    Get.off(() => const HomeScreen());
+                    // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    //     builder: (_) => const HomeScreen()));
+                  } else {
+                    c.nextPage(
+                      duration: const Duration(milliseconds: 600),
+                      curve: Curves.ease,
+                    );
+                  }
+                },
+                text: isLast ? 'Finish' : 'Next',
+              ),
 
               const Spacer(flex: 2),
             ],

@@ -3,9 +3,9 @@ import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
-import '../apis/apis.dart';
-import '../helper/my_dialog.dart';
-import '../model/message.dart';
+import 'package:selcukaiassistant/apis/apis.dart';
+import 'package:selcukaiassistant/helper/my_dialog.dart';
+import 'package:selcukaiassistant/model/message.dart';
 
 class ChatController extends GetxController {
   final textC = TextEditingController();
@@ -17,8 +17,8 @@ class ChatController extends GetxController {
   final RxBool speechEnabled = false.obs;
   final RxString recognizedText = ''.obs;
 
-  final list = <Message>[
-    Message(msg: '你好！我是AI助手，有什么可以帮助你的吗？', msgType: MessageType.bot)
+  final RxList<Message> list = <Message>[
+    Message(msg: '你好！我是AI助手，有什么可以帮助你的吗？', msgType: MessageType.bot),
   ].obs;
 
   @override
@@ -28,7 +28,7 @@ class ChatController extends GetxController {
   }
 
   /// 初始化语音识别
-  void _initSpeech() async {
+  Future<void> _initSpeech() async {
     speechEnabled.value = await _speechToText.initialize(
       onError: (error) {
         // 语音识别错误处理
@@ -46,7 +46,7 @@ class ChatController extends GetxController {
   /// 开始语音识别
   Future<void> startListening() async {
     // 检查麦克风权限
-    var status = await Permission.microphone.request();
+    final status = await Permission.microphone.request();
     if (status != PermissionStatus.granted) {
       MyDialog.info('需要麦克风权限才能使用语音输入功能');
       return;

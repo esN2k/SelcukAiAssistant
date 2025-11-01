@@ -1,10 +1,8 @@
-// ignore_for_file: deprecated_member_use
-
 import 'dart:developer';
 
 import 'package:appwrite/appwrite.dart';
 
-import '../helper/global.dart';
+import 'package:selcukaiassistant/helper/global.dart';
 
 class AppWrite {
   static final _client = Client();
@@ -14,18 +12,19 @@ class AppWrite {
     _client
         .setEndpoint('https://cloud.appwrite.io/v1')
         .setProject('658813fd62bd45e744cd')
-        .setSelfSigned(status: true);
+        .setSelfSigned();
     getApiKey();
   }
 
   static Future<String> getApiKey() async {
     try {
       final d = await _database.getDocument(
-          databaseId: 'MyDatabase',
-          collectionId: 'ApiKey',
-          documentId: 'chatGptKey');
+        databaseId: 'MyDatabase',
+        collectionId: 'ApiKey',
+        documentId: 'chatGptKey',
+      );
 
-      apiKey = d.data['apiKey'];
+      apiKey = d.data['apiKey'] as String;
       log(apiKey);
       return apiKey;
     } catch (e) {

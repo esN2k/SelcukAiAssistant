@@ -4,13 +4,12 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
-import '../helper/global.dart';
-import '../model/message.dart';
+import 'package:selcukaiassistant/helper/global.dart';
+import 'package:selcukaiassistant/model/message.dart';
 
 class MessageCard extends StatelessWidget {
+  const MessageCard({required this.message, super.key});
   final Message message;
-
-  const MessageCard({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +92,7 @@ class MessageCard extends StatelessWidget {
                                   ? Colors.blue.withOpacity(0.1)
                                   : Colors.blue.withOpacity(0.05),
                               borderRadius: BorderRadius.circular(4),
-                              border: Border(
+                              border: const Border(
                                 left: BorderSide(
                                   color: Colors.blue,
                                   width: 4,
@@ -122,9 +121,9 @@ class MessageCard extends StatelessWidget {
                     vertical: mq.height * .015,
                     horizontal: mq.width * .03,
                   ),
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Colors.blue,
-                    borderRadius: const BorderRadius.only(
+                    borderRadius: BorderRadius.only(
                       topLeft: r,
                       topRight: r,
                       bottomLeft: r,

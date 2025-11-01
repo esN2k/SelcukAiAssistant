@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:google_generative_ai/google_generative_ai.dart';
 
-import '../helper/global.dart';
+import 'package:selcukaiassistant/helper/global.dart';
 
 class APIs {
   static Future<String> getAnswer(String question) async {

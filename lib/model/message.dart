@@ -1,8 +1,7 @@
 class Message {
+  Message({required this.msg, required this.msgType});
   String msg;
   final MessageType msgType;
-
-  Message({required this.msg, required this.msgType});
 }
 
 enum MessageType { user, bot }

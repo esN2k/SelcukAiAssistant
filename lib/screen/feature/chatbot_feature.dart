@@ -3,9 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../controller/chat_controller.dart';
-import '../../helper/global.dart';
-import '../../widget/message_card.dart';
+import 'package:selcukaiassistant/controller/chat_controller.dart';
+import 'package:selcukaiassistant/helper/global.dart';
+import 'package:selcukaiassistant/widget/message_card.dart';
 
 class ChatBotFeature extends StatefulWidget {
   const ChatBotFeature({super.key});
@@ -16,7 +16,7 @@ class ChatBotFeature extends StatefulWidget {
 
 class _ChatBotFeatureState extends State<ChatBotFeature> {
   final _c = ChatController();
-  final _isDarkMode = Get.isDarkMode.obs;
+  final RxBool _isDarkMode = Get.isDarkMode.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -36,12 +36,14 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
               );
               _isDarkMode.value = !_isDarkMode.value;
             },
-            icon: Obx(() => Icon(
-                  _isDarkMode.value
-                      ? Icons.brightness_2_rounded
-                      : Icons.brightness_5_rounded,
-                  size: 24,
-                )),
+            icon: Obx(
+              () => Icon(
+                _isDarkMode.value
+                    ? Icons.brightness_2_rounded
+                    : Icons.brightness_5_rounded,
+                size: 24,
+              ),
+            ),
           ),
         ],
       ),
@@ -67,31 +69,32 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
           child: Row(
             children: [
               // 语音输入按钮
-              Obx(() => GestureDetector(
-                    onTapDown: (_) => _c.startListening(),
-                    onTapUp: (_) => _c.stopListening(),
-                    onTapCancel: () => _c.stopListening(),
-                    child: Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: _c.isListening.value
-                            ? Colors.red.withOpacity(0.1)
-                            : Colors.blue.withOpacity(0.1),
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color:
-                              _c.isListening.value ? Colors.red : Colors.blue,
-                          width: 2,
-                        ),
-                      ),
-                      child: Icon(
-                        _c.isListening.value ? Icons.mic : Icons.mic_none,
+              Obx(
+                () => GestureDetector(
+                  onTapDown: (_) => _c.startListening(),
+                  onTapUp: (_) => _c.stopListening(),
+                  onTapCancel: _c.stopListening,
+                  child: Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: _c.isListening.value
+                          ? Colors.red.withOpacity(0.1)
+                          : Colors.blue.withOpacity(0.1),
+                      shape: BoxShape.circle,
+                      border: Border.all(
                         color: _c.isListening.value ? Colors.red : Colors.blue,
-                        size: 24,
+                        width: 2,
                       ),
                     ),
-                  )),
+                    child: Icon(
+                      _c.isListening.value ? Icons.mic : Icons.mic_none,
+                      color: _c.isListening.value ? Colors.red : Colors.blue,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ),
 
               const SizedBox(width: 12),
 
@@ -163,11 +166,11 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(12),
                 color: Colors.red.withOpacity(0.1),
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.mic, color: Colors.red, size: 16),
-                    const SizedBox(width: 8),
+                    Icon(Icons.mic, color: Colors.red, size: 16),
+                    SizedBox(width: 8),
                     Text(
                       '正在听取语音输入...',
                       style: TextStyle(

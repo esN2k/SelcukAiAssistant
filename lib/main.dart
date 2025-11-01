@@ -5,10 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
-import 'helper/ad_helper.dart';
-import 'helper/global.dart';
-import 'helper/pref.dart';
-import 'screen/splash_screen.dart';
+import 'package:selcukaiassistant/helper/ad_helper.dart';
+import 'package:selcukaiassistant/helper/global.dart';
+import 'package:selcukaiassistant/helper/pref.dart';
+import 'package:selcukaiassistant/screen/splash_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,8 +16,8 @@ Future<void> main() async {
   // init hive
   await Pref.initialize();
 
-  await dotenv.load(fileName: ".env"); // .env dosyasını yükle
-  runApp(MyApp());
+  await dotenv.load(); // .env dosyasını yükle
+  runApp(const MyApp());
 
   // for app write initialization
   // AppWrite.init();
@@ -27,7 +27,8 @@ Future<void> main() async {
 
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   await SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+    [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
+  );
 
   runApp(const MyApp());
 }
@@ -45,26 +46,30 @@ class MyApp extends StatelessWidget {
 
       //dark
       darkTheme: ThemeData(
-          useMaterial3: false,
-          brightness: Brightness.dark,
-          appBarTheme: const AppBarTheme(
-            elevation: 1,
-            centerTitle: true,
-            titleTextStyle:
-                TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-          )),
+        useMaterial3: false,
+        brightness: Brightness.dark,
+        appBarTheme: const AppBarTheme(
+          elevation: 1,
+          centerTitle: true,
+          titleTextStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+        ),
+      ),
 
       //light
       theme: ThemeData(
-          useMaterial3: false,
-          appBarTheme: const AppBarTheme(
-            elevation: 1,
-            centerTitle: true,
-            backgroundColor: Colors.white,
-            iconTheme: IconThemeData(color: Colors.blue),
-            titleTextStyle: TextStyle(
-                color: Colors.blue, fontSize: 20, fontWeight: FontWeight.w500),
-          )),
+        useMaterial3: false,
+        appBarTheme: const AppBarTheme(
+          elevation: 1,
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          iconTheme: IconThemeData(color: Colors.blue),
+          titleTextStyle: TextStyle(
+            color: Colors.blue,
+            fontSize: 20,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
 
       //
       home: const SplashScreen(),
