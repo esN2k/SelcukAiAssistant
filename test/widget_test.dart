@@ -8,7 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:ai_assistant/main.dart';
+import 'package:selcukaiassistant/main.dart';
 
 void main() {
   testWidgets('AI Assistant app test', (WidgetTester tester) async {
