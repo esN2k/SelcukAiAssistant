@@ -1,7 +1,7 @@
-import '../main.dart';
 import 'package:flutter/material.dart';
 
 import '../helper/global.dart';
+import '../main.dart';
 
 class CustomBtn extends StatelessWidget {
   final String text;

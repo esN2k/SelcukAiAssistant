@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:speech_to_text/speech_to_text.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 
 import '../apis/apis.dart';
 import '../helper/my_dialog.dart';
@@ -10,7 +10,7 @@ import '../model/message.dart';
 class ChatController extends GetxController {
   final textC = TextEditingController();
   final scrollC = ScrollController();
-  
+
   // 语音识别相关
   final SpeechToText _speechToText = SpeechToText();
   final RxBool isListening = false.obs;
@@ -60,7 +60,7 @@ class ChatController extends GetxController {
     if (!isListening.value) {
       isListening.value = true;
       recognizedText.value = '';
-      
+
       await _speechToText.listen(
         onResult: (result) {
           recognizedText.value = result.recognizedWords;
@@ -95,7 +95,7 @@ class ChatController extends GetxController {
 
       try {
         final res = await APIs.getAnswer(question);
-        
+
         // AI回复
         list.removeLast();
         list.add(Message(msg: res, msgType: MessageType.bot));

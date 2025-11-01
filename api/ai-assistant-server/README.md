@@ -12,19 +12,22 @@
 ## API 接口
 
 ### 语音转文字
+
 - **接口地址**: `POST /api/speech-to-text`
 - **请求格式**: `multipart/form-data`
 - **参数**:
-  - `audio`: 音频文件（必需）
-  - `language`: 识别语言，默认 `zh-CN`
+    - `audio`: 音频文件（必需）
+    - `language`: 识别语言，默认 `zh-CN`
 
 ### 健康检查
+
 - **接口地址**: `GET /api/health`
 - **用途**: 检查服务状态
 
 ## 使用示例
 
 ### cURL 示例
+
 ```bash
 curl -X POST \
   http://localhost:8080/api/speech-to-text \
@@ -34,6 +37,7 @@ curl -X POST \
 ```
 
 ### 响应示例
+
 ```json
 {
   "success": true,

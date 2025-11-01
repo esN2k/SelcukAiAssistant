@@ -142,4 +142,4 @@ components:
       name: X-API-Key
 
 security:
-  - ApiKeyAuth: []
+  - ApiKeyAuth: [ ]

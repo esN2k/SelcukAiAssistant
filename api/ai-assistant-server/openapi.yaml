@@ -37,7 +37,7 @@ servers:
     description: Production server (planned)
 
 security:
-  - BearerAuth: []
+  - BearerAuth: [ ]
 
 paths:
   # Health Check - IMPLEMENTED
@@ -47,7 +47,7 @@ paths:
         - System
       summary: Health check endpoint (IMPLEMENTED)
       description: Returns the current health status of the server
-      security: []
+      security: [ ]
       responses:
         '200':
           description: Server is healthy
@@ -74,7 +74,7 @@ paths:
         - System
       summary: API information endpoint (IMPLEMENTED)
       description: Returns basic API information and version
-      security: []
+      security: [ ]
       responses:
         '200':
           description: API information
@@ -275,7 +275,7 @@ paths:
                     format:
                       type: string
                       default: "wav"
-                      enum: ["wav", "mp3", "aac"]
+                      enum: [ "wav", "mp3", "aac" ]
                       example: "wav"
       responses:
         '200':
@@ -494,7 +494,7 @@ paths:
         Register a new user account.
         
         **Status**: Handler implemented but route not connected yet.
-      security: []
+      security: [ ]
       requestBody:
         required: true
         content:
@@ -526,7 +526,7 @@ paths:
                   properties:
                     device_type:
                       type: string
-                      enum: ["mobile", "esp", "web"]
+                      enum: [ "mobile", "esp", "web" ]
                       example: "mobile"
                     device_name:
                       type: string
@@ -535,7 +535,7 @@ paths:
                       type: array
                       items:
                         type: string
-                      example: ["voice", "text", "display"]
+                      example: [ "voice", "text", "display" ]
                     metadata:
                       type: object
                       additionalProperties: true
@@ -575,7 +575,7 @@ paths:
         Authenticate user and receive access tokens.
         
         **Status**: Handler implemented but route not connected yet.
-      security: []
+      security: [ ]
       requestBody:
         required: true
         content:
@@ -626,7 +626,7 @@ paths:
         - Authentication
       summary: Token refresh
       description: Refresh access token using refresh token
-      security: []
+      security: [ ]
       requestBody:
         required: true
         content:
@@ -947,7 +947,7 @@ paths:
               properties:
                 device_type:
                   type: string
-                  enum: ["mobile", "esp", "web"]
+                  enum: [ "mobile", "esp", "web" ]
                   example: "mobile"
                 device_name:
                   type: string
@@ -958,7 +958,7 @@ paths:
                   type: array
                   items:
                     type: string
-                  example: ["voice", "text", "display"]
+                  example: [ "voice", "text", "display" ]
                 metadata:
                   type: object
                   additionalProperties: true
@@ -1040,7 +1040,7 @@ paths:
                   type: array
                   items:
                     type: string
-                  example: ["voice", "text"]
+                  example: [ "voice", "text" ]
                 metadata:
                   type: object
                   additionalProperties: true
@@ -1187,7 +1187,7 @@ paths:
               properties:
                 status:
                   type: string
-                  enum: ["online", "offline", "maintenance"]
+                  enum: [ "online", "offline", "maintenance" ]
                   example: "online"
       responses:
         '200':
@@ -1384,13 +1384,13 @@ paths:
           name: status
           schema:
             type: string
-            enum: ["online", "offline", "maintenance"]
+            enum: [ "online", "offline", "maintenance" ]
           description: Filter by device status
         - in: query
           name: type
           schema:
             type: string
-            enum: ["mobile", "esp", "web"]
+            enum: [ "mobile", "esp", "web" ]
           description: Filter by device type
         - in: query
           name: page
@@ -1453,7 +1453,7 @@ paths:
               properties:
                 status:
                   type: string
-                  enum: ["online", "offline", "maintenance"]
+                  enum: [ "online", "offline", "maintenance" ]
                   example: "maintenance"
       responses:
         '200':
@@ -1488,7 +1488,7 @@ paths:
           name: status
           schema:
             type: string
-            enum: ["active", "ended", "expired"]
+            enum: [ "active", "ended", "expired" ]
           description: Filter by session status
         - in: query
           name: user_id
@@ -1808,7 +1808,7 @@ paths:
           name: range
           schema:
             type: string
-            enum: ["1h", "6h", "24h", "7d", "30d"]
+            enum: [ "1h", "6h", "24h", "7d", "30d" ]
             default: "24h"
           description: Time range for metrics
       responses:
@@ -1901,7 +1901,7 @@ components:
           example: "john@example.com"
         role:
           type: string
-          enum: ["user", "basic", "premium", "enterprise", "admin"]
+          enum: [ "user", "basic", "premium", "enterprise", "admin" ]
           example: "basic"
         subscription:
           $ref: '#/components/schemas/Subscription'
@@ -1942,13 +1942,13 @@ components:
       properties:
         plan_type:
           type: string
-          enum: ["free", "basic", "premium", "enterprise"]
+          enum: [ "free", "basic", "premium", "enterprise" ]
           example: "basic"
         features:
           type: array
           items:
             type: string
-          example: ["voice_interaction", "memory", "multi_device"]
+          example: [ "voice_interaction", "memory", "multi_device" ]
         is_active:
           type: boolean
           example: true
@@ -1973,7 +1973,7 @@ components:
           example: "device_123456"
         device_type:
           type: string
-          enum: ["mobile", "esp", "web"]
+          enum: [ "mobile", "esp", "web" ]
           example: "mobile"
         device_name:
           type: string
@@ -1983,13 +1983,13 @@ components:
           example: "user_123456"
         status:
           type: string
-          enum: ["online", "offline", "maintenance"]
+          enum: [ "online", "offline", "maintenance" ]
           example: "online"
         capabilities:
           type: array
           items:
             type: string
-          example: ["voice", "text", "display"]
+          example: [ "voice", "text", "display" ]
         metadata:
           type: object
           additionalProperties: true
@@ -2035,7 +2035,7 @@ components:
           example: "device_123456"
         status:
           type: string
-          enum: ["active", "ended", "expired"]
+          enum: [ "active", "ended", "expired" ]
           example: "active"
         message_count:
           type: integer
@@ -2086,7 +2086,7 @@ components:
           example: "sess_123456"
         message_type:
           type: string
-          enum: ["user", "assistant", "system"]
+          enum: [ "user", "assistant", "system" ]
           example: "user"
         content:
           type: string

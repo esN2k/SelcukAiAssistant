@@ -17,6 +17,7 @@ class Pref {
 
   static bool get showOnboarding =>
       _box.get('showOnboarding', defaultValue: true);
+
   static set showOnboarding(bool v) => _box.put('showOnboarding', v);
 
   // Normal Way - Get
@@ -37,6 +38,7 @@ class Pref {
 
   //for storing theme data
   static bool get isDarkMode => _box.get('isDarkMode') ?? false;
+
   static set isDarkMode(bool v) => _box.put('isDarkMode', v);
 
   static ThemeMode get defaultTheme {

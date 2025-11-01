@@ -18,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     Pref.showOnboarding = false;
-    
+
     // 直接跳转到聊天界面
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Get.off(() => const ChatBotFeature());

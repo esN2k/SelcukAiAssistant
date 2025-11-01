@@ -1,9 +1,9 @@
-import '../main.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:lottie/lottie.dart';
 
 import '../helper/global.dart';
+import '../main.dart';
 import '../model/onboard.dart';
 import '../widget/custom_btn.dart';
 import 'home_screen.dart';

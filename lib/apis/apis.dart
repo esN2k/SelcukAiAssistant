@@ -1,5 +1,7 @@
 import 'dart:developer';
+
 import 'package:google_generative_ai/google_generative_ai.dart';
+
 import '../helper/global.dart';
 
 class APIs {

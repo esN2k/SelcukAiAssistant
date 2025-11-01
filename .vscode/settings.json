@@ -1,4 +1,4 @@
 {
-    "kiroAgent.configureMCP": "Disabled",
-    "cmake.ignoreCMakeListsMissing": true
+  "kiroAgent.configureMCP": "Disabled",
+  "cmake.ignoreCMakeListsMissing": true
 }
