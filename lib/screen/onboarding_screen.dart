@@ -100,7 +100,7 @@ class OnboardingScreen extends StatelessWidget {
               CustomBtn(
                 onTap: () {
                   if (isLast) {
-                    Get.off(() => const HomeScreen());
+                    Get.off<dynamic>(() => const HomeScreen());
                     // Navigator.of(context).pushReplacement(MaterialPageRoute(
                     //     builder: (_) => const HomeScreen()));
                   } else {
