@@ -8,7 +8,7 @@ enum HomeType { aiChatBot }
 extension MyHomeType on HomeType {
   //title
   String get title => switch (this) {
-        HomeType.aiChatBot => 'AI 智能对话',
+        HomeType.aiChatBot => 'Yapay zeka akıllı diyalog',
       };
 
   //lottie

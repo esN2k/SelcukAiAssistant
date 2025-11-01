@@ -10,14 +10,14 @@ class ChatController extends GetxController {
   final textC = TextEditingController();
   final scrollC = ScrollController();
 
-  // 语音识别相关
+
   final SpeechToText _speechToText = SpeechToText();
   final RxBool isListening = false.obs;
   final RxBool speechEnabled = false.obs;
   final RxString recognizedText = ''.obs;
 
   final RxList<Message> list = <Message>[
-    Message(msg: '你好！我是AI助手，有什么可以帮助你的吗？', msgType: MessageType.bot),
+    Message(msg: 'Merhaba! Ben bir yapay zeka asistanıyım, size nasıl yardımcı olabilirim?', msgType: MessageType.bot),
   ].obs;
 
   @override
@@ -26,33 +26,32 @@ class ChatController extends GetxController {
     _initSpeech();
   }
 
-  /// 初始化语音识别
   Future<void> _initSpeech() async {
     speechEnabled.value = await _speechToText.initialize(
       onError: (error) {
-        // 语音识别错误处理
+
         isListening.value = false;
       },
       onStatus: (status) {
-        // 语音识别状态处理
-        if (status == 'done' || status == 'notListening') {
+
+        if (status == 'Tamamlandı' || status == 'Dinlemiyorum') {
           isListening.value = false;
         }
       },
     );
   }
 
-  /// 开始语音识别
+
   Future<void> startListening() async {
-    // 检查麦克风权限
+
     final status = await Permission.microphone.request();
     if (status != PermissionStatus.granted) {
-      MyDialog.info('需要麦克风权限才能使用语音输入功能');
+      MyDialog.info('Ses girişi özelliğini kullanmak için mikrofon izni gereklidir');
       return;
     }
 
     if (!speechEnabled.value) {
-      MyDialog.info('语音识别功能不可用');
+      MyDialog.info('Ses tanıma kullanılamıyor');
       return;
     }
 
@@ -68,12 +67,12 @@ class ChatController extends GetxController {
             isListening.value = false;
           }
         },
-        localeId: 'zh_CN', // 中文识别
+        localeId: 'zh_TR',
       );
     }
   }
 
-  /// 停止语音识别
+
   Future<void> stopListening() async {
     if (isListening.value) {
       await _speechToText.stop();
@@ -81,10 +80,9 @@ class ChatController extends GetxController {
     }
   }
 
-  /// 发送问题
   Future<void> askQuestion() async {
     if (textC.text.trim().isNotEmpty) {
-      // 用户消息
+
       list.add(Message(msg: textC.text, msgType: MessageType.user));
       list.add(Message(msg: '', msgType: MessageType.bot));
       _scrollDown();
@@ -101,15 +99,15 @@ class ChatController extends GetxController {
         _scrollDown();
       } catch (e) {
         list.removeLast();
-        list.add(Message(msg: '抱歉，出现了一些问题，请稍后重试。', msgType: MessageType.bot));
+        list.add(Message(msg: 'Üzgünüz, bir şeyler ters gitti, lütfen daha sonra tekrar deneyin.', msgType: MessageType.bot));
         _scrollDown();
       }
     } else {
-      MyDialog.info('请输入问题或使用语音输入！');
+      MyDialog.info('Lütfen bir soru girin veya sesli girişi kullanın！');
     }
   }
 
-  /// 滚动到底部
+
   void _scrollDown() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (scrollC.hasClients) {

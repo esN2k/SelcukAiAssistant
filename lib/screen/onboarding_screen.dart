@@ -17,18 +17,18 @@ class OnboardingScreen extends StatelessWidget {
     final list = [
       //onboarding 1
       Onboard(
-        title: 'Ask me Anything',
+        title: 'Bana bir şey sor',
         subtitle:
-            'I can be your Best Friend & You can ask me anything & I will help you!',
+            'Senin en iyi arkadaşın olabilirim ve bana her şeyi sorabilirsin, sana yardım ederim!',
         lottie: 'ai_ask_me',
       ),
 
       //onboarding 2
       Onboard(
-        title: 'Imagination to Reality',
+        title: 'Hayalden Gerçeğe',
         lottie: 'ai_play',
         subtitle:
-            'Just Imagine anything & let me know, I will create something wonderful for you!',
+            'Sadece hayal edin ve bana söyleyin, sizin için harika bir şey yaratacağım!',
       ),
     ];
 
@@ -110,7 +110,7 @@ class OnboardingScreen extends StatelessWidget {
                     );
                   }
                 },
-                text: isLast ? 'Finish' : 'Next',
+                text: isLast ? 'Bitti' : 'Sıradaki',
               ),
 
               const Spacer(flex: 2),
