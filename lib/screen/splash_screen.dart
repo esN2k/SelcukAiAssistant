@@ -21,8 +21,8 @@ class _SplashScreenState extends State<SplashScreen> {
     //wait for some time on splash & then move to next screen
     Future.delayed(const Duration(seconds: 2), () {
       Get.off<Widget>(
-        () =>
-            Pref.showOnboarding ? const OnboardingScreen() : const HomeScreen(),
+            () =>
+        Pref.showOnboarding ? const OnboardingScreen() : const HomeScreen(),
       );
     });
   }
@@ -42,15 +42,15 @@ class _SplashScreenState extends State<SplashScreen> {
             const Spacer(flex: 2),
 
             //logo
-            Card(
+            Card( // <-- Card yapısı buradaydı
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(20)),
               ),
               child: Padding(
                 padding: EdgeInsets.all(mq.width * .05),
                 child: Image.asset(
-                  'assets/images/logo.png',
-                  width: mq.width * .4,
+                  'assets/images/logo.png', // <-- Logo dosya adı orijinaldi
+                  width: mq.width * .4, // <-- Orijinal genişlik
                 ),
               ),
             ),
