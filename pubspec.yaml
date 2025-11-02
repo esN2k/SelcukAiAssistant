@@ -39,7 +39,6 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/selcuk_logo.png
     - assets/images/
     - assets/lottie/
     - .env

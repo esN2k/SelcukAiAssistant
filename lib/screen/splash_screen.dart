@@ -49,7 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
               child: Padding(
                 padding: EdgeInsets.all(mq.width * .05),
                 child: Image.asset(
-                  'assets/images/logo.png', // <-- Logo dosya adı orijinaldi
+                  'assets/images/selcuk_logo.png', // <-- Logo dosya adı orijinaldi
                   width: mq.width * .4, // <-- Orijinal genişlik
                 ),
               ),
