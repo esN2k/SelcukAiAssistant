@@ -10,7 +10,7 @@ class APIs {
       log('AI arayüzü çağrılıyor, API Key: ${apiKey.substring(0, 10)}...');
 
       final model = GenerativeModel(
-        model: 'gemini-2.0-flashfl',
+        model: 'gemini-2.0-flash',
         apiKey: apiKey,
       );
 
