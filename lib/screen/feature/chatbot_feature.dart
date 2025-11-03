@@ -21,13 +21,13 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // 应用栏
+
       appBar: AppBar(
-        title: const Text('AI 智能助手'),
+        title: const Text('Yapay zeka akıllı asistanı'),
         centerTitle: true,
         elevation: 1,
         actions: [
-          // 主题切换按钮
+
           IconButton(
             padding: const EdgeInsets.only(right: 10),
             onPressed: () {
@@ -48,7 +48,7 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
         ],
       ),
 
-      // 输入区域
+
       bottomNavigationBar: Container(
         padding: EdgeInsets.only(
           left: 16,
@@ -68,7 +68,7 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
         child: SafeArea(
           child: Row(
             children: [
-              // 语音输入按钮
+
               Obx(
                 () => GestureDetector(
                   onTapDown: (_) => _c.startListening(),
@@ -80,16 +80,16 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
                     decoration: BoxDecoration(
                       color: _c.isListening.value
                           ? Colors.red.withOpacity(0.1)
-                          : Colors.blue.withOpacity(0.1),
+                          : Colors.amber.withOpacity(0.1),
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: _c.isListening.value ? Colors.red : Colors.blue,
+                        color: _c.isListening.value ? Colors.red : Colors.amber,
                         width: 2,
                       ),
                     ),
                     child: Icon(
                       _c.isListening.value ? Icons.mic : Icons.mic_none,
-                      color: _c.isListening.value ? Colors.red : Colors.blue,
+                      color: _c.isListening.value ? Colors.red : Colors.amber,
                       size: 24,
                     ),
                   ),
@@ -98,7 +98,7 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
 
               const SizedBox(width: 12),
 
-              // 文本输入框
+
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
@@ -113,7 +113,7 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
                     textInputAction: TextInputAction.send,
                     onFieldSubmitted: (_) => _c.askQuestion(),
                     decoration: InputDecoration(
-                      hintText: '输入消息或长按语音输入...',
+                      hintText: 'Bir mesaj yazın veya sesli giriş için basılı tutun...',
                       hintStyle: TextStyle(
                         fontSize: 14,
                         color: Theme.of(context)
@@ -134,14 +134,14 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
 
               const SizedBox(width: 12),
 
-              // 发送按钮
+
               GestureDetector(
                 onTap: _c.askQuestion,
                 child: Container(
                   width: 48,
                   height: 48,
                   decoration: const BoxDecoration(
-                    color: Colors.blue,
+                    color: Colors.amber,
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
@@ -156,11 +156,11 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
         ),
       ),
 
-      // 消息列表
+
       body: Obx(
         () => Column(
           children: [
-            // 语音识别状态提示
+
             if (_c.isListening.value)
               Container(
                 width: double.infinity,
@@ -172,7 +172,7 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
                     Icon(Icons.mic, color: Colors.red, size: 16),
                     SizedBox(width: 8),
                     Text(
-                      '正在听取语音输入...',
+                      'Ses girişi dinleniyor...',
                       style: TextStyle(
                         color: Colors.red,
                         fontSize: 14,
@@ -183,7 +183,7 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
                 ),
               ),
 
-            // 消息列表
+
             Expanded(
               child: _c.list.isEmpty
                   ? Center(
@@ -201,7 +201,7 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            '开始与AI助手对话吧！',
+                            'Yapay zeka asistanıyla konuşmaya başlayın! ',
                             style: TextStyle(
                               fontSize: 16,
                               color: Theme.of(context)

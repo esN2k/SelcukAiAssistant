@@ -9,9 +9,9 @@ class MyDialog {
 //info
   static void info(String msg) {
     Get.snackbar(
-      'Info',
+      'Bilgi',
       msg,
-      backgroundColor: Colors.blue.withOpacity(.7),
+      backgroundColor: Colors.amber.withOpacity(.7),
       colorText: Colors.white,
     );
   }
@@ -19,7 +19,7 @@ class MyDialog {
 //success
   static void success(String msg) {
     Get.snackbar(
-      'Success',
+      'Başarılı',
       msg,
       backgroundColor: Colors.green.withOpacity(.7),
       colorText: Colors.white,
@@ -29,7 +29,7 @@ class MyDialog {
 //error
   static void error(String msg) {
     Get.snackbar(
-      'Error',
+      'Hata',
       msg,
       backgroundColor: Colors.redAccent.withOpacity(.7),
       colorText: Colors.white,

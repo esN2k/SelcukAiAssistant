@@ -10,19 +10,19 @@ class AdHelper {
   static void init() {
     EasyAudienceNetwork.init(
       testMode:
-          true, // for testing purpose but comment it before making the app live
+          true,
     );
   }
 
   static void showInterstitialAd(VoidCallback onComplete) {
-    //show loading
+
     MyDialog.showLoadingDialog();
 
     final interstitialAd = InterstitialAd(InterstitialAd.testPlacementId);
 
     interstitialAd.listener = InterstitialAdListener(
       onLoaded: () {
-        //hide loading
+
         Get.back<dynamic>();
         onComplete();
 
@@ -30,7 +30,7 @@ class AdHelper {
       },
       onDismissed: interstitialAd.destroy,
       onError: (i, e) {
-        //hide loading
+
         Get.back<dynamic>();
         onComplete();
 

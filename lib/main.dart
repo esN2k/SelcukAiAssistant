@@ -13,7 +13,63 @@ import 'package:selcukaiassistant/screen/splash_screen.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // init hive
+  // init hive@override
+  // Widget build(BuildContext context) {
+  //   return GetMaterialApp(
+  //     title: appName,
+  //     debugShowCheckedModeBanner: false,
+  //
+  //     themeMode: Pref.defaultTheme,
+  //
+  //     // Gece modu (Dark theme)
+  //     darkTheme: ThemeData(
+  //       useMaterial3: false,
+  //       brightness: Brightness.dark,
+  //       scaffoldBackgroundColor: Colors.black, // Siyah arka plan
+  //       textTheme: const TextTheme(
+  //         bodyLarge: TextStyle(color: Colors.yellow), // Ana metin rengi sarı
+  //         bodyMedium: TextStyle(color: Colors.yellow),
+  //         titleLarge: TextStyle(color: Colors.yellow),
+  //       ),
+  //       appBarTheme: const AppBarTheme(
+  //         elevation: 1,
+  //         centerTitle: true,
+  //         backgroundColor: Colors.black,
+  //         titleTextStyle: TextStyle(
+  //           color: Colors.yellow,
+  //           fontSize: 20,
+  //           fontWeight: FontWeight.w500
+  //         ),
+  //         iconTheme: IconThemeData(color: Colors.yellow),
+  //       ),
+  //     ),
+  //
+  //     // Gündüz modu (Light theme)
+  //     theme: ThemeData(
+  //       useMaterial3: false,
+  //       brightness: Brightness.light,
+  //       scaffoldBackgroundColor: Colors.white, // Beyaz arka plan
+  //       textTheme: const TextTheme(
+  //         bodyLarge: TextStyle(color: Colors.yellow), // Ana metin rengi sarı
+  //         bodyMedium: TextStyle(color: Colors.yellow),
+  //         titleLarge: TextStyle(color: Colors.yellow),
+  //       ),
+  //       appBarTheme: const AppBarTheme(
+  //         elevation: 1,
+  //         centerTitle: true,
+  //         backgroundColor: Colors.white,
+  //         titleTextStyle: TextStyle(
+  //           color: Colors.yellow,
+  //           fontSize: 20,
+  //           fontWeight: FontWeight.w500
+  //         ),
+  //         iconTheme: IconThemeData(color: Colors.yellow),
+  //       ),
+  //     ),
+  //
+  //     home: const SplashScreen(),
+  //   );
+  // }
   await Pref.initialize();
 
   await dotenv.load(); // .env dosyasını yükle
@@ -62,9 +118,9 @@ class MyApp extends StatelessWidget {
           elevation: 1,
           centerTitle: true,
           backgroundColor: Colors.white,
-          iconTheme: IconThemeData(color: Colors.blue),
+          iconTheme: IconThemeData(color: Colors.amber),
           titleTextStyle: TextStyle(
-            color: Colors.blue,
+            color: Colors.amber,
             fontSize: 20,
             fontWeight: FontWeight.w500,
           ),
@@ -84,5 +140,5 @@ extension AppTheme on ThemeData {
 
   //button color
   Color get buttonColor =>
-      brightness == Brightness.dark ? Colors.cyan.withOpacity(.5) : Colors.blue;
+      brightness == Brightness.dark ? Colors.cyan.withOpacity(.5) : Colors.amber;
 }
