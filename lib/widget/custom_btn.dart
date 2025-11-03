@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:selcukaiassistant/helper/global.dart';
-import 'package:selcukaiassistant/main.dart';
 
 class CustomBtn extends StatelessWidget {
   const CustomBtn({required this.onTap, required this.text, super.key});
