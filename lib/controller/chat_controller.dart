@@ -34,7 +34,7 @@ class ChatController extends GetxController {
         isListening.value = false;
       },
       onStatus: (status) {
-        if (status == 'Tamamlandı' || status == 'Dinlemiyorum') {
+        if (status == 'done' || status == 'notListening') {
           isListening.value = false;
         }
       },
@@ -66,7 +66,7 @@ class ChatController extends GetxController {
             isListening.value = false;
           }
         },
-                localeId: 'tr_TR',
+        localeId: 'tr_TR',
       );
     }
   }
@@ -90,7 +90,7 @@ class ChatController extends GetxController {
       try {
         final res = await APIs.getAnswer(question);
 
-        // AI回复
+        // AI response
         list.removeLast();
         list.add(Message(msg: res, msgType: MessageType.bot));
         _scrollDown();
