@@ -30,11 +30,6 @@ class Config:
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
     
     @classmethod
-    def get_ollama_url(cls) -> str:
-        """Get the full Ollama API URL."""
-        return f"{cls.OLLAMA_BASE_URL}/api/generate"
-    
-    @classmethod
     def validate(cls) -> None:
         """Validate configuration values."""
         if cls.OLLAMA_TIMEOUT < 1:

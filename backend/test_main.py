@@ -4,6 +4,7 @@ Unit tests for the FastAPI backend.
 These tests verify the API contract without requiring Ollama to be running.
 """
 import pytest
+import requests
 from fastapi.testclient import TestClient
 from unittest.mock import patch, MagicMock
 
@@ -50,7 +51,6 @@ def test_chat_endpoint_success(mock_post):
 def test_chat_endpoint_connection_error(mock_post):
     """Test chat request when Ollama is not available."""
     # Mock connection error
-    import requests
     mock_post.side_effect = requests.exceptions.ConnectionError("Connection refused")
     
     # Make request
@@ -149,7 +149,6 @@ def test_ollama_health_check_healthy(mock_get):
 def test_ollama_health_check_unhealthy(mock_get):
     """Test Ollama health check when service is unavailable."""
     # Mock connection error
-    import requests
     mock_get.side_effect = requests.exceptions.ConnectionError("Connection refused")
     
     response = client.get("/health/ollama")
@@ -163,7 +162,6 @@ def test_ollama_health_check_unhealthy(mock_get):
 def test_chat_endpoint_timeout(mock_post):
     """Test chat request timeout handling."""
     # Mock timeout error
-    import requests
     mock_post.side_effect = requests.exceptions.Timeout("Request timed out")
     
     response = client.post(
