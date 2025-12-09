@@ -53,12 +53,13 @@ cp .env.example .env
 ```
 
 Default configuration:
-- `OLLAMA_URL`: http://localhost:11434/api/generate - Ollama API endpoint
+- `OLLAMA_BASE_URL`: http://localhost:11434 - Ollama base URL
 - `OLLAMA_MODEL`: llama3.1 - Model to use
 - `OLLAMA_TIMEOUT`: 30 - Request timeout in seconds
 - `ALLOWED_ORIGINS`: * - CORS allowed origins (use specific URLs in production)
 - `HOST`: 127.0.0.1 - Server host (use 0.0.0.0 to allow external connections)
 - `PORT`: 8000 - Server port
+- `LOG_LEVEL`: INFO - Logging level (DEBUG, INFO, WARNING, ERROR)
 
 ## Running the Backend
 
@@ -106,6 +107,33 @@ Health check endpoint.
 }
 ```
 
+### GET /health/ollama
+
+Check Ollama service health and availability.
+
+**Response (Healthy):**
+```json
+{
+  "status": "healthy",
+  "ollama_url": "http://localhost:11434",
+  "model": "llama3.1",
+  "model_available": true,
+  "available_models": ["llama3.1", "mistral"]
+}
+```
+
+**Response (Unhealthy):**
+```json
+{
+  "detail": {
+    "status": "unhealthy",
+    "ollama_url": "http://localhost:11434",
+    "model": "llama3.1",
+    "error": "Connection failed"
+  }
+}
+```
+
 ### POST /chat
 
 Main chat endpoint that processes questions using Ollama.
@@ -143,8 +171,10 @@ pytest test_main.py -v
 
 All tests should pass:
 - ✅ Health check endpoint
+- ✅ Ollama health check (healthy and unhealthy states)
 - ✅ Successful chat response
 - ✅ Connection error handling
+- ✅ Timeout error handling
 - ✅ Invalid request handling
 - ✅ Empty response handling
 - ✅ Prompt formatting
@@ -154,6 +184,9 @@ All tests should pass:
 ```bash
 # Health check
 curl http://localhost:8000/
+
+# Ollama health check
+curl http://localhost:8000/health/ollama
 
 # Chat request
 curl -X POST http://localhost:8000/chat \
@@ -197,7 +230,34 @@ ollama pull llama3.1
 
 ### CORS Issues
 
-If the Flutter app cannot connect, ensure CORS is properly configured in `main.py`. For production, update the `allow_origins` list with your Flutter app's URL.
+If the Flutter app cannot connect, ensure CORS is properly configured. Set the `ALLOWED_ORIGINS` environment variable with your Flutter app's URL for production.
+
+## Architecture
+
+The backend is now organized into modular components for better maintainability:
+
+### Project Structure
+
+```
+backend/
+├── main.py              # FastAPI application and endpoints
+├── config.py            # Configuration management with validation
+├── ollama_service.py    # Ollama client service abstraction
+├── prompts.py           # Prompt templates and management
+├── test_main.py         # Unit tests
+├── requirements.txt     # Production dependencies
+└── requirements-dev.txt # Development dependencies
+```
+
+### Key Improvements
+
+1. **Configuration Management**: Centralized configuration in `config.py` with validation
+2. **Service Abstraction**: `OllamaService` class handles all Ollama interactions
+3. **Prompt Management**: Prompts are externalized and can be easily modified
+4. **Comprehensive Logging**: Structured logging throughout the application
+5. **Health Checks**: Dedicated endpoint to check Ollama service status
+6. **Better Error Handling**: Specific error handling for different failure scenarios
+7. **Modular Design**: Separation of concerns makes the code easier to test and maintain
 
 ## Deployment
 

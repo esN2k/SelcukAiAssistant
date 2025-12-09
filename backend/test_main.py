@@ -23,7 +23,7 @@ def test_root_endpoint():
     }
 
 
-@patch('main.requests.post')
+@patch('ollama_service.requests.post')
 def test_chat_endpoint_success(mock_post):
     """Test successful chat request."""
     # Mock successful Ollama response
@@ -46,11 +46,12 @@ def test_chat_endpoint_success(mock_post):
     assert data["answer"] == "Merhaba! Ben Selçuk Üniversitesi AI asistanıyım."
 
 
-@patch('main.requests.post')
+@patch('ollama_service.requests.post')
 def test_chat_endpoint_connection_error(mock_post):
     """Test chat request when Ollama is not available."""
     # Mock connection error
-    mock_post.side_effect = Exception("Connection refused")
+    import requests
+    mock_post.side_effect = requests.exceptions.ConnectionError("Connection refused")
     
     # Make request
     response = client.post(
@@ -58,7 +59,7 @@ def test_chat_endpoint_connection_error(mock_post):
         json={"question": "Test"}
     )
     
-    assert response.status_code == 500
+    assert response.status_code == 503
     data = response.json()
     assert "detail" in data
 
@@ -73,7 +74,7 @@ def test_chat_endpoint_invalid_request():
     assert response.status_code == 422  # Validation error
 
 
-@patch('main.requests.post')
+@patch('ollama_service.requests.post')
 def test_chat_endpoint_empty_response(mock_post):
     """Test chat request when Ollama returns empty response."""
     # Mock empty response
@@ -93,7 +94,7 @@ def test_chat_endpoint_empty_response(mock_post):
     assert data["answer"] == "Üzgünüm, bir yanıt oluşturulamadı."
 
 
-@patch('main.requests.post')
+@patch('ollama_service.requests.post')
 def test_prompt_contains_question(mock_post):
     """Test that the prompt sent to Ollama contains the user's question."""
     # Mock response
@@ -119,6 +120,61 @@ def test_prompt_contains_question(mock_post):
     assert question in json_payload["prompt"]
     assert json_payload["model"] == "llama3.1"
     assert json_payload["stream"] is False
+
+
+@patch('ollama_service.requests.get')
+def test_ollama_health_check_healthy(mock_get):
+    """Test Ollama health check when service is healthy."""
+    # Mock successful response with available models
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+    mock_response.json.return_value = {
+        "models": [
+            {"name": "llama3.1"},
+            {"name": "mistral"}
+        ]
+    }
+    mock_get.return_value = mock_response
+    
+    response = client.get("/health/ollama")
+    
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "healthy"
+    assert data["model_available"] is True
+    assert "llama3.1" in data["available_models"]
+
+
+@patch('ollama_service.requests.get')
+def test_ollama_health_check_unhealthy(mock_get):
+    """Test Ollama health check when service is unavailable."""
+    # Mock connection error
+    import requests
+    mock_get.side_effect = requests.exceptions.ConnectionError("Connection refused")
+    
+    response = client.get("/health/ollama")
+    
+    assert response.status_code == 503
+    data = response.json()
+    assert "detail" in data
+
+
+@patch('ollama_service.requests.post')
+def test_chat_endpoint_timeout(mock_post):
+    """Test chat request timeout handling."""
+    # Mock timeout error
+    import requests
+    mock_post.side_effect = requests.exceptions.Timeout("Request timed out")
+    
+    response = client.post(
+        "/chat",
+        json={"question": "Test"}
+    )
+    
+    assert response.status_code == 504
+    data = response.json()
+    assert "detail" in data
+    assert "zaman aşımı" in data["detail"].lower()
 
 
 if __name__ == "__main__":
