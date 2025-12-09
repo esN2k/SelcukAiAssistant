@@ -53,9 +53,11 @@ cp .env.example .env
 ```
 
 Default configuration:
-- `OLLAMA_URL`: http://localhost:11434/api/generate
-- `OLLAMA_MODEL`: llama3.1
-- `PORT`: 8000
+- `OLLAMA_URL`: http://localhost:11434/api/generate - Ollama API endpoint
+- `OLLAMA_MODEL`: llama3.1 - Model to use
+- `OLLAMA_TIMEOUT`: 30 - Request timeout in seconds
+- `ALLOWED_ORIGINS`: * - CORS allowed origins (use specific URLs in production)
+- `PORT`: 8000 - Server port
 
 ## Running the Backend
 

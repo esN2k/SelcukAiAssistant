@@ -10,9 +10,11 @@ from pydantic import BaseModel
 app = FastAPI(title="SelcukAiAssistant Backend")
 
 # Configure CORS to allow Flutter app to connect
+# In production, set ALLOWED_ORIGINS environment variable
+allowed_origins = os.getenv("ALLOWED_ORIGINS", "*").split(",")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, specify your Flutter app's origin
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -21,6 +23,7 @@ app.add_middleware(
 # Ollama configuration - configurable via environment variables
 OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434/api/generate")
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3.1")
+OLLAMA_TIMEOUT = int(os.getenv("OLLAMA_TIMEOUT", "30"))  # Default 30 seconds
 
 
 class ChatRequest(BaseModel):
@@ -85,7 +88,7 @@ Kullanıcı sorusu: {request.question}
         response = requests.post(
             OLLAMA_URL,
             json=ollama_request,
-            timeout=60  # 60 second timeout for long responses
+            timeout=OLLAMA_TIMEOUT
         )
         response.raise_for_status()
 
