@@ -1,6 +1,8 @@
 include: package:very_good_analysis/analysis_options.yaml
 
 analyzer:
+  errors:
+    public_member_api_docs: ignore
     # İsterseniz burada bazı kuralları görmezden gelebilirsiniz
     # avoid_print: ignore 
     # Not: "errors:" satırının başında 2 adet normal boşluk olduğundan emin olun.

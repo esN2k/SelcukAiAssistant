@@ -11,8 +11,8 @@ dependencies:
     sdk: flutter
 
   # Alphabetically sorted dependencies (A → Z)
-  appwrite: ^20.2.1
   animated_text_kit: ^4.2.2
+  appwrite: ^20.2.1
   cupertino_icons: ^1.0.8
   easy_audience_network: ^0.0.6
   flutter_animate: ^4.5.0
