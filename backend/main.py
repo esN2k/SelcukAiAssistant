@@ -125,6 +125,13 @@ Kullanıcı sorusu: {request.question}
             detail=f"Beklenmeyen hata: {str(e)}"
         )
 
+if sys.platform == 'win32':
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
+
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+
 
 if __name__ == "__main__":
     import uvicorn
