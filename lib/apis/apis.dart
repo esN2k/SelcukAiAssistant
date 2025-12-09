@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:http/http.dart' as http;
-
 import 'package:selcukaiassistant/helper/global.dart';
 
 class APIs {
@@ -27,7 +26,7 @@ class APIs {
       // Check if the request was successful
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
-        final answer = responseData['answer'] ?? 'Üzgünüm, bir yanıt oluşturulamadı.';
+        final String answer = (responseData['answer'] as String?) ?? 'Üzgünüm, bir yanıt oluşturulamadı.';
         log('Backend Yanıtı: ${answer.substring(0, answer.length > 100 ? 100 : answer.length)}...');
         return answer;
       } else {
