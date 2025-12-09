@@ -1,5 +1,8 @@
 """FastAPI backend for SelcukAiAssistant using Ollama."""
 import os
+import sys
+import io
+
 from typing import Optional
 
 import requests

@@ -1,3 +1,5 @@
 {
-    "cmake.sourceDirectory": "D:/Projects/SelcukAiAssistant/windows"
+    "cmake.sourceDirectory": "D:/Projects/SelcukAiAssistant/windows",
+    "python.pythonPath": "venv\\Scripts\\python.exe",
+    "python.linting.pylintEnabled": true
 }
