@@ -119,6 +119,24 @@ Main chat endpoint that processes questions using Ollama.
 
 ## Testing the API
 
+### Running Unit Tests
+
+The backend includes unit tests that verify the API contract without requiring Ollama:
+
+```bash
+cd backend
+pip install -r requirements-dev.txt
+pytest test_main.py -v
+```
+
+All tests should pass:
+- ✅ Health check endpoint
+- ✅ Successful chat response
+- ✅ Connection error handling
+- ✅ Invalid request handling
+- ✅ Empty response handling
+- ✅ Prompt formatting
+
 ### Using curl
 
 ```bash
