@@ -5,6 +5,7 @@ This file contains all the commands you need to get started with the migrated co
 ## Prerequisites Installation
 
 ### 1. Install Ollama
+
 ```bash
 # Linux
 curl -fsSL https://ollama.ai/install.sh | sh
@@ -17,14 +18,17 @@ brew install ollama
 ```
 
 ### 2. Pull llama3.1 Model
+
 ```bash
 ollama pull llama3.1
 ```
 
 ### 3. Verify Ollama Installation
+
 ```bash
 ollama list
 ```
+
 Expected output: You should see `llama3.1` in the list.
 
 ---
@@ -32,11 +36,13 @@ Expected output: You should see `llama3.1` in the list.
 ## Backend Setup
 
 ### 1. Navigate to Backend Directory
+
 ```bash
 cd backend
 ```
 
 ### 2. Create Virtual Environment (Recommended)
+
 ```bash
 # Linux/macOS
 python3 -m venv venv
@@ -48,11 +54,13 @@ venv\Scripts\activate
 ```
 
 ### 3. Install Dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
 
 ### 4. Configure Environment (Optional)
+
 ```bash
 cp .env.example .env
 # Edit .env if you need custom configuration
@@ -61,16 +69,19 @@ cp .env.example .env
 ### 5. Run Backend
 
 **For local testing only (recommended for initial setup):**
+
 ```bash
 python main.py
 ```
 
 **For testing with physical devices on the same network:**
+
 ```bash
 HOST=0.0.0.0 python main.py
 ```
 
 Expected output:
+
 ```
 INFO:     Started server process [xxxxx]
 INFO:     Waiting for application startup.
@@ -87,16 +98,19 @@ Keep this terminal open - the backend needs to stay running!
 ## Test Backend (New Terminal)
 
 ### 1. Health Check
+
 ```bash
 curl http://localhost:8000/
 ```
 
 Expected output:
+
 ```json
 {"status":"ok","message":"SelcukAiAssistant Backend is running"}
 ```
 
 ### 2. Test Chat Endpoint
+
 ```bash
 curl -X POST http://localhost:8000/chat \
   -H "Content-Type: application/json" \
@@ -104,24 +118,28 @@ curl -X POST http://localhost:8000/chat \
 ```
 
 Expected output:
+
 ```json
 {"answer":"Merhaba! ... (response from AI)"}
 ```
 
 ### 3. View API Documentation
-Open in browser: http://localhost:8000/docs
+
+Open in browser: <http://localhost:8000/docs>
 
 ---
 
 ## Flutter App Setup
 
 ### 1. Return to Project Root
+
 ```bash
 # If you're in backend/ directory
 cd ..
 ```
 
 ### 2. Create Configuration File
+
 ```bash
 cp .env.example .env
 ```
@@ -131,22 +149,27 @@ cp .env.example .env
 Open `.env` and set the correct BACKEND_URL:
 
 **For Android Emulator:**
+
 ```
 BACKEND_URL=http://10.0.2.2:8000
 ```
 
 **For iOS Simulator:**
+
 ```
 BACKEND_URL=http://localhost:8000
 ```
 
 **For Physical Device:**
+
 ```
 BACKEND_URL=http://YOUR_COMPUTER_IP:8000
 ```
+
 Replace `YOUR_COMPUTER_IP` with your actual IP address.
 
 To find your IP:
+
 ```bash
 # Linux/macOS
 ifconfig | grep "inet " | grep -v 127.0.0.1
@@ -156,16 +179,19 @@ ipconfig | findstr "IPv4"
 ```
 
 ### 4. Update Flutter Dependencies
+
 ```bash
 flutter pub get
 ```
 
 ### 5. Clean Previous Build (Optional)
+
 ```bash
 flutter clean
 ```
 
 ### 6. Run Flutter App
+
 ```bash
 flutter run
 ```
@@ -187,10 +213,13 @@ Expected output: 6 tests should pass.
 ## Stopping Services
 
 ### Stop Backend
+
 In the terminal where backend is running:
+
 - Press `Ctrl+C`
 
 ### Stop Ollama (if needed)
+
 ```bash
 # Linux/macOS
 pkill ollama
@@ -204,6 +233,7 @@ pkill ollama
 ## Production Deployment Commands
 
 ### Backend (Production)
+
 ```bash
 cd backend
 
@@ -215,7 +245,9 @@ uvicorn main:app --host 0.0.0.0 --port 8000 --workers 4
 ```
 
 ### Configure Production Settings
+
 Create `backend/.env`:
+
 ```bash
 OLLAMA_URL=http://localhost:11434/api/generate
 OLLAMA_MODEL=llama3.1
@@ -229,6 +261,7 @@ PORT=8000
 ## Useful Commands Reference
 
 ### Check if ports are in use
+
 ```bash
 # Linux/macOS
 lsof -i :8000  # Backend
@@ -240,20 +273,24 @@ netstat -ano | findstr :11434 # Ollama
 ```
 
 ### View Backend Logs
+
 Backend logs are printed to the terminal where you ran `python main.py`.
 
 ### Restart Backend
+
 ```bash
 # Stop with Ctrl+C, then:
 python main.py
 ```
 
 ### Update Ollama Model
+
 ```bash
 ollama pull llama3.1
 ```
 
 ### List Running Ollama Models
+
 ```bash
 ollama list
 ```
@@ -263,6 +300,7 @@ ollama list
 ## Troubleshooting Commands
 
 ### Test Ollama Directly
+
 ```bash
 curl http://localhost:11434/api/generate -d '{
   "model": "llama3.1",
@@ -272,6 +310,7 @@ curl http://localhost:11434/api/generate -d '{
 ```
 
 ### Test with Different Model
+
 ```bash
 # Edit backend/.env or set environment variable
 export OLLAMA_MODEL=llama3.1
@@ -279,16 +318,19 @@ python main.py
 ```
 
 ### Check Python Version
+
 ```bash
 python --version  # Should be 3.8+
 ```
 
 ### Check Flutter Version
+
 ```bash
 flutter --version
 ```
 
 ### View Backend Dependencies
+
 ```bash
 cd backend
 pip list
@@ -299,18 +341,21 @@ pip list
 ## Complete Fresh Start (If Something Goes Wrong)
 
 ### 1. Stop Everything
+
 ```bash
 # Stop backend: Ctrl+C in backend terminal
 # Stop Flutter: Ctrl+C in Flutter terminal
 ```
 
 ### 2. Clean Backend
+
 ```bash
 cd backend
 rm -rf venv __pycache__ .pytest_cache
 ```
 
 ### 3. Reinstall Backend
+
 ```bash
 python3 -m venv venv
 source venv/bin/activate  # or venv\Scripts\activate on Windows
@@ -318,6 +363,7 @@ pip install -r requirements.txt
 ```
 
 ### 4. Clean Flutter
+
 ```bash
 cd ..
 flutter clean
@@ -325,12 +371,14 @@ flutter pub get
 ```
 
 ### 5. Verify Ollama
+
 ```bash
 ollama list
 ollama pull llama3.1  # if not present
 ```
 
 ### 6. Restart Everything
+
 ```bash
 # Terminal 1: Start backend
 cd backend
@@ -354,7 +402,7 @@ flutter run
 | Backend | `python main.py` | 8000 |
 | Backend Tests | `pytest test_main.py -v` | - |
 | Flutter | `flutter run` | - |
-| API Docs | Open browser | http://localhost:8000/docs |
+| API Docs | Open browser | <http://localhost:8000/docs> |
 
 ---
 
@@ -373,6 +421,7 @@ flutter run
 ## Getting Help
 
 If you encounter issues:
+
 1. Check the logs in the terminal where backend is running
 2. Verify all services are running (Ollama, Backend)
 3. Check your BACKEND_URL configuration
@@ -384,12 +433,14 @@ If you encounter issues:
 ## Uninstalling (If Needed)
 
 ### Remove Backend
+
 ```bash
 cd backend
 rm -rf venv __pycache__
 ```
 
 ### Revert Flutter Changes
+
 ```bash
 # This migration is already committed
 # To revert, you would need to restore from git history
@@ -398,6 +449,7 @@ git checkout <commit-hash> -- lib/apis/apis.dart lib/helper/global.dart pubspec.
 ```
 
 ### Remove Ollama
+
 ```bash
 # Linux
 sudo rm -rf /usr/local/bin/ollama /usr/share/ollama ~/.ollama
