@@ -19,7 +19,7 @@ class ChatController extends GetxController {
     Message(
         msg:
             'Merhaba! Ben bir yapay zeka asistanıyım, size nasıl yardımcı olabilirim?',
-        msgType: MessageType.bot),
+        msgType: MessageType.bot,),
   ].obs;
 
   @override
@@ -45,7 +45,7 @@ class ChatController extends GetxController {
     final status = await Permission.microphone.request();
     if (status != PermissionStatus.granted) {
       MyDialog.info(
-          'Ses girişi özelliğini kullanmak için mikrofon izni gereklidir');
+          'Ses girişi özelliğini kullanmak için mikrofon izni gereklidir',);
       return;
     }
 
@@ -99,7 +99,7 @@ class ChatController extends GetxController {
         list.add(Message(
             msg:
                 'Üzgünüz, bir şeyler ters gitti, lütfen daha sonra tekrar deneyin.',
-            msgType: MessageType.bot));
+            msgType: MessageType.bot,),);
         _scrollDown();
       }
     } else {
