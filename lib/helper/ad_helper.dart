@@ -3,26 +3,22 @@ import 'dart:developer';
 import 'package:easy_audience_network/easy_audience_network.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import 'package:selcukaiassistant/helper/my_dialog.dart';
 
 class AdHelper {
   static void init() {
     EasyAudienceNetwork.init(
-      testMode:
-          true,
+      testMode: true,
     );
   }
 
   static void showInterstitialAd(VoidCallback onComplete) {
-
     MyDialog.showLoadingDialog();
 
     final interstitialAd = InterstitialAd(InterstitialAd.testPlacementId);
 
     interstitialAd.listener = InterstitialAdListener(
       onLoaded: () {
-
         Get.back<dynamic>();
         onComplete();
 
@@ -30,7 +26,6 @@ class AdHelper {
       },
       onDismissed: interstitialAd.destroy,
       onError: (i, e) {
-
         Get.back<dynamic>();
         onComplete();
 

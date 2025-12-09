@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
-
 import 'package:selcukaiassistant/helper/ad_helper.dart';
 import 'package:selcukaiassistant/helper/global.dart';
 import 'package:selcukaiassistant/helper/pref.dart';
@@ -139,6 +138,7 @@ extension AppTheme on ThemeData {
       brightness == Brightness.dark ? Colors.white70 : Colors.black54;
 
   //button color
-  Color get buttonColor =>
-      brightness == Brightness.dark ? Colors.cyan.withOpacity(.5) : Colors.amber;
+  Color get buttonColor => brightness == Brightness.dark
+      ? Colors.cyan.withOpacity(.5)
+      : Colors.amber;
 }

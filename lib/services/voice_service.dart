@@ -3,10 +3,8 @@ import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 
-
 class VoiceService {
-  static const String _baseUrl =
-      'http://your-server-url.com/api';
+  static const String _baseUrl = 'http://your-server-url.com/api';
 
   /// [audioPath]
 
@@ -19,13 +17,11 @@ class VoiceService {
         Uri.parse('$_baseUrl/speech-to-text'),
       );
 
-
       request.files.add(
         await http.MultipartFile.fromPath('audio', audioPath),
       );
 
-
-      request.fields['language'] = 'zh-TR';
+            request.fields['language'] = 'tr-TR';
 
       final response = await request.send();
       final responseData = await response.stream.bytesToString();
@@ -40,11 +36,10 @@ class VoiceService {
         return 'Ses tanıma başarısız oldu. Lütfen tekrar deneyin.';
       }
     } catch (e) {
-      log('Ses tanıma anomalis: $e');
+            log('Ses tanıma hatası: $e');
       return 'Ses tanıma hatası. Lütfen ağ bağlantınızı kontrol edin.';
     }
   }
-
 
   static Future<bool> checkServerConnection() async {
     try {

@@ -3,7 +3,6 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
-
 import 'package:selcukaiassistant/helper/global.dart';
 import 'package:selcukaiassistant/model/message.dart';
 
@@ -16,7 +15,6 @@ class MessageCard extends StatelessWidget {
     const r = Radius.circular(15);
 
     return message.msgType == MessageType.bot
-
         ? Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -105,7 +103,6 @@ class MessageCard extends StatelessWidget {
               ),
             ],
           )
-
         : Row(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,

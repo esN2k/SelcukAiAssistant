@@ -21,8 +21,8 @@ class _SplashScreenState extends State<SplashScreen> {
     //wait for some time on splash & then move to next screen
     Future.delayed(const Duration(seconds: 2), () {
       Get.off<Widget>(
-            () =>
-        Pref.showOnboarding ? const OnboardingScreen() : const HomeScreen(),
+        () =>
+            Pref.showOnboarding ? const OnboardingScreen() : const HomeScreen(),
       );
     });
   }
@@ -42,7 +42,8 @@ class _SplashScreenState extends State<SplashScreen> {
             const Spacer(flex: 2),
 
             //logo
-            Card( // <-- Card yapısı buradaydı
+            Card(
+              // <-- Card yapısı buradaydı
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(20)),
               ),

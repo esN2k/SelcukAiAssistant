@@ -10,14 +10,16 @@ class ChatController extends GetxController {
   final textC = TextEditingController();
   final scrollC = ScrollController();
 
-
   final SpeechToText _speechToText = SpeechToText();
   final RxBool isListening = false.obs;
   final RxBool speechEnabled = false.obs;
   final RxString recognizedText = ''.obs;
 
   final RxList<Message> list = <Message>[
-    Message(msg: 'Merhaba! Ben bir yapay zeka asistanıyım, size nasıl yardımcı olabilirim?', msgType: MessageType.bot),
+    Message(
+        msg:
+            'Merhaba! Ben bir yapay zeka asistanıyım, size nasıl yardımcı olabilirim?',
+        msgType: MessageType.bot),
   ].obs;
 
   @override
@@ -29,11 +31,9 @@ class ChatController extends GetxController {
   Future<void> _initSpeech() async {
     speechEnabled.value = await _speechToText.initialize(
       onError: (error) {
-
         isListening.value = false;
       },
       onStatus: (status) {
-
         if (status == 'Tamamlandı' || status == 'Dinlemiyorum') {
           isListening.value = false;
         }
@@ -41,12 +41,11 @@ class ChatController extends GetxController {
     );
   }
 
-
   Future<void> startListening() async {
-
     final status = await Permission.microphone.request();
     if (status != PermissionStatus.granted) {
-      MyDialog.info('Ses girişi özelliğini kullanmak için mikrofon izni gereklidir');
+      MyDialog.info(
+          'Ses girişi özelliğini kullanmak için mikrofon izni gereklidir');
       return;
     }
 
@@ -67,11 +66,10 @@ class ChatController extends GetxController {
             isListening.value = false;
           }
         },
-        localeId: 'zh_TR',
+                localeId: 'tr_TR',
       );
     }
   }
-
 
   Future<void> stopListening() async {
     if (isListening.value) {
@@ -82,7 +80,6 @@ class ChatController extends GetxController {
 
   Future<void> askQuestion() async {
     if (textC.text.trim().isNotEmpty) {
-
       list.add(Message(msg: textC.text, msgType: MessageType.user));
       list.add(Message(msg: '', msgType: MessageType.bot));
       _scrollDown();
@@ -99,14 +96,16 @@ class ChatController extends GetxController {
         _scrollDown();
       } catch (e) {
         list.removeLast();
-        list.add(Message(msg: 'Üzgünüz, bir şeyler ters gitti, lütfen daha sonra tekrar deneyin.', msgType: MessageType.bot));
+        list.add(Message(
+            msg:
+                'Üzgünüz, bir şeyler ters gitti, lütfen daha sonra tekrar deneyin.',
+            msgType: MessageType.bot));
         _scrollDown();
       }
     } else {
       MyDialog.info('Lütfen bir soru girin veya sesli girişi kullanın！');
     }
   }
-
 
   void _scrollDown() {
     WidgetsBinding.instance.addPostFrameCallback((_) {

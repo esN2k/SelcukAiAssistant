@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import 'package:selcukaiassistant/controller/chat_controller.dart';
 import 'package:selcukaiassistant/helper/global.dart';
 import 'package:selcukaiassistant/widget/message_card.dart';
@@ -21,13 +20,11 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       appBar: AppBar(
         title: const Text('Yapay zeka akıllı asistanı'),
         centerTitle: true,
         elevation: 1,
         actions: [
-
           IconButton(
             padding: const EdgeInsets.only(right: 10),
             onPressed: () {
@@ -47,8 +44,6 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
           ),
         ],
       ),
-
-
       bottomNavigationBar: Container(
         padding: EdgeInsets.only(
           left: 16,
@@ -68,7 +63,6 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
         child: SafeArea(
           child: Row(
             children: [
-
               Obx(
                 () => GestureDetector(
                   onTapDown: (_) => _c.startListening(),
@@ -95,10 +89,7 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
                   ),
                 ),
               ),
-
               const SizedBox(width: 12),
-
-
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
@@ -113,7 +104,8 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
                     textInputAction: TextInputAction.send,
                     onFieldSubmitted: (_) => _c.askQuestion(),
                     decoration: InputDecoration(
-                      hintText: 'Bir mesaj yazın veya sesli giriş için basılı tutun...',
+                      hintText:
+                          'Bir mesaj yazın veya sesli giriş için basılı tutun...',
                       hintStyle: TextStyle(
                         fontSize: 14,
                         color: Theme.of(context)
@@ -131,10 +123,7 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
                   ),
                 ),
               ),
-
               const SizedBox(width: 12),
-
-
               GestureDetector(
                 onTap: _c.askQuestion,
                 child: Container(
@@ -155,12 +144,9 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
           ),
         ),
       ),
-
-
       body: Obx(
         () => Column(
           children: [
-
             if (_c.isListening.value)
               Container(
                 width: double.infinity,
@@ -182,8 +168,6 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
                   ],
                 ),
               ),
-
-
             Expanded(
               child: _c.list.isEmpty
                   ? Center(
