@@ -1,12 +1,13 @@
 # Migration Summary: Google Gemini → Ollama via FastAPI
 
-## ✅ Migration Complete!
+## ✅ Migration Complete
 
 The codebase has been successfully refactored to use a local Ollama instance instead of Google Gemini API.
 
 ## 📋 What Changed
 
 ### New Files Added
+
 1. **Backend (Python/FastAPI)**:
    - `backend/main.py` - FastAPI server with /chat endpoint
    - `backend/requirements.txt` - Python dependencies
@@ -20,6 +21,7 @@ The codebase has been successfully refactored to use a local Ollama instance ins
    - `.env.example` - Flutter app configuration template
 
 ### Modified Files
+
 1. **Flutter App**:
    - `lib/apis/apis.dart` - Now calls FastAPI backend instead of Gemini
    - `lib/helper/global.dart` - Added BACKEND_URL configuration
@@ -55,6 +57,7 @@ cp .env.example .env
 ```
 
 Edit `.env` and set the backend URL:
+
 - For Android emulator: `BACKEND_URL=http://10.0.2.2:8000`
 - For iOS simulator: `BACKEND_URL=http://localhost:8000`
 - For physical device: `BACKEND_URL=http://YOUR_COMPUTER_IP:8000`
@@ -100,6 +103,7 @@ pytest test_main.py -v
 ```
 
 All 6 tests pass ✅:
+
 - Health check endpoint
 - Successful chat response
 - Connection error handling
@@ -145,14 +149,17 @@ curl -X POST http://localhost:8000/chat \
 ### Common Issues
 
 **Backend won't start**:
+
 - Check if port 8000 is available
 - Verify Python dependencies are installed
 
 **Can't connect to Ollama**:
+
 - Verify Ollama is running: `ollama list`
 - Check Ollama URL in backend/.env
 
 **Flutter app can't connect to backend**:
+
 - Check BACKEND_URL in .env
 - For emulator, use `10.0.2.2` instead of `localhost`
 - For physical device, use your computer's IP address
@@ -162,20 +169,24 @@ See MIGRATION.md for detailed troubleshooting steps.
 ## 📦 Dependencies
 
 ### Removed
+
 - ❌ `google_generative_ai: ^0.4.7` (Flutter)
 
 ### Added (Backend)
+
 - ✅ `fastapi==0.115.5`
 - ✅ `uvicorn[standard]==0.32.1`
 - ✅ `requests==2.32.3`
 - ✅ `pydantic==2.10.3`
 
 ### Existing (Flutter)
+
 - `http: ^1.2.2` (already in project, now used for backend calls)
 
 ## 🎯 API Contract Maintained
 
 The Flutter app API remains unchanged:
+
 - Input: `{"question": "user's question"}`
 - Output: `{"answer": "AI response"}`
 
@@ -187,13 +198,14 @@ If needed, see MIGRATION.md section "Rollback Plan" to revert to Google Gemini.
 
 ## 📚 Additional Resources
 
-- Ollama Documentation: https://ollama.ai/docs
-- FastAPI Documentation: https://fastapi.tiangolo.com/
-- Backend API docs (when running): http://localhost:8000/docs
+- Ollama Documentation: <https://ollama.ai/docs>
+- FastAPI Documentation: <https://fastapi.tiangolo.com/>
+- Backend API docs (when running): <http://localhost:8000/docs>
 
 ## ✨ Summary
 
 Your codebase is now fully migrated to use Ollama via a local FastAPI backend! The migration:
+
 - ✅ Maintains the same API contract
 - ✅ Includes comprehensive tests
 - ✅ Provides detailed documentation

@@ -40,6 +40,7 @@ Before starting the migration, ensure you have:
 
 1. Download and install Ollama from [https://ollama.ai](https://ollama.ai)
 2. Verify installation:
+
    ```bash
    ollama --version
    ```
@@ -63,31 +64,38 @@ You should see `llama3.1` in the list.
 ### Step 4: Set Up the Backend
 
 1. Navigate to the backend directory:
+
    ```bash
    cd backend
    ```
 
 2. Create a Python virtual environment (recommended):
+
    ```bash
    python -m venv venv
    ```
 
 3. Activate the virtual environment:
    - On Linux/Mac:
+
      ```bash
      source venv/bin/activate
      ```
+
    - On Windows:
+
      ```bash
      venv\Scripts\activate
      ```
 
 4. Install dependencies:
+
    ```bash
    pip install -r requirements.txt
    ```
 
 5. (Optional) Configure environment variables:
+
    ```bash
    cp .env.example .env
    # Edit .env if you need custom configuration
@@ -100,6 +108,7 @@ python main.py
 ```
 
 Or using uvicorn directly:
+
 ```bash
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
@@ -125,19 +134,21 @@ You should receive a JSON response with an `answer` field.
 ### Step 7: Configure the Flutter App
 
 1. Create or update the `.env` file in the Flutter project root:
+
    ```bash
    cp .env.example .env
    ```
 
 2. Edit `.env` and set:
+
    ```
    BACKEND_URL=http://localhost:8000
    ```
 
    **Note**: For Android emulator, use `http://10.0.2.2:8000` instead of `localhost`.
-   
+
    **Note**: For iOS simulator, `localhost` should work.
-   
+
    **Note**: For physical devices, use your computer's IP address (e.g., `http://192.168.1.100:8000`).
 
 ### Step 8: Update Flutter Dependencies
@@ -175,9 +186,11 @@ flutter run
 **Problem**: "Ollama servisine bağlanılamadı"
 
 **Solution**:
+
 1. Verify Ollama is running: `ollama list`
 2. Check if the Ollama URL is correct in backend/.env
 3. Try accessing Ollama directly:
+
    ```bash
    curl http://localhost:11434/api/generate -d '{
      "model": "llama3.1",
@@ -189,6 +202,7 @@ flutter run
 **Problem**: Backend not starting
 
 **Solution**:
+
 1. Verify Python dependencies are installed: `pip list | grep fastapi`
 2. Check if port 8000 is already in use: `lsof -i :8000` (Linux/Mac) or `netstat -ano | findstr :8000` (Windows)
 3. Try a different port: `PORT=8001 python main.py`
@@ -198,6 +212,7 @@ flutter run
 **Problem**: "Backend servisine bağlanılamadı"
 
 **Solution**:
+
 1. Verify backend is running: `curl http://localhost:8000/`
 2. Check BACKEND_URL in .env:
    - For emulator: Use `http://10.0.2.2:8000` (Android) or `http://localhost:8000` (iOS)
@@ -207,6 +222,7 @@ flutter run
 **Problem**: CORS errors in web/browser
 
 **Solution**:
+
 1. Update backend/.env and set ALLOWED_ORIGINS to your Flutter web app URL
 2. Restart the backend
 
@@ -215,6 +231,7 @@ flutter run
 **Problem**: Slow response times
 
 **Solution**:
+
 1. Reduce OLLAMA_TIMEOUT if responses are taking too long
 2. Consider using a smaller model if your hardware is limited
 3. Ensure Ollama is running on a machine with sufficient resources
@@ -293,9 +310,11 @@ After successful migration:
 ## Summary of Changes
 
 ### Removed Files/Dependencies
+
 - ❌ `google_generative_ai` package dependency
 
 ### Added Files
+
 - ✅ `backend/main.py` - FastAPI backend
 - ✅ `backend/requirements.txt` - Python dependencies
 - ✅ `backend/.env.example` - Backend configuration template
@@ -304,6 +323,7 @@ After successful migration:
 - ✅ `MIGRATION.md` - This migration guide
 
 ### Modified Files
+
 - ✏️ `lib/apis/apis.dart` - Changed from Gemini to HTTP calls
 - ✏️ `lib/helper/global.dart` - Added BACKEND_URL configuration
 - ✏️ `pubspec.yaml` - Removed google_generative_ai dependency
