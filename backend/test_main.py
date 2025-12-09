@@ -6,11 +6,8 @@ These tests verify the API contract without requiring Ollama to be running.
 import pytest
 from fastapi.testclient import TestClient
 from unittest.mock import patch, MagicMock
-import sys
-import os
 
-# Add parent directory to path to import main
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+# Import from the same directory
 from main import app
 
 client = TestClient(app)

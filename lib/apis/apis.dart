@@ -32,7 +32,7 @@ class APIs {
         return answer;
       } else {
         // Handle HTTP errors
-        log('Backend HATASI: ${response.statusCode} - ${response.body}');
+        log('Backend HATASI: ${response.statusCode}');
         return 'Hata: Backend servisi geçici olarak kullanılamıyor (HTTP ${response.statusCode}). Lütfen backend servisinin çalıştığından emin olun.';
       }
     } catch (e) {

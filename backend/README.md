@@ -57,15 +57,27 @@ Default configuration:
 - `OLLAMA_MODEL`: llama3.1 - Model to use
 - `OLLAMA_TIMEOUT`: 30 - Request timeout in seconds
 - `ALLOWED_ORIGINS`: * - CORS allowed origins (use specific URLs in production)
+- `HOST`: 127.0.0.1 - Server host (use 0.0.0.0 to allow external connections)
 - `PORT`: 8000 - Server port
 
 ## Running the Backend
 
-### Development Mode
+### Development Mode (Local Only)
 
 ```bash
 cd backend
 python main.py
+```
+
+This runs on `127.0.0.1:8000` (localhost only) for security.
+
+### Development Mode (Allow External Connections)
+
+To allow connections from other devices (e.g., mobile devices on same network):
+
+```bash
+cd backend
+HOST=0.0.0.0 python main.py
 ```
 
 Or using uvicorn directly:

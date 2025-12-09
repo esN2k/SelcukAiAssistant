@@ -59,8 +59,15 @@ cp .env.example .env
 ```
 
 ### 5. Run Backend
+
+**For local testing only (recommended for initial setup):**
 ```bash
 python main.py
+```
+
+**For testing with physical devices on the same network:**
+```bash
+HOST=0.0.0.0 python main.py
 ```
 
 Expected output:
@@ -68,10 +75,12 @@ Expected output:
 INFO:     Started server process [xxxxx]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
-INFO:     Uvicorn running on http://0.0.0.0:8000
+INFO:     Uvicorn running on http://127.0.0.1:8000 (or http://0.0.0.0:8000)
 ```
 
 Keep this terminal open - the backend needs to stay running!
+
+**Note:** By default, the backend only listens on localhost (127.0.0.1) for security. To allow connections from other devices, set `HOST=0.0.0.0` or add it to your `.env` file.
 
 ---
 
