@@ -1,7 +1,5 @@
 {
     "cmake.sourceDirectory": "D:/Projects/SelcukAiAssistant/windows",
     "python.pythonPath": "venv\\Scripts\\python.exe",
-    "python.linting.pylintEnabled": true,
-    "markdown.validate.enabled": true,
-    "dotnet.defaultSolution": "build/windows/x64/selcukaiassistant.sln"
+  "python.linting.pylintEnabled": true
 }

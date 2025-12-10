@@ -1,6 +1,7 @@
 # SelcukAiAssistant Backend
 
-This is the FastAPI backend for SelcukAiAssistant that uses a local Ollama instance with llama3.1 model.
+This is the FastAPI backend for SelcukAiAssistant that uses a local Ollama instance with llama3.1
+model.
 
 ## Prerequisites
 
@@ -53,6 +54,7 @@ cp .env.example .env
 ```
 
 Default configuration:
+
 - `OLLAMA_BASE_URL`: http://localhost:11434 - Ollama base URL
 - `OLLAMA_MODEL`: llama3.1 - Model to use
 - `OLLAMA_TIMEOUT`: 30 - Request timeout in seconds
@@ -89,6 +91,7 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 The API will be available at:
+
 - API: http://localhost:8000
 - Interactive docs: http://localhost:8000/docs
 - Alternative docs: http://localhost:8000/redoc
@@ -100,6 +103,7 @@ The API will be available at:
 Health check endpoint.
 
 **Response:**
+
 ```json
 {
   "status": "ok",
@@ -112,6 +116,7 @@ Health check endpoint.
 Check Ollama service health and availability.
 
 **Response (Healthy):**
+
 ```json
 {
   "status": "healthy",
@@ -123,6 +128,7 @@ Check Ollama service health and availability.
 ```
 
 **Response (Unhealthy):**
+
 ```json
 {
   "detail": {
@@ -139,6 +145,7 @@ Check Ollama service health and availability.
 Main chat endpoint that processes questions using Ollama.
 
 **Request:**
+
 ```json
 {
   "question": "Selçuk Üniversitesi'nin kuruluş tarihi nedir?"
@@ -146,6 +153,7 @@ Main chat endpoint that processes questions using Ollama.
 ```
 
 **Response:**
+
 ```json
 {
   "answer": "Selçuk Üniversitesi, 1975 yılında kurulmuştur..."
@@ -153,6 +161,7 @@ Main chat endpoint that processes questions using Ollama.
 ```
 
 **Error Responses:**
+
 - `503`: Ollama service unavailable
 - `504`: Request timeout
 - `500`: Internal server error
@@ -170,6 +179,7 @@ pytest test_main.py -v
 ```
 
 All tests should pass:
+
 - ✅ Health check endpoint
 - ✅ Ollama health check (healthy and unhealthy states)
 - ✅ Successful chat response
@@ -230,7 +240,8 @@ ollama pull llama3.1
 
 ### CORS Issues
 
-If the Flutter app cannot connect, ensure CORS is properly configured. Set the `ALLOWED_ORIGINS` environment variable with your Flutter app's URL for production.
+If the Flutter app cannot connect, ensure CORS is properly configured. Set the `ALLOWED_ORIGINS`
+environment variable with your Flutter app's URL for production.
 
 ## Architecture
 
@@ -288,4 +299,5 @@ flutter pub remove google_generative_ai
 
 ### Flutter App Changes
 
-The Flutter app now calls this backend instead of directly calling Google Gemini. The API contract remains the same - it accepts a question and returns an answer.
+The Flutter app now calls this backend instead of directly calling Google Gemini. The API contract
+remains the same - it accepts a question and returns an answer.

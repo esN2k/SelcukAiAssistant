@@ -8,69 +8,108 @@ PROJE RAPORU YAZIM KILAVUZU
 2023
 KONYA
 
-İÇİNDEKİLER
-1. GİRİŞ​
-3
-2. GENEL BİÇİM VE YAZIM PLANI​
-3
-2.1. Yazım Dili...............................................................................................................3
-2.2. Kullanılacak Kâğıdın Özelliği, Kenar Boşlukları...................................................3
-2.3. Yazı Özelliği........................................................................................................... 3
-2.4. Satır Aralıkları ve Düzeni.......................................................................................4
-2.5. Bölüm ve Alt Bölüm Başlıkları.............................................................................. 5
-2.6. Sayfaların Numaralanması.................................................................................... 5
-2.7. Proje İçinde Kaynak Gösterme...............................................................................6
-2.8. Dipnotlar................................................................................................................. 7
-2.9. Simgeler, Kısaltmalar ve Sayılar............................................................................ 7
-3. ŞEKİL, ÇİZELGE VE DENKLEMLER​
-8
-3.1. Şekil ve Çizelgelerin Yerleştirilmesi...................................................................... 8
-3.2. Şekil ve Çizelgelerin Numaralanması.................................................................... 8
-3.3. Şekil ve Çizelge Açıklaması...................................................................................9
-3.4. Denklemler ve Numaralanması.............................................................................. 9
-4. PROJE KAPAĞI VE ÖZEL SAYFALAR​
-10
-4.1. Dış kapak.............................................................................................................. 10
-4.2. İç Kapak Sayfası................................................................................................... 10
-4.3. Kabul ve Onay Sayfası......................................................................................... 10
-4.4. Proje Bildirimi Sayfası......................................................................................... 10
-4.5. Özet ve Abstract Sayfaları.................................................................................... 10
-4.6. Önsöz Sayfası....................................................................................................... 11
-4.7. İçindekiler Sayfası................................................................................................ 11
-5. PROJE METNİNİN DÜZENLENMESİ​
-11
-5.1. Giriş...................................................................................................................... 11
-5.2. Kaynak Araştırması.............................................................................................. 12
-5.3. Materyal ve Yöntem............................................................................................. 12
-5.4. Araştırma Bulguları ve Tartışma.......................................................................... 13
-5.5. Sonuçlar ve Öneriler............................................................................................. 13
-6. KAYNAKLAR​
-13
-7. EKLER​
-16
-8. ÖZGEÇMİŞ​
-17
-Ek-1​
-18
-Ek-2​
-19
-Ek-3​
-20
-Ek-4​
-21
-Ek-5​
-22
-Ek-6​
-23
-Ek-7​
-24
-Ek-8​
-25
-Ek-9​
-26
-1
+İÇİNDEKİLER
 
-1. GİRİŞ
+1. GİRİŞ​
+   3
+2. GENEL BİÇİM VE YAZIM PLANI​
+   3
+   2.1. Yazım
+   Dili...............................................................................................................3
+   2.2. Kullanılacak Kâğıdın Özelliği, Kenar
+   Boşlukları...................................................3
+   2.3. Yazı
+   Özelliği...........................................................................................................
+   3
+   2.4. Satır Aralıkları ve
+   Düzeni.......................................................................................4
+   2.5. Bölüm ve Alt Bölüm
+   Başlıkları.............................................................................. 5
+   2.6. Sayfaların
+   Numaralanması....................................................................................
+   5
+   2.7. Proje İçinde Kaynak
+   Gösterme...............................................................................6
+   2.8.
+   Dipnotlar.................................................................................................................
+   7
+   2.9. Simgeler, Kısaltmalar ve
+   Sayılar............................................................................ 7
+3. ŞEKİL, ÇİZELGE VE DENKLEMLER​
+   8
+   3.1. Şekil ve Çizelgelerin
+   Yerleştirilmesi...................................................................... 8
+   3.2. Şekil ve Çizelgelerin
+   Numaralanması.................................................................... 8
+   3.3. Şekil ve Çizelge
+   Açıklaması...................................................................................9
+   3.4. Denklemler ve
+   Numaralanması.............................................................................. 9
+4. PROJE KAPAĞI VE ÖZEL SAYFALAR​
+   10
+   4.1. Dış
+   kapak..............................................................................................................
+   10
+   4.2. İç Kapak
+   Sayfası...................................................................................................
+   10
+   4.3. Kabul ve Onay
+   Sayfası.........................................................................................
+   10
+   4.4. Proje Bildirimi
+   Sayfası.........................................................................................
+   10
+   4.5. Özet ve Abstract
+   Sayfaları.................................................................................... 10
+   4.6. Önsöz
+   Sayfası.......................................................................................................
+   11
+   4.7. İçindekiler
+   Sayfası................................................................................................
+   11
+5. PROJE METNİNİN DÜZENLENMESİ​
+   11
+   5.1.
+   Giriş......................................................................................................................
+   11
+   5.2. Kaynak
+   Araştırması..............................................................................................
+   12
+   5.3. Materyal ve
+   Yöntem.............................................................................................
+   12
+   5.4. Araştırma Bulguları ve
+   Tartışma.......................................................................... 13
+   5.5. Sonuçlar ve
+   Öneriler.............................................................................................
+   13
+6. KAYNAKLAR​
+   13
+7. EKLER​
+   16
+8. ÖZGEÇMİŞ​
+   17
+   Ek-1​
+   18
+   Ek-2​
+   19
+   Ek-3​
+   20
+   Ek-4​
+   21
+   Ek-5​
+   22
+   Ek-6​
+   23
+   Ek-7​
+   24
+   Ek-8​
+   25
+   Ek-9​
+   26
+   1
+
+1. GİRİŞ
 Bu yazım kılavuzunda, Selçuk Üniversitesi Teknoloji Fakültesi Bilgisayar
 Mühendisliği Bölümünde hazırlanan bitirme projesi ve/veya araştırma projeleri bilimsel
 standartlara uygun olarak yazımında uyulması gereken yazım ilkeleri kısa ve özlü
@@ -79,25 +118,26 @@ bu kılavuzda bahsedilen şekil ve içerik ile ilgili kurallara uymaları zorunl
 projesi ve/veya araştırma projeleri Teknoloji Fakültesi Bilgisayar Mühendisliği
 Bölümü’ne teslim edilmeden önce, Ek 9’daki kontrol listesi doldurulmalı, öğrenci ve
 danışman tarafından imzalanmalıdır.
+
 2. GENEL BİÇİM VE YAZIM PLANI
-2.1. Yazım Dili
-Projenin, İngilizce özet (Abstract) bölümü hariç, diğer bölümlerinde (şekil ve
-çizelgeler dahil) yazım dili Türkçe olmalıdır. Proje kolay anlaşılır ve sade bir Türkçe ile
-Türk Dil Kurumu dil bilgisi ve imla kurallarına uygun olarak yazılmalıdır. Latince
-kelimeler italik olarak yazılmalıdır. Projede SI (uzunluk (m), zaman (s), kuvvet (N),
-ivme(m/s2), ağırlık (kg) vb) birimleri kullanılmalıdır.
-2.2. Kullanılacak Kâğıdın Özelliği, Kenar Boşlukları
-Yazımda kullanılacak kâğıtlar, A4 standardında ve birinci hamur 80 gr beyaz
-kâğıt olmalıdır. Yazı, kağıdın tek yüzüne yazılmalıdır. Sol kenarında 3.5 cm, alt, üst ve
-sağ kenarlarında ise 2.5 cm boşluk bırakılmalıdır.
-2.3. Yazı Özelliği
-Projenin metin bölümünde, şekil ve çizelgeler hariç, yazı tipi Times New Roman
-ve büyüklüğü 12 punto olmalıdır. Ancak, alt ve üst indis’lerde, çizelgelerde ya da
-formüllerde karşılaşılan zorunlu hallerde yazı karakteri sekiz (8) puntoya kadar
+   2.1. Yazım Dili
+   Projenin, İngilizce özet (Abstract) bölümü hariç, diğer bölümlerinde (şekil ve
+   çizelgeler dahil) yazım dili Türkçe olmalıdır. Proje kolay anlaşılır ve sade bir Türkçe ile
+   Türk Dil Kurumu dil bilgisi ve imla kurallarına uygun olarak yazılmalıdır. Latince
+   kelimeler italik olarak yazılmalıdır. Projede SI (uzunluk (m), zaman (s), kuvvet (N),
+   ivme(m/s2), ağırlık (kg) vb) birimleri kullanılmalıdır.
+   2.2. Kullanılacak Kâğıdın Özelliği, Kenar Boşlukları
+   Yazımda kullanılacak kâğıtlar, A4 standardında ve birinci hamur 80 gr beyaz
+   kâğıt olmalıdır. Yazı, kağıdın tek yüzüne yazılmalıdır. Sol kenarında 3.5 cm, alt, üst ve
+   sağ kenarlarında ise 2.5 cm boşluk bırakılmalıdır.
+   2.3. Yazı Özelliği
+   Projenin metin bölümünde, şekil ve çizelgeler hariç, yazı tipi Times New Roman
+   ve büyüklüğü 12 punto olmalıdır. Ancak, alt ve üst indis’lerde, çizelgelerde ya da
+   formüllerde karşılaşılan zorunlu hallerde yazı karakteri sekiz (8) puntoya kadar
 
 2
 
-düşürülebilir. Metin içinde noktalama işaretlerinden sonra bir karakterlik boşluk
+düşürülebilir. Metin içinde noktalama işaretlerinden sonra bir karakterlik boşluk
 verilmelidir.
 Onay sayfasına atılacak imzalarda mavi renkli kalem kullanılması tercih
 edilmelidir.
@@ -130,7 +170,7 @@ satır aralıklı) boşluk bırakılmalıdır.
 büyük harfle yazılmalıdır.
 3
 
-Şekil ve çizelgelerin açıklaması yazılırken 1.0 satır aralığı ve 10 punto
+Şekil ve çizelgelerin açıklaması yazılırken 1.0 satır aralığı ve 10 punto
 kullanılmalıdır. Çizelge açıklaması (başlık) ve çizelge sayfayı ortalayacak şekilde 10
 punto yazılmalıdır.
 Şeklin alt kenarı ile şekil açıklaması arasında bir satır (1.0 satır aralıklı) boşluk
@@ -161,7 +201,7 @@ sayfalarda numaralar yazılmalıdır. Proje bildirim sayfasının numarası “i
 sonraki sayfalar bu numarayı takip etmelidir. Giriş bölümü ile başlayan esas proje
 4
 
-metninin numaralanması ise “1, 2, 3,…” şeklinde üst sağ boşluğa yazılmalıdır. Sayfa
+metninin numaralanması ise “1, 2, 3,…” şeklinde üst sağ boşluğa yazılmalıdır. Sayfa
 numaralarının
 
 önünde
@@ -232,7 +272,7 @@ gerçekleştirmişlerdir.
 
 5
 
-vi)​
+vi)​
 
 Kaynak bir başka yayın içinde kaynak şeklinde verilmiş ise, bu yayın
 aşağıdaki şekilde verilebilir. Örneğin, (Özşen ve ark., 2007) yaptığı
@@ -268,35 +308,36 @@ olarak yazılmalıdır. Simgeden sonra iki nokta (:) konulmalı ve simgelerin ta
 açıklamaları varsa birimleri (SI sistemine uygun) ile yazılmalıdır. Simgeler, iki nokta üst
 6
 
-üste (:) ve simgelerin tanım ve açıklamaları alt alta aynı hizada olacak şekilde
+üste (:) ve simgelerin tanım ve açıklamaları alt alta aynı hizada olacak şekilde
 düzenlenmelidir.
 Ondalıklar nokta ile ayrılmalıdır (örnek; 10.52). Tam sayılarda ise üçerli
 basamaklar arasına virgül konulmalıdır (örnek; 10,000).
-3. ŞEKİL, ÇİZELGE VE DENKLEMLER
-Proje içinde anlatıma yardımcı olacak şekilde, şekiller (grafik, şema, resim,
-fotoğraf, harita vb.) ve çizelgeler kullanılmalıdır.
-Roma rakamı ile verilen sayfalar hariç renkli çıktı alınabilir. Ancak, projenin
-bütün kopyalarında aynı şekilde renkli çıktı alınmalıdır.
-3.1. Şekil ve Çizelgelerin Yerleştirilmesi
-Yarım sayfa veya daha az yer tutacak şekil ve çizelgeler metin içinde ortalı
-olacak şekilde yerleştirilmelidir. Yarım sayfadan daha fazla yer tutan şekil ve çizelgeler
-ayrı bir sayfaya yerleştirilmelidir. İki veya daha çok, küçük şekil veya çizelge aynı
-sayfada sunulabilir. Bunlar birbiri ile yakından ilgili ise "a, b, c, …"şeklinde
-simgelenerek hepsine tek bir şekil veya çizelge numarası verilir. Şekil ve çizelgeler
-metinde ilk bahsedildiği sayfada veya bir sonraki sayfada mutlaka yer almalıdır. Düşey
-veya yatay olarak sayfaya yerleştirilmelerinde sayfa kenarında bırakılması gerekli
-boşluklar aşılmamalıdır. Taşma durumunda olanlar ya küçültülmeli veya EK olarak
-sunulmalıdır. Proje içinde katlanmış şekil veya çizelge olmamalıdır. Bir sayfadan uzun
-olan çizelgeler proje metni içinde bulunmak zorunda olduğunda diğer sayfalarda
-sırasıyla devam edilmelidir.
-3.2. Şekil ve Çizelgelerin Numaralanması
-Bütün şekil ve çizelgelerin kendine ait bir numarası olmalıdır. Çizelge/şekil
-numarasındaki ilk rakam bölüm numarası, ikinci rakam ise çizelge veya şeklin o bölüm
-içindeki sıra numarasıdır. Örneğin,
-Birinci bölümün şekil ve çizelgeleri:
-7
 
-Şekil 1.1. Şekil açıklaması ​
+3. ŞEKİL, ÇİZELGE VE DENKLEMLER
+   Proje içinde anlatıma yardımcı olacak şekilde, şekiller (grafik, şema, resim,
+   fotoğraf, harita vb.) ve çizelgeler kullanılmalıdır.
+   Roma rakamı ile verilen sayfalar hariç renkli çıktı alınabilir. Ancak, projenin
+   bütün kopyalarında aynı şekilde renkli çıktı alınmalıdır.
+   3.1. Şekil ve Çizelgelerin Yerleştirilmesi
+   Yarım sayfa veya daha az yer tutacak şekil ve çizelgeler metin içinde ortalı
+   olacak şekilde yerleştirilmelidir. Yarım sayfadan daha fazla yer tutan şekil ve çizelgeler
+   ayrı bir sayfaya yerleştirilmelidir. İki veya daha çok, küçük şekil veya çizelge aynı
+   sayfada sunulabilir. Bunlar birbiri ile yakından ilgili ise "a, b, c, …"şeklinde
+   simgelenerek hepsine tek bir şekil veya çizelge numarası verilir. Şekil ve çizelgeler
+   metinde ilk bahsedildiği sayfada veya bir sonraki sayfada mutlaka yer almalıdır. Düşey
+   veya yatay olarak sayfaya yerleştirilmelerinde sayfa kenarında bırakılması gerekli
+   boşluklar aşılmamalıdır. Taşma durumunda olanlar ya küçültülmeli veya EK olarak
+   sunulmalıdır. Proje içinde katlanmış şekil veya çizelge olmamalıdır. Bir sayfadan uzun
+   olan çizelgeler proje metni içinde bulunmak zorunda olduğunda diğer sayfalarda
+   sırasıyla devam edilmelidir.
+   3.2. Şekil ve Çizelgelerin Numaralanması
+   Bütün şekil ve çizelgelerin kendine ait bir numarası olmalıdır. Çizelge/şekil
+   numarasındaki ilk rakam bölüm numarası, ikinci rakam ise çizelge veya şeklin o bölüm
+   içindeki sıra numarasıdır. Örneğin,
+   Birinci bölümün şekil ve çizelgeleri:
+   7
+
+Şekil 1.1. Şekil açıklaması ​
 
 ​
 
@@ -377,7 +418,7 @@ PV = nRT​
 şeklinde verilmelidir.
 8
 
-4. PROJE KAPAĞI VE ÖZEL SAYFALAR
+4. PROJE KAPAĞI VE ÖZEL SAYFALAR
 Proje kapağı ve özel sayfaların hazırlanması aşağıda belirtilen şekilde olmalıdır.
 4.1. Dış kapak
 Dış kapak olarak, EK-1’deki örneğe uygun bir dış kapak kullanılmalıdır.
@@ -398,7 +439,7 @@ düzenlenmelidir. Özet ve abstract sayfaları öz olarak eklerde görüldüğü
 
 9
 
-çeşidini (Bitirme Projesi/Araştırma Projesi), projenin adını, projeyi hazırlayanın adını,
+çeşidini (Bitirme Projesi/Araştırma Projesi), projenin adını, projeyi hazırlayanın adını,
 jüri üyelerinin adlarını ve özet metnini içermelidir.
 Özet metninde; proje çalışmasının amacı, kapsamı, kullanılan yöntem/yöntemler
 ve elde edilen sonuç/sonuçlar öz olarak belirtilmelidir. Özet 200 kelimeden fazla
@@ -424,11 +465,12 @@ birinci, ikinci ve üçüncü derece başlıkların tamamı hiçbir değişiklik
 "İçindekiler" sayfasında yer almalıdır.
 İçindekiler kısmında ana başlıklar koyu yazılmalıdır. Bu sayfada, her bir başlığın
 hizasına, sadece o başlığın yer aldığı ilk sayfanın numarası yazılmalıdır.
+
 5. PROJE METNİNİN DÜZENLENMESİ
 
 10
 
-Proje, Özel Sayfalar (iç kapak, onay sayfası, proje bildirimi, önsöz ve/veya
+Proje, Özel Sayfalar (iç kapak, onay sayfası, proje bildirimi, önsöz ve/veya
 teşekkür, özet, abstract), Proje metni (Giriş, Kaynak Araştırması, Materyal ve Yöntem
 (veya Teorik Esaslar), Araştırma Bulguları ve Tartışma, Sonuçlar ve Öneriler),
 Kaynaklar, Ekler ve Özgeçmişten oluşmalıdır.
@@ -473,7 +515,7 @@ Araştırmanın düzenleme şekli ve uygulanan her türlü yöntem(ler) açık v
 tarzda belirtilir. Ancak klasik ve rutin metotlara sadece literatüre atıf yapılarak ana
 11
 
-hatları belirtilir. Şayet bu metotlarda orijinaline kıyasla bir yenilik veya değişiklik
+hatları belirtilir. Şayet bu metotlarda orijinaline kıyasla bir yenilik veya değişiklik
 mevcut ise bu kısımlar ayrıntılı olarak açıklanmalıdır. Verilerin değerlendirilmesinde
 kullanılan istatistik metot veya metotları belirtilmelidir.
 Bu bölümde, çalışmanın teorik açıklanması, varsa matematik formülasyon ve
@@ -507,18 +549,19 @@ tekrarından kaçınılmalıdır.
 Çalışmada elde edilen genel sonuçlar tekrardan kaçınılarak bu bölümde özet
 olarak verilir. Konuyla ilgili ileride yapılacak çalışmalara, araştırıcılara veya
 uygulayıcılara öneriler bu bölümde yazılmalıdır.
+
 6. KAYNAKLAR
-Kaynaklar bölümü projede faydalanılan eserlerden oluşur. Kaynaklar listesi
-EK-7’deki gibi verilmelidir. Proje metni içinde adı geçmeyen kaynak, kaynaklar
-listesine dahil edilmez.
-Kaynaklar listesi yazılırken, birinci yazar Soyadına göre alfabetik sıralanmalı,
-ilk satırdan sonraki satırlar 1.0 cm sağdan başlamalıdır. Aynı yazar/yazarların farklı
-eserleri eski tarihliden başlayarak, aynı tarihli eserler tek yazarlıdan başlayarak
-sıralanmalıdır. Kaynaklar, mümkün olduğunca orijinal dilinde sunulmalıdır. Orijinal
+   Kaynaklar bölümü projede faydalanılan eserlerden oluşur. Kaynaklar listesi
+   EK-7’deki gibi verilmelidir. Proje metni içinde adı geçmeyen kaynak, kaynaklar
+   listesine dahil edilmez.
+   Kaynaklar listesi yazılırken, birinci yazar Soyadına göre alfabetik sıralanmalı,
+   ilk satırdan sonraki satırlar 1.0 cm sağdan başlamalıdır. Aynı yazar/yazarların farklı
+   eserleri eski tarihliden başlayarak, aynı tarihli eserler tek yazarlıdan başlayarak
+   sıralanmalıdır. Kaynaklar, mümkün olduğunca orijinal dilinde sunulmalıdır. Orijinal
 
 12
 
-dilinde verilemeyen kaynaklar, Türkçe veya İngilizce olarak verilebilir. Ancak bu
+dilinde verilemeyen kaynaklar, Türkçe veya İngilizce olarak verilebilir. Ancak bu
 durumda kaynağın orijinal dili parantez içerisinde belirtilmelidir.
 Projede yararlanılan kaynakların çeşidine göre gösterimi aşağıdaki gibi
 olmalıdır.
@@ -562,7 +605,7 @@ Biyomedikal Mühendisliği Ulusal Toplantısı, BİYOMUT-2009, İstanbul,
 170-173.
 13
 
-​
+​
 
 Kaynak rapordan alınmış ise: Yazarın soyadı, adının baş harfi(leri) (raporu
 hazırlayan tüzel kişi ise kuruluşun adı), yılı, raporun adı, raporu hazırlayan
@@ -612,7 +655,7 @@ et_sourc.html [Ziyaret Tarihi: 4 Kasım 2002].
 
 14
 
-7. EKLER
+7. EKLER
 Proje metni içinde yer alması halinde konuyu dağıtıcı ve okumada sürekliliği
 engelleyici nitelikteki ve dipnot olarak verilemeyecek kadar uzun açıklamalar, bir
 formülün çıkarılışı, geniş kapsamlı ve ayrıntılı deney sonuçları, örnek hesaplamalar,
@@ -625,14 +668,14 @@ sayfadan başlayacak şekilde verilmelidir.
 
 15
 
-8. ÖZGEÇMİŞ
+8. ÖZGEÇMİŞ
 Projeyi hazırlayan öğrenci ile ilgili bilgiler, "ÖZGEÇMİŞ" başlığı altında
 eklerden sonra EK-8’e uygun olarak hazırlanmalıdır. Üçüncü şahıs dili ile yazılmalıdır.
 Özgeçmiş sayfası projenin sayfa numarası verilecek en son sayfasıdır.
 
 16
 
-Ek-1
+Ek-1
 
 T.C.
 SELÇUK ÜNİVERSİTESİ
@@ -649,9 +692,9 @@ KONYA
 Her Hakkı Saklıdır
 17
 
-18
+18
 
-Ek-2
+Ek-2
 BİTİRME PROJESİ KABUL VE ONAYI
 ................................. tarafından hazırlanan “…………………………………..” adlı
 bitirme proje çalışması …/…/… tarihinde aşağıdaki jüri üyeleri tarafından oy birliği/oy
@@ -780,12 +823,13 @@ Yukarıdaki sonucu onaylarım.
 *Bu bitirme proje çalışması ……………. tarafından …………. nolu proje ile
 desteklenmiştir.
 **Prof.Dr/Doç.Dr./Dr.Öğr.Üyesi …..…… bu proje çalışmasının ikinci danışmanıdır.
+
 * Bu ifade proje çalışması yapılırken bir destek alındıysa yazılmalı aksi taktirde silinmedir.
-** Bu ifade ikinci danışman varsa yazılmalı aksi taktirde silinmelidir.
+  ** Bu ifade ikinci danışman varsa yazılmalı aksi taktirde silinmelidir.
 
 19
 
-Ek-3
+Ek-3
 PROJE BİLDİRİMİ
 Bu projedeki bütün bilgilerin etik davranış ve akademik kurallar çerçevesinde elde
 edildiğini ve proje yazım kurallarına uygun olarak hazırlanan bu çalışmada bana ait
@@ -837,7 +881,7 @@ Tarih:
 
 20
 
-Ek-4
+Ek-4
 ÖZET
 
 BİTİRME PROJESİ VEYA
@@ -874,7 +918,7 @@ Alfabetik sırada ve10 punto olmalı
 
 21
 
-Ek-5
+Ek-5
 ABSTRACT
 PROJECT
 PROJE BAŞLIĞININ İNGİLİZCE’SİNİ BURAYA YAZINIZ
@@ -902,11 +946,12 @@ başlayınız.
 ……………………………………10 punto olmalı
 ………………………………………………………………………………………………………………
 …………………….…………………………………………………………………………………………
-Keywords: Türkçe özetteki anahtar kelimelerin İngilizce’sini yazınız. Alfabetik sırada ve10 punto olmalı
+Keywords: Türkçe özetteki anahtar kelimelerin İngilizce’sini yazınız. Alfabetik sırada ve10 punto
+olmalı
 
 22
 
-Ek-6
+Ek-6
 İÇİNDEKİLER
 PROJE BİLDİRİMİ... .………………………………………………………………. iii
 ÖZET​
@@ -919,65 +964,75 @@ vi
 vii
 SİMGELER VE KISALTMALAR​
 viii
+
 1. GİRİŞ​
-1
-1.1. Birinci Bölüm İkinci Derece Başlık....................................................................... 1
-1.1.1. Birinci bölüm üçüncü derece başlık................................................................ 1
+   1
+   1.1. Birinci Bölüm İkinci Derece
+   Başlık....................................................................... 1
+   1.1.1. Birinci bölüm üçüncü derece
+   başlık................................................................ 1
 2. KAYNAK ARAŞTIRMASI​
-2
-2.1. İkinci Bölüm İkinci Derece Başlık......................................................................... 2
-2.1.1. İkinci bölüm üçüncü derece başlık.................................................................. 2
+   2
+   2.1. İkinci Bölüm İkinci Derece
+   Başlık......................................................................... 2
+   2.1.1. İkinci bölüm üçüncü derece
+   başlık.................................................................. 2
 3. MATERYAL VE YÖNTEM​
-3
-3.1. Üçüncü Bölüm İkinci Derece Başlık...................................................................... 3
-3.1.1. Üçüncü bölüm üçüncü derece başlık...............................................................3
+   3
+   3.1. Üçüncü Bölüm İkinci Derece
+   Başlık...................................................................... 3
+   3.1.1. Üçüncü bölüm üçüncü derece
+   başlık...............................................................3
 4. ARAŞTIRMA BULGULARI VE TARTIŞMA​
-5
-4.1. Dördüncü Bölüm İkinci Derece Başlık.................................................................. 5
-4.1.1. Dördüncü bölüm üçüncü derece başlık........................................................... 5
+   5
+   4.1. Dördüncü Bölüm İkinci Derece
+   Başlık.................................................................. 5
+   4.1.1. Dördüncü bölüm üçüncü derece
+   başlık........................................................... 5
 5. SONUÇLAR VE ÖNERİLER​
-6
-KAYNAKLAR​
-7
-EKLER​
-8
-ÖZGEÇMİŞ​
-10
+   6
+   KAYNAKLAR​
+   7
+   EKLER​
+   8
+   ÖZGEÇMİŞ​
+   10
 
 23
 
-Ek-7
+Ek-7
+
 6. KAYNAKLAR
-Akdemir, B., Güneş, S. and Genç, A., 2009, Artificial neural network training models in
-prediction of concrete compressive strength using euclidean normalization
-method, 3rd Int. Conf. on Complex Systems and Applications-ICCSA 2009, Le
-Havre-France, 160-165.
-Anonim, 2006, Tarım istatistikleri özeti, DİE Yayınları, No;12, Ankara, 22-23.
-Anonymous, 1989, Farm accountancy data network, an A-Z of methodology”
-Commission Report of the EC, Brussels, 16-19.
-Corliss, R., 1993, Pacific Overtures Times, 142 (11), 68-70.
-Dasgupta, D., 1998, Artificial immune systems and their applications, Springer-Verlag,
-Berlin - Heidelnerg, 45-52.
-De Castro, L. N. and Von Zuben, F. J., 2000, Artificial immune systems: Part I- Basic
-theory and applications, DCA-RT 02/00, Brasil, 23-28.
-Güneş, S. ve Polat, K., 2009, Elektrokardiyogram (EKG) aritmi teşhisinde en az kareli
-destek vektör makinaları kullanımına dayalı medikal teşhis destek sistemi, 13.
-Biyomedikal Mühendisliği Ulusal Toplantısı, BİYOMUT-2009, İstanbul, 170-173.
-Holland, M., 2002, Guide to citing Internet sources [online], Poole, Bournemouth
-University,
-http://www.bournemouth.ac.uk/library/using/guide_to_citing_
-internet_ sourc.html [Ziyaret Tarihi: 4 Kasım 2002].
-Mason, J., 1832, Map of the countries lying between Spain and India, 1:8.000.000,
-London: Ordnance Survey.
-Özbay, Y., 1999, EKG aritmilerini hızlı tanıma, Doktora Tezi, Selçuk Üniversitesi Fen
-Bilimleri Enstitüsü, Konya, 10-15.
-Özgören, M., 2006, Flow Structure in the downstream of square and circular cylinders,
-Flow Measurement and Instrumentation, 17 (4), 225-235.
-Diğer örneklenmeyen kaynakları benzer şekilde yazınız.
+   Akdemir, B., Güneş, S. and Genç, A., 2009, Artificial neural network training models in
+   prediction of concrete compressive strength using euclidean normalization
+   method, 3rd Int. Conf. on Complex Systems and Applications-ICCSA 2009, Le
+   Havre-France, 160-165.
+   Anonim, 2006, Tarım istatistikleri özeti, DİE Yayınları, No;12, Ankara, 22-23.
+   Anonymous, 1989, Farm accountancy data network, an A-Z of methodology”
+   Commission Report of the EC, Brussels, 16-19.
+   Corliss, R., 1993, Pacific Overtures Times, 142 (11), 68-70.
+   Dasgupta, D., 1998, Artificial immune systems and their applications, Springer-Verlag,
+   Berlin - Heidelnerg, 45-52.
+   De Castro, L. N. and Von Zuben, F. J., 2000, Artificial immune systems: Part I- Basic
+   theory and applications, DCA-RT 02/00, Brasil, 23-28.
+   Güneş, S. ve Polat, K., 2009, Elektrokardiyogram (EKG) aritmi teşhisinde en az kareli
+   destek vektör makinaları kullanımına dayalı medikal teşhis destek sistemi, 13.
+   Biyomedikal Mühendisliği Ulusal Toplantısı, BİYOMUT-2009, İstanbul, 170-173.
+   Holland, M., 2002, Guide to citing Internet sources [online], Poole, Bournemouth
+   University,
+   http://www.bournemouth.ac.uk/library/using/guide_to_citing_
+   internet_ sourc.html [Ziyaret Tarihi: 4 Kasım 2002].
+   Mason, J., 1832, Map of the countries lying between Spain and India, 1:8.000.000,
+   London: Ordnance Survey.
+   Özbay, Y., 1999, EKG aritmilerini hızlı tanıma, Doktora Tezi, Selçuk Üniversitesi Fen
+   Bilimleri Enstitüsü, Konya, 10-15.
+   Özgören, M., 2006, Flow Structure in the downstream of square and circular cylinders,
+   Flow Measurement and Instrumentation, 17 (4), 225-235.
+   Diğer örneklenmeyen kaynakları benzer şekilde yazınız.
 
 24
 
-Ek-8
+Ek-8
 ÖZGEÇMİŞ
 
 KİŞİSEL BİLGİLER
@@ -1022,7 +1077,7 @@ Teziniz haricinde yaptığınız yayınları da yazabilirsiz.
 
 25
 
-Ek-9
+Ek-9
 Kontrol Edilecek Hususlar
 
 Evet
@@ -1070,8 +1125,9 @@ Danışman​ :
 
 26
 
-*Bitirme projesi/araştırma projeleri Teknoloji Fakültesi proje yazım kurallarına uygun olarak
-hazırlanmalıdır. Projeler teslim edilmeden önce yukarıdaki kontrol listesi öğrenci ve danışman tarafından
+*Bitirme projesi/araştırma projeleri Teknoloji Fakültesi proje yazım kurallarına uygun olarak
+hazırlanmalıdır. Projeler teslim edilmeden önce yukarıdaki kontrol listesi öğrenci ve danışman
+tarafından
 imzalanmalıdır. Bu sayfa tez teslimi esnasında en üst sayfa olarak verilmelidir.
 *Proje ilk savunmaya sunulacağında spiral cilt veya clip dosya formunda teslim edilmelidir.
 

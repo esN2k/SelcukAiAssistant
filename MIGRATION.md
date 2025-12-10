@@ -1,12 +1,15 @@
 # Migration Guide: Google Gemini to Ollama
 
-This guide helps you migrate from using Google Gemini API to a local Ollama instance with llama3.1 model.
+This guide helps you migrate from using Google Gemini API to a local Ollama instance with llama3.1
+model.
 
 ## Overview
 
-**Before:** The Flutter app directly called Google Gemini API using the `google_generative_ai` package.
+**Before:** The Flutter app directly called Google Gemini API using the `google_generative_ai`
+package.
 
-**After:** The Flutter app calls a local FastAPI backend, which then forwards requests to a local Ollama instance.
+**After:** The Flutter app calls a local FastAPI backend, which then forwards requests to a local
+Ollama instance.
 
 ## Architecture Changes
 
@@ -149,7 +152,8 @@ You should receive a JSON response with an `answer` field.
 
    **Note**: For iOS simulator, `localhost` should work.
 
-   **Note**: For physical devices, use your computer's IP address (e.g., `http://192.168.1.100:8000`).
+   **Note**: For physical devices, use your computer's IP address (e.g.,
+   `http://192.168.1.100:8000`).
 
 ### Step 8: Update Flutter Dependencies
 
@@ -204,7 +208,8 @@ flutter run
 **Solution**:
 
 1. Verify Python dependencies are installed: `pip list | grep fastapi`
-2. Check if port 8000 is already in use: `lsof -i :8000` (Linux/Mac) or `netstat -ano | findstr :8000` (Windows)
+2. Check if port 8000 is already in use: `lsof -i :8000` (Linux/Mac) or
+   `netstat -ano | findstr :8000` (Windows)
 3. Try a different port: `PORT=8001 python main.py`
 
 ### Flutter App Issues

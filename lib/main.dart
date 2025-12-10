@@ -1,7 +1,11 @@
+import 'dart:async';
+import 'dart:developer';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:get/get.dart';
 import 'package:selcukaiassistant/helper/ad_helper.dart';
 import 'package:selcukaiassistant/helper/global.dart';
 import 'package:selcukaiassistant/helper/pref.dart';
@@ -10,22 +14,54 @@ import 'package:selcukaiassistant/screen/splash_screen.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize preferences
-  await Pref.initialize();
-
-  // Load environment variables
-  await dotenv.load();
-
-  // Initialize facebook ads sdk
-  AdHelper.init();
-
-  // Set system UI mode and preferred orientations
-  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-  await SystemChrome.setPreferredOrientations(
-    [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
-  );
+  // Safely initialize dependencies without blocking the UI indefinitely
+  await _initServices();
 
   runApp(const MyApp());
+}
+
+Future<void> _initServices() async {
+  try {
+    // Initialize preferences with a timeout to prevent hanging
+    await Pref.initialize().timeout(
+      const Duration(seconds: 1),
+      onTimeout: () {
+        log('Pref.initialize timed out');
+      },
+    );
+  } catch (e, stack) {
+    log('Error initializing Pref: $e\n$stack');
+  }
+
+  try {
+    // Load environment variables with timeout
+    await dotenv.load().timeout(
+      const Duration(seconds: 1),
+      onTimeout: () {
+        log('dotenv.load timed out');
+      },
+    );
+  } catch (e, stack) {
+    log('Error loading .env: $e\n$stack');
+  }
+
+  // Mobile-only initializations
+  if (!kIsWeb) {
+    try {
+      AdHelper.init();
+    } catch (e, stack) {
+      log('Error initializing AdHelper: $e\n$stack');
+    }
+
+    try {
+      await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+      await SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
+      );
+    } catch (e, stack) {
+      log('Error setting system chrome: $e\n$stack');
+    }
+  }
 }
 
 class MyApp extends StatelessWidget {
