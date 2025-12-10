@@ -25,19 +25,28 @@ class APIs {
 
       // Check if the request was successful
       if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
-        final answer = (responseData['answer'] as String?) ?? 'Üzgünüm, bir yanıt oluşturulamadı.';
-        log('Backend Yanıtı: ${answer.substring(0, answer.length > 100 ? 100 : answer.length)}...');
+        final responseData = jsonDecode(response.body) as Map<String, dynamic>;
+        final answer = (responseData['answer'] as String?) ??
+            'Üzgünüm, bir yanıt oluşturulamadı.';
+        final preview = answer.substring(
+          0,
+          answer.length > 100 ? 100 : answer.length,
+        );
+        log('Backend Yanıtı: $preview...');
         return answer;
       } else {
         // Handle HTTP errors
         log('Backend HATASI: ${response.statusCode}');
-        return 'Hata: Backend servisi geçici olarak kullanılamıyor (HTTP ${response.statusCode}). Lütfen backend servisinin çalıştığından emin olun.';
+        return 'Hata: Backend servisi geçici olarak kullanılamıyor '
+            '(HTTP ${response.statusCode}). '
+            'Lütfen backend servisinin çalıştığından emin olun.';
       }
-    } catch (e) {
+    } on Exception catch (e) {
       // Handle network and other errors
       log('Backend BAĞLANTI HATASI: $e');
-      return 'Hata: Backend servisine bağlanılamadı. Lütfen backend servisinin çalıştığından emin olun. Hata Detayı: $e';
+      return 'Hata: Backend servisine bağlanılamadı. '
+          'Lütfen backend servisinin çalıştığından emin olun. '
+          'Hata Detayı: $e';
     }
   }
 }

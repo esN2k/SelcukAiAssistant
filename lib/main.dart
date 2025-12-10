@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -72,15 +70,4 @@ class MyApp extends StatelessWidget {
       home: const SplashScreen(),
     );
   }
-}
-
-extension AppTheme on ThemeData {
-  //light text color
-  Color get lightTextColor =>
-      brightness == Brightness.dark ? Colors.white70 : Colors.black54;
-
-  //button color
-  Color get buttonColor => brightness == Brightness.dark
-      ? Colors.cyan.withOpacity(.5)
-      : Colors.amber;
 }

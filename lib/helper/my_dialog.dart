@@ -1,4 +1,7 @@
+// Using deprecated Get.snackbar API until migrated to newer GetX version
 // ignore_for_file: deprecated_member_use
+
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -38,6 +41,6 @@ class MyDialog {
 
   //loading dialog
   static void showLoadingDialog() {
-    Get.dialog<void>(const Center(child: CustomLoading()));
+    unawaited(Get.dialog<void>(const Center(child: CustomLoading())));
   }
 }

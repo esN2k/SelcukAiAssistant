@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:selcukaiassistant/helper/global.dart';
@@ -20,9 +22,12 @@ class _SplashScreenState extends State<SplashScreen> {
 
     //wait for some time on splash & then move to next screen
     Future.delayed(const Duration(seconds: 2), () {
-      Get.off<Widget>(
-        () =>
-            Pref.showOnboarding ? const OnboardingScreen() : const HomeScreen(),
+      unawaited(
+        Get.off<Widget>(
+          () => Pref.showOnboarding
+              ? const OnboardingScreen()
+              : const HomeScreen(),
+        ),
       );
     });
   }

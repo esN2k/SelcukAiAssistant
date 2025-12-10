@@ -1,8 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:lottie/lottie.dart';
+import 'package:selcukaiassistant/helper/app_theme.dart';
 import 'package:selcukaiassistant/helper/global.dart';
-import 'package:selcukaiassistant/main.dart';
 import 'package:selcukaiassistant/model/onboard.dart';
 import 'package:selcukaiassistant/screen/home_screen.dart';
 import 'package:selcukaiassistant/widget/custom_btn.dart';
@@ -18,8 +20,8 @@ class OnboardingScreen extends StatelessWidget {
       //onboarding 1
       Onboard(
         title: 'Bana bir şey sor',
-        subtitle:
-            'Senin en iyi arkadaşın olabilirim ve bana her şeyi sorabilirsin, sana yardım ederim!',
+        subtitle: 'Senin en iyi arkadaşın olabilirim ve bana her şeyi '
+            'sorabilirsin, sana yardım ederim!',
         lottie: 'ai_ask_me',
       ),
 
@@ -27,8 +29,8 @@ class OnboardingScreen extends StatelessWidget {
       Onboard(
         title: 'Hayalden Gerçeğe',
         lottie: 'ai_play',
-        subtitle:
-            'Sadece hayal edin ve bana söyleyin, sizin için harika bir şey yaratacağım!',
+        subtitle: 'Sadece hayal edin ve bana söyleyin, '
+            'sizin için harika bir şey yaratacağım!',
       ),
     ];
 
@@ -100,13 +102,15 @@ class OnboardingScreen extends StatelessWidget {
               CustomBtn(
                 onTap: () {
                   if (isLast) {
-                    Get.off<dynamic>(() => const HomeScreen());
+                    unawaited(Get.off<dynamic>(() => const HomeScreen()));
                     // Navigator.of(context).pushReplacement(MaterialPageRoute(
                     //     builder: (_) => const HomeScreen()));
                   } else {
-                    c.nextPage(
-                      duration: const Duration(milliseconds: 600),
-                      curve: Curves.ease,
+                    unawaited(
+                      c.nextPage(
+                        duration: const Duration(milliseconds: 600),
+                        curve: Curves.ease,
+                      ),
                     );
                   }
                 },

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -17,15 +19,16 @@ class ChatController extends GetxController {
 
   final RxList<Message> list = <Message>[
     Message(
-        msg:
-            'Merhaba! Ben bir yapay zeka asistanıyım, size nasıl yardımcı olabilirim?',
-        msgType: MessageType.bot,),
+      msg: 'Merhaba! Ben bir yapay zeka asistanıyım, '
+          'size nasıl yardımcı olabilirim?',
+      msgType: MessageType.bot,
+    ),
   ].obs;
 
   @override
   void onInit() {
     super.onInit();
-    _initSpeech();
+    unawaited(_initSpeech());
   }
 
   Future<void> _initSpeech() async {
@@ -45,7 +48,9 @@ class ChatController extends GetxController {
     final status = await Permission.microphone.request();
     if (status != PermissionStatus.granted) {
       MyDialog.info(
-          'Ses girişi özelliğini kullanmak için mikrofon izni gereklidir',);
+        'Ses girişi özelliğini kullanmak için '
+        'mikrofon izni gereklidir',
+      );
       return;
     }
 
@@ -80,8 +85,9 @@ class ChatController extends GetxController {
 
   Future<void> askQuestion() async {
     if (textC.text.trim().isNotEmpty) {
-      list.add(Message(msg: textC.text, msgType: MessageType.user));
-      list.add(Message(msg: '', msgType: MessageType.bot));
+      list
+        ..add(Message(msg: textC.text, msgType: MessageType.user))
+        ..add(Message(msg: '', msgType: MessageType.bot));
       _scrollDown();
 
       final question = textC.text;
@@ -91,29 +97,38 @@ class ChatController extends GetxController {
         final res = await APIs.getAnswer(question);
 
         // AI response
-        list.removeLast();
-        list.add(Message(msg: res, msgType: MessageType.bot));
+        list
+          ..removeLast()
+          ..add(Message(msg: res, msgType: MessageType.bot));
         _scrollDown();
-      } catch (e) {
-        list.removeLast();
-        list.add(Message(
-            msg:
-                'Üzgünüz, bir şeyler ters gitti, lütfen daha sonra tekrar deneyin.',
-            msgType: MessageType.bot,),);
+      } on Exception {
+        list
+          ..removeLast()
+          ..add(
+            Message(
+              msg: 'Üzgünüz, bir şeyler ters gitti, '
+                  'lütfen daha sonra tekrar deneyin.',
+              msgType: MessageType.bot,
+            ),
+          );
         _scrollDown();
       }
     } else {
-      MyDialog.info('Lütfen bir soru girin veya sesli girişi kullanın！');
+      MyDialog.info(
+        'Lütfen bir soru girin veya sesli girişi kullanın！',
+      );
     }
   }
 
   void _scrollDown() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (scrollC.hasClients) {
-        scrollC.animateTo(
-          scrollC.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.ease,
+        unawaited(
+          scrollC.animateTo(
+            scrollC.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.ease,
+          ),
         );
       }
     });
@@ -123,7 +138,7 @@ class ChatController extends GetxController {
   void onClose() {
     textC.dispose();
     scrollC.dispose();
-    _speechToText.cancel();
+    unawaited(_speechToText.cancel());
     super.onClose();
   }
 }

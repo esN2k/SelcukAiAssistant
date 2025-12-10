@@ -1,7 +1,7 @@
 name: selcukaiassistant
 description: SelcukAiAssistant
 publish_to: 'none'
-version: 1.0.2+2
+version:  1.0.2+2
 
 environment:
   sdk: '>=3.4.3 <4.0.0'
@@ -10,7 +10,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # Alphabetically sorted dependencies (A → Z)
   animated_text_kit: ^4.2.2
   appwrite: ^20.2.1
   cupertino_icons: ^1.0.8
@@ -28,9 +27,8 @@ dependencies:
   speech_to_text: ^7.0.0
 
 dev_dependencies:
-  # Alphabetically sorted dev dependencies (A → Z)
   flutter_lints: ^6.0.0
-  flutter_test:
+  flutter_test: 
     sdk: flutter
   very_good_analysis: ^10.0.0
 
