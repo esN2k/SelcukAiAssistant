@@ -2,7 +2,8 @@
 
 ## ✅ Migration Complete
 
-The codebase has been successfully refactored to use a local Ollama instance instead of Google Gemini API.
+The codebase has been successfully refactored to use a local Ollama instance instead of Google
+Gemini API.
 
 ## 📋 What Changed
 

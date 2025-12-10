@@ -1,6 +1,3 @@
-// Using deprecated withOpacity API until migrated to withValues
-// ignore_for_file: deprecated_member_use
-
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
@@ -9,6 +6,7 @@ import 'package:selcukaiassistant/model/message.dart';
 
 class MessageCard extends StatelessWidget {
   const MessageCard({required this.message, super.key});
+
   final Message message;
 
   @override
@@ -22,7 +20,7 @@ class MessageCard extends StatelessWidget {
               const SizedBox(width: 6),
               CircleAvatar(
                 radius: 18,
-                backgroundColor: Colors.amber.withOpacity(0.1),
+                backgroundColor: Colors.amber.withValues(alpha: 0.1),
                 child: const Icon(
                   Icons.smart_toy,
                   color: Colors.amber,
@@ -88,8 +86,8 @@ class MessageCard extends StatelessWidget {
                             blockquoteDecoration: BoxDecoration(
                               color: Theme.of(context).brightness ==
                                       Brightness.dark
-                                  ? Colors.amber.withOpacity(0.1)
-                                  : Colors.amber.withOpacity(0.05),
+                                  ? Colors.amber.withValues(alpha: 0.1)
+                                  : Colors.amber.withValues(alpha: 0.05),
                               borderRadius: BorderRadius.circular(4),
                               border: const Border(
                                 left: BorderSide(

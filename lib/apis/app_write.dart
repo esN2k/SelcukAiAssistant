@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:appwrite/appwrite.dart';
-
 import 'package:selcukaiassistant/helper/global.dart';
 
 class AppWrite {

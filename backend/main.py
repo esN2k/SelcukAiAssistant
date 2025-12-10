@@ -53,14 +53,13 @@ async def ollama_health():
         Dictionary with Ollama health status and available models
     """
     logger.info("Ollama health check requested")
-    health_status = ollama_service.health_check()
-    
+    health_status = await ollama_service.health_check()
+
     # Return appropriate HTTP status based on health
     if health_status["status"] == "unhealthy":
         raise HTTPException(status_code=503, detail=health_status)
-    
-    return health_status
 
+    return health_status
 
 
 @app.post("/chat", response_model=ChatResponse)
@@ -78,17 +77,17 @@ async def chat(request: ChatRequest) -> ChatResponse:
         HTTPException: If there's an error communicating with Ollama
     """
     logger.info(f"Chat request received: {request.question[:50]}...")
-    
+
     try:
         # Build prompt with context
         prompt = build_chat_prompt(request.question)
-        
+
         # Generate response using Ollama service
-        answer = ollama_service.generate(prompt)
-        
+        answer = await ollama_service.generate(prompt)
+
         logger.info("Chat request completed successfully")
         return ChatResponse(answer=answer)
-        
+
     except HTTPException:
         # Re-raise HTTP exceptions from the service
         raise
@@ -102,5 +101,6 @@ async def chat(request: ChatRequest) -> ChatResponse:
 
 if __name__ == "__main__":
     import uvicorn
+
     logger.info(f"Starting server on {Config.HOST}:{Config.PORT}")
     uvicorn.run(app, host=Config.HOST, port=Config.PORT)

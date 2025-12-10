@@ -91,7 +91,8 @@ INFO:     Uvicorn running on http://127.0.0.1:8000 (or http://0.0.0.0:8000)
 
 Keep this terminal open - the backend needs to stay running!
 
-**Note:** By default, the backend only listens on localhost (127.0.0.1) for security. To allow connections from other devices, set `HOST=0.0.0.0` or add it to your `.env` file.
+**Note:** By default, the backend only listens on localhost (127.0.0.1) for security. To allow
+connections from other devices, set `HOST=0.0.0.0` or add it to your `.env` file.
 
 ---
 
@@ -396,13 +397,13 @@ flutter run
 
 ## Quick Reference
 
-| Component | Command | Port |
-|-----------|---------|------|
-| Ollama | `ollama pull llama3.1` | 11434 |
-| Backend | `python main.py` | 8000 |
-| Backend Tests | `pytest test_main.py -v` | - |
-| Flutter | `flutter run` | - |
-| API Docs | Open browser | <http://localhost:8000/docs> |
+| Component     | Command                  | Port                         |
+|---------------|--------------------------|------------------------------|
+| Ollama        | `ollama pull llama3.1`   | 11434                        |
+| Backend       | `python main.py`         | 8000                         |
+| Backend Tests | `pytest test_main.py -v` | -                            |
+| Flutter       | `flutter run`            | -                            |
+| API Docs      | Open browser             | <http://localhost:8000/docs> |
 
 ---
 

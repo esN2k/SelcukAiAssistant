@@ -8,5 +8,5 @@ analyzer:
     # Not: "errors:" satırının başında 2 adet normal boşluk olduğundan emin olun.
 linter:
   rules:
-    # İsterseniz burada bazı kuralları kapatabilirsiniz
-    # - avoid_print
+  # İsterseniz burada bazı kuralları kapatabilirsiniz
+  # - avoid_print

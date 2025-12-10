@@ -1,11 +1,7 @@
-// Using deprecated Get.snackbar API until migrated to newer GetX version
-// ignore_for_file: deprecated_member_use
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import 'package:selcukaiassistant/widget/custom_loading.dart';
 
 class MyDialog {
@@ -14,7 +10,7 @@ class MyDialog {
     Get.snackbar(
       'Bilgi',
       msg,
-      backgroundColor: Colors.amber.withOpacity(.7),
+      backgroundColor: Colors.amber.withValues(alpha: .7),
       colorText: Colors.white,
     );
   }
@@ -24,7 +20,7 @@ class MyDialog {
     Get.snackbar(
       'Başarılı',
       msg,
-      backgroundColor: Colors.green.withOpacity(.7),
+      backgroundColor: Colors.green.withValues(alpha: .7),
       colorText: Colors.white,
     );
   }
@@ -34,7 +30,7 @@ class MyDialog {
     Get.snackbar(
       'Hata',
       msg,
-      backgroundColor: Colors.redAccent.withOpacity(.7),
+      backgroundColor: Colors.redAccent.withValues(alpha: .7),
       colorText: Colors.white,
     );
   }

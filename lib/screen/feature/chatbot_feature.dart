@@ -1,5 +1,3 @@
-// Using deprecated withOpacity and other Material 2 APIs until migration
-// ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,7 +13,8 @@ class ChatBotFeature extends StatefulWidget {
 }
 
 class _ChatBotFeatureState extends State<ChatBotFeature> {
-  final _c = ChatController();
+  // Use Get.put to ensure onInit is called and dependency injection works
+  final ChatController _c = Get.put(ChatController());
   final RxBool _isDarkMode = Get.isDarkMode.obs;
 
   @override
@@ -74,8 +73,8 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
                     height: 48,
                     decoration: BoxDecoration(
                       color: _c.isListening.value
-                          ? Colors.red.withOpacity(0.1)
-                          : Colors.amber.withOpacity(0.1),
+                          ? Colors.red.withValues(alpha: 0.1)
+                          : Colors.amber.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                       border: Border.all(
                         color: _c.isListening.value ? Colors.red : Colors.amber,
@@ -113,7 +112,7 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
                             .textTheme
                             .bodyMedium
                             ?.color
-                            ?.withOpacity(0.6),
+                            ?.withValues(alpha: 0.6),
                       ),
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.symmetric(
@@ -152,7 +151,7 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(12),
-                color: Colors.red.withOpacity(0.1),
+                color: Colors.red.withValues(alpha: 0.1),
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -182,7 +181,7 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
                                 .textTheme
                                 .bodyMedium
                                 ?.color
-                                ?.withOpacity(0.3),
+                                ?.withValues(alpha: 0.3),
                           ),
                           const SizedBox(height: 16),
                           Text(
@@ -193,7 +192,7 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
                                   .textTheme
                                   .bodyMedium
                                   ?.color
-                                  ?.withOpacity(0.6),
+                                  ?.withValues(alpha: 0.6),
                             ),
                           ),
                         ],

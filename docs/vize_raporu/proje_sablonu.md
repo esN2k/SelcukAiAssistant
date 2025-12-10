@@ -12,7 +12,7 @@ Ay-Yıl
 KONYA
 Her Hakkı Saklıdır
 
-PROJE KABUL VE ONAYI
+PROJE KABUL VE ONAYI
 
 ................................. tarafından hazırlanan “…………………………………..” adlı
 proje çalışması …/…/… tarihinde aşağıdaki jüri üyeleri tarafından oy birliği/oy çokluğu
@@ -37,10 +37,11 @@ Bilgisayar Mühendisliği
 Bölüm Başkanı
 *Bu proje çalışması ……………. tarafından …………. nolu proje ile desteklenmiştir.
 **Prof.Dr/Doç.Dr./Dr.Öğr.Üyesi …..…… bu proje çalışmasının ikinci danışmanıdır.
-* Bu ifade proje çalışması yapılırken bir destek alındıysa yazılmalı aksi taktirde silinmedir.
-** Bu ifade ikinci danışman varsa yazılmalı aksi taktirde silinmelidir.
 
-PROJE BİLDİRİMİ
+* Bu ifade proje çalışması yapılırken bir destek alındıysa yazılmalı aksi taktirde silinmedir.
+  ** Bu ifade ikinci danışman varsa yazılmalı aksi taktirde silinmelidir.
+
+PROJE BİLDİRİMİ
 Bu projedeki bütün bilgilerin etik davranış ve akademik kurallar çerçevesinde
 elde edildiğini ve proje yazım kurallarına uygun olarak hazırlanan bu çalışmada bana ait
 olmayan her türlü ifade ve bilginin kaynağına eksiksiz atıf yapıldığını bildiririm.
@@ -56,7 +57,7 @@ results that are not original to this work.
 Öğrencinin Adı SOYADI
 Tarih: …./…./….
 
-ÖZET
+ÖZET
 MÜHENDİSLİK TASARIMI /BİLGİSAYAR MÜHENDİSLİĞİ
 UYGULAMALARI PROJESİ
 PROJE BAŞLIĞINI BURAYA YAZINIZ
@@ -90,7 +91,7 @@ Anahtar Kelimeler: 4-8 adet anahtar kelime yazınız. Alfabetik sırada ve 10 pu
 
 4
 
-ABSTRACT
+ABSTRACT
 ENGINEERING DESIGN / COMPUTER ENGINEERING APPLICATIONS
 PROJECT
 PROJE BAŞLIĞININ İNGİLİZCE’SİNİ BURAYA YAZINIZ
@@ -119,7 +120,7 @@ punto olmalı
 
 5
 
-ÖNSÖZ
+ÖNSÖZ
 
 Önsöz metnini yazım kılavuzuna uygun olarak yazmaya buradan başlayınız.
 
@@ -128,7 +129,7 @@ Konya / Yıl
 
 6
 
-İÇİNDEKİLER
+İÇİNDEKİLER
 
 ÖZET​
 
@@ -154,32 +155,46 @@ iv
 
 1
 
-1.1. Birinci Bölüm İkinci Derece Başlık....................................................................... 1
-1.1.1. Birinci bölüm üçüncü derece başlık................................................................ 1
+1.1. Birinci Bölüm İkinci Derece
+Başlık....................................................................... 1
+1.1.1. Birinci bölüm üçüncü derece
+başlık................................................................ 1
+
 2. KAYNAK ARAŞTIRMASI​
 
 2
 
-2.1. İkinci Bölüm İkinci Derece Başlık......................................................................... 2
-2.1.1. İkinci bölüm üçüncü derece başlık.................................................................. 2
+2.1. İkinci Bölüm İkinci Derece
+Başlık......................................................................... 2
+2.1.1. İkinci bölüm üçüncü derece
+başlık.................................................................. 2
+
 3. MATERYAL VE YÖNTEM​
 
 3
 
-3.1. Üçüncü Bölüm İkinci Derece Başlık......................................................................3
-3.1.1. Üçüncü bölüm üçüncü derece başlık...............................................................3
+3.1. Üçüncü Bölüm İkinci Derece
+Başlık......................................................................3
+3.1.1. Üçüncü bölüm üçüncü derece
+başlık...............................................................3
+
 4. ARAŞTIRMA SONUÇLARI VE TARTIŞMA​
 
 5
 
-4.1. Dördüncü Bölüm İkinci Derece Başlık.................................................................. 5
-4.1.1. Dördüncü bölüm üçüncü derece başlık........................................................... 5
+4.1. Dördüncü Bölüm İkinci Derece
+Başlık.................................................................. 5
+4.1.1. Dördüncü bölüm üçüncü derece
+başlık........................................................... 5
+
 5. SONUÇLAR VE ÖNERİLER​
 
 6
 
-5.1 Sonuçlar...................................................................................................................6
-5.2 Öneriler....................................................................................................................6
+5.1
+Sonuçlar...................................................................................................................6
+5.2
+Öneriler....................................................................................................................6
 KAYNAKLAR​
 
 7
@@ -199,24 +214,26 @@ düzenleyiniz. Simgelerin bitiminden sonra, kısaltmalar başlığından önce b
 bırakınız.
 7
 
-Kısaltmalar
+Kısaltmalar
 Kısaltmaları yazmaya buradan başlayınız ve yazım kılavuzunda belirtildiği şekilde
 düzenleyiniz.
 
 8
 
-1
+1
+
 1. GİRİŞ
-Giriş bölümünü yazmaya buradan başlayınız.
-1.1. Birinci Bölüm İkinci Derece Başlık
+   Giriş bölümünü yazmaya buradan başlayınız.
+   1.1. Birinci Bölüm İkinci Derece Başlık
 
 1.1.1. Birinci bölüm üçüncü derece başlık
 
 1.1.1.1. Birinci bölüm dördüncü derece başlık
 
-2
+2
+
 2. KAYNAK ARAŞTIRMASI
-Kaynak araştırması bölümünü yazmaya buradan başlayınız.
+   Kaynak araştırması bölümünü yazmaya buradan başlayınız.
 
 2.1. İkinci Bölüm İkinci Derece Başlık
 
@@ -224,11 +241,12 @@ Kaynak araştırması bölümünü yazmaya buradan başlayınız.
 
 2.1.1.1. İkinci bölüm dördüncü derece başlık
 
-3
+3
+
 3. MATERYAL VE YÖNTEM
-Materyal ve metot bölümünü yazmaya buradan başlayınız. Materyal ve Metot
-başlığı kullanmıyorsanız diğer kullandığınız başlığı buraya yazınız.
-3.1. Üçüncü Bölüm İkinci Derece Başlık
+   Materyal ve metot bölümünü yazmaya buradan başlayınız. Materyal ve Metot
+   başlığı kullanmıyorsanız diğer kullandığınız başlığı buraya yazınız.
+   3.1. Üçüncü Bölüm İkinci Derece Başlık
 
 3.1.1. Üçüncü bölüm üçüncü derece başlık
 
@@ -271,7 +289,7 @@ katı
 ……………………………………………………………………………………
 ……………………………………………………….
 
-4
+4
 ……………………………………………………………………………………
 ……………………………………………………….
 
@@ -280,23 +298,25 @@ katı
 ……………………………………………………………………………………
 ……………………………………………………….
 
-5
+5
+
 4. ARAŞTIRMA SONUÇLARI VE TARTIŞMA
-Araştırma sonuçları ve tartışma bölümünü yazmaya buradan başlayınız.
-4.1. Dördüncü Bölüm İkinci Derece Başlık
+   Araştırma sonuçları ve tartışma bölümünü yazmaya buradan başlayınız.
+   4.1. Dördüncü Bölüm İkinci Derece Başlık
 
 4.1.1. Dördüncü bölüm üçüncü derece başlık
 
 4.1.1.1. Dördüncü bölüm dördüncü derece başlık
 
-6
-5. SONUÇLAR VE ÖNERİLER
-5.1 Sonuçlar
-Sonuçlar bölümünü yazmaya buradan başlayınız.
-5.2 Öneriler
-Öneriler bölümünü yazmaya buradan başlayınız.
+6
 
-7
+5. SONUÇLAR VE ÖNERİLER
+   5.1 Sonuçlar
+   Sonuçlar bölümünü yazmaya buradan başlayınız.
+   5.2 Öneriler
+   Öneriler bölümünü yazmaya buradan başlayınız.
+
+7
 KAYNAKLAR
 Anonim, 2006, Tarım istatistikleri özeti, DİE Yayınları, No;12, Ankara, 22-23.
 Anonymous, 1989, Farm accountancy data network, an A-Z of methodology”
@@ -319,7 +339,7 @@ London: Ordnance Survey.
 Flow Measurement and Instrumentation, 17 (4), 225-235.
 Diğer örneklenmeyen kaynakları benzer şekilde yazınız.
 
-8
+8
 EKLER
 EK-1
 Kontrol Edilecek Hususlar
@@ -367,14 +387,15 @@ Danışman​ :
 Öğrenci​
 
 *Bitirme projesi/araştırma projeleri Teknoloji Fakültesi proje yazım kurallarına uygun olarak
-hazırlanmalıdır. Projeler teslim edilmeden önce yukarıdaki kontrol listesi öğrenci ve danışman tarafından
+hazırlanmalıdır. Projeler teslim edilmeden önce yukarıdaki kontrol listesi öğrenci ve danışman
+tarafından
 imzalanmalıdır. Bu sayfa tez teslimi esnasında en üst sayfa olarak verilmelidir.
 *Proje ilk savunmaya sunulacağında spiral cilt veya clip dosya formunda teslim edilmelidir.
 
-9
+9
 EK-2 Uygun bir başlık buraya yazılmalıdır.
 
-10
+10
 
 ÖZGEÇMİŞ
 KİŞİSEL BİLGİLER

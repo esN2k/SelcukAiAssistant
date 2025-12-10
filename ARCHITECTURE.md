@@ -105,7 +105,7 @@
 
 **Location:** Developer's machine or server  
 **Language:** Python  
-**Port:** 8000 (configurable)  
+**Port:** 8000 (configurable)
 
 **Responsibilities:**
 
@@ -391,14 +391,14 @@ curl -X POST http://localhost:8000/chat \
 
 ## Troubleshooting Quick Reference
 
-| Issue | Likely Cause | Solution |
-|-------|--------------|----------|
-| Backend won't start | Port in use | Change PORT in .env |
-| Can't connect to Ollama | Ollama not running | `ollama list` to start |
-| Flutter can't reach backend | Wrong URL | Check BACKEND_URL in .env |
-| Slow responses | Model loading | Normal on first request |
-| Out of memory | Insufficient RAM | Use smaller model or add RAM |
-| CORS errors | Origins not allowed | Update ALLOWED_ORIGINS |
+| Issue                       | Likely Cause        | Solution                     |
+|-----------------------------|---------------------|------------------------------|
+| Backend won't start         | Port in use         | Change PORT in .env          |
+| Can't connect to Ollama     | Ollama not running  | `ollama list` to start       |
+| Flutter can't reach backend | Wrong URL           | Check BACKEND_URL in .env    |
+| Slow responses              | Model loading       | Normal on first request      |
+| Out of memory               | Insufficient RAM    | Use smaller model or add RAM |
+| CORS errors                 | Origins not allowed | Update ALLOWED_ORIGINS       |
 
 ---
 
