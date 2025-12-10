@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:selcukaiassistant/helper/global.dart';
 
 class CustomBtn extends StatelessWidget {

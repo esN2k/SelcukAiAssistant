@@ -23,7 +23,7 @@ class Config:
     
     # Ollama configuration
     OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-    OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", "llama3.1")
+    OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", "selcuk-assistant")
     OLLAMA_TIMEOUT: int = int(os.getenv("OLLAMA_TIMEOUT", "30"))
     
     # Logging configuration
