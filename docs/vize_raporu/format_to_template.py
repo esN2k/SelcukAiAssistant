@@ -3,10 +3,10 @@ from docx.shared import Pt, Cm
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 import os
 
-# Dosya yolları (mutlak yol kullanıyoruz)
+# Dosya yolları (DOĞRU - boşluksuz)
 BASE_DIR = r"D:\Projects\SelcukAiAssistant\docs\vize_raporu"
-SOURCE_FILE = os.path.join(BASE_DIR, "VIZE_RAPORU. docx")
-TEMPLATE_FILE = os.path.join(BASE_DIR, "sablon", "proje_sablonu. docx")
+SOURCE_FILE = os.path.join(BASE_DIR, "VIZE_RAPORU.docx")  # Boşluk yok! 
+TEMPLATE_FILE = os.path.join(BASE_DIR, "proje_sablonu.docx")  # Sablon ana dizinde
 OUTPUT_FILE = os.path.join(BASE_DIR, "VIZE_RAPORU_FINAL.docx")
 
 def check_files():
@@ -18,16 +18,11 @@ def check_files():
     print(f"  Exists: {os.path.exists(TEMPLATE_FILE)}")
     
     if not os.path.exists(SOURCE_FILE):
-        print(f"\n❌ HATA: {SOURCE_FILE} bulunamadı!")
-        print("\n📋 Mevcut dosyalar:")
-        for f in os.listdir(BASE_DIR):
-            print(f"   - {f}")
+        print(f"\n❌ HATA:  Kaynak dosya bulunamadı!")
         return False
     
-    if not os. path.exists(TEMPLATE_FILE):
-        print(f"\n❌ HATA: {TEMPLATE_FILE} bulunamadı!")
-        # Şablon yoksa mevcut dosyayı kopyala
-        print("\n⚠️  Şablon bulunamadı, kaynak dosya üzerinden çalışılacak...")
+    if not os.path.exists(TEMPLATE_FILE):
+        print(f"\n⚠️ Şablon bulunamadı, kaynak dosya üzerinden çalışılacak...")
         return "use_source"
     
     return True
@@ -39,34 +34,106 @@ def extract_sections(source_doc):
     current_section = None
     current_content = []
     
+    print("📖 Bölümler çıkarılıyor...")
+    
     for para in doc.paragraphs:
         text = para.text.strip()
         
         # Bölüm başlıklarını tespit et
-        if text in ['ÖZET', 'ABSTRACT', 'ÖNSÖZ', 'GİRİŞ', 'KAYNAK ARAŞTIRMASI', 
-                    'MATERYAL VE YÖNTEM', 'ARAŞTIRMA BULGULARI VE TARTIŞMA', 
-                    'SONUÇLAR VE ÖNERİLER', 'KAYNAKLAR']:
-            if current_section and current_content:
-                sections[current_section] = '\n'. join(current_content)
+        if text in ['ÖZET', 'ABSTRACT', 'ÖNSÖZ', 'İÇİNDEKİLER', 
+                    'SİMGELER VE KISALTMALAR', 'KAYNAKLAR']:
+            if current_section and current_content: 
+                sections[current_section] = current_content
             current_section = text
             current_content = []
-        elif text.startswith('1. GİRİŞ') or text.startswith('2. KAYNAK'):
+            print(f"  ✓ {text}")
+        
+        # Numaralı bölümler (1. GİRİŞ, 2. KAYNAK ARAŞTIRMASI, vb.)
+        elif text.startswith(('1.', '2.', '3.', '4.', '5.', '6.', '7.', '8.', '9.')):
             if current_section and current_content:
-                sections[current_section] = '\n'.join(current_content)
-            current_section = text. split('.', 1)[1].strip() if '.' in text else text
+                sections[current_section] = current_content
+            current_section = text
             current_content = []
-        elif current_section and text:
-            current_content.append(text)
+            print(f"  ✓ {text}")
+        
+        # Alt başlıklar (1.1., 2.1., vb.)
+        elif text and current_section: 
+            current_content.append({
+                'text': text,
+                'style': para.style.name,
+                'bold': para.runs[0].bold if para.runs else False
+            })
     
     # Son bölümü ekle
     if current_section and current_content:
-        sections[current_section] = '\n'. join(current_content)
+        sections[current_section] = current_content
     
     return sections
 
+def fill_template(template_file, sections, output_file):
+    """Şablonu sections ile doldur"""
+    doc = Document(template_file)
+    
+    print("\n📝 Şablon dolduruluyor...")
+    
+    # Temel bilgileri değiştir
+    replacements = {
+        'PROJE BAŞLIĞINI BURAYA YAZINIZ': 'SELÇUK ÜNİVERSİTESİ İÇİN YAPAY ZEKA DESTEKLİ AKADEMİK ASİSTAN MOBİL UYGULAMASI',
+        'Öğrencinin Adı SOYADI': 'Doğukan Balaman & Ali Yıldırım',
+        'Unvanı Adı SOYADI': '[Danışman Unvanı ve Adı]',
+        'Ay-Yıl': 'Aralık 2025',
+        'Yıl, … Sayfa (Örnek:  2024, 105 Sayfa)': '2025, 85 Sayfa',
+        '2024, 105 Sayfa':  '2025, 85 Sayfa',
+    }
+    
+    # Paragrafları tara ve değiştir
+    for para in doc.paragraphs:
+        original_text = para.text
+        for old, new in replacements.items():
+            if old in para.text:
+                # Inline replacement - formatı korur
+                inline = para.runs
+                for run in inline:
+                    run.text = run.text.replace(old, new)
+                print(f"  ✓ Değiştirildi: {old[: 30]}...")
+        
+        # Özet placeholder'ını doldur
+        if 'Özet metnini yazmaya buradan başlayınız' in original_text:
+            if 'ÖZET' in sections:
+                para.clear()
+                for item in sections['ÖZET']: 
+                    if isinstance(item, dict):
+                        run = para.add_run(item['text'] + '\n')
+                        run.font.name = 'Times New Roman'
+                        run.font.size = Pt(10)
+                print("  ✓ ÖZET bölümü dolduruldu")
+        
+        # Abstract placeholder'ını doldur
+        if 'Türkçe özet metninin İngilizce' in original_text:
+            if 'ABSTRACT' in sections: 
+                para.clear()
+                for item in sections['ABSTRACT']: 
+                    if isinstance(item, dict):
+                        run = para.add_run(item['text'] + '\n')
+                        run.font.name = 'Times New Roman'
+                        run.font.size = Pt(10)
+                print("  ✓ ABSTRACT bölümü dolduruldu")
+    
+    # Sayfa düzenini ayarla
+    for section in doc.sections:
+        section. left_margin = Cm(3.5)
+        section.right_margin = Cm(2.5)
+        section.top_margin = Cm(2.5)
+        section.bottom_margin = Cm(2.5)
+    
+    doc.save(output_file)
+    print(f"\n✅ Şablon kaydedildi: {output_file}")
+
 def create_formatted_doc(sections, output_file):
-    """Yeni formatlanmış doküman oluştur"""
+    """Şablon yoksa sıfırdan oluştur"""
     doc = Document()
+    
+    print("\n📝 Yeni doküman oluşturuluyor...")
     
     # Sayfa düzeni
     section = doc.sections[0]
@@ -75,86 +142,68 @@ def create_formatted_doc(sections, output_file):
     section.top_margin = Cm(2.5)
     section.bottom_margin = Cm(2.5)
     
-    # Stil tanımlamaları
+    # Normal stil
     style = doc.styles['Normal']
-    font = style.font
-    font. name = 'Times New Roman'
-    font.size = Pt(12)
+    style.font.name = 'Times New Roman'
+    style.font.size = Pt(12)
     style.paragraph_format.line_spacing = 1.5
     
-    # İçeriği ekle
+    # Bölümleri ekle
     for section_name, content in sections.items():
-        # Bölüm başlığı
-        heading = doc.add_paragraph(section_name)
-        heading.style = 'Heading 1'
-        heading.runs[0].font.name = 'Times New Roman'
-        heading. runs[0].font.size = Pt(12)
-        heading.runs[0].bold = True
+        # Başlık
+        heading = doc. add_paragraph()
+        run = heading.add_run(section_name)
+        run.bold = True
+        run.font. name = 'Times New Roman'
+        run.font.size = Pt(12)
         
-        # Bölüm içeriği
-        doc.add_paragraph(content)
+        # İçerik
+        for item in content:
+            if isinstance(item, dict):
+                para = doc.add_paragraph()
+                run = para.add_run(item['text'])
+                run.font.name = 'Times New Roman'
+                run.font.size = Pt(12)
+                if item.get('bold'):
+                    run.bold = True
+        
         doc.add_paragraph()  # Boşluk
     
     doc.save(output_file)
-    print(f"✅ Yeni doküman oluşturuldu: {output_file}")
-
-def simple_fill_template(template_file, sections, output_file):
-    """Şablonu doldur (basit versiyon)"""
-    doc = Document(template_file)
-    
-    # Placeholder değiştirmeleri
-    replacements = {
-        'PROJE BAŞLIĞINI BURAYA YAZINIZ': 'SELÇUK ÜNİVERSİTESİ İÇİN YAPAY ZEKA DESTEKLİ AKADEMİK ASİSTAN',
-        'Öğrencinin Adı SOYADI': 'Doğukan Balaman & Ali Yıldırım',
-        'Unvanı Adı SOYADI': '[Danışman Unvanı Adı]',
-        'Ay-Yıl':  'Aralık 2025',
-        'Yıl, … Sayfa': '2025, 85 Sayfa',
-        'Özet metnini yazmaya buradan başlayınız':  sections. get('ÖZET', ''),
-        'Türkçe özet metninin İngilizce\'sini yazmaya buradan başlayınız': sections.get('ABSTRACT', ''),
-        'Giriş bölümünü yazmaya buradan başlayınız': sections.get('GİRİŞ', ''),
-    }
-    
-    # Tüm paragrafları tara
-    for para in doc.paragraphs:
-        for old, new in replacements.items():
-            if old in para.text:
-                # Metni değiştir ama formatı koru
-                for run in para.runs:
-                    run.text = run.text. replace(old, new)
-    
-    doc.save(output_file)
-    print(f"✅ Şablon dolduruldu: {output_file}")
+    print(f"✅ Doküman kaydedildi: {output_file}")
 
 if __name__ == "__main__": 
-    print("=" * 60)
+    print("=" * 70)
     print("📄 SELÇUK ÜNİVERSİTESİ RAPOR FORMATLAMA ARACI")
-    print("=" * 60)
+    print("=" * 70)
     
     # Dosya kontrolü
     file_check = check_files()
     
     if file_check == False:
-        print("\n❌ Dosyalar bulunamadı.  Lütfen dosya yollarını kontrol edin.")
+        print("\n❌ Gerekli dosyalar bulunamadı.  Çıkılıyor...")
         exit(1)
     
     try:
-        print("\n📖 İçerik çıkarılıyor...")
+        # İçeriği çıkar
         sections = extract_sections(SOURCE_FILE)
-        print(f"✅ {len(sections)} bölüm bulundu")
+        print(f"\n✅ Toplam {len(sections)} bölüm çıkarıldı\n")
         
-        if file_check == "use_source": 
-            print("\n📝 Yeni formatlanmış doküman oluşturuluyor...")
+        # Şablona göre işle
+        if file_check == "use_source":
             create_formatted_doc(sections, OUTPUT_FILE)
         else:
-            print("\n📝 Şablon dolduruluyor...")
-            simple_fill_template(TEMPLATE_FILE, sections, OUTPUT_FILE)
+            fill_template(TEMPLATE_FILE, sections, OUTPUT_FILE)
         
-        print("\n" + "=" * 60)
-        print("✅ İŞLEM TAMAMLANDI!")
+        print("\n" + "=" * 70)
+        print("✅ İŞLEM BAŞARIYLA TAMAMLANDI!")
         print(f"📄 Çıktı dosyası: {OUTPUT_FILE}")
-        print("=" * 60)
+        print("=" * 70)
+        
+        # Dosyayı aç
+        os.startfile(OUTPUT_FILE)
         
     except Exception as e:
-        print(f"\n❌ HATA: {str(e)}")
+        print(f"\n❌ HATA OLUŞTU: {str(e)}")
         import traceback
         traceback.print_exc()
