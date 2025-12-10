@@ -261,7 +261,7 @@ Kaplan ve ark. (2020), dil modellerinin ölçeklenmesi (scaling laws) konusunda 
 
 2.2. Retrieval-Augmented Generation (RAG) Yaklaşımı
 
-Lewis ve ark. (2020), Retrieval-Augmented Generation (RAG) yaklaşımını tanıtmışlardır. RAG, dil modellerinin parametrik bilgisini dış bilgi kaynaklarından alınan ilgili dokümanlarlageliştirme yöntemedir. Bu yaklaşım, modelin güncel olmayan veya yanlış bilgi üretme (hallucination) riskini azaltmaktadır.
+Lewis ve ark. (2020), Retrieval-Augmented Generation (RAG) yaklaşımını tanıtmışlardır. RAG, dil modellerinin parametrik bilgisini dış bilgi kaynaklarından alınan ilgili dokümanlarla geliştirme yöntemedir. Bu yaklaşım, modelin güncel olmayan veya yanlış bilgi üretme (hallucination) riskini azaltmaktadır.
 
 Guu ve ark. (2020), REALM (Retrieval-Augmented Language Model pre-training) modelini geliştirmişlerdir. REALM, pre-training aşamasında retrieval mekanizmasını entegre ederek, modelin external knowledge'a erişimini optimize etmektedir.
 
@@ -877,7 +877,7 @@ Sistemin gelecekte genişletilebileceği alanlar:
 
 7. **Collaborative Features**: Öğrenciler arası soru-cevap paylaşımı, upvoting, commenting gibi social features eklenebilir.
 
-8. **Integration dengan LMS**: Moodle, Canvas gibi Learning Management Systems ile entegrasyon yapılabilir. LTI (Learning Tools Interoperability) standardı kullanılabilir.
+8. **LMS Entegrasyonu**: Moodle, Canvas gibi Learning Management Systems ile entegrasyon yapılabilir. LTI (Learning Tools Interoperability) standardı kullanılabilir.
 
 9. **Advanced Analytics**: Öğrenci soru patterns, frequent topics, learning gaps analizi yapılabilir. Educational data mining teknikleri uygulanabilir.
 
