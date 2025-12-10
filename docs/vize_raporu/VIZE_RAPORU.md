@@ -1,3 +1,20 @@
+---
+title: "Selçuk Üniversitesi İçin Yapay Zeka Destekli Akademik Asistan"
+author: "Doğukan Balaman & Ali Yıldırım"
+date: "Aralık 2025"
+lang: tr-TR
+fontsize: 12pt
+geometry:
+  - left=3.5cm
+  - right=2.5cm
+  - top=2.5cm
+  - bottom=2.5cm
+mainfont: "Times New Roman"
+monofont: "Courier New"
+CJKmainfont: "Times New Roman"
+linestretch: 1.5
+---
+
 T.C.
 SELÇUK ÜNİVERSİTESİ
 TEKNOLOJİ FAKÜLTESİ
