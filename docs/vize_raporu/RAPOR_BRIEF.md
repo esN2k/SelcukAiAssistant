@@ -36,7 +36,13 @@
 - 42 token/saniye ortalama hız
 
 ## Mimari
-Flutter App (Mobile) ↓ HTTP POST /chat FastAPI Backend (Python) ↓ HTTP POST /api/generate Ollama (Local AI Server) ↓ Llama 3.1 Model
+Flutter App (Mobile)
+↓
+HTTP POST /chat FastAPI Backend (Python)
+↓
+HTTP POST /api/generate Ollama (Local AI Server)
+↓
+Llama 3.1 Model
 
 ## Başarılan Kilometre Taşları
 1. ✅ Flutter cross-platform app geliştirme
