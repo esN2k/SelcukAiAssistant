@@ -1,3 +1,4 @@
+// Using deprecated withOpacity and other Material 2 APIs until migration
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
@@ -104,8 +105,8 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
                     textInputAction: TextInputAction.send,
                     onFieldSubmitted: (_) => _c.askQuestion(),
                     decoration: InputDecoration(
-                      hintText:
-                          'Bir mesaj yazın veya sesli giriş için basılı tutun...',
+                      hintText: 'Bir mesaj yazın veya sesli giriş için '
+                          'basılı tutun...',
                       hintStyle: TextStyle(
                         fontSize: 14,
                         color: Theme.of(context)

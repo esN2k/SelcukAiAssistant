@@ -1,3 +1,4 @@
+// Using deprecated withOpacity API until migrated to withValues
 // ignore_for_file: deprecated_member_use
 
 import 'package:animated_text_kit/animated_text_kit.dart';

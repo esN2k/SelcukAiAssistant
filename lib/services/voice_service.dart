@@ -21,13 +21,13 @@ class VoiceService {
         await http.MultipartFile.fromPath('audio', audioPath),
       );
 
-            request.fields['language'] = 'tr-TR';
+      request.fields['language'] = 'tr-TR';
 
       final response = await request.send();
       final responseData = await response.stream.bytesToString();
 
       if (response.statusCode == 200) {
-        final jsonData = json.decode(responseData);
+        final jsonData = json.decode(responseData) as Map<String, dynamic>;
         final recognizedText = (jsonData['text'] as String?) ?? '';
         log('Ses tanıma başarılı: $recognizedText');
         return recognizedText;
@@ -35,8 +35,8 @@ class VoiceService {
         log('Ses tanıma başarısız, durum kodu: ${response.statusCode}');
         return 'Ses tanıma başarısız oldu. Lütfen tekrar deneyin.';
       }
-    } catch (e) {
-            log('Ses tanıma hatası: $e');
+    } on Exception catch (e) {
+      log('Ses tanıma hatası: $e');
       return 'Ses tanıma hatası. Lütfen ağ bağlantınızı kontrol edin.';
     }
   }
@@ -49,7 +49,7 @@ class VoiceService {
       ).timeout(const Duration(seconds: 5));
 
       return response.statusCode == 200;
-    } catch (e) {
+    } on Exception catch (e) {
       log('Sunucu bağlantısı kontrolü başarısız oldu: $e');
       return false;
     }

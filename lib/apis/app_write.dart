@@ -8,16 +8,18 @@ class AppWrite {
   static final _client = Client();
   static final _database = Databases(_client);
 
-  static void init() {
+  static Future<void> init() async {
     _client
         .setEndpoint('https://cloud.appwrite.io/v1')
         .setProject('658813fd62bd45e744cd')
         .setSelfSigned();
-    getApiKey();
+    await getApiKey();
   }
 
   static Future<String> getApiKey() async {
     try {
+      // Using deprecated getDocument until SDK is updated to support TablesDB
+      // ignore: deprecated_member_use
       final d = await _database.getDocument(
         databaseId: 'MyDatabase',
         collectionId: 'ApiKey',
@@ -27,7 +29,7 @@ class AppWrite {
       apiKey = d.data['apiKey'] as String;
       log(apiKey);
       return apiKey;
-    } catch (e) {
+    } on Exception catch (e) {
       log('$e');
       return '';
     }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:easy_audience_network/easy_audience_network.dart';
@@ -7,33 +8,34 @@ import 'package:selcukaiassistant/helper/my_dialog.dart';
 
 class AdHelper {
   static void init() {
-    EasyAudienceNetwork.init(
-      testMode: true,
+    unawaited(
+      EasyAudienceNetwork.init(
+        testMode: true,
+      ),
     );
   }
 
   static void showInterstitialAd(VoidCallback onComplete) {
     MyDialog.showLoadingDialog();
 
-    final interstitialAd = InterstitialAd(InterstitialAd.testPlacementId);
+    InterstitialAd? interstitialAd;
+    interstitialAd = InterstitialAd(InterstitialAd.testPlacementId)
+      ..listener = InterstitialAdListener(
+        onLoaded: () {
+          Get.back<dynamic>();
+          onComplete();
 
-    interstitialAd.listener = InterstitialAdListener(
-      onLoaded: () {
-        Get.back<dynamic>();
-        onComplete();
+          unawaited(interstitialAd!.show());
+        },
+        onDismissed: () => interstitialAd!.destroy(),
+        onError: (i, e) {
+          Get.back<dynamic>();
+          onComplete();
 
-        interstitialAd.show();
-      },
-      onDismissed: interstitialAd.destroy,
-      onError: (i, e) {
-        Get.back<dynamic>();
-        onComplete();
-
-        log('interstitial error: $e');
-      },
-    );
-
-    interstitialAd.load();
+          log('interstitial error: $e');
+        },
+      );
+    unawaited(interstitialAd.load());
   }
 
   static Widget nativeAd() {

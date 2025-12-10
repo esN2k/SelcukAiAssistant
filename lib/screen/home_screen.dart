@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -16,12 +18,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    unawaited(SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge));
     Pref.showOnboarding = false;
 
     // 直接跳转到聊天界面
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Get.off<void>(() => const ChatBotFeature());
+      unawaited(Get.off<void>(() => const ChatBotFeature()));
     });
   }
 
