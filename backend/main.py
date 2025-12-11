@@ -1,9 +1,11 @@
 """FastAPI backend for SelcukAiAssistant using Ollama."""
 import logging
-from typing import Dict, Any
+import json
+from typing import Dict, Any, AsyncIterator
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field, field_validator
 
 from config import Config
@@ -160,6 +162,76 @@ async def chat(request: ChatRequest) -> ChatResponse:
             status_code=500,
             detail=f"Beklenmeyen hata: {str(e)}"
         )
+
+
+@app.post("/chat/stream")
+async def chat_stream(request: ChatRequest) -> StreamingResponse:
+    """
+    Streaming chat endpoint for real-time token-by-token responses.
+    
+    This endpoint:
+    - Validates and sanitizes user input (same as /chat)
+    - Builds a contextualized prompt for Selçuk University
+    - Streams AI response token-by-token using Server-Sent Events (SSE)
+    - Provides better user experience for long responses
+    
+    Args:
+        request: ChatRequest containing the user's question (validated, 1-5000 chars)
+        
+    Returns:
+        StreamingResponse with text/event-stream content type
+        Each event contains a JSON object with partial response
+        
+    Raises:
+        HTTPException: 400 for invalid input, 503 for Ollama unavailable,
+                      504 for timeout, 500 for other errors
+                      
+    Example response stream:
+        data: {"token": "Selçuk"}
+        data: {"token": " Üniversitesi"}
+        data: {"token": " 1975"}
+        data: {"done": true}
+    """
+    # Log the request (truncate for privacy/security)
+    question_preview = request.question[:50] + "..." if len(request.question) > 50 else request.question
+    logger.info(f"Streaming chat request received: {question_preview}")
+    
+    async def generate_stream() -> AsyncIterator[str]:
+        """Generate Server-Sent Events stream."""
+        try:
+            # Build prompt with Selçuk University context
+            prompt = build_chat_prompt(request.question)
+            
+            # Stream response from Ollama
+            for chunk in ollama_service.generate_stream(prompt):
+                # Send each token as a Server-Sent Event
+                yield f"data: {json.dumps({'token': chunk})}\n\n"
+            
+            # Send completion event
+            yield f"data: {json.dumps({'done': True})}\n\n"
+            
+            logger.info("Streaming chat request completed successfully")
+            
+        except HTTPException as e:
+            # Send error event
+            error_data = {"error": e.detail, "status_code": e.status_code}
+            yield f"data: {json.dumps(error_data)}\n\n"
+            logger.error(f"HTTPException in streaming: {e.detail}")
+        except Exception as e:
+            # Send error event for unexpected errors
+            error_data = {"error": f"Beklenmeyen hata: {str(e)}", "status_code": 500}
+            yield f"data: {json.dumps(error_data)}\n\n"
+            logger.exception(f"Unexpected error in streaming endpoint: {str(e)}")
+    
+    return StreamingResponse(
+        generate_stream(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no"  # Disable nginx buffering
+        }
+    )
 
 
 if __name__ == "__main__":

@@ -1,7 +1,8 @@
 """Ollama service client for SelcukAiAssistant Backend."""
 import logging
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any, List, Iterator
 import time
+import json
 
 import requests
 from fastapi import HTTPException
@@ -147,6 +148,120 @@ class OllamaService:
                     status_code=500,
                     detail=f"Beklenmeyen hata: {str(e)}"
                 )
+    
+    def generate_stream(self, prompt: str) -> Iterator[str]:
+        """
+        Generate a streaming response from Ollama with token-by-token delivery.
+        
+        This method:
+        - Sends a streaming request to Ollama
+        - Yields tokens as they arrive
+        - Handles UTF-8 encoding properly
+        - Provides real-time response experience
+        
+        Args:
+            prompt: The prompt to send to Ollama
+            
+        Yields:
+            Response tokens as strings (token-by-token or chunk-by-chunk)
+            
+        Raises:
+            HTTPException: If there's an error communicating with Ollama
+            
+        Example:
+            >>> for token in ollama_service.generate_stream("Hello"):
+            ...     print(token, end='', flush=True)
+            Hello! How can I help you?
+        """
+        if not prompt or not prompt.strip():
+            logger.warning("Empty prompt provided for streaming")
+            raise HTTPException(
+                status_code=400,
+                detail="Lütfen bir soru girin."
+            )
+        
+        logger.debug(f"Starting streaming generation for prompt (length: {len(prompt)} chars)")
+        
+        try:
+            ollama_request = {
+                "model": self.model,
+                "prompt": prompt,
+                "stream": True  # Enable streaming
+            }
+            
+            response = requests.post(
+                self.api_url,
+                json=ollama_request,
+                timeout=self.timeout,
+                headers={"Content-Type": "application/json; charset=utf-8"},
+                stream=True  # Enable streaming response
+            )
+            
+            # Check HTTP status
+            if response.status_code != 200:
+                error_detail = self._parse_error_response(response)
+                logger.error(f"Ollama streaming API error: {error_detail}")
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail=f"Ollama API hatası: {error_detail}"
+                )
+            
+            # Stream the response line by line
+            token_count = 0
+            for line in response.iter_lines():
+                if line:
+                    try:
+                        # Decode line as UTF-8
+                        line_str = line.decode('utf-8')
+                        
+                        # Parse JSON response
+                        chunk_data = json.loads(line_str)
+                        
+                        # Extract the response token
+                        token = chunk_data.get("response", "")
+                        if token:
+                            token_count += 1
+                            yield token
+                        
+                        # Check if done
+                        if chunk_data.get("done", False):
+                            logger.info(f"Streaming completed: {token_count} tokens generated")
+                            break
+                    
+                    except json.JSONDecodeError as e:
+                        logger.warning(f"Failed to parse streaming response line: {line_str[:100]}")
+                        continue
+                    except Exception as e:
+                        logger.error(f"Error processing streaming chunk: {str(e)}")
+                        continue
+        
+        except requests.exceptions.Timeout:
+            logger.error(f"Ollama streaming request timed out after {self.timeout}s")
+            raise HTTPException(
+                status_code=504,
+                detail="Ollama isteği zaman aşımına uğradı. Lütfen tekrar deneyin."
+            )
+        except requests.exceptions.ConnectionError as e:
+            logger.error(f"Failed to connect to Ollama for streaming: {str(e)}")
+            raise HTTPException(
+                status_code=503,
+                detail="Ollama servisine bağlanılamadı. Lütfen Ollama'nın çalıştığından emin olun."
+            )
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Ollama streaming request failed: {str(e)}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Ollama isteği başarısız oldu: {str(e)}"
+            )
+        except HTTPException:
+            # Re-raise HTTPExceptions as-is
+            raise
+        except Exception as e:
+            logger.exception(f"Unexpected error in Ollama streaming: {str(e)}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Beklenmeyen hata: {str(e)}"
+            )
     
     def health_check(self) -> Dict[str, Any]:
         """
