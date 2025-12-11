@@ -45,6 +45,23 @@ class OllamaService:
             f"model={self.model}, timeout={self.timeout}s, max_retries={self.max_retries}"
         )
     
+    def _validate_prompt(self, prompt: str) -> None:
+        """
+        Validate prompt input.
+        
+        Args:
+            prompt: The prompt to validate
+            
+        Raises:
+            HTTPException: If prompt is empty or invalid
+        """
+        if not prompt or not prompt.strip():
+            logger.warning("Empty prompt provided")
+            raise HTTPException(
+                status_code=400,
+                detail="Lütfen bir soru girin."
+            )
+    
     def generate(self, prompt: str, stream: bool = False) -> str:
         """
         Generate a response from Ollama with retry logic.
@@ -59,12 +76,7 @@ class OllamaService:
         Raises:
             HTTPException: If there's an error communicating with Ollama
         """
-        if not prompt or not prompt.strip():
-            logger.warning("Empty prompt provided")
-            raise HTTPException(
-                status_code=400,
-                detail="Lütfen bir soru girin."
-            )
+        self._validate_prompt(prompt)
         
         logger.debug(f"Generating response for prompt (length: {len(prompt)} chars)")
         
@@ -173,12 +185,7 @@ class OllamaService:
             ...     print(token, end='', flush=True)
             Hello! How can I help you?
         """
-        if not prompt or not prompt.strip():
-            logger.warning("Empty prompt provided for streaming")
-            raise HTTPException(
-                status_code=400,
-                detail="Lütfen bir soru girin."
-            )
+        self._validate_prompt(prompt)
         
         logger.debug(f"Starting streaming generation for prompt (length: {len(prompt)} chars)")
         

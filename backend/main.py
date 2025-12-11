@@ -1,6 +1,7 @@
 """FastAPI backend for SelcukAiAssistant using Ollama."""
 import logging
 import json
+import asyncio
 from typing import Dict, Any, AsyncIterator
 
 from fastapi import FastAPI, HTTPException
@@ -197,15 +198,30 @@ async def chat_stream(request: ChatRequest) -> StreamingResponse:
     logger.info(f"Streaming chat request received: {question_preview}")
     
     async def generate_stream() -> AsyncIterator[str]:
-        """Generate Server-Sent Events stream."""
+        """Generate Server-Sent Events stream without blocking the event loop."""
         try:
             # Build prompt with Selçuk University context
             prompt = build_chat_prompt(request.question)
             
-            # Stream response from Ollama
-            for chunk in ollama_service.generate_stream(prompt):
-                # Send each token as a Server-Sent Event
-                yield f"data: {json.dumps({'token': chunk})}\n\n"
+            # Stream response from Ollama in executor to avoid blocking
+            loop = asyncio.get_event_loop()
+            
+            # Run the synchronous streaming in a thread pool
+            def sync_stream():
+                """Synchronous streaming wrapper for executor."""
+                tokens = []
+                for chunk in ollama_service.generate_stream(prompt):
+                    tokens.append(chunk)
+                return tokens
+            
+            # Get all tokens from the stream (this runs in a thread pool)
+            tokens = await loop.run_in_executor(None, sync_stream)
+            
+            # Yield tokens without blocking the event loop
+            for token in tokens:
+                yield f"data: {json.dumps({'token': token})}\n\n"
+                # Yield control to event loop periodically
+                await asyncio.sleep(0)
             
             # Send completion event
             yield f"data: {json.dumps({'done': True})}\n\n"

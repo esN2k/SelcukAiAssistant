@@ -21,7 +21,12 @@ else:
         try:
             locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
         except locale.Error:
-            pass  # Use system default
+            # Log warning if locale setting fails
+            import logging
+            logging.warning(
+                "Failed to set UTF-8 locale. Turkish characters may not display correctly. "
+                "Available locales can be checked with 'locale -a' command."
+            )
 
 # Load environment variables from .env file if present
 try:
