@@ -19,14 +19,36 @@ Yanıt verirken, içeriğinizi daha anlaşılır ve okunması kolay hale getirme
 '''
 
 
-def build_chat_prompt(question: str) -> str:
+def build_chat_prompt(question: str, context: str = "") -> str:
     """
-    Build a complete prompt for the chat endpoint.
+    Build a complete prompt for the chat endpoint with optional RAG context.
+    
+    This function combines:
+    1. System instructions for Selçuk University assistant behavior
+    2. Optional context from RAG (document retrieval)
+    3. User's question
     
     Args:
-        question: User's question
+        question: User's question in Turkish
+        context: Optional context from RAG system (default: empty)
         
     Returns:
-        Complete prompt with system instructions and user question
+        Complete prompt with system instructions, context, and user question
+        
+    Examples:
+        >>> build_chat_prompt("Kayıt tarihleri nedir?")
+        '...system prompt...\n\nKullanıcı sorusu: Kayıt tarihleri nedir?'
+        
+        >>> build_chat_prompt("Kayıt tarihleri?", "Kayıt: 15-20 Eylül")
+        '...system prompt...\n\nBağlam: Kayıt: 15-20 Eylül\n\nKullanıcı sorusu: Kayıt tarihleri?'
     """
-    return f"{SELCUK_UNIVERSITY_SYSTEM_PROMPT.strip()}\n\nKullanıcı sorusu: {question}"
+    prompt_parts = [SELCUK_UNIVERSITY_SYSTEM_PROMPT.strip()]
+    
+    # Add RAG context if provided
+    if context and context.strip():
+        prompt_parts.append(f"\nBağlam (Selçuk Üniversitesi belgeleri):\n{context.strip()}")
+    
+    # Add user question
+    prompt_parts.append(f"\n\nKullanıcı sorusu: {question}")
+    
+    return "".join(prompt_parts)

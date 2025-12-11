@@ -2,17 +2,38 @@
 import os
 import sys
 import logging
-from typing import List
+from typing import List, Optional
 
-# Configure Windows encoding if needed
+# Configure UTF-8 encoding for all platforms
+# This ensures Turkish characters are displayed correctly
 if sys.platform == 'win32':
+    # Windows-specific UTF-8 configuration
     import io
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
+else:
+    # Unix/Linux - ensure UTF-8 locale
+    # Set default encoding to UTF-8
+    import locale
+    try:
+        locale.setlocale(locale.LC_ALL, 'tr_TR.UTF-8')
+    except locale.Error:
+        try:
+            locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+        except locale.Error:
+            pass  # Use system default
+
+# Load environment variables from .env file if present
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    # python-dotenv not installed, use environment variables directly
+    pass
 
 
 class Config:
-    """Application configuration with validation."""
+    """Application configuration with validation and type safety."""
     
     # Server configuration
     HOST: str = os.getenv("HOST", "127.0.0.1")
@@ -25,31 +46,90 @@ class Config:
     OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
     OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", "llama3.1")
     OLLAMA_TIMEOUT: int = int(os.getenv("OLLAMA_TIMEOUT", "30"))
+    OLLAMA_MAX_RETRIES: int = int(os.getenv("OLLAMA_MAX_RETRIES", "3"))
+    OLLAMA_RETRY_DELAY: float = float(os.getenv("OLLAMA_RETRY_DELAY", "1.0"))
     
     # Logging configuration
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
     
+    # RAG configuration (for future implementation)
+    RAG_ENABLED: bool = os.getenv("RAG_ENABLED", "false").lower() == "true"
+    RAG_VECTOR_DB_PATH: Optional[str] = os.getenv("RAG_VECTOR_DB_PATH", None)
+    RAG_COLLECTION_NAME: str = os.getenv("RAG_COLLECTION_NAME", "selcuk_documents")
+    RAG_CHUNK_SIZE: int = int(os.getenv("RAG_CHUNK_SIZE", "500"))
+    RAG_CHUNK_OVERLAP: int = int(os.getenv("RAG_CHUNK_OVERLAP", "50"))
+    
     @classmethod
     def validate(cls) -> None:
-        """Validate configuration values."""
+        """
+        Validate configuration values on application startup.
+        
+        Raises:
+            ValueError: If any configuration value is invalid
+        """
+        # Validate timeout settings
         if cls.OLLAMA_TIMEOUT < 1:
             raise ValueError("OLLAMA_TIMEOUT must be at least 1 second")
         
+        if cls.OLLAMA_MAX_RETRIES < 1:
+            raise ValueError("OLLAMA_MAX_RETRIES must be at least 1")
+        
+        if cls.OLLAMA_RETRY_DELAY < 0:
+            raise ValueError("OLLAMA_RETRY_DELAY cannot be negative")
+        
+        # Validate server settings
         if cls.PORT < 1 or cls.PORT > 65535:
             raise ValueError("PORT must be between 1 and 65535")
         
+        # Validate Ollama settings
         if not cls.OLLAMA_MODEL:
             raise ValueError("OLLAMA_MODEL cannot be empty")
+        
+        if not cls.OLLAMA_BASE_URL:
+            raise ValueError("OLLAMA_BASE_URL cannot be empty")
+        
+        # Validate RAG settings if enabled
+        if cls.RAG_ENABLED:
+            if not cls.RAG_VECTOR_DB_PATH:
+                raise ValueError("RAG_VECTOR_DB_PATH must be set when RAG_ENABLED is true")
+            
+            if cls.RAG_CHUNK_SIZE < 1:
+                raise ValueError("RAG_CHUNK_SIZE must be at least 1")
+            
+            if cls.RAG_CHUNK_OVERLAP < 0:
+                raise ValueError("RAG_CHUNK_OVERLAP cannot be negative")
+            
+            if cls.RAG_CHUNK_OVERLAP >= cls.RAG_CHUNK_SIZE:
+                raise ValueError("RAG_CHUNK_OVERLAP must be less than RAG_CHUNK_SIZE")
     
     @classmethod
     def setup_logging(cls) -> None:
-        """Configure application logging."""
+        """
+        Configure application logging with UTF-8 encoding support.
+        
+        Sets up structured logging with timestamps, module names, and proper
+        UTF-8 encoding for Turkish characters.
+        """
+        # Create a handler with UTF-8 encoding
+        handler = logging.StreamHandler(sys.stdout)
+        handler.setLevel(getattr(logging, cls.LOG_LEVEL.upper(), logging.INFO))
+        
+        # Use UTF-8 encoding for the handler
+        if hasattr(handler.stream, 'reconfigure'):
+            handler.stream.reconfigure(encoding='utf-8')
+        
+        # Configure logging format
+        formatter = logging.Formatter(
+            '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+            datefmt='%Y-%m-%d %H:%M:%S'
+        )
+        handler.setFormatter(formatter)
+        
+        # Set up root logger
         logging.basicConfig(
             level=getattr(logging, cls.LOG_LEVEL.upper(), logging.INFO),
-            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-            handlers=[
-                logging.StreamHandler()
-            ]
+            handlers=[handler],
+            force=True  # Override any existing configuration
         )
 
 

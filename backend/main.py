@@ -1,9 +1,10 @@
 """FastAPI backend for SelcukAiAssistant using Ollama."""
 import logging
+from typing import Dict, Any
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
 
 from config import Config
 from ollama_service import OllamaService
@@ -28,29 +29,72 @@ ollama_service = OllamaService()
 
 
 class ChatRequest(BaseModel):
-    """Request model for chat endpoint."""
-    question: str
+    """Request model for chat endpoint with validation."""
+    
+    question: str = Field(
+        ...,
+        min_length=1,
+        max_length=5000,
+        description="User's question (1-5000 characters)",
+        examples=["Selçuk Üniversitesi'nin kuruluş tarihi nedir?"]
+    )
+    
+    @field_validator('question')
+    @classmethod
+    def validate_question(cls, v: str) -> str:
+        """Validate and sanitize question input."""
+        if not v or not v.strip():
+            raise ValueError("Soru boş olamaz")
+        
+        # Strip whitespace
+        v = v.strip()
+        
+        # Basic XSS prevention - remove potential script tags
+        dangerous_patterns = ['<script', '</script', 'javascript:', 'onerror=', 'onload=']
+        v_lower = v.lower()
+        for pattern in dangerous_patterns:
+            if pattern in v_lower:
+                raise ValueError("Geçersiz karakter dizisi tespit edildi")
+        
+        return v
 
 
 class ChatResponse(BaseModel):
     """Response model for chat endpoint."""
-    answer: str
+    
+    answer: str = Field(
+        ...,
+        description="AI-generated answer to the user's question"
+    )
 
 
 @app.get("/")
-async def root():
-    """Health check endpoint."""
+async def root() -> Dict[str, str]:
+    """
+    Root health check endpoint.
+    
+    Returns:
+        Dictionary with status and message
+    """
     logger.info("Health check requested")
     return {"status": "ok", "message": "SelcukAiAssistant Backend is running"}
 
 
 @app.get("/health/ollama")
-async def ollama_health():
+async def ollama_health() -> Dict[str, Any]:
     """
-    Check Ollama service health.
+    Check Ollama service health and model availability.
+    
+    This endpoint verifies:
+    - Ollama service is running and accessible
+    - Configured model is available (handles tag variations like :latest)
+    - Lists all available models
     
     Returns:
         Dictionary with Ollama health status and available models
+        
+    Raises:
+        HTTPException: 503 if Ollama service is unhealthy
     """
     logger.info("Ollama health check requested")
     health_status = ollama_service.health_check()
@@ -68,31 +112,49 @@ async def chat(request: ChatRequest) -> ChatResponse:
     """
     Chat endpoint that processes user questions using Ollama.
     
+    This endpoint:
+    - Validates and sanitizes user input
+    - Builds a contextualized prompt for Selçuk University
+    - Generates AI response using the Ollama service
+    - Includes retry logic for transient failures
+    - Returns properly UTF-8 encoded Turkish text
+    
     Args:
-        request: ChatRequest containing the user's question
+        request: ChatRequest containing the user's question (validated, 1-5000 chars)
         
     Returns:
-        ChatResponse containing the AI-generated answer
+        ChatResponse containing the AI-generated answer in Turkish
         
     Raises:
-        HTTPException: If there's an error communicating with Ollama
+        HTTPException: 400 for invalid input, 503 for Ollama unavailable,
+                      504 for timeout, 500 for other errors
     """
-    logger.info(f"Chat request received: {request.question[:50]}...")
+    # Log the request (truncate for privacy/security)
+    question_preview = request.question[:50] + "..." if len(request.question) > 50 else request.question
+    logger.info(f"Chat request received: {question_preview}")
     
     try:
-        # Build prompt with context
+        # Build prompt with Selçuk University context
         prompt = build_chat_prompt(request.question)
         
-        # Generate response using Ollama service
+        # Generate response using Ollama service (with retry logic)
         answer = ollama_service.generate(prompt)
         
-        logger.info("Chat request completed successfully")
+        logger.info(f"Chat request completed successfully (response length: {len(answer)} chars)")
         return ChatResponse(answer=answer)
         
     except HTTPException:
-        # Re-raise HTTP exceptions from the service
+        # Re-raise HTTP exceptions from the service (already logged)
         raise
+    except ValueError as e:
+        # Validation errors from Pydantic
+        logger.warning(f"Validation error in chat endpoint: {str(e)}")
+        raise HTTPException(
+            status_code=400,
+            detail=str(e)
+        )
     except Exception as e:
+        # Catch-all for unexpected errors
         logger.exception(f"Unexpected error in chat endpoint: {str(e)}")
         raise HTTPException(
             status_code=500,
