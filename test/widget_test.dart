@@ -41,8 +41,8 @@ void main() {
     // Verify that the app starts properly
     expect(find.byType(MaterialApp), findsOneWidget);
 
-    // Pump once more to ensure everything is rendered
-    await tester.pump();
+    // Let the splash screen timer complete so no pending timers remain
+    await tester.pump(const Duration(seconds: 3));
   });
 
   tearDownAll(() async {
