@@ -1,215 +1,222 @@
-# Migration Summary: Google Gemini → Ollama via FastAPI
+# SelcukAiAssistant
 
-## ✅ Migration Complete
+esN2k/SelcukAiAssistant · "SelcukAiAssistant"
 
-The codebase has been successfully refactored to use a local Ollama instance instead of Google Gemini API.
+## 1. Özet ve Özellikler
 
-## 📋 What Changed
+- **Hibrit mimari**: Python FastAPI backend + Flutter (Android, iOS, Web, Desktop) istemci;
+  opsiyonel C++ hızlandırıcı katmanı.
+- **Ollama tabanlı LLM**: Llama 3.1 veya `selcuk_ai_assistant` modeli ile yerel, düşük gecikmeli
+  yanıtlar.
+- **RAG hazırlığı**: ChromaDB destekli belge alımı ve vektör araması için hazır iskelet (şimdilik
+  devre dışı).
+- **Streaming & güvenlik**: SSE tabanlı akış, giriş doğrulama, XSS koruması ve isteğe bağlı CORS
+  kısıtları.
+- **Konteyner ve otomasyon**: Docker tabanlı çalışma, GitHub Actions (dart.yml) ile kalite kontrol,
+  gelecekte ek pipeline'lara hazır yapı.
 
-### New Files Added
+## 2. Mimari ve Teknoloji Yığını
 
-1. **Backend (Python/FastAPI)**:
-   - `backend/main.py` - FastAPI server with /chat endpoint
-   - `backend/requirements.txt` - Python dependencies
-   - `backend/requirements-dev.txt` - Development dependencies (testing)
-   - `backend/.env.example` - Configuration template
-   - `backend/README.md` - Backend setup and usage guide
-   - `backend/test_main.py` - Unit tests (6 tests, all passing ✅)
+| Katman          | Teknolojiler                                       | Detay                                                                 |
+|-----------------|----------------------------------------------------|-----------------------------------------------------------------------|
+| **Frontend**    | Flutter 3.x, Dart, GetX, flutter_dotenv, Hive      | Mobil/web arayüzü, `.env` ile `BACKEND_URL` okur                      |
+| **Backend**     | Python 3.11+, FastAPI, Uvicorn, Pydantic, Requests | `/chat`, `/chat/stream`, `/health` uç noktaları, Ollama proxy         |
+| **LLM Katmanı** | Ollama + (Llama3.1 \| selcuk_ai_assistant)         | Yerel inference, retry/backoff, UTF-8 desteği                         |
+| **RAG**         | ChromaDB (planlanan), sentence-transformers, pypdf | `rag_service.py` içinde hazırlanan entegrasyon iskeleti               |
+| **Native**      | C++/CMake, platform-specific runner dosyaları      | Flutter masaüstü/webview eklentileri ve izin köprüleri                |
+| **CI/CD**       | GitHub Actions (`.github/workflows/dart.yml`)      | `flutter analyze`, `flutter test`, gelecekte `pytest`, `ruff`, `mypy` |
+| **Dağıtım**     | Docker, Opsiyonel K8s/VM                           | Backend konteyneri + Ollama servisi, reverse proxy üzerinden TLS      |
 
-2. **Documentation**:
-   - `MIGRATION.md` - Comprehensive step-by-step migration guide
-   - `.env.example` - Flutter app configuration template
-
-### Modified Files
-
-1. **Flutter App**:
-   - `lib/apis/apis.dart` - Now calls FastAPI backend instead of Gemini
-   - `lib/helper/global.dart` - Added BACKEND_URL configuration
-   - `pubspec.yaml` - Removed google_generative_ai dependency
-   - `.gitignore` - Added Python-related exclusions
-
-## 🚀 Next Steps for You
-
-### 1. Install and Setup Ollama
-
-```bash
-# Download from https://ollama.ai
-# Then pull the model:
-ollama pull llama3.1
+```
+Flutter UI → FastAPI Backend (/chat, /chat/stream) → Ollama → (Opsiyonel) RAG ChromaDB
 ```
 
-### 2. Start the Backend
+## 3. Kurulum Önkoşulları
 
+- **Zorunlu**: Git, Python 3.11+, Flutter SDK 3.24+, Node/Android toolchain (hedef platformlara
+  göre), CMake 3.28+ (masaüstü).
+- **Yapay Zeka**: [Ollama](https://ollama.com/) + `ollama pull llama3.1` veya özel model.
+- **Opsiyonel**: Docker Desktop/Engine, GPU sürücüleri, Appwrite hesabı (`<APPWRITE_PROJECT_ID>`
+  vb.).
+
+### Kurulum Adımları
 ```bash
+# 1) Depoyu alın
+git clone https://github.com/esN2k/SelcukAiAssistant.git
+cd SelcukAiAssistant
+
+# 2) Backend kurulumu
 cd backend
+python -m venv .venv
+.venv\Scripts\activate    # Linux/macOS: source .venv/bin/activate
 pip install -r requirements.txt
-python main.py
-```
+cp .env.example .env       # değerleri aşağıdaki tabloya göre düzenleyin
 
-The backend will run at `http://localhost:8000`
-
-### 3. Configure the Flutter App
-
-Create a `.env` file in the project root:
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env` and set the backend URL:
-
-- For Android emulator: `BACKEND_URL=http://10.0.2.2:8000`
-- For iOS simulator: `BACKEND_URL=http://localhost:8000`
-- For physical device: `BACKEND_URL=http://YOUR_COMPUTER_IP:8000`
-
-### 4. Update Flutter Dependencies
-
-```bash
+# 3) Flutter kurulumu
+cd ..
 flutter pub get
+cp .env.example .env       # BACKEND_URL vb. için
 ```
 
-### 5. Run Your App
+## 4. Çalıştırma
 
-```bash
-flutter run
+- **Ollama**
+  ```bash
+  ollama serve &
+  ollama pull selcuk_ai_assistant   # yoksa: ollama pull llama3.1
+  ```
+- **Backend (geliştirme)**
+  ```bash
+  cd backend
+  .venv\Scripts\activate
+  uvicorn main:app --reload --host 0.0.0.0 --port 8000
+  ```
+- **Backend (production)**
+  ```bash
+  uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000} --workers 4
+  ```
+- **Flutter istemci**
+  ```bash
+  flutter run                  # otomatik cihaz seçimi
+  flutter run -d chrome        # web
+  flutter run -d <device-id>   # belirli hedef
+  ```
+- **Docker (backend)**
+  ```bash
+  cd backend
+  docker build -t selcuk-ai-backend .
+  docker run --rm -p 8000:8000 --env-file .env selcuk-ai-backend
+  ```
+
+## 5. Yapılandırma (.env)
+
+| Anahtar               | Konum                            | Örnek Değer                      | Açıklama                          |
+|-----------------------|----------------------------------|----------------------------------|-----------------------------------|
+| `BACKEND_URL`         | Proje kökü `.env`                | `http://10.0.2.2:8000`           | Flutter istemcisinin API tabanı   |
+| `API_KEY`             | Proje kökü `.env`                | (boş)                            | Eski Gemini uyumluluğu, opsiyonel |
+| `HOST`                | `backend/.env`                   | `0.0.0.0`                        | FastAPI bind adresi               |
+| `PORT`                | `backend/.env`                   | `8000`                           | FastAPI portu                     |
+| `ALLOWED_ORIGINS`     | `backend/.env`                   | `https://app.example.com`        | CORS listesi                      |
+| `OLLAMA_BASE_URL`     | `backend/.env`                   | `http://localhost:11434`         | Ollama API adresi                 |
+| `OLLAMA_MODEL`        | `backend/.env`                   | `selcuk_ai_assistant`            | Varsayılan model                  |
+| `OLLAMA_TIMEOUT`      | `backend/.env`                   | `120`                            | Saniye cinsinden timeout          |
+| `OLLAMA_MAX_RETRIES`  | `backend/.env`                   | `3`                              | Retry sayısı                      |
+| `LOG_LEVEL`           | `backend/.env`                   | `INFO`                           | FastAPI/uvicorn log seviyesi      |
+| `RAG_ENABLED`         | `backend/.env`                   | `false`                          | ChromaDB entegrasyonu             |
+| `RAG_VECTOR_DB_PATH`  | `backend/.env`                   | `./data/chromadb`                | Vektör veritabanı yolu            |
+| `APPWRITE_ENDPOINT`   | `<backend/.env veya proje .env>` | `<https://cloud.appwrite.io/v1>` | Gelecek Appwrite entegrasyonu     |
+| `APPWRITE_PROJECT_ID` | `<...>`                          | `<proj-id>`                      | Opsiyonel                         |
+| `APPWRITE_API_KEY`    | `<...>`                          | `<api-key>`                      | Opsiyonel                         |
+
+> Not: Üretimde gizli anahtarlar için `<Secret Manager>` veya GitHub Actions Secrets tercih edin.
+
+## 6. Klasör Yapısı
+```
+SelcukAiAssistant/
+├─ lib/                    # Flutter ekranları, controller, service, widget
+├─ assets/                 # Görseller, lottie animasyonları, fonts
+├─ backend/
+│  ├─ main.py
+│  ├─ config.py
+│  ├─ ollama_service.py
+│  ├─ rag_service.py       # RAG placeholder
+│  ├─ prompts.py
+│  ├─ test_main.py
+│  ├─ test_extended.py
+│  ├─ requirements*.txt
+│  └─ README.md
+├─ android/, ios/, web/, windows/   # Platform hedefleri
+├─ docs/ (final_raporu, vize_raporu)
+├─ ARCHITECTURE.md, MIGRATION.md, QUICKSTART.md, SUMMARY.md
+└─ test/ (Flutter widget testleri)
 ```
 
-## 🔧 Configuration Options
+## 7. Komut Referansı
 
-### Backend Configuration (backend/.env)
+| Amaç                       | Komut                                                                                         |
+|----------------------------|-----------------------------------------------------------------------------------------------|
+| Flutter bağımlılıkları     | `flutter pub get`                                                                             
+| Flutter temiz build        | `flutter clean && flutter pub get`                                                            
+| Flutter çalıştır           | `flutter run -d <device>`                                                                     
+| Backend bağımlılık         | `pip install -r backend/requirements.txt`                                                     
+| Backend testleri           | `cd backend && pytest -v`                                                                     
+| Backend lint               | `cd backend && ruff check .`                                                                  
+| Backend type-check         | `cd backend && mypy .`                                                                        
+| Backend format (opsiyonel) | `cd backend && ruff format .`                                                                 
+| Docker build/run           | `docker build -t selcuk-ai-backend backend && docker run --rm -p 8000:8000 selcuk-ai-backend` 
 
-```bash
-OLLAMA_URL=http://localhost:11434/api/generate
-OLLAMA_MODEL=llama3.1
-OLLAMA_TIMEOUT=30
-ALLOWED_ORIGINS=*
-PORT=8000
-```
+## 8. Test · Lint · Tip Kontrol · CI
 
-### Flutter Configuration (.env)
+| Kapsam                 | Araç/Komut                                | Durum                                                     |
+|------------------------|-------------------------------------------|-----------------------------------------------------------|
+| Backend birim testleri | `pytest test_main.py test_extended.py -v` | 30+ senaryo, Ollama mock, health, SSE                     |
+| Backend lint           | `ruff check .`                            | PEP8 + import sırası                                      |
+| Backend type-check     | `mypy .`                                  | (isteğe bağlı, `<mypy.ini>` yoksa ekleyin)                |
+| Flutter analiz         | `flutter analyze`                         | CI `dart.yml` içinde çalışır                              |
+| Flutter test           | `flutter test`                            | Varsayılan widget testi + eklenebilir                     |
+| Güvenlik taraması      | `<pip-audit veya safety>`                 | Opsiyonel                                                 |
+| CI                     | `.github/workflows/dart.yml`              | Push/PR tetikleyicisi (`flutter analyze`, `flutter test`) |
 
-```bash
-BACKEND_URL=http://localhost:8000
-```
+> Gelecekte backend testleri ve lint adımlarını da CI'a eklemek için `python` job'u eklenmesi
+> önerilir.
 
-## 🧪 Testing
+## 9. Dağıtım Stratejileri
 
-### Backend Unit Tests
+- **Docker tek sunucu**: FastAPI konteyneri + aynı hostta Ollama. Reverse proxy (nginx/Caddy) ile
+  HTTPS, `ALLOWED_ORIGINS` kısıtlı.
+- **Çift düğüm**: FastAPI (Fly.io/Railway/Render) + GPU'lu Ollama VM (RunPod, LambdaLabs).
+  BACKEND_URL ve OLLAMA_BASE_URL güncellenir.
+- **Kubernetes**: `Deployment` (FastAPI) + `StatefulSet` (Ollama) + `PersistentVolume` (model
+  cache). HPA ve node selector ile kaynak yönetimi.
+- **CI/CD**: `<Preferred provider>` üzerinden container push + ortam değişkeni yönetimi (
+  `<Vault/Secret Manager>`).
+- **Versiyonlama**: SemVer (`1.0.2+2`) Flutter tarafında tutulur; backend için `<git tag>` önerilir.
 
-```bash
-cd backend
-pip install -r requirements-dev.txt
-pytest test_main.py -v
-```
+## 10. Gözlemlenebilirlik
 
-All 6 tests pass ✅:
+- **Loglama**: Uvicorn/Flutter logları varsayılan olarak stdout'a düşer. Prod'da JSON log formatı
+  için `LOG_LEVEL=INFO` + `uvicorn --log-config`. Flutter'da `<Crashlytics/Sentry>` entegrasyonu
+  önerilir.
+- **Health Check**: `GET /` ve `GET /health/ollama` endpoint'leri uptime monitörlerine bağlanabilir.
+- **Metric/Trace**: `<Prometheus/OpenTelemetry>` entegrasyonu planlanıyor. FastAPI için
+  `prometheus-fastapi-instrumentator`, Flutter için `<analytics SDK>` değerlendirilebilir.
+- **Alerting**: `<Grafana Cloud / Azure Monitor / CloudWatch>` ile CPU, RAM, model gecikmeleri
+  izlenebilir.
+- **Log rotation**: Docker/K8s ortamlarında merkezi log (ELK/EFK/Loki) önerilir.
 
-- Health check endpoint
-- Successful chat response
-- Connection error handling
-- Invalid request handling
-- Empty response handling
-- Prompt formatting
+## 11. Yol Haritası
 
-### Manual Testing
+1. **Kısa vade (<3 ay)**: RAG pipeline'ını etkinleştirme, `rag_service.py` + ChromaDB + ingestion
+   araçları.
+2. **Orta vade (<6 ay)**: Appwrite kimlik doğrulama + kullanıcı oturumu, mobil UI'da sohbet geçmişi
+   eşitleme.
+3. **Uzun vade**: Çoklu model desteği (GPU/CPU), otomatik benchmark, Prometheus/Grafana tabanlı
+   gözlemlenebilirlik paketi, `<Kurumsal dağıtım hedefi>`.
+4. **Sürekli**: Test kapsamasını artırma (Flutter widget, backend contract test), CI'da güvenlik
+   taramaları.
 
-```bash
-# Health check
-curl http://localhost:8000/
+## 12. Katkı Rehberi
 
-# Test chat
-curl -X POST http://localhost:8000/chat \
-  -H "Content-Type: application/json" \
-  -d '{"question": "Merhaba, nasılsın?"}'
-```
+- Depoyu fork'layın, `feature/<kısa-ad>` dalı açın.
+- Değişiklik öncesi `flutter analyze`, `flutter test`, `pytest`, `ruff`, `mypy` komutlarını
+  çalıştırın.
+- Gerekli yerlerde dokümantasyonu güncelleyin (`README`, `ARCHITECTURE`, `.env.example`).
+- PR açıklamasında: kapsam, test sonuçları, ilgili issue/link.
+- Kod tarzı: Python için PEP8 + type hints, Dart için `dart format` (`flutter format`) uygulanmalı.
+- Büyük özellikler için önce issue açarak tartışın; iletişim kanalı `<Discord/Slack/Email>` olarak
+  belirlenecek.
 
-## 🔒 Security
+## 13. Lisans
 
-- ✅ No security vulnerabilities in dependencies
-- ✅ CodeQL scan passed (0 alerts)
-- ✅ CORS configurable for production
-- ✅ Timeout configurable to prevent long-running requests
+- Proje **MIT Lisansı** ile yayımlanır. Ayrıntılar için `LICENSE` dosyasını kontrol edin veya yoksa
+  aşağıdaki ifadeyi kullanın:
+  ```text
+  MIT License
+  Copyright (c) <2024> <esN2k>
+  ...
+  ```
+- Üçüncü parti bileşenler (Ollama modelleri, Appwrite SDK'ları) kendi lisanslarına tabidir.
 
-## 📊 Benefits of This Migration
-
-1. **Privacy**: All AI processing happens locally
-2. **Cost**: No API usage fees
-3. **Control**: Full control over model and behavior
-4. **Offline**: Works without internet (after setup)
-5. **Security**: No data sent to external services
-
-## 📖 Documentation
-
-- **MIGRATION.md** - Complete step-by-step guide
-- **backend/README.md** - Backend setup and API documentation
-- **Backend tests** - API contract validation
-
-## 🆘 Troubleshooting
-
-### Common Issues
-
-**Backend won't start**:
-
-- Check if port 8000 is available
-- Verify Python dependencies are installed
-
-**Can't connect to Ollama**:
-
-- Verify Ollama is running: `ollama list`
-- Check Ollama URL in backend/.env
-
-**Flutter app can't connect to backend**:
-
-- Check BACKEND_URL in .env
-- For emulator, use `10.0.2.2` instead of `localhost`
-- For physical device, use your computer's IP address
-
-See MIGRATION.md for detailed troubleshooting steps.
-
-## 📦 Dependencies
-
-### Removed
-
-- ❌ `google_generative_ai: ^0.4.7` (Flutter)
-
-### Added (Backend)
-
-- ✅ `fastapi==0.115.5`
-- ✅ `uvicorn[standard]==0.32.1`
-- ✅ `requests==2.32.3`
-- ✅ `pydantic==2.10.3`
-
-### Existing (Flutter)
-
-- `http: ^1.2.2` (already in project, now used for backend calls)
-
-## 🎯 API Contract Maintained
-
-The Flutter app API remains unchanged:
-
-- Input: `{"question": "user's question"}`
-- Output: `{"answer": "AI response"}`
-
-This ensures backward compatibility with your existing Flutter UI code.
-
-## 🔄 Rollback Plan
-
-If needed, see MIGRATION.md section "Rollback Plan" to revert to Google Gemini.
-
-## 📚 Additional Resources
-
-- Ollama Documentation: <https://ollama.ai/docs>
-- FastAPI Documentation: <https://fastapi.tiangolo.com/>
-- Backend API docs (when running): <http://localhost:8000/docs>
-
-## ✨ Summary
-
-Your codebase is now fully migrated to use Ollama via a local FastAPI backend! The migration:
-
-- ✅ Maintains the same API contract
-- ✅ Includes comprehensive tests
-- ✅ Provides detailed documentation
-- ✅ Ensures security and configurability
-- ✅ Offers full privacy and cost savings
-
-Follow the "Next Steps" above to get everything running. Happy coding! 🎉
+---
+> Eksik bilgiler `<...>` ile işaretlenmiştir. Örn. Appwrite değişkenleri, tercih edilen cloud
+> sağlayıcısı veya gözlemlenebilirlik araçları netleştiğinde README güncellenmelidir.
