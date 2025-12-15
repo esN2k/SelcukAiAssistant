@@ -147,18 +147,16 @@ SelcukAiAssistant/
 
 ## 8. Test · Lint · Tip Kontrol · CI
 
-| Kapsam                 | Araç/Komut                                | Durum                                                     |
-|------------------------|-------------------------------------------|-----------------------------------------------------------|
-| Backend birim testleri | `pytest test_main.py test_extended.py -v` | 30+ senaryo, Ollama mock, health, SSE                     |
-| Backend lint           | `ruff check .`                            | PEP8 + import sırası                                      |
-| Backend type-check     | `mypy .`                                  | (isteğe bağlı, `<mypy.ini>` yoksa ekleyin)                |
-| Flutter analiz         | `flutter analyze`                         | CI `dart.yml` içinde çalışır                              |
-| Flutter test           | `flutter test`                            | Varsayılan widget testi + eklenebilir                     |
-| Güvenlik taraması      | `<pip-audit veya safety>`                 | Opsiyonel                                                 |
-| CI                     | `.github/workflows/dart.yml`              | Push/PR tetikleyicisi (`flutter analyze`, `flutter test`) |
-
-> Gelecekte backend testleri ve lint adımlarını da CI'a eklemek için `python` job'u eklenmesi
-> önerilir.
+| Kapsam                 | Araç/Komut                                | Durum                                                                         |
+|------------------------|-------------------------------------------|-------------------------------------------------------------------------------|
+| Backend birim testleri | `pytest test_main.py test_extended.py -v` | 30+ senaryo, Ollama mock, health, SSE                                         |
+| Backend lint           | `ruff check .`                            | PEP8 + import sırası                                                          |
+| Backend type-check     | `mypy .`                                  | (isteğe bağlı, `<mypy.ini>` yoksa ekleyin)                                    |
+| Flutter analiz         | `flutter analyze`                         | CI `dart.yml` içinde çalışır                                                  |
+| Flutter test           | `flutter test`                            | Varsayılan widget testi + eklenebilir                                         |
+| Güvenlik taraması      | `<pip-audit veya safety>`                 | Opsiyonel                                                                     |
+| Backend CI             | `.github/workflows/backend.yml`           | Push/PR tetikleyicisi (`ruff`, `mypy`, `pytest` işlerini çalıştırır)          |
+| Flutter CI             | `.github/workflows/dart.yml`              | Push/PR tetikleyicisi (`flutter analyze`, `flutter test` işlerini çalıştırır) |
 
 ## 9. Dağıtım Stratejileri
 
@@ -183,6 +181,13 @@ SelcukAiAssistant/
 - **Alerting**: `<Grafana Cloud / Azure Monitor / CloudWatch>` ile CPU, RAM, model gecikmeleri
   izlenebilir.
 - **Log rotation**: Docker/K8s ortamlarında merkezi log (ELK/EFK/Loki) önerilir.
+- **Prometheus/Grafana Kurulumu (Örnek)**:
+  ```bash
+  # prometheus-fastapi-instrumentator kurulumu (backend)
+  pip install prometheus-fastapi-instrumentator
+  # main.py içine: Instrumentator().instrument(app).expose(app)
+  # prometheus.yml config dosyası oluşturup FastAPI portunu (8000) dinlemeye başlayın.
+  ```
 
 ## 11. Yol Haritası
 
