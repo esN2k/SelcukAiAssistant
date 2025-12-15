@@ -1,8 +1,7 @@
 """FastAPI backend for SelcukAiAssistant using Ollama."""
-import logging
 import json
-import asyncio
-from typing import Dict, Any, AsyncIterator
+import logging
+from typing import Dict, Any, Iterator
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -196,32 +195,17 @@ async def chat_stream(request: ChatRequest) -> StreamingResponse:
     # Log the request (truncate for privacy/security)
     question_preview = request.question[:50] + "..." if len(request.question) > 50 else request.question
     logger.info(f"Streaming chat request received: {question_preview}")
-    
-    async def generate_stream() -> AsyncIterator[str]:
-        """Generate Server-Sent Events stream without blocking the event loop."""
+
+    def event_generator() -> Iterator[str]:
+        """Generate Server-Sent Events stream."""
         try:
             # Build prompt with Selçuk University context
             prompt = build_chat_prompt(request.question)
             
-            # Stream response from Ollama in executor to avoid blocking
-            loop = asyncio.get_event_loop()
-            
-            # Run the synchronous streaming in a thread pool
-            def sync_stream():
-                """Synchronous streaming wrapper for executor."""
-                tokens = []
-                for chunk in ollama_service.generate_stream(prompt):
-                    tokens.append(chunk)
-                return tokens
-            
-            # Get all tokens from the stream (this runs in a thread pool)
-            tokens = await loop.run_in_executor(None, sync_stream)
-            
-            # Yield tokens without blocking the event loop
-            for token in tokens:
+            # Stream response directly from Ollama service
+            # FastAPI runs this synchronous generator in a thread pool automatically
+            for token in ollama_service.generate_stream(prompt):
                 yield f"data: {json.dumps({'token': token})}\n\n"
-                # Yield control to event loop periodically
-                await asyncio.sleep(0)
             
             # Send completion event
             yield f"data: {json.dumps({'done': True})}\n\n"
@@ -240,7 +224,7 @@ async def chat_stream(request: ChatRequest) -> StreamingResponse:
             logger.exception(f"Unexpected error in streaming endpoint: {str(e)}")
     
     return StreamingResponse(
-        generate_stream(),
+        event_generator(),
         media_type="text/event-stream",
         headers={
             "Cache-Control": "no-cache",
