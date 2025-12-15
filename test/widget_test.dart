@@ -11,37 +11,41 @@ void main() {
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
 
-    // Mock path_provider channel to return a safe temp directory
-    // This is safer than returning '.' which might cause lock issues in CI
+    // Mock path_provider
     const channel = MethodChannel('plugins.flutter.io/path_provider');
-
-    // We create a temp dir for the test
     final tempDir = Directory.systemTemp.createTempSync();
 
-    // Mock the channel to return this temp dir path
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(channel, (MethodCall methodCall) async {
       return tempDir.path;
     });
+
+    // Initialize Hive manually for the test environment
+    Hive.init(tempDir.path);
+
+    // Open the box used by Pref manually to ensure it's ready.
+    // This avoids Pref.initialize() getting stuck if initFlutter behaves oddly.
+    if (!Hive.isBoxOpen('myData')) {
+      await Hive.openBox<dynamic>('myData');
+    }
   });
 
   testWidgets('AI Asistanı uygulama testi', (WidgetTester tester) async {
-    // Initialize Preferences
-    // This calls Hive.initFlutter()
-    // which calls getApplicationDocumentsDirectory
-    // which hits our mock above.
+    // Run Pref.initialize. Since Hive is already inited and box is open,
+    // this should be fast/instant.
     await Pref.initialize();
 
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
 
     // Verify that the app starts properly
-    // We check for MaterialApp (or GetMaterialApp)
     expect(find.byType(MaterialApp), findsOneWidget);
 
     // Pump once more to ensure everything is rendered
     await tester.pump();
   });
 
-  tearDownAll(Hive.close);
+  tearDownAll(() async {
+    await Hive.close();
+  });
 }
