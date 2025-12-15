@@ -1,7 +1,7 @@
 """
 Unit tests for the FastAPI backend.
 
-These tests verify the API contract without requiring Ollama to be running.
+These tests verify the API contract without requiring Ollama to be running
 """
 from unittest.mock import patch, MagicMock
 
@@ -10,11 +10,13 @@ import requests
 from fastapi.testclient import TestClient
 
 # Import from the same directory
+from config import Config
 from main import app
 
 client = TestClient(app)
 
 
+@patch('main.appwrite_client', None)
 def test_root_endpoint():
     """Test the health check endpoint."""
     response = client.get("/")
@@ -25,6 +27,7 @@ def test_root_endpoint():
     }
 
 
+@patch('main.appwrite_client', None)
 @patch('ollama_service.requests.post')
 def test_chat_endpoint_success(mock_post):
     """Test successful chat request."""
@@ -48,6 +51,7 @@ def test_chat_endpoint_success(mock_post):
     assert data["answer"] == "Merhaba! Ben Selçuk Üniversitesi AI asistanıyım."
 
 
+@patch('main.appwrite_client', None)
 @patch('ollama_service.requests.post')
 def test_chat_endpoint_connection_error(mock_post):
     """Test chat request when Ollama is not available."""
@@ -65,6 +69,7 @@ def test_chat_endpoint_connection_error(mock_post):
     assert "detail" in data
 
 
+@patch('main.appwrite_client', None)
 def test_chat_endpoint_invalid_request():
     """Test chat request with missing required field."""
     response = client.post(
@@ -75,6 +80,7 @@ def test_chat_endpoint_invalid_request():
     assert response.status_code == 422  # Validation error
 
 
+@patch('main.appwrite_client', None)
 @patch('ollama_service.requests.post')
 def test_chat_endpoint_empty_response(mock_post):
     """Test chat request when Ollama returns empty response."""
@@ -95,6 +101,7 @@ def test_chat_endpoint_empty_response(mock_post):
     assert data["answer"] == "Üzgünüm, bir yanıt oluşturulamadı."
 
 
+@patch('main.appwrite_client', None)
 @patch('ollama_service.requests.post')
 def test_prompt_contains_question(mock_post):
     """Test that the prompt sent to Ollama contains the user's question."""
@@ -119,10 +126,11 @@ def test_prompt_contains_question(mock_post):
     json_payload = call_args[1]["json"]
     assert "prompt" in json_payload
     assert question in json_payload["prompt"]
-    assert json_payload["model"] == "llama3.1"
+    assert json_payload["model"] == Config.OLLAMA_MODEL
     assert json_payload["stream"] is False
 
 
+@patch('main.appwrite_client', None)
 @patch('ollama_service.requests.get')
 def test_ollama_health_check_healthy(mock_get):
     """Test Ollama health check when service is healthy."""
@@ -131,7 +139,7 @@ def test_ollama_health_check_healthy(mock_get):
     mock_response.status_code = 200
     mock_response.json.return_value = {
         "models": [
-            {"name": "llama3.1"},
+            {"name": Config.OLLAMA_MODEL},
             {"name": "mistral"}
         ]
     }
@@ -143,9 +151,10 @@ def test_ollama_health_check_healthy(mock_get):
     data = response.json()
     assert data["status"] == "healthy"
     assert data["model_available"] is True
-    assert "llama3.1" in data["available_models"]
+    assert Config.OLLAMA_MODEL in data["available_models"]
 
 
+@patch('main.appwrite_client', None)
 @patch('ollama_service.requests.get')
 def test_ollama_health_check_unhealthy(mock_get):
     """Test Ollama health check when service is unavailable."""
@@ -159,6 +168,7 @@ def test_ollama_health_check_unhealthy(mock_get):
     assert "detail" in data
 
 
+@patch('main.appwrite_client', None)
 @patch('ollama_service.requests.post')
 def test_chat_endpoint_timeout(mock_post):
     """Test chat request timeout handling."""

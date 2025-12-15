@@ -1,8 +1,9 @@
 """FastAPI backend for SelcukAiAssistant using Ollama."""
 import json
 import logging
-from typing import Dict, Any, Iterator
+from typing import Dict, Any, Iterator, Optional
 
+import requests
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
@@ -11,6 +12,8 @@ from pydantic import BaseModel, Field, field_validator
 from config import Config
 from ollama_service import OllamaService
 from prompts import build_chat_prompt
+
+AppwriteClient = requests.Session
 
 logger = logging.getLogger(__name__)
 
@@ -28,6 +31,40 @@ app.add_middleware(
 
 # Initialize Ollama service
 ollama_service = OllamaService()
+
+# Optional Appwrite logging
+appwrite_client: Optional[AppwriteClient] = None
+if Config.APPWRITE_ENDPOINT and Config.APPWRITE_PROJECT_ID and Config.APPWRITE_API_KEY:
+    appwrite_client = requests.Session()
+    appwrite_client.headers.update(
+        {
+            "X-Appwrite-Project": Config.APPWRITE_PROJECT_ID,
+            "X-Appwrite-Key": Config.APPWRITE_API_KEY,
+            "Content-Type": "application/json",
+        }
+    )
+
+
+def log_chat_to_appwrite(question: str, answer: str) -> None:
+    """Persist chat pairs to Appwrite if configured."""
+    if not appwrite_client or not Config.APPWRITE_DATABASE_ID or not Config.APPWRITE_COLLECTION_ID:
+        return
+
+    payload = {
+        "data": {
+            "question": question,
+            "answer": answer,
+        }
+    }
+    try:
+        response = appwrite_client.post(
+            f"{Config.APPWRITE_ENDPOINT}/databases/{Config.APPWRITE_DATABASE_ID}/collections/{Config.APPWRITE_COLLECTION_ID}/documents",
+            json=payload,
+            timeout=10,
+        )
+        response.raise_for_status()
+    except requests.RequestException as exc:
+        logger.warning("Appwrite log kaydı başarısız: %s", exc)
 
 
 class ChatRequest(BaseModel):
@@ -141,7 +178,7 @@ async def chat(request: ChatRequest) -> ChatResponse:
         
         # Generate response using Ollama service (with retry logic)
         answer = ollama_service.generate(prompt)
-        
+        log_chat_to_appwrite(request.question, answer)
         logger.info(f"Chat request completed successfully (response length: {len(answer)} chars)")
         return ChatResponse(answer=answer)
         

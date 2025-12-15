@@ -1,40 +1,62 @@
 """Configuration management for SelcukAiAssistant Backend."""
+import logging
 import os
 import sys
-import logging
 from typing import List, Optional
 
-# Configure UTF-8 encoding for all platforms
-# This ensures Turkish characters are displayed correctly
-if sys.platform == 'win32':
-    # Windows-specific UTF-8 configuration
-    import io
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
-else:
-    # Unix/Linux - ensure UTF-8 locale
-    # Set default encoding to UTF-8
-    import locale
-    try:
-        locale.setlocale(locale.LC_ALL, 'tr_TR.UTF-8')
-    except locale.Error:
+
+def _configure_utf8_environment() -> None:
+    """Ensure UTF-8 output without breaking pytest capture."""
+    running_pytest = os.environ.get("PYTEST_CURRENT_TEST") is not None
+
+    if sys.platform == 'win32':
+        if running_pytest:
+            return  # Let pytest manage stdout/stderr during capture
+
+        for stream_name in ("stdout", "stderr"):
+            stream = getattr(sys, stream_name, None)
+            if stream is None:
+                continue
+
+            reconfigured = False
+            if hasattr(stream, "reconfigure"):
+                try:
+                    stream.reconfigure(encoding='utf-8')
+                    reconfigured = True
+                except (AttributeError, ValueError):
+                    pass
+
+            if not reconfigured:
+                buffer = getattr(stream, "buffer", None)
+                if buffer is None:
+                    continue
+                import io
+                setattr(sys, stream_name, io.TextIOWrapper(buffer, encoding='utf-8'))
+    else:
+        import locale
         try:
-            locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+            locale.setlocale(locale.LC_ALL, 'tr_TR.UTF-8')
         except locale.Error:
-            # Log warning if locale setting fails
-            import logging
-            logging.warning(
-                "Failed to set UTF-8 locale. Turkish characters may not display correctly. "
-                "Available locales can be checked with 'locale -a' command."
-            )
+            try:
+                locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+            except locale.Error:
+                logging.warning(
+                    "Failed to set UTF-8 locale. Turkish characters may not display correctly. "
+                    "Available locales can be checked with 'locale -a' command."
+                )
+
+
+_configure_utf8_environment()
+
 
 # Load environment variables from .env file if present
 try:
     from dotenv import load_dotenv
-    load_dotenv()
-except ImportError:
-    # python-dotenv not installed, use environment variables directly
-    pass
+except ImportError:  # Provide a no-op fallback to satisfy type checkers
+    def load_dotenv() -> None:  # type: ignore[override]
+        return
+
+load_dotenv()
 
 
 class Config:
@@ -63,7 +85,14 @@ class Config:
     RAG_COLLECTION_NAME: str = os.getenv("RAG_COLLECTION_NAME", "selcuk_documents")
     RAG_CHUNK_SIZE: int = int(os.getenv("RAG_CHUNK_SIZE", "500"))
     RAG_CHUNK_OVERLAP: int = int(os.getenv("RAG_CHUNK_OVERLAP", "50"))
-    
+
+    # Appwrite configuration (optional)
+    APPWRITE_ENDPOINT: Optional[str] = os.getenv("APPWRITE_ENDPOINT")
+    APPWRITE_PROJECT_ID: Optional[str] = os.getenv("APPWRITE_PROJECT_ID")
+    APPWRITE_API_KEY: Optional[str] = os.getenv("APPWRITE_API_KEY")
+    APPWRITE_DATABASE_ID: Optional[str] = os.getenv("APPWRITE_DATABASE_ID")
+    APPWRITE_COLLECTION_ID: Optional[str] = os.getenv("APPWRITE_COLLECTION_ID")
+
     @classmethod
     def validate(cls) -> None:
         """

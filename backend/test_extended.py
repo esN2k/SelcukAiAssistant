@@ -13,6 +13,7 @@ import pytest
 import requests
 from fastapi.testclient import TestClient
 
+from config import Config
 from main import app
 from ollama_service import OllamaService
 from rag_service import RAGService, Document
@@ -86,7 +87,7 @@ def test_health_check_exact_match(mock_get):
     mock_response.status_code = 200
     mock_response.json.return_value = {
         "models": [
-            {"name": "llama3.1"},
+            {"name": Config.OLLAMA_MODEL},
             {"name": "mistral"}
         ]
     }
@@ -105,7 +106,7 @@ def test_health_check_with_latest_tag(mock_get):
     mock_response.status_code = 200
     mock_response.json.return_value = {
         "models": [
-            {"name": "llama3.1:latest"},
+            {"name": f"{Config.OLLAMA_MODEL}:latest"},
             {"name": "mistral:latest"}
         ]
     }
@@ -114,7 +115,7 @@ def test_health_check_with_latest_tag(mock_get):
     response = client.get("/health/ollama")
     assert response.status_code == 200
     data = response.json()
-    # Should match llama3.1 with llama3.1:latest
+    # Should match configured model with its :latest variant
     assert data["model_available"] is True
 
 
@@ -201,16 +202,18 @@ def test_retry_on_timeout(mock_sleep, mock_post):
 @patch('ollama_service.time.sleep')
 def test_retry_exhaustion(mock_sleep, mock_post):
     """Test that retries are exhausted and error is raised."""
+    from fastapi import HTTPException
+
     mock_post.side_effect = requests.exceptions.ConnectionError("Connection refused")
     
     service = OllamaService(max_retries=3)
-    
-    with pytest.raises(Exception) as exc_info:
+
+    with pytest.raises(HTTPException) as exc_info:
         service.generate("test prompt")
     
     # Should have tried max_retries times
     assert mock_post.call_count == 3
-    assert "503" in str(exc_info.value.status_code)
+    assert exc_info.value.status_code == 503
 
 
 @patch('ollama_service.requests.post')
