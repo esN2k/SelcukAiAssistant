@@ -8,15 +8,16 @@ void main() {
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
 
-    // Initialize Hive with a temporary path for testing
+    // Initialize Hive with a temporary path for testing.
     // Note: Hive.init is deprecated in favor of initFlutter but for unit tests
-    // without path_provider it's safer to use init with a fixed path if possible,
-    // or mock the channel as we do below.
+    // without path_provider it's safer to use init with a fixed path if
+    // possible, or mock the channel as we do below.
   });
 
   testWidgets('AI Asistanı uygulama testi', (WidgetTester tester) async {
     // Mock the path_provider channel to return a temp path.
-    // This allows Hive.initFlutter() (called inside Pref.initialize) to succeed.
+    // This allows Hive.initFlutter() (called inside Pref.initialize)
+    // to succeed.
     const channel = MethodChannel('plugins.flutter.io/path_provider');
     tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel,
         (MethodCall methodCall) async {
@@ -32,11 +33,10 @@ void main() {
     // Allow animations to settle (loading screen etc)
     await tester.pump(const Duration(seconds: 2));
 
-    // Verify that the app starts properly (Splash screen usually has a loader or logo)
+    // Verify that the app starts properly
     // We check for the MaterialApp widget as a basic smoke test.
     // Use find.byType(GetMaterialApp) if checking specifically for GetX root,
     // but MaterialApp is inside it or it wraps it.
-    // Actually MyApp returns GetMaterialApp.
     expect(find.byType(MaterialApp), findsOneWidget);
   });
 }
