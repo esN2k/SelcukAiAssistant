@@ -3,10 +3,11 @@ Unit tests for the FastAPI backend.
 
 These tests verify the API contract without requiring Ollama to be running.
 """
+from unittest.mock import patch, MagicMock
+
 import pytest
 import requests
 from fastapi.testclient import TestClient
-from unittest.mock import patch, MagicMock
 
 # Import from the same directory
 from main import app
@@ -105,7 +106,7 @@ def test_prompt_contains_question(mock_post):
     
     # Make request
     question = "Selçuk Üniversitesi nerede?"
-    response = client.post(
+    client.post(
         "/chat",
         json={"question": question}
     )

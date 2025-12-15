@@ -1,8 +1,8 @@
 """Ollama service client for SelcukAiAssistant Backend."""
-import logging
-from typing import Optional, Dict, Any, List, Iterator
-import time
 import json
+import logging
+import time
+from typing import Optional, Dict, Any, List, Iterator
 
 import requests
 from fastapi import HTTPException
@@ -80,7 +80,6 @@ class OllamaService:
         
         logger.debug(f"Generating response for prompt (length: {len(prompt)} chars)")
         
-        last_exception = None
         for attempt in range(self.max_retries):
             try:
                 ollama_request = {
@@ -121,9 +120,8 @@ class OllamaService:
                 
                 logger.info(f"Successfully generated response (length: {len(answer)} chars)")
                 return answer
-                
-            except requests.exceptions.Timeout as e:
-                last_exception = e
+
+            except requests.exceptions.Timeout:
                 logger.warning(f"Ollama request timed out (attempt {attempt + 1}/{self.max_retries})")
                 if attempt < self.max_retries - 1:
                     time.sleep(self.retry_delay * (attempt + 1))
@@ -133,8 +131,7 @@ class OllamaService:
                     status_code=504,
                     detail="Ollama isteği zaman aşımına uğradı. Lütfen tekrar deneyin."
                 )
-            except requests.exceptions.ConnectionError as e:
-                last_exception = e
+            except requests.exceptions.ConnectionError:
                 logger.warning(f"Failed to connect to Ollama (attempt {attempt + 1}/{self.max_retries})")
                 if attempt < self.max_retries - 1:
                     time.sleep(self.retry_delay * (attempt + 1))
@@ -145,7 +142,6 @@ class OllamaService:
                     detail="Ollama servisine bağlanılamadı. Lütfen Ollama'nın çalıştığından emin olun."
                 )
             except requests.exceptions.RequestException as e:
-                last_exception = e
                 logger.error(f"Ollama request failed: {str(e)}")
                 raise HTTPException(
                     status_code=500,
@@ -160,6 +156,9 @@ class OllamaService:
                     status_code=500,
                     detail=f"Beklenmeyen hata: {str(e)}"
                 )
+
+        # This part should be unreachable due to the exception raises in loop
+        return "Hata"
     
     def generate_stream(self, prompt: str) -> Iterator[str]:
         """
@@ -234,8 +233,8 @@ class OllamaService:
                         if chunk_data.get("done", False):
                             logger.info(f"Streaming completed: {token_count} tokens generated")
                             break
-                    
-                    except json.JSONDecodeError as e:
+
+                    except json.JSONDecodeError:
                         logger.warning(f"Failed to parse streaming response line: {line_str[:100]}")
                         continue
                     except Exception as e:

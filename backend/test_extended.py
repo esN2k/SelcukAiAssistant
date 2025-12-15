@@ -7,10 +7,11 @@ Tests cover:
 - Retry logic
 - RAG service structure
 """
+from unittest.mock import patch, MagicMock
+
 import pytest
-from fastapi.testclient import TestClient
-from unittest.mock import patch, MagicMock, call
 import requests
+from fastapi.testclient import TestClient
 
 from main import app
 from ollama_service import OllamaService
