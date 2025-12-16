@@ -4,8 +4,6 @@ Comprehensive unit tests for reasoning artifact cleanup.
 This test suite validates that the _clean_reasoning_artifacts() method
 properly removes DeepSeek-R1 reasoning tokens and returns clean answers.
 """
-import pytest
-
 from ollama_service import OllamaService
 
 

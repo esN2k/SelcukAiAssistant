@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:selcukaiassistant/helper/global.dart';
 import 'package:selcukaiassistant/model/message.dart';
+import 'package:selcukaiassistant/widget/typing_indicator.dart';
 
 class MessageCard extends StatelessWidget {
   const MessageCard({required this.message, super.key});
@@ -51,14 +52,18 @@ class MessageCard extends StatelessWidget {
                     ),
                   ),
                   child: message.msg.isEmpty
-                      ? AnimatedTextKit(
-                          animatedTexts: [
-                            TypewriterAnimatedText(
-                              'Bir şey daha var...',
-                              speed: const Duration(milliseconds: 100),
+                      ? const Row(
+                          children: [
+                            TypingIndicator(),
+                            SizedBox(width: 12),
+                            Text(
+                              'AI düşünüyor...',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontStyle: FontStyle.italic,
+                              ),
                             ),
                           ],
-                          repeatForever: true,
                         )
                       : MarkdownBody(
                           data: message.msg,

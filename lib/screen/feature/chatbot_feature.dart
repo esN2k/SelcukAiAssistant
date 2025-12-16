@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:selcukaiassistant/controller/chat_controller.dart';
 import 'package:selcukaiassistant/helper/global.dart';
+import 'package:selcukaiassistant/helper/pref.dart';
 import 'package:selcukaiassistant/screen/auth/login_screen.dart';
 import 'package:selcukaiassistant/services/appwrite_service.dart';
 import 'package:selcukaiassistant/widget/message_card.dart';
@@ -22,6 +23,13 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
   final _c = ChatController();
   final RxBool _isDarkMode = Get.isDarkMode.obs;
   final _appwriteService = AppwriteService();
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize dark mode state from saved preference
+    _isDarkMode.value = Get.isDarkMode;
+  }
 
   Future<void> _sendPing() async {
     try {
@@ -91,10 +99,12 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
           IconButton(
             padding: const EdgeInsets.only(right: 10),
             onPressed: () {
-              Get.changeThemeMode(
-                _isDarkMode.value ? ThemeMode.light : ThemeMode.dark,
-              );
+              final newMode = _isDarkMode.value ? ThemeMode.light : ThemeMode.dark;
+              Get.changeThemeMode(newMode);
               _isDarkMode.value = !_isDarkMode.value;
+              
+              // Persist the preference
+              Pref.isDarkMode = _isDarkMode.value;
             },
             icon: Obx(
               () => Icon(
