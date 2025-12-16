@@ -33,20 +33,35 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
 
   Future<void> _sendPing() async {
     try {
-      await _appwriteService.account.get();
+      // Use the safe method from the service
+      final user = await _appwriteService.getCurrentUser();
+
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Appwrite bağlantı başarılı! ✅'),
-            backgroundColor: Colors.green,
-          ),
-        );
+        if (user != null) {
+          // Successfully got user, connection is OK
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Appwrite bağlantı başarılı! ✅'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        } else {
+          // Service might be configured but user not logged in
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Appwrite bağlantısı var ama oturum açılmamış.'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+        }
       }
     } on Exception catch (e) {
       if (mounted) {
+        // This catches errors like 'Appwrite Service not initialized'
+        final errorMessage = e.toString().replaceAll('Exception: ', '');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Appwrite ping hatası: $e'),
+            content: Text('Appwrite ping hatası: $errorMessage'),
             backgroundColor: Colors.red,
           ),
         );
