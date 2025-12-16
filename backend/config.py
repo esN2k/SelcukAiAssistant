@@ -52,18 +52,33 @@ _configure_utf8_environment()
 # Load environment variables from .env file if present
 try:
     from dotenv import load_dotenv
-except ImportError:  # Provide a no-op fallback to satisfy type checkers
-    def load_dotenv() -> None:  # type: ignore[override]
+
+    # Get the directory where this config.py file is located (backend/)
+    backend_dir = os.path.dirname(os.path.abspath(__file__))
+    env_path = os.path.join(backend_dir, '.env')
+
+    # Load .env file with explicit path
+    load_dotenv(env_path)
+
+    # Log if .env file exists
+    if os.path.exists(env_path):
+        logging.info(f"Loaded .env file from: {env_path}")
+    else:
+        logging.warning(f".env file not found at: {env_path}")
+except ImportError:
+    logging.warning("python-dotenv not installed, environment variables must be set manually")
+
+
+    def load_dotenv(dotenv_path: Optional[str] = None) -> None:  # type: ignore[misc]
         return
 
-load_dotenv()
 
 
 class Config:
     """Application configuration with validation and type safety."""
     
     # Server configuration
-    HOST: str = os.getenv("HOST", "127.0.0.1")
+    HOST: str = os.getenv("HOST", "0.0.0.0")
     PORT: int = int(os.getenv("PORT", "8000"))
     
     # CORS configuration
@@ -72,7 +87,7 @@ class Config:
     # Ollama configuration
     OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
     OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", "llama3.1")
-    OLLAMA_TIMEOUT: int = int(os.getenv("OLLAMA_TIMEOUT", "30"))
+    OLLAMA_TIMEOUT: int = int(os.getenv("OLLAMA_TIMEOUT", "120"))
     OLLAMA_MAX_RETRIES: int = int(os.getenv("OLLAMA_MAX_RETRIES", "3"))
     OLLAMA_RETRY_DELAY: float = float(os.getenv("OLLAMA_RETRY_DELAY", "1.0"))
     

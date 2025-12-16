@@ -44,9 +44,8 @@ class OllamaService:
             f"Initialized Ollama service: url={self.api_url}, "
             f"model={self.model}, timeout={self.timeout}s, max_retries={self.max_retries}"
         )
-
-    @staticmethod
-    def _validate_prompt(prompt: str) -> None:
+    
+    def _validate_prompt(self, prompt: str) -> None:
         """
         Validate prompt input.
         
@@ -62,55 +61,67 @@ class OllamaService:
                 status_code=400,
                 detail="Lütfen bir soru girin."
             )
+    
+    def _clean_reasoning_artifacts(self, text: str) -> str:
+        """
+        Clean DeepSeek-R1 reasoning artifacts from response.
 
-    @staticmethod
-    def _clean_reasoning_artifacts(text: str) -> str:
-        """AGGRESSIVELY clean DeepSeek-R1 reasoning from response."""
+        DeepSeek-R1 models show their "thinking" process, either with tags or plain text.
+        This method removes those artifacts to show only the final answer.
+
+        Args:
+            text: Raw response from model
+
+        Returns:
+            Cleaned response without reasoning artifacts
+        """
         import re
 
-        # Strategy: Extract only the final answer, discard everything else
+        # Remove <think>...</think> blocks (tagged format)
+        text = re.sub(r'<think>.*?</think>', '', text, flags=re.DOTALL)
 
-        # Method 1: Find last "Merhaba" and take from there
-        merhaba_matches = list(re.finditer(r'Merhaba[!.]?', text, re.IGNORECASE))
-        if merhaba_matches:
-            text = text[merhaba_matches[-1].start():]
+        # Remove </think> tag at the end (common pattern)
+        text = re.sub(r'</think>\s*$', '', text, flags=re.DOTALL)
 
-        # Method 2: Find markdown headers (##) and take structured content
-        elif '##' in text:
-            header_pos = text.rfind('##')
-            text = text[header_pos:]
+        # Remove plain-text reasoning blocks (common patterns)
+        # Pattern 1: "Okay, ..." or "Tamam, ..." at the start
+        text = re.sub(r'^(Okay|Tamam|Alright|Let me|İlk olarak|First),\s+.*?(?=\n\n|$)', '', text, flags=re.DOTALL | re.IGNORECASE)
 
-        # Method 3: Split by double newline and take last paragraph
-        elif '\n\n' in text:
-            paragraphs = text.split('\n\n')
-            # Take paragraphs that don't contain reasoning keywords
-            good_paragraphs = []
-            for p in paragraphs:
-                if not any(kw in p.lower() for kw in
-                           ['okay', 'tamam', 'kullanıcı', 'user', 'aramalıyım']):
-                    good_paragraphs.append(p)
-            if good_paragraphs:
-                text = '\n\n'.join(good_paragraphs)
+        # Pattern 2: Remove lines that look like internal reasoning (contains "need to", "should", "I'll", "must")
+        lines = text.split('\n')
+        cleaned_lines = []
+        in_reasoning = False
 
-        # Remove all English reasoning sentences
-        text = re.sub(r'[^.!?]*\b(okay|alright|let me|i need|i should|the user)\b[^.!?]*[.!?]', '',
-                      text, flags=re.IGNORECASE)
+        for line in lines:
+            line_lower = line.lower()
+            # Detect reasoning indicators
+            reasoning_indicators = [
+                'i need to', 'i should', "i'll", 'i must', 'let me think',
+                'first,', 'then,', 'also,', 'maybe', 'probably',
+                'kullanıcı', 'user greeted', 'aramalıyım', 'düşünüyorum',
+                'belirtilmiş olabilir', 'söylenbilir', 'vurgulayabilirim'
+            ]
 
-        # Remove all Turkish reasoning sentences
-        text = re.sub(r'[^.!?]*\b(tamam|kullanıcı|aramalıyım|düşünüyorum|olabilir)\b[^.!?]*[.!?]',
-                      '', text, flags=re.IGNORECASE)
+            is_reasoning = any(indicator in line_lower for indicator in reasoning_indicators)
 
-        # Clean tags
+            # Skip reasoning lines but keep actual content
+            if not is_reasoning or line.startswith('#') or line.startswith('**'):
+                cleaned_lines.append(line)
+
+        text = '\n'.join(cleaned_lines)
+
+        # Remove orphan tags
         text = text.replace('<think>', '').replace('</think>', '')
         text = text.replace('<|im_end|>', '').replace('<|im_start|>', '')
 
-        # Clean whitespace
-        text = re.sub(r'\n{2,}', '\n\n', text)
+        # Clean extra whitespace
+        text = re.sub(r'\n{3,}', '\n\n', text)  # Max 2 newlines
+        text = re.sub(r'^\s+', '', text)  # Leading whitespace
         text = text.strip()
 
-        # Fallback if too short
-        if len(text) < 15:
-            return "Merhaba! Ben Selcuk AI Asistani. Size nasil yardimci olabilirim?"
+        # If result is empty or too short, return a default message
+        if len(text) < 10:
+            return "Üzgünüm, yanıt oluşturulamadı. Lütfen sorunuzu yeniden ifade edin."
 
         return text
 
@@ -139,12 +150,12 @@ class OllamaService:
                     "prompt": prompt,
                     "stream": stream,
                     "options": {
-                        "temperature": 0.7,  # Dengeli yaratıcılık (0-2 arası, 0.7 önerilen)
-                        "top_p": 0.9,  # Nucleus sampling (0-1 arası, 0.9 önerilen)
-                        "top_k": 40,  # Top-k sampling (daha tutarlı yanıtlar için)
-                        "repeat_penalty": 1.1,  # Tekrar cezası (1.0-2.0 arası)
-                        "num_predict": 2048,  # Maksimum token sayısı (daha uzun yanıtlar)
-                        "stop": ["\n\n\n"]  # Çok fazla boşlukta dur
+                        "temperature": 0.7,      # Dengeli yaratıcılık (0-2 arası, 0.7 önerilen)
+                        "top_p": 0.9,            # Nucleus sampling (0-1 arası, 0.9 önerilen)
+                        "top_k": 40,             # Top-k sampling (daha tutarlı yanıtlar için)
+                        "repeat_penalty": 1.1,   # Tekrar cezası (1.0-2.0 arası)
+                        "num_predict": 2048,     # Maksimum token sayısı (daha uzun yanıtlar)
+                        "stop": ["\n\n\n"]       # Çok fazla boşlukta dur
                     }
                 }
                 
@@ -177,7 +188,7 @@ class OllamaService:
                 if not answer:
                     logger.warning("Ollama returned empty response")
                     return "Üzgünüm, bir yanıt oluşturulamadı."
-
+                
                 # Clean DeepSeek-R1 reasoning artifacts
                 answer = self._clean_reasoning_artifacts(answer)
 
@@ -243,8 +254,7 @@ class OllamaService:
             HTTPException: If there's an error communicating with Ollama
             
         Example:
-            >>> service = OllamaService()
-            >>> for token in service.generate_stream("Hello"):
+            >>> for token in ollama_service.generate_stream("Hello"):
             ...     print(token, end='', flush=True)
             Hello! How can I help you?
         """
@@ -258,12 +268,12 @@ class OllamaService:
                 "prompt": prompt,
                 "stream": True,  # Enable streaming
                 "options": {
-                    "temperature": 0.7,  # Dengeli yaratıcılık
-                    "top_p": 0.9,  # Nucleus sampling
-                    "top_k": 40,  # Top-k sampling
-                    "repeat_penalty": 1.1,  # Tekrar cezası
-                    "num_predict": 2048,  # Maksimum token sayısı
-                    "stop": ["\n\n\n"]  # Çok fazla boşlukta dur
+                    "temperature": 0.7,      # Dengeli yaratıcılık
+                    "top_p": 0.9,            # Nucleus sampling
+                    "top_k": 40,             # Top-k sampling
+                    "repeat_penalty": 1.1,   # Tekrar cezası
+                    "num_predict": 2048,     # Maksimum token sayısı
+                    "stop": ["\n\n\n"]       # Çok fazla boşlukta dur
                 }
             }
             
@@ -288,7 +298,6 @@ class OllamaService:
             token_count = 0
             for line in response.iter_lines():
                 if line:
-                    line_str = ""  # Initialize to avoid unbound variable warning
                     try:
                         # Decode line as UTF-8
                         line_str = line.decode('utf-8')
@@ -297,19 +306,18 @@ class OllamaService:
                         chunk_data = json.loads(line_str)
                         
                         # Extract the response token
-                        response_token = chunk_data.get("response", "")
-                        if response_token:
+                        token = chunk_data.get("response", "")
+                        if token:
                             token_count += 1
-                            yield response_token
-
+                            yield token
+                        
                         # Check if done
                         if chunk_data.get("done", False):
                             logger.info(f"Streaming completed: {token_count} tokens generated")
                             break
 
                     except json.JSONDecodeError:
-                        logger.warning(
-                            f"Failed to parse streaming response line: {line_str[:100] if line_str else 'empty'}")
+                        logger.warning(f"Failed to parse streaming response line: {line_str[:100]}")
                         continue
                     except Exception as e:
                         logger.error(f"Error processing streaming chunk: {str(e)}")
@@ -454,6 +462,5 @@ class OllamaService:
         try:
             error_data = response.json()
             return error_data.get("error", response.text)
-        except (ValueError, KeyError, AttributeError):
-            # JSON parsing or dict access failed, return raw text
+        except Exception:
             return response.text or f"HTTP {response.status_code}"

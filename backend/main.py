@@ -43,19 +43,69 @@ if Config.APPWRITE_ENDPOINT and Config.APPWRITE_PROJECT_ID and Config.APPWRITE_A
             "Content-Type": "application/json",
         }
     )
+    logger.info(
+        f"Appwrite client initialized: endpoint={Config.APPWRITE_ENDPOINT}, "
+        f"project={Config.APPWRITE_PROJECT_ID}, "
+        f"database={Config.APPWRITE_DATABASE_ID}, "
+        f"collection={Config.APPWRITE_COLLECTION_ID}"
+    )
+else:
+    logger.warning(
+        f"Appwrite not configured: endpoint={bool(Config.APPWRITE_ENDPOINT)}, "
+        f"project_id={bool(Config.APPWRITE_PROJECT_ID)}, "
+        f"api_key={bool(Config.APPWRITE_API_KEY)}"
+    )
 
 
 def log_chat_to_appwrite(question: str, answer: str) -> None:
     """Persist chat pairs to Appwrite if configured."""
-    if not appwrite_client or not Config.APPWRITE_DATABASE_ID or not Config.APPWRITE_COLLECTION_ID:
+    if not appwrite_client:
+        logger.debug("Appwrite logging skipped: client not initialized")
         return
 
+    if not Config.APPWRITE_DATABASE_ID:
+        logger.debug("Appwrite logging skipped: APPWRITE_DATABASE_ID not set")
+        return
+
+    if not Config.APPWRITE_COLLECTION_ID:
+        logger.debug("Appwrite logging skipped: APPWRITE_COLLECTION_ID not set")
+        return
+
+    import uuid
+    from datetime import datetime, timezone
+
+    # Generate unique document ID
+    doc_id = f"chat_{uuid.uuid4().hex[:16]}"
+
+    # Truncate to fit Appwrite free tier limits (4000 chars each)
+    MAX_QUESTION_LENGTH = 4000
+    MAX_ANSWER_LENGTH = 4000
+
+    truncated_question = question[:MAX_QUESTION_LENGTH]
+    truncated_answer = answer[:MAX_ANSWER_LENGTH]
+
+    if len(question) > MAX_QUESTION_LENGTH:
+        logger.debug(f"Question truncated from {len(question)} to {MAX_QUESTION_LENGTH} chars")
+    if len(answer) > MAX_ANSWER_LENGTH:
+        logger.debug(f"Answer truncated from {len(answer)} to {MAX_ANSWER_LENGTH} chars")
+
     payload = {
+        "documentId": doc_id,
         "data": {
-            "question": question,
-            "answer": answer,
+            "question": truncated_question,
+            "answer": truncated_answer,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            # Required fields for Appwrite table schema
+            "chatId": doc_id,  # Use document ID as chatId
+            "senderId": "system",  # System/backend sender
+            "receiverId": "user",  # Generic user receiver
+            "messageContent": truncated_question[:1000],  # First 1000 chars of question
+            "isRead": True,  # Mark as read by default
         }
     }
+
+    logger.debug(f"Attempting to log to Appwrite: {doc_id}")
+
     try:
         response = appwrite_client.post(
             f"{Config.APPWRITE_ENDPOINT}/databases/{Config.APPWRITE_DATABASE_ID}/collections/{Config.APPWRITE_COLLECTION_ID}/documents",
@@ -63,8 +113,15 @@ def log_chat_to_appwrite(question: str, answer: str) -> None:
             timeout=10,
         )
         response.raise_for_status()
+        logger.info(f"✅ Appwrite log kaydı başarılı: {doc_id}")
     except requests.RequestException as exc:
-        logger.warning("Appwrite log kaydı başarısız: %s", exc)
+        logger.warning(f"❌ Appwrite log kaydı başarısız: {exc}")
+        if hasattr(exc, 'response') and exc.response is not None:
+            try:
+                error_detail = exc.response.json()
+                logger.warning(f"Appwrite error details: {error_detail}")
+            except Exception:
+                logger.warning(f"Appwrite response text: {exc.response.text[:200]}")
 
 
 class ChatRequest(BaseModel):

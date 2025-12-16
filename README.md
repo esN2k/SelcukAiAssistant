@@ -21,7 +21,7 @@ esN2k/SelcukAiAssistant · "SelcukAiAssistant"
 |-----------------|----------------------------------------------------|-----------------------------------------------------------------------|
 | **Frontend**    | Flutter 3.x, Dart, GetX, flutter_dotenv, Hive      | Mobil/web arayüzü, `.env` ile `BACKEND_URL` okur                      |
 | **Backend**     | Python 3.11+, FastAPI, Uvicorn, Pydantic, Requests | `/chat`, `/chat/stream`, `/health` uç noktaları, Ollama proxy         |
-| **LLM Katmanı** | Ollama + (Llama3.1 \| selcuk_ai_assistant)         | Yerel inference, retry/backoff, UTF-8 desteği                         |
+| **LLM Katmanı** | Ollama + DeepSeek-R1-Distill-Qwen-7B (Uncensored)  | Advanced reasoning, yerel inference, retry/backoff, UTF-8 desteği     |
 | **RAG**         | ChromaDB (planlanan), sentence-transformers, pypdf | `rag_service.py` içinde hazırlanan entegrasyon iskeleti               |
 | **Native**      | C++/CMake, platform-specific runner dosyaları      | Flutter masaüstü/webview eklentileri ve izin köprüleri                |
 | **CI/CD**       | GitHub Actions (`.github/workflows/dart.yml`)      | `flutter analyze`, `flutter test`, gelecekte `pytest`, `ruff`, `mypy` |
@@ -35,7 +35,9 @@ Flutter UI → FastAPI Backend (/chat, /chat/stream) → Ollama → (Opsiyonel) 
 
 - **Zorunlu**: Git, Python 3.11+, Flutter SDK 3.24+, Node/Android toolchain (hedef platformlara
   göre), CMake 3.28+ (masaüstü).
-- **Yapay Zeka**: [Ollama](https://ollama.com/) + `ollama pull llama3.1` veya özel model.
+- **Yapay Zeka**: [Ollama](https://ollama.com/) + DeepSeek-R1-Distill model (otomatik kurulum
+  scripti mevcut).
+- **GPU (Önerilen)**: NVIDIA RTX 3060 6GB veya üzeri (CUDA desteği).
 - **Opsiyonel**: Docker Desktop/Engine, GPU sürücüleri, Appwrite hesabı (`<APPWRITE_PROJECT_ID>`
   vb.).
 
@@ -60,11 +62,28 @@ cp .env.example .env       # BACKEND_URL vb. için
 
 ## 4. Çalıştırma
 
-- **Ollama**
+- **Ollama ve AI Model Kurulumu**
   ```bash
+  # Otomatik kurulum (Önerilen)
+  cd backend
+  .\setup_deepseek.ps1    # Windows PowerShell
+  # veya
+  bash setup_deepseek.sh  # Linux/macOS (yakında)
+  
+  # Manuel kurulum
   ollama serve &
-  ollama pull selcuk_ai_assistant   # yoksa: ollama pull llama3.1
+  ollama pull deepseek-r1:8b
+  # veya custom model için
+  ollama create selcuk_ai_assistant -f Modelfile.deepseek
   ```
+
+  **Model Detayları:**
+    - **DeepSeek-R1-Distill-Qwen-7B** (Q4_K_M quantization)
+    - **Boyut**: ~4.4 GB
+    - **Özellikler**: Uncensored, Advanced Reasoning, Türkçe Desteği
+    - **Kurulum Süresi**: 10-15 dakika (hızlı internet ile)
+    - **Doküman**: [DEEPSEEK_MODEL_SETUP.md](DEEPSEEK_MODEL_SETUP.md)
+
 - **Backend (geliştirme)**
   ```bash
   cd backend
