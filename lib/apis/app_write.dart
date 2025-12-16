@@ -2,11 +2,11 @@ import 'dart:developer';
 
 import 'package:appwrite/appwrite.dart';
 
-import 'package:selcukaiassistant/helper/global.dart';
 
 class AppWrite {
   static final _client = Client();
   static final _database = Databases(_client);
+  static String apiKey = '';
 
   static Future<void> init() async {
     _client

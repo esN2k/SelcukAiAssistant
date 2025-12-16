@@ -32,13 +32,13 @@ class MessageCard extends StatelessWidget {
               Expanded(
                 child: Container(
                   margin: EdgeInsets.only(
-                    bottom: mq.height * .02,
-                    left: mq.width * .02,
-                    right: mq.width * .1,
+                    bottom: Global.mq.height * .02,
+                    left: Global.mq.width * .02,
+                    right: Global.mq.width * .1,
                   ),
                   padding: EdgeInsets.symmetric(
-                    vertical: mq.height * .015,
-                    horizontal: mq.width * .03,
+                    vertical: Global.mq.height * .015,
+                    horizontal: Global.mq.width * .03,
                   ),
                   decoration: BoxDecoration(
                     color: Theme.of(context).brightness == Brightness.dark
@@ -111,13 +111,13 @@ class MessageCard extends StatelessWidget {
               Expanded(
                 child: Container(
                   margin: EdgeInsets.only(
-                    bottom: mq.height * .02,
-                    right: mq.width * .02,
-                    left: mq.width * .1,
+                    bottom: Global.mq.height * .02,
+                    right: Global.mq.width * .02,
+                    left: Global.mq.width * .1,
                   ),
                   padding: EdgeInsets.symmetric(
-                    vertical: mq.height * .015,
-                    horizontal: mq.width * .03,
+                    vertical: Global.mq.height * .015,
+                    horizontal: Global.mq.width * .03,
                   ),
                   decoration: const BoxDecoration(
                     color: Colors.amber,

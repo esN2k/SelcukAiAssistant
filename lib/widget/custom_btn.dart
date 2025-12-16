@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:selcukaiassistant/helper/global.dart';
 
 class CustomBtn extends StatelessWidget {
@@ -16,7 +15,7 @@ class CustomBtn extends StatelessWidget {
           elevation: 0,
           backgroundColor: Colors.amber, // Burayı değiştirdik
           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-          minimumSize: Size(mq.width * .4, 50),
+          minimumSize: Size(Global.mq.width * .4, 50),
         ),
         onPressed: onTap,
         child: Text(text),

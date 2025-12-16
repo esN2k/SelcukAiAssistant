@@ -7,7 +7,7 @@ import 'package:selcukaiassistant/helper/global.dart';
 class APIs {
   static Future<String> getAnswer(String question) async {
     try {
-      log('Backend API çağrılıyor: $backendUrl/chat');
+      log('Backend API çağrılıyor: ${Global.chatEndpoint}');
 
       // Prepare the request body
       final requestBody = jsonEncode({
@@ -16,7 +16,7 @@ class APIs {
 
       // Send POST request to the backend
       final response = await http.post(
-        Uri.parse('$backendUrl/chat'),
+        Uri.parse(Global.chatEndpoint),
         headers: {
           'Content-Type': 'application/json',
         },

@@ -46,8 +46,8 @@ class OnboardingScreen extends StatelessWidget {
               //lottie
               Lottie.asset(
                 'assets/lottie/${list[ind].lottie}.json',
-                height: mq.height * .6,
-                width: isLast ? mq.width * .7 : null,
+                height: Global.mq.height * .6,
+                width: isLast ? Global.mq.width * .7 : null,
               ),
 
               //title
@@ -61,11 +61,11 @@ class OnboardingScreen extends StatelessWidget {
               ),
 
               //for adding some space
-              SizedBox(height: mq.height * .015),
+              SizedBox(height: Global.mq.height * .015),
 
               //subtitle
               SizedBox(
-                width: mq.width * .7,
+                width: Global.mq.width * .7,
                 child: Text(
                   list[ind].subtitle,
                   textAlign: TextAlign.center,

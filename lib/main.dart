@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: appName,
+      title: Global.appName,
       debugShowCheckedModeBanner: false,
 
       themeMode: Pref.defaultTheme,

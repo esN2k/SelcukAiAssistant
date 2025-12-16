@@ -1,17 +1,24 @@
-import 'package:appwrite/appwrite.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'dart:io' show Platform;
 
-const appName = 'Yapay zeka akıllı asistanı';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/material.dart' show Size;
 
-late Size mq;
+class Global {
+  // App constants
+  static const String appName = 'Selçuk AI Assistant';
 
-String apiKey = dotenv.env['API_KEY'] ?? '';
+  // Media query size (should be initialized in app)
+  static Size mq = Size.zero;
 
-// Backend API URL - configurable via environment variable
-String backendUrl = dotenv.env['BACKEND_URL'] ?? 'http://localhost:8000';
+  static String get backendUrl {
+    if (kIsWeb) {
+      return 'http://localhost:8000';
+    } else if (Platform.isAndroid) {
+      return 'http://10.0.2.2:8000';
+    } else {
+      return 'http://localhost:8000';
+    }
+  }
 
-// Appwrite global client
-final Client appwriteClient = Client()
-    .setProject('69407f8200300e7093d8')
-    .setEndpoint('https://fra.cloud.appwrite.io/v1');
+  static String get chatEndpoint => '$backendUrl/chat';
+}

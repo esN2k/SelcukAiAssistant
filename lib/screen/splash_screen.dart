@@ -35,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     //initializing device size
-    mq = MediaQuery.sizeOf(context);
+    Global.mq = MediaQuery.sizeOf(context);
 
     return Scaffold(
       //body
@@ -53,10 +53,10 @@ class _SplashScreenState extends State<SplashScreen> {
                 borderRadius: BorderRadius.all(Radius.circular(20)),
               ),
               child: Padding(
-                padding: EdgeInsets.all(mq.width * .05),
+                padding: EdgeInsets.all(Global.mq.width * .05),
                 child: Image.asset(
                   'assets/images/selcuk_logo.png', // <-- Logo dosya adı orijinaldi
-                  width: mq.width * .4, // <-- Orijinal genişlik
+                  width: Global.mq.width * .4, // <-- Orijinal genişlik
                 ),
               ),
             ),

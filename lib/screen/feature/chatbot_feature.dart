@@ -25,11 +25,11 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
 
   Future<void> _sendPing() async {
     try {
-      await appwriteClient.ping();
+      await _appwriteService.account.get();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Appwrite ping başarılı! ✅'),
+            content: Text('Appwrite bağlantı başarılı! ✅'),
             backgroundColor: Colors.green,
           ),
         );
@@ -272,7 +272,7 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
                       physics: const BouncingScrollPhysics(),
                       controller: _c.scrollC,
                       padding: EdgeInsets.only(
-                        top: mq.height * .02,
+                        top: Global.mq.height * .02,
                         bottom: 16,
                         left: 8,
                         right: 8,
