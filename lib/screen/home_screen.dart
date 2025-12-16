@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:selcukaiassistant/helper/pref.dart';
 import 'package:selcukaiassistant/screen/auth/login_screen.dart';
-import 'package:selcukaiassistant/screen/feature/chatbot_feature.dart';
+import 'package:selcukaiassistant/screen/feature/new_chat_screen.dart';
 import 'package:selcukaiassistant/services/appwrite_service.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (mounted) {
         if (user != null) {
           // User is logged in, go to chat
-          unawaited(Get.off<void>(() => const ChatBotFeature()));
+          unawaited(Get.off<void>(() => const NewChatScreen()));
         } else {
           // No active session, go to login
           unawaited(Get.off<void>(() => const LoginScreen()));
