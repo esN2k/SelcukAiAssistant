@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 /// A modern typing indicator widget that shows animated dots
@@ -19,7 +21,8 @@ class _TypingIndicatorState extends State<TypingIndicator>
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1400),
-    )..repeat();
+    );
+    unawaited(_controller.repeat());
   }
 
   @override
@@ -31,7 +34,8 @@ class _TypingIndicatorState extends State<TypingIndicator>
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final dotColor = isDark ? Colors.amber.withOpacity(0.6) : Colors.grey[600]!;
+    final dotColor =
+        isDark ? Colors.amber.withValues(alpha: 0.6) : Colors.grey[600]!;
 
     return Row(
       mainAxisSize: MainAxisSize.min,

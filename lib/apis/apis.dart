@@ -8,7 +8,6 @@ import 'package:selcukaiassistant/helper/global.dart';
 
 class APIs {
   // Timeout configuration
-  static const Duration _connectTimeout = Duration(seconds: 10);
   static const Duration _responseTimeout = Duration(seconds: 120);
 
   /// Get AI answer from the backend chat endpoint.
@@ -38,7 +37,8 @@ class APIs {
             onTimeout: () {
               throw TimeoutException(
                 'İstek zaman aşımına uğradı. '
-                'Lütfen daha kısa bir soru deneyin veya daha sonra tekrar deneyin.',
+                'Lütfen daha kısa bir soru deneyin veya '
+                'daha sonra tekrar deneyin.',
               );
             },
           );
@@ -63,7 +63,7 @@ class APIs {
           final errorMessage = errorData['detail'] as String? ?? 
               'Geçersiz istek';
           return 'Hata: $errorMessage';
-        } catch (_) {
+        } on FormatException {
           return 'Hata: Geçersiz soru formatı. '
               'Lütfen sorunuzu kontrol edin ve tekrar deneyin.';
         }

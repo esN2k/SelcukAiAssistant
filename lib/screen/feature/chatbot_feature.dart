@@ -99,7 +99,8 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
           IconButton(
             padding: const EdgeInsets.only(right: 10),
             onPressed: () {
-              final newMode = _isDarkMode.value ? ThemeMode.light : ThemeMode.dark;
+              final newMode =
+                  _isDarkMode.value ? ThemeMode.light : ThemeMode.dark;
               Get.changeThemeMode(newMode);
               _isDarkMode.value = !_isDarkMode.value;
               
