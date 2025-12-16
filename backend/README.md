@@ -48,7 +48,7 @@ Using virtual environment (recommended):
 ```bash
 cd backend
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+venv\Scripts\activate # On Linux: source venv/bin/activate  
 pip install -r requirements.txt
 ```
 

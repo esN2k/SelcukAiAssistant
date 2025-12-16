@@ -1,7 +1,7 @@
 """FastAPI backend for SelcukAiAssistant using Ollama."""
 import json
 import logging
-from typing import Dict, Any, Iterator, Optional
+from typing import Dict, Any, AsyncIterator, Optional
 
 import requests
 from fastapi import FastAPI, HTTPException
@@ -193,7 +193,7 @@ async def ollama_health() -> Dict[str, Any]:
         HTTPException: 503 if Ollama service is unhealthy
     """
     logger.info("Ollama health check requested")
-    health_status = ollama_service.health_check()
+    health_status = await ollama_service.health_check()
     
     # Return appropriate HTTP status based on health
     if health_status["status"] == "unhealthy":
@@ -234,8 +234,13 @@ async def chat(request: ChatRequest) -> ChatResponse:
         prompt = build_chat_prompt(request.question)
         
         # Generate response using Ollama service (with retry logic)
-        answer = ollama_service.generate(prompt)
+        # Note: await is now required because generate is async
+        answer = await ollama_service.generate(prompt)
+
+        # Logging to Appwrite remains synchronous for now to avoid complexity,
+        # but in a high-load system it should be offloaded to a background task.
         log_chat_to_appwrite(request.question, answer)
+
         logger.info(f"Chat request completed successfully (response length: {len(answer)} chars)")
         return ChatResponse(answer=answer)
         
@@ -290,15 +295,15 @@ async def chat_stream(request: ChatRequest) -> StreamingResponse:
     question_preview = request.question[:50] + "..." if len(request.question) > 50 else request.question
     logger.info(f"Streaming chat request received: {question_preview}")
 
-    def event_generator() -> Iterator[str]:
-        """Generate Server-Sent Events stream."""
+    async def event_generator() -> AsyncIterator[str]:
+        """Generate Server-Sent Events stream asynchronously."""
         try:
             # Build prompt with Selçuk University context
             prompt = build_chat_prompt(request.question)
             
             # Stream response directly from Ollama service
-            # FastAPI runs this synchronous generator in a thread pool automatically
-            for token in ollama_service.generate_stream(prompt):
+            # We iterate asynchronously over the async generator
+            async for token in ollama_service.generate_stream(prompt):
                 yield f"data: {json.dumps({'token': token})}\n\n"
             
             # Send completion event

@@ -1,18 +1,20 @@
 """
 Unit tests for the FastAPI backend.
 
-These tests verify the API contract without requiring Ollama to be running
+These tests verify the API contract without requiring Ollama to be running.
 """
 from unittest.mock import patch, MagicMock
 
+import httpx
 import pytest
-import requests
 from fastapi.testclient import TestClient
 
 # Import from the same directory
 from config import Config
 from main import app
 
+# We need to wrap the app with TestClient for synchronous testing of endpoints,
+# but the underlying service calls will be mocked as async.
 client = TestClient(app)
 
 
@@ -27,9 +29,10 @@ def test_root_endpoint():
     }
 
 
+@pytest.mark.asyncio
 @patch('main.appwrite_client', None)
-@patch('ollama_service.requests.post')
-def test_chat_endpoint_success(mock_post):
+@patch('httpx.AsyncClient.post')
+async def test_chat_endpoint_success(mock_post):
     """Test successful chat request."""
     # Mock successful Ollama response
     mock_response = MagicMock()
@@ -38,8 +41,10 @@ def test_chat_endpoint_success(mock_post):
         "response": "Merhaba! Ben Selçuk Üniversitesi AI asistanıyım."
     }
     mock_post.return_value = mock_response
-    
-    # Make request
+
+    # Make request using TestClient (which handles the async endpoint via standard requests)
+    # Since we are mocking httpx.AsyncClient.post inside the endpoint,
+    # the fact that TestClient is synchronous doesn't matter for the unit test of logic.
     response = client.post(
         "/chat",
         json={"question": "Merhaba"}
@@ -52,11 +57,11 @@ def test_chat_endpoint_success(mock_post):
 
 
 @patch('main.appwrite_client', None)
-@patch('ollama_service.requests.post')
+@patch('httpx.AsyncClient.post')
 def test_chat_endpoint_connection_error(mock_post):
     """Test chat request when Ollama is not available."""
     # Mock connection error
-    mock_post.side_effect = requests.exceptions.ConnectionError("Connection refused")
+    mock_post.side_effect = httpx.RequestError("Connection refused")
     
     # Make request
     response = client.post(
@@ -81,7 +86,7 @@ def test_chat_endpoint_invalid_request():
 
 
 @patch('main.appwrite_client', None)
-@patch('ollama_service.requests.post')
+@patch('httpx.AsyncClient.post')
 def test_chat_endpoint_empty_response(mock_post):
     """Test chat request when Ollama returns empty response."""
     # Mock empty response
@@ -102,7 +107,7 @@ def test_chat_endpoint_empty_response(mock_post):
 
 
 @patch('main.appwrite_client', None)
-@patch('ollama_service.requests.post')
+@patch('httpx.AsyncClient.post')
 def test_prompt_contains_question(mock_post):
     """Test that the prompt sent to Ollama contains the user's question."""
     # Mock response
@@ -123,7 +128,11 @@ def test_prompt_contains_question(mock_post):
     call_args = mock_post.call_args
     
     # Check that the JSON payload contains our question
-    json_payload = call_args[1]["json"]
+    # call_args for async call is (args, kwargs)
+    # kwargs should have 'json'
+    kwargs = call_args.kwargs
+    json_payload = kwargs.get("json", {})
+    
     assert "prompt" in json_payload
     assert question in json_payload["prompt"]
     assert json_payload["model"] == Config.OLLAMA_MODEL
@@ -131,7 +140,7 @@ def test_prompt_contains_question(mock_post):
 
 
 @patch('main.appwrite_client', None)
-@patch('ollama_service.requests.get')
+@patch('httpx.AsyncClient.get')
 def test_ollama_health_check_healthy(mock_get):
     """Test Ollama health check when service is healthy."""
     # Mock successful response with available models
@@ -155,11 +164,11 @@ def test_ollama_health_check_healthy(mock_get):
 
 
 @patch('main.appwrite_client', None)
-@patch('ollama_service.requests.get')
+@patch('httpx.AsyncClient.get')
 def test_ollama_health_check_unhealthy(mock_get):
     """Test Ollama health check when service is unavailable."""
     # Mock connection error
-    mock_get.side_effect = requests.exceptions.ConnectionError("Connection refused")
+    mock_get.side_effect = httpx.RequestError("Connection refused")
     
     response = client.get("/health/ollama")
     
@@ -169,11 +178,11 @@ def test_ollama_health_check_unhealthy(mock_get):
 
 
 @patch('main.appwrite_client', None)
-@patch('ollama_service.requests.post')
+@patch('httpx.AsyncClient.post')
 def test_chat_endpoint_timeout(mock_post):
     """Test chat request timeout handling."""
     # Mock timeout error
-    mock_post.side_effect = requests.exceptions.Timeout("Request timed out")
+    mock_post.side_effect = httpx.ReadTimeout("Request timed out")
     
     response = client.post(
         "/chat",
