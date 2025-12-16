@@ -65,53 +65,95 @@ class OllamaService:
 
     @staticmethod
     def _clean_reasoning_artifacts(text: str) -> str:
-        """AGGRESSIVELY clean DeepSeek-R1 reasoning from response."""
+        """
+        Robustly clean DeepSeek-R1 reasoning artifacts from response.
+        
+        This method removes internal reasoning, think tags, and other artifacts
+        that should not be shown to users, leaving only the final answer.
+        
+        Args:
+            text: Raw response from the LLM
+            
+        Returns:
+            Cleaned response with reasoning artifacts removed
+        """
         import re
-
-        # Strategy: Extract only the final answer, discard everything else
-
-        # Method 1: Find last "Merhaba" and take from there
-        merhaba_matches = list(re.finditer(r'Merhaba[!.]?', text, re.IGNORECASE))
-        if merhaba_matches:
-            text = text[merhaba_matches[-1].start():]
-
-        # Method 2: Find markdown headers (##) and take structured content
-        elif '##' in text:
-            header_pos = text.rfind('##')
-            text = text[header_pos:]
-
-        # Method 3: Split by double newline and take last paragraph
-        elif '\n\n' in text:
-            paragraphs = text.split('\n\n')
-            # Take paragraphs that don't contain reasoning keywords
-            good_paragraphs = []
-            for p in paragraphs:
-                if not any(kw in p.lower() for kw in
-                           ['okay', 'tamam', 'kullanıcı', 'user', 'aramalıyım']):
-                    good_paragraphs.append(p)
-            if good_paragraphs:
-                text = '\n\n'.join(good_paragraphs)
-
-        # Remove all English reasoning sentences
-        text = re.sub(r'[^.!?]*\b(okay|alright|let me|i need|i should|the user)\b[^.!?]*[.!?]', '',
-                      text, flags=re.IGNORECASE)
-
-        # Remove all Turkish reasoning sentences
-        text = re.sub(r'[^.!?]*\b(tamam|kullanıcı|aramalıyım|düşünüyorum|olabilir)\b[^.!?]*[.!?]',
-                      '', text, flags=re.IGNORECASE)
-
-        # Clean tags
-        text = text.replace('<think>', '').replace('</think>', '')
-        text = text.replace('<|im_end|>', '').replace('<|im_start|>', '')
-
-        # Clean whitespace
-        text = re.sub(r'\n{2,}', '\n\n', text)
-        text = text.strip()
-
-        # Fallback if too short
-        if len(text) < 15:
+        
+        if not text or not text.strip():
             return "Merhaba! Ben Selcuk AI Asistani. Size nasil yardimci olabilirim?"
-
+        
+        original_text = text
+        
+        # Step 1: Remove XML-style tags (think tags, instruction markers)
+        text = re.sub(r'<think>.*?</think>', '', text, flags=re.DOTALL | re.IGNORECASE)
+        text = text.replace('<|im_end|>', '').replace('<|im_start|>', '')
+        text = text.replace('<|end|>', '').replace('<|start|>', '')
+        
+        # Step 2: Remove reasoning block patterns
+        # Pattern like: "Okay, let me..." or "Tamam, düşünelim..."
+        reasoning_patterns = [
+            r'^[^.!?\n]*\b(okay|alright|let me think|hmm|wait)\b[^.!?\n]*[\n.]',
+            r'^[^.!?\n]*\b(tamam|peki|düşünelim|bakalım|bir dakika)\b[^.!?\n]*[\n.]',
+        ]
+        for pattern in reasoning_patterns:
+            text = re.sub(pattern, '', text, flags=re.IGNORECASE | re.MULTILINE)
+        
+        # Step 3: Find the start of the actual answer
+        # Priority 1: Look for "Merhaba" as answer start (common Turkish greeting)
+        merhaba_matches = list(re.finditer(r'\bMerhaba[!.,]?', text, re.IGNORECASE))
+        if merhaba_matches:
+            # Take from the last "Merhaba" occurrence
+            text = text[merhaba_matches[-1].start():]
+        
+        # Priority 2: Look for markdown headers as answer structure
+        elif re.search(r'^##\s', text, re.MULTILINE):
+            # Find the first markdown header
+            header_match = re.search(r'^##\s', text, re.MULTILINE)
+            if header_match:
+                text = text[header_match.start():]
+        
+        # Step 4: Remove remaining reasoning sentences
+        # English reasoning keywords
+        english_reasoning = [
+            r'[^.!?\n]*\b(the user (is asking|wants|needs))\b[^.!?\n]*[.!?\n]',
+            r'[^.!?\n]*\b(i (should|need to|will|must))\b[^.!?\n]*[.!?\n]',
+            r'[^.!?\n]*\b(let me|i\'ll|i\'m going to)\b[^.!?\n]*[.!?\n]',
+        ]
+        
+        # Turkish reasoning keywords
+        turkish_reasoning = [
+            r'[^.!?\n]*\b(kullanıcı (soruyor|istiyor|diyor))\b[^.!?\n]*[.!?\n]',
+            r'[^.!?\n]*\b(yapmalıyım|etmeliyim|aramalıyım)\b[^.!?\n]*[.!?\n]',
+            r'[^.!?\n]*\b(bir bakalım|şöyle|hadi)\b[^.!?\n]*[.!?\n]',
+        ]
+        
+        all_patterns = english_reasoning + turkish_reasoning
+        for pattern in all_patterns:
+            text = re.sub(pattern, '', text, flags=re.IGNORECASE | re.MULTILINE)
+        
+        # Step 5: Clean up whitespace
+        # Remove multiple consecutive newlines
+        text = re.sub(r'\n{3,}', '\n\n', text)
+        # Remove leading/trailing whitespace
+        text = text.strip()
+        
+        # Step 6: Validation and fallback
+        # If the cleaned text is too short or empty, return a default message
+        if len(text) < 15:
+            # Try to salvage the original if it's not too contaminated
+            if len(original_text.strip()) > 20 and '<think>' not in original_text.lower():
+                return original_text.strip()
+            return "Merhaba! Ben Selcuk AI Asistani. Size nasil yardimci olabilirim?"
+        
+        # If the text starts with lowercase (likely mid-sentence), try to find better start
+        if text and text[0].islower():
+            # Look for a sentence that starts with capital letter
+            sentences = re.split(r'[.!?]\s+', text)
+            for sentence in sentences:
+                if sentence and sentence[0].isupper() and len(sentence) > 15:
+                    text = sentence
+                    break
+        
         return text
 
     def generate(self, prompt: str, stream: bool = False) -> str:
