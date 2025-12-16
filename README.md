@@ -2,6 +2,30 @@
 
 esN2k/SelcukAiAssistant · "SelcukAiAssistant"
 
+---
+
+## 🤖 GitHub Copilot Agent ile Geliştirme
+
+Bu projeyi optimize etmek ve production-ready hale getirmek için hazırlanmış kapsamlı prompt ve
+dökümanlar:
+
+### 📚 Dökümanlar
+
+- 🚀 **[COPILOT_QUICK_START.md](COPILOT_QUICK_START.md)** - Hızlı başlangıç (5 dakika)
+- 📋 **[COPILOT_AGENT_PROMPT.md](COPILOT_AGENT_PROMPT.md)** - Detaylı prompt ve görevler (ana dosya)
+- 📖 **[COPILOT_USAGE.md](COPILOT_USAGE.md)** - Kullanım kılavuzu ve örnek komutlar
+- 📊 **[PROJECT_SUMMARY.md](PROJECT_SUMMARY.md)** - Proje durumu ve context
+
+### ⚡ Hızlı Kullanım
+
+```bash
+# 1. COPILOT_QUICK_START.md'yi GitHub Copilot Chat'e yapıştır
+# 2. "Bu projeyi oku ve optimize et" de
+# 3. Öncelikli görevleri yap (reasoning cleanup, UI polish, tests)
+```
+
+---
+
 ## 1. Özet ve Özellikler
 
 - **Hibrit mimari**: Python FastAPI backend + Flutter (Android, iOS, Web, Desktop) istemci;
