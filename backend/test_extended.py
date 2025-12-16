@@ -168,7 +168,7 @@ def test_retry_on_connection_error(mock_sleep, mock_post):
     mock_post.side_effect = [
         requests.exceptions.ConnectionError("Connection refused"),
         requests.exceptions.ConnectionError("Connection refused"),
-        MagicMock(status_code=200, json=lambda: {"response": "Success"})
+        MagicMock(status_code=200, json=lambda: {"response": "Merhaba! This is a successful response with enough content."})
     ]
     
     service = OllamaService(max_retries=3)
@@ -176,7 +176,8 @@ def test_retry_on_connection_error(mock_sleep, mock_post):
     
     # Should have tried 3 times
     assert mock_post.call_count == 3
-    assert result == "Success"
+    assert "Merhaba" in result
+    assert "successful" in result
     
     # Should have slept twice (between retries)
     assert mock_sleep.call_count == 2
