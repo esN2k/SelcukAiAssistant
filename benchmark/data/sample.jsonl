@@ -1,0 +1,8 @@
+{"id":"s1","task":"qa","language":"en","prompt":"What is DNS and why is it important?"}
+{"id":"s2","task":"summarization","language":"en","prompt":"Summarize this in 3 bullets: Large language models predict the next token from context. They can follow instructions, but they sometimes hallucinate. Good evaluation includes both quality and latency."}
+{"id":"s3","task":"coding","language":"en","prompt":"Write a Python function that returns the greatest common divisor of two integers."}
+{"id":"s4","task":"mobile","language":"en","prompt":"Draft a Flutter widget for a chat message bubble with a copy button."}
+{"id":"s5","task":"translation","language":"tr","prompt":"Translate to Turkish: \"Your request timed out. Please try again.\""}
+{"id":"s6","task":"product","language":"en","prompt":"List 5 UX improvements for a mobile AI chat app. Keep each bullet under 12 words."}
+{"id":"s7","task":"chat","language":"en","messages":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Explain TLS in 3 bullets."}]}
+{"id":"s8","task":"reasoning","language":"en","prompt":"A user sends 12 messages per day and each response averages 250 tokens. Estimate daily output tokens for 1,000 users."}
