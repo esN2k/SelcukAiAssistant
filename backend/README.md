@@ -638,3 +638,49 @@ For issues related to:
 ---
 
 **Built with ❤️ for Selçuk University students**
+
+## API Contract (Current)
+
+Both `/chat` and `/chat/stream` accept the same request schema:
+
+```json
+{
+  "model": "alias_or_provider:model_id",
+  "messages": [
+    {"role": "system", "content": "You are a helpful assistant."},
+    {"role": "user", "content": "Merhaba"}
+  ],
+  "temperature": 0.2,
+  "top_p": 0.9,
+  "max_tokens": 256,
+  "stream": false
+}
+```
+
+Streaming uses SSE with `token`, `end`, and `error` events.
+See `docs/API_CONTRACT.md` for full details.
+
+## Switching Model Backend
+
+Set these in `backend/.env`:
+
+```
+MODEL_BACKEND=ollama
+OLLAMA_MODEL=selcuk_ai_assistant
+
+# OR
+MODEL_BACKEND=huggingface
+HF_MODEL_NAME=Qwen/Qwen2.5-1.5B-Instruct
+HF_LOAD_IN_4BIT=true
+HF_DEVICE=cuda
+HF_DTYPE=bfloat16
+```
+
+Optional HF dependencies are in `backend/requirements-hf.txt`.
+
+## Models Endpoint
+
+List available models:
+```bash
+curl http://localhost:8000/models
+```

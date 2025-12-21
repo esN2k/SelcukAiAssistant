@@ -1,0 +1,25 @@
+{"id":"tr_qa_01","task":"campus_qa","language":"tr","prompt":"Selcuk Universitesi kutuphane calisma saatleri nedir? Bilgi yoksa nasil yonlendirirsin?"}
+{"id":"tr_qa_02","task":"campus_qa","language":"tr","prompt":"Selcuk Universitesi kayit yenileme sureci nasil isler? 3 madde ile anlat."}
+{"id":"tr_qa_03","task":"campus_qa","language":"tr","prompt":"Ogrenci isleri ile iletisime gecmek icin hangi kanallar kullanilir?"}
+{"id":"tr_qa_04","task":"campus_qa","language":"tr","prompt":"Kampuste yemek ucretleri hakkinda genel bir cevap yaz, tarihler belirsizse bunu belirt."}
+{"id":"tr_chat_01","task":"chat","language":"tr","prompt":"Merhaba! Ben yeni ogrenciyim. Kampuste nelere dikkat etmeliyim?"}
+{"id":"tr_chat_02","task":"chat","language":"tr","prompt":"Daha kisa ve net cevap ver. Selcuk Universitesi hangi sehirde?"}
+{"id":"tr_sum_01","task":"summarization","language":"tr","prompt":"Asagidaki metni 3 madde ile ozetle: Selcuk Universitesi 1975 yilinda Konya'da kurulmustur. Birden fazla kampusu vardir. Resmi web sitesi selcuk.edu.tr'dir."}
+{"id":"tr_trans_01","task":"translation","language":"tr","prompt":"Translate to Turkish: \"Your request timed out. Please try again later.\""}
+{"id":"tr_trans_02","task":"translation","language":"en","prompt":"Translate to English: \"Kayit tarihleri her yil akademik takvimde duyurulur.\""}
+{"id":"tr_code_01","task":"coding","language":"tr","prompt":"Dart'ta bir listeyi ters ceviren kisa bir fonksiyon yaz."}
+{"id":"tr_code_02","task":"coding","language":"tr","prompt":"Python'da iki sayinin ebobunu bulan fonksiyon yaz."}
+{"id":"tr_reason_01","task":"reasoning","language":"tr","prompt":"Bir ogrenci gunde 8 mesaj gonderiyor. 1000 ogrenci icin gunluk mesaj sayisi nedir?"}
+{"id":"tr_tool_01","task":"tool_use","language":"tr","prompt":"Bir kullanici veri kaydi istiyor ama sistemde yetki yok. Nasil kibarca reddedersin?"}
+{"id":"en_chat_01","task":"chat","language":"en","prompt":"Give 4 UX improvements for a mobile AI chat app."}
+{"id":"en_chat_02","task":"chat","language":"en","prompt":"Explain TLS in 3 bullets. Keep each bullet under 12 words."}
+{"id":"en_sum_01","task":"summarization","language":"en","prompt":"Summarize in 2 sentences: Retrieval augments generation by adding relevant context at inference time."}
+{"id":"en_code_01","task":"coding","language":"en","prompt":"Write a Python function that validates an email string."}
+{"id":"en_code_02","task":"coding","language":"en","prompt":"Create a Flutter widget that shows a message bubble and a copy icon."}
+{"id":"en_trans_01","task":"translation","language":"tr","prompt":"Translate to Turkish: \"We could not connect to the server.\""}
+{"id":"en_trans_02","task":"translation","language":"en","prompt":"Translate to English: \"Lutfen daha sonra tekrar deneyin.\""}
+{"id":"multi_01","task":"multi_turn","language":"tr","messages":[{"role":"system","content":"You are a helpful university assistant."},{"role":"user","content":"Selcuk Universitesi nerede?"},{"role":"assistant","content":"Konya'da."},{"role":"user","content":"Kurulus yili?"}]}
+{"id":"multi_02","task":"multi_turn","language":"en","messages":[{"role":"system","content":"You are a concise assistant."},{"role":"user","content":"What is RAG?"},{"role":"assistant","content":"Retrieval Augmented Generation combines retrieval with generation."},{"role":"user","content":"Give one risk."}]}
+{"id":"multi_03","task":"multi_turn","language":"tr","messages":[{"role":"system","content":"Selcuk AI asistanisin."},{"role":"user","content":"Kayit isleri icin hangi birime gitmeliyim?"},{"role":"assistant","content":"Ogrenci Isleri Daire Baskanligi."},{"role":"user","content":"Telefon bilgisi yoksa ne dersin?"}]}
+{"id":"tr_style_01","task":"style","language":"tr","prompt":"Resmi ama samimi bir dille 2 cumlelik selamlama yaz."}
+{"id":"en_reason_01","task":"reasoning","language":"en","prompt":"If TTFT is 800ms and total time is 6s, estimate tok/s for 180 tokens."}

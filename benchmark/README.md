@@ -60,3 +60,36 @@ JSONL records support either `prompt` or `messages`:
 ```
 
 Note: the sample dataset is ASCII-only. Add your own Turkish prompts as needed.
+
+## Project dataset
+
+Use `benchmark/datasets/dev_eval_tr_en.jsonl` for Turkish + English evaluation.
+
+Example run:
+
+```bash
+python benchmark/run.py --dataset benchmark/datasets/dev_eval_tr_en.jsonl --models Qwen/Qwen2.5-1.5B-Instruct
+```
+
+Ollama baseline (requires Ollama running locally):
+
+```bash
+python benchmark/run.py --dataset benchmark/datasets/dev_eval_tr_en.jsonl --models ollama:selcuk_ai_assistant
+```
+
+## Latest Results (dev_eval_tr_en)
+
+Environment: CPU only (torch.cuda.is_available() == False). Max new tokens: 64.
+
+| model | params | context | load_s | avg_ttft_ms | avg_tok_s | avg_out_tokens | avg_total_time_s | peak_vram_mb | peak_ram_mb | errors |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| ollama:selcuk_ai_assistant |  |  | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |  | 277 | 25 |
+| Qwen/Qwen2.5-1.5B-Instruct | 1543714304 | 32768 | 6.48 | 995.7 | 3.03 | 60.1 | 19.677 |  | 6331 | 0 |
+| HuggingFaceTB/SmolLM2-1.7B-Instruct | 1711376384 | 8192 | 576.09 | 1162.62 | 1.86 | 26.7 | 9.869 |  | 9746 | 0 |
+
+Notes:
+- Ollama baseline returned 25 errors because the local Ollama service was not reachable during the run.
+- google/gemma-2-2b-it is gated; download requires HF auth (401).
+- microsoft/Phi-3-mini-4k-instruct download timed out on the first attempt.
+
+Raw summaries are stored in `benchmark/results/`.

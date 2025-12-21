@@ -5,13 +5,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:selcukaiassistant/helper/global.dart';
+import 'package:selcukaiassistant/apis/apis.dart';
 import 'package:selcukaiassistant/helper/my_dialog.dart';
+import 'package:selcukaiassistant/helper/pref.dart';
 import 'package:selcukaiassistant/model/conversation.dart';
 import 'package:selcukaiassistant/services/conversation_service.dart';
+import 'package:selcukaiassistant/services/sse_client.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:uuid/uuid.dart';
 
@@ -29,7 +30,9 @@ class EnhancedChatController extends GetxController {
   final RxString currentConversationId = ''.obs;
 
   final _uuid = const Uuid();
-  bool _shouldStopGeneration = false;
+  bool _stopRequested = false;
+  ChatStreamSession? _streamSession;
+  StreamSubscription<ChatStreamEvent>? _streamSubscription;
 
   @override
   void onInit() {
@@ -41,7 +44,6 @@ class EnhancedChatController extends GetxController {
   Future<void> _initializeConversation() async {
     await ConversationService.init();
 
-    // Get or create the first conversation
     final conversations = ConversationService.getAllConversations();
     if (conversations.isEmpty) {
       final newConversation = await ConversationService.createConversation();
@@ -80,9 +82,7 @@ class EnhancedChatController extends GetxController {
   Future<void> startListening() async {
     final status = await Permission.microphone.request();
     if (status != PermissionStatus.granted) {
-      MyDialog.info(
-        'Microphone permission is required for voice input',
-      );
+      MyDialog.info('Microphone permission is required for voice input');
       return;
     }
 
@@ -101,7 +101,7 @@ class EnhancedChatController extends GetxController {
             isListening.value = false;
           }
         },
-        localeId: 'en_US', // Changed to English
+        localeId: 'en_US',
       );
     }
   }
@@ -114,8 +114,10 @@ class EnhancedChatController extends GetxController {
   }
 
   void stopGeneration() {
-    _shouldStopGeneration = true;
+    _stopRequested = true;
     isGenerating.value = false;
+    _cancelStreamSubscription();
+    _streamSession?.close();
   }
 
   Future<void> sendMessage({String? imageUrl}) async {
@@ -132,14 +134,12 @@ class EnhancedChatController extends GetxController {
       imageUrl: imageUrl,
     );
 
-    // Add user message
     messages.add(userMessage);
     await ConversationService.addMessage(
       currentConversationId.value,
       userMessage,
     );
 
-    // Create placeholder for AI response
     final aiMessage = ChatMessage(
       id: _uuid.v4(),
       content: '',
@@ -147,98 +147,129 @@ class EnhancedChatController extends GetxController {
       timestamp: DateTime.now(),
     );
     messages.add(aiMessage);
-
     _scrollDown();
 
-    final question = textC.text;
     textC.clear();
-
-    // Start generation
     isGenerating.value = true;
-    _shouldStopGeneration = false;
+    _stopRequested = false;
+
+    final payloadMessages = _buildPayloadMessages();
+    final selectedModel = Pref.selectedModel;
 
     try {
-      await _streamResponse(question, aiMessage);
+      await _streamResponse(
+        payloadMessages,
+        aiMessage,
+        model: selectedModel,
+      );
 
-      if (!_shouldStopGeneration) {
-        // Save the complete AI response
+      if (!_stopRequested) {
+        await ConversationService.addMessage(
+          currentConversationId.value,
+          aiMessage,
+        );
+      } else if (aiMessage.content.isNotEmpty) {
         await ConversationService.addMessage(
           currentConversationId.value,
           aiMessage,
         );
       } else {
-        // If stopped, update with partial response
-        messages.removeLast();
-        if (aiMessage.content.isNotEmpty) {
-          messages.add(aiMessage);
-          await ConversationService.addMessage(
-            currentConversationId.value,
-            aiMessage,
-          );
-        }
+        messages.remove(aiMessage);
       }
     } on Exception catch (e) {
-      messages.removeLast();
-      final errorMessage = ChatMessage(
-        id: _uuid.v4(),
-        content: 'Sorry, something went wrong: $e',
-        isUser: false,
-        timestamp: DateTime.now(),
-      );
-      messages.add(errorMessage);
+      if (_stopRequested) {
+        return;
+      }
+      if (aiMessage.content.isEmpty) {
+        final fallback = await APIs.sendChat(
+          messages: payloadMessages,
+          model: selectedModel,
+        );
+        aiMessage.content = fallback;
+      } else {
+        aiMessage.content += '\n\n[Stream interrupted]';
+      }
+      messages.refresh();
       await ConversationService.addMessage(
         currentConversationId.value,
-        errorMessage,
+        aiMessage,
+      );
+      Get.snackbar(
+        'Stream error',
+        '$e',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
       );
     } finally {
       isGenerating.value = false;
-      _shouldStopGeneration = false;
+      _stopRequested = false;
       _scrollDown();
     }
   }
 
-  Future<void> _streamResponse(String question, ChatMessage aiMessage) async {
-    try {
-      final response = await http.post(
-        Uri.parse(Global.chatEndpoint),
-        headers: {'Content-Type': 'application/json; charset=utf-8'},
-        body: jsonEncode({'question': question}),
-      );
+  List<Map<String, String>> _buildPayloadMessages() {
+    final history = messages
+        .where((msg) => msg.content.trim().isNotEmpty)
+        .toList();
 
-      if (response.statusCode == 200) {
-        final responseData =
-            jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
-        final answer = (responseData['answer'] as String?) ??
-            'Sorry, no response generated.';
+    const maxHistory = 20;
+    final recent = history.length > maxHistory
+        ? history.sublist(history.length - maxHistory)
+        : history;
 
-        // Simulate streaming by revealing text gradually
-        var currentIndex = 0;
-        const chunkSize = 5; // Characters per update
-        const delayMs = 20; // Milliseconds between updates
+    return recent
+        .map(
+          (msg) => {
+            'role': msg.isUser ? 'user' : 'assistant',
+            'content': msg.content,
+          },
+        )
+        .toList();
+  }
 
-        while (currentIndex < answer.length && !_shouldStopGeneration) {
-          final endIndex = (currentIndex + chunkSize).clamp(0, answer.length);
-          aiMessage.content = answer.substring(0, endIndex);
+  Future<void> _streamResponse(
+    List<Map<String, String>> messagesPayload,
+    ChatMessage aiMessage, {
+    String? model,
+  }) async {
+    _streamSession = await APIs.streamChat(
+      messages: messagesPayload,
+      model: model,
+    );
 
-          // Trigger UI update
+    final completer = Completer<void>();
+    _streamSubscription = _streamSession!.stream.listen(
+      (ChatStreamEvent event) {
+        if (event.type == 'token' && event.token != null) {
+          aiMessage.content += event.token!;
           messages.refresh();
           _scrollDown();
-
-          if (endIndex < answer.length) {
-            await Future<void>.delayed(const Duration(milliseconds: delayMs));
+        } else if (event.type == 'end') {
+          if (!completer.isCompleted) {
+            completer.complete();
           }
-
-          currentIndex = endIndex;
+        } else if (event.type == 'error') {
+          if (!completer.isCompleted) {
+            completer.completeError(event.message ?? 'Stream error');
+          }
         }
-      } else {
-        aiMessage.content =
-            'Error: Server returned status ${response.statusCode}';
-        messages.refresh();
-      }
-    } on Exception catch (e) {
-      aiMessage.content = 'Error: $e';
-      messages.refresh();
-    }
+      },
+      onError: (Object error) {
+        if (!completer.isCompleted) {
+          completer.completeError(error);
+        }
+      },
+      onDone: () {
+        if (!completer.isCompleted) {
+          completer.complete();
+        }
+      },
+      cancelOnError: true,
+    );
+
+    await completer.future;
+    _streamSession?.close();
   }
 
   void _scrollDown() {
@@ -298,14 +329,12 @@ class EnhancedChatController extends GetxController {
       final jsonData = ConversationService.exportConversation(conversation.id);
       final jsonString = const JsonEncoder.withIndent('  ').convert(jsonData);
 
-      // Save to downloads directory
       final directory = await getApplicationDocumentsDirectory();
       final file = File(
         '${directory.path}/chat_${conversation.id.substring(0, 8)}.json',
       );
       await file.writeAsString(jsonString);
 
-      // Copy to clipboard
       await Clipboard.setData(ClipboardData(text: jsonString));
 
       Get.snackbar(
@@ -330,6 +359,15 @@ class EnhancedChatController extends GetxController {
     textC.dispose();
     scrollC.dispose();
     unawaited(_speechToText.cancel());
+    _cancelStreamSubscription();
+    _streamSession?.close();
     super.onClose();
+  }
+
+  void _cancelStreamSubscription() {
+    final cancelFuture = _streamSubscription?.cancel();
+    if (cancelFuture != null) {
+      unawaited(cancelFuture);
+    }
   }
 }

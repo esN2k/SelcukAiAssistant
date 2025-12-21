@@ -26,4 +26,6 @@ class Global {
   }
 
   static String get chatEndpoint => '$backendUrl/chat';
+  static String get chatStreamEndpoint => '$backendUrl/chat/stream';
+  static String get modelsEndpoint => '$backendUrl/models';
 }

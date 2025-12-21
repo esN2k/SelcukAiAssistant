@@ -260,3 +260,42 @@ python benchmark/run.py --models Qwen/Qwen2.5-1.5B-Instruct
 ```
 
 See `benchmark/README.md` for dataset format and output details.
+
+## Streaming Verification
+
+Backend SSE test:
+```bash
+curl -N -X POST http://localhost:8000/chat/stream \
+  -H "Content-Type: application/json" \
+  -d '{"messages":[{"role":"user","content":"Merhaba"}],"stream":true}'
+```
+
+App manual check:
+1) Start backend and Ollama/HF provider
+2) Open app > New Chat
+3) Send a message and watch tokens stream
+4) Tap Stop to cancel streaming
+
+## Switching Model Backend
+
+Edit `backend/.env` and set:
+```
+MODEL_BACKEND=ollama
+OLLAMA_MODEL=selcuk_ai_assistant
+
+# OR
+MODEL_BACKEND=huggingface
+HF_MODEL_NAME=Qwen/Qwen2.5-1.5B-Instruct
+HF_LOAD_IN_4BIT=true
+HF_DEVICE=cuda
+HF_DTYPE=bfloat16
+```
+
+## Benchmarking
+
+See `benchmark/README.md` for usage. Results are stored in `benchmark/results/`.
+
+## Docs
+
+- `docs/ARCHITECTURE.md`
+- `docs/API_CONTRACT.md`

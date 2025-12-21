@@ -7,10 +7,11 @@ import platform
 import random
 import sys
 import time
+import requests
 from dataclasses import dataclass
 from pathlib import Path
 from threading import Thread
-from typing import Any, Dict, Iterable, List, Optional
+from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 try:
     import psutil
@@ -80,6 +81,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--no-chat-template", action="store_true")
     parser.add_argument("--max-samples", type=int, default=None)
     parser.add_argument("--run-name", default=None)
+    parser.add_argument(
+        "--ollama-url",
+        default="http://localhost:11434",
+        help="Base URL for Ollama (for models prefixed with ollama:)",
+    )
     return parser.parse_args()
 
 
@@ -144,6 +150,20 @@ def build_prompt(
         lines.append("assistant:")
         return "\n".join(lines)
     return sample.prompt or ""
+
+
+def build_prompt_text(sample: Sample) -> str:
+    if sample.messages:
+        lines = [f"{msg['role']}: {msg['content']}" for msg in sample.messages]
+        lines.append("assistant:")
+        return "\n".join(lines)
+    return sample.prompt or ""
+
+
+def estimate_tokens(text: str) -> int:
+    if not text:
+        return 0
+    return max(1, len(text) // 4)
 
 
 def get_context_length(model: Any) -> Optional[int]:
@@ -219,6 +239,69 @@ def generate_with_streamer(
         "ttft_s": ttft_s,
         "total_time_s": total_time_s,
         "output_tokens": output_tokens,
+    }
+
+
+def run_ollama_sample(
+    base_url: str,
+    model_id: str,
+    prompt: str,
+    temperature: float,
+    top_p: float,
+    max_new_tokens: int,
+) -> Dict[str, Any]:
+    api_url = f"{base_url}/api/generate"
+    payload = {
+        "model": model_id,
+        "prompt": prompt,
+        "stream": True,
+        "options": {
+            "temperature": temperature,
+            "top_p": top_p,
+            "num_predict": max_new_tokens,
+        },
+    }
+
+    start_time = time.perf_counter()
+    ttft_s: Optional[float] = None
+    output_text = ""
+    prompt_tokens = None
+    completion_tokens = None
+
+    with requests.post(api_url, json=payload, stream=True, timeout=120) as resp:
+        resp.raise_for_status()
+        for line in resp.iter_lines():
+            if not line:
+                continue
+            data = json.loads(line.decode("utf-8"))
+            token = data.get("response", "")
+            if token:
+                if ttft_s is None:
+                    ttft_s = time.perf_counter() - start_time
+                output_text += token
+            if data.get("done"):
+                prompt_tokens = data.get("prompt_eval_count")
+                completion_tokens = data.get("eval_count")
+                break
+
+    total_time_s = time.perf_counter() - start_time
+    if ttft_s is None:
+        ttft_s = total_time_s
+
+    output_tokens = completion_tokens
+    if output_tokens is None:
+        output_tokens = estimate_tokens(output_text)
+
+    usage = {
+        "prompt_tokens": prompt_tokens,
+        "completion_tokens": completion_tokens,
+    }
+    return {
+        "output_text": output_text,
+        "ttft_s": ttft_s,
+        "total_time_s": total_time_s,
+        "output_tokens": output_tokens,
+        "usage": usage,
     }
 
 
@@ -301,6 +384,93 @@ def main() -> int:
     process = psutil.Process(os.getpid())
 
     for model_id in args.models:
+        if model_id.startswith("ollama:"):
+            ollama_model = model_id.split(":", 1)[1]
+            peak_rss = 0
+            successful = 0
+            ttft_values: List[float] = []
+            tok_values: List[float] = []
+            out_token_values: List[int] = []
+            total_time_values: List[float] = []
+            errors = 0
+
+            for sample in samples:
+                prompt = build_prompt_text(sample)
+                prompt_tokens = estimate_tokens(prompt)
+
+                row: Dict[str, Any] = {
+                    "model": model_id,
+                    "sample_id": sample.sample_id,
+                    "task": sample.task,
+                    "language": sample.language,
+                    "prompt_tokens": prompt_tokens,
+                    "output_tokens": None,
+                    "ttft_ms": None,
+                    "total_time_s": None,
+                    "tok_per_s": None,
+                    "output_text": None,
+                    "error": None,
+                }
+
+                try:
+                    output = run_ollama_sample(
+                        base_url=args.ollama_url,
+                        model_id=ollama_model,
+                        prompt=prompt,
+                        temperature=args.temperature,
+                        top_p=args.top_p,
+                        max_new_tokens=args.max_new_tokens,
+                    )
+                    output_tokens = output["output_tokens"]
+                    total_time_s = output["total_time_s"]
+                    ttft_ms = output["ttft_s"] * 1000.0
+                    tok_per_s = output_tokens / total_time_s if total_time_s > 0 else 0.0
+
+                    row.update(
+                        {
+                            "output_tokens": output_tokens,
+                            "ttft_ms": round(ttft_ms, 2),
+                            "total_time_s": round(total_time_s, 4),
+                            "tok_per_s": round(tok_per_s, 3),
+                            "output_text": output["output_text"],
+                        }
+                    )
+                    successful += 1
+                    ttft_values.append(ttft_ms)
+                    tok_values.append(tok_per_s)
+                    out_token_values.append(output_tokens)
+                    total_time_values.append(total_time_s)
+                except Exception as exc:  # pragma: no cover
+                    row["error"] = str(exc)
+                    errors += 1
+
+                results.append(row)
+
+                rss = process.memory_info().rss
+                if rss > peak_rss:
+                    peak_rss = rss
+
+            summary_rows.append(
+                {
+                    "model": model_id,
+                    "params": "",
+                    "context": "",
+                    "load_s": 0.0,
+                    "avg_ttft_ms": round(sum(ttft_values) / max(successful, 1), 2),
+                    "avg_tok_s": round(sum(tok_values) / max(successful, 1), 2),
+                    "avg_out_tokens": round(
+                        sum(out_token_values) / max(successful, 1), 1
+                    ),
+                    "avg_total_time_s": round(
+                        sum(total_time_values) / max(successful, 1), 3
+                    ),
+                    "peak_vram_mb": "",
+                    "peak_ram_mb": int(peak_rss / (1024 * 1024)),
+                    "errors": errors,
+                }
+            )
+            continue
+
         load_start = time.perf_counter()
         tokenizer = AutoTokenizer.from_pretrained(
             model_id, use_fast=True, trust_remote_code=args.trust_remote_code
@@ -426,7 +596,6 @@ def main() -> int:
             }
         )
 
-        # Free memory between models
         del model
         if device == "cuda":
             torch.cuda.empty_cache()

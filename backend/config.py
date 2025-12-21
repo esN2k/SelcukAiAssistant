@@ -93,6 +93,22 @@ class Config:
     
     # Logging configuration
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
+
+    # Model routing configuration
+    MODEL_BACKEND: str = os.getenv("MODEL_BACKEND", "ollama").lower()
+    MODEL_ALIASES: str = os.getenv("MODEL_ALIASES", "")
+
+    # Hugging Face configuration
+    HF_MODEL_NAME: str = os.getenv("HF_MODEL_NAME", "Qwen/Qwen2.5-1.5B-Instruct")
+    HF_LOAD_IN_4BIT: bool = os.getenv("HF_LOAD_IN_4BIT", "true").lower() == "true"
+    HF_DEVICE: str = os.getenv("HF_DEVICE", "cuda")
+    HF_DTYPE: str = os.getenv("HF_DTYPE", "bfloat16")
+    HF_ATTENTION_IMPL: str = os.getenv("HF_ATTENTION_IMPL", "sdpa")
+
+    # Guardrails
+    MAX_CONTEXT_TOKENS: int = int(os.getenv("MAX_CONTEXT_TOKENS", "4096"))
+    MAX_OUTPUT_TOKENS: int = int(os.getenv("MAX_OUTPUT_TOKENS", "512"))
+    REQUEST_TIMEOUT: int = int(os.getenv("REQUEST_TIMEOUT", "120"))
     
     # RAG configuration (for future implementation)
     RAG_ENABLED: bool = os.getenv("RAG_ENABLED", "false").lower() == "true"
@@ -136,6 +152,20 @@ class Config:
         
         if not cls.OLLAMA_BASE_URL:
             raise ValueError("OLLAMA_BASE_URL cannot be empty")
+
+        # Validate model backend
+        if cls.MODEL_BACKEND not in {"ollama", "huggingface"}:
+            raise ValueError("MODEL_BACKEND must be 'ollama' or 'huggingface'")
+
+        # Validate guardrails
+        if cls.MAX_CONTEXT_TOKENS < 256:
+            raise ValueError("MAX_CONTEXT_TOKENS must be at least 256")
+
+        if cls.MAX_OUTPUT_TOKENS < 1:
+            raise ValueError("MAX_OUTPUT_TOKENS must be at least 1")
+
+        if cls.REQUEST_TIMEOUT < 1:
+            raise ValueError("REQUEST_TIMEOUT must be at least 1 second")
         
         # Validate RAG settings if enabled
         if cls.RAG_ENABLED:

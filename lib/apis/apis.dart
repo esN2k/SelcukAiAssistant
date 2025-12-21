@@ -5,25 +5,46 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:selcukaiassistant/helper/global.dart';
+import 'package:selcukaiassistant/services/sse_client.dart';
 
 class APIs {
-  // Timeout configuration
   static const Duration _responseTimeout = Duration(seconds: 120);
 
-  /// Get AI answer from the backend chat endpoint.
-  /// 
-  /// Throws detailed exceptions for better error handling.
-  /// Returns the AI-generated answer or a user-friendly error message.
-  static Future<String> getAnswer(String question) async {
+  static Map<String, dynamic> _buildPayload({
+    required List<Map<String, String>> messages,
+    String? model,
+    bool stream = false,
+  }) {
+    return {
+      'model': model,
+      'messages': messages,
+      'temperature': 0.2,
+      'top_p': 0.9,
+      'max_tokens': 256,
+      'stream': stream,
+    };
+  }
+
+  static Future<String> getAnswer(String question, {String? model}) async {
+    return sendChat(
+      messages: [
+        {'role': 'user', 'content': question},
+      ],
+      model: model,
+    );
+  }
+
+  static Future<String> sendChat({
+    required List<Map<String, String>> messages,
+    String? model,
+  }) async {
     try {
-      log('Backend API çağrılıyor: ${Global.chatEndpoint}');
+      log('Backend API: ${Global.chatEndpoint}');
 
-      // Prepare the request body
-      final requestBody = jsonEncode({
-        'question': question,
-      });
+      final requestBody = jsonEncode(
+        _buildPayload(messages: messages, model: model),
+      );
 
-      // Send POST request to the backend with timeout
       final response = await http
           .post(
             Uri.parse(Global.chatEndpoint),
@@ -36,72 +57,60 @@ class APIs {
             _responseTimeout,
             onTimeout: () {
               throw TimeoutException(
-                'İstek zaman aşımına uğradı. '
-                'Lütfen daha kısa bir soru deneyin veya '
-                'daha sonra tekrar deneyin.',
+                'Request timed out. Please try again.',
               );
             },
           );
 
-      // Check if the request was successful
       if (response.statusCode == 200) {
         final responseData = jsonDecode(utf8.decode(response.bodyBytes))
             as Map<String, dynamic>;
         final answer = (responseData['answer'] as String?) ??
-            'Üzgünüm, bir yanıt oluşturulamadı.';
-        final preview = answer.substring(
-          0,
-          answer.length > 100 ? 100 : answer.length,
-        );
-        log('Backend Yanıtı: $preview...');
+            'Sorry, no response generated.';
         return answer;
       } else if (response.statusCode == 400) {
-        // Bad request - likely validation error
         try {
           final errorData =
               jsonDecode(response.body) as Map<String, dynamic>;
-          final errorMessage = errorData['detail'] as String? ?? 
-              'Geçersiz istek';
-          return 'Hata: $errorMessage';
+          final errorMessage =
+              errorData['detail'] as String? ?? 'Invalid request';
+          return 'Error: $errorMessage';
         } on FormatException {
-          return 'Hata: Geçersiz soru formatı. '
-              'Lütfen sorunuzu kontrol edin ve tekrar deneyin.';
+          return 'Error: Invalid request format.';
         }
       } else if (response.statusCode == 503) {
-        // Service unavailable - backend or Ollama is down
-        return 'Hata: AI servisi şu anda kullanılamıyor. '
-            'Lütfen daha sonra tekrar deneyin. '
-            'Eğer sorun devam ederse, sistem yöneticisi ile iletişime geçin.';
+        return 'Error: AI service is unavailable.';
       } else if (response.statusCode == 504) {
-        // Gateway timeout - request took too long
-        return 'Hata: AI yanıt verme süresi aşıldı. '
-            'Lütfen daha kısa bir soru deneyin veya daha sonra tekrar deneyin.';
-      } else {
-        // Other HTTP errors
-        log('Backend HATASI: ${response.statusCode}');
-        return 'Hata: Backend servisi geçici olarak kullanılamıyor '
-            '(HTTP ${response.statusCode}). '
-            'Lütfen daha sonra tekrar deneyin.';
+        return 'Error: AI response timeout.';
       }
+
+      return 'Error: Backend service unavailable.';
     } on TimeoutException catch (e) {
-      log('Backend ZAMAN AŞIMI: $e');
-      return e.message ?? 'İstek zaman aşımına uğradı. Lütfen tekrar deneyin.';
+      log('Backend timeout: $e');
+      return e.message ?? 'Request timed out.';
     } on SocketException catch (e) {
-      // Network connectivity issues
-      log('AĞ BAĞLANTI HATASI: $e');
-      return 'Hata: İnternet bağlantısı bulunamadı. '
-          'Lütfen internet bağlantınızı kontrol edin ve tekrar deneyin.';
+      log('Network error: $e');
+      return 'Error: No internet connection.';
     } on FormatException catch (e) {
-      // JSON parsing errors
-      log('YANIT PARSE HATASI: $e');
-      return 'Hata: Sunucudan alınan yanıt okunamadı. '
-          'Lütfen tekrar deneyin.';
+      log('Parse error: $e');
+      return 'Error: Invalid server response.';
     } on Exception catch (e) {
-      // Handle other errors
-      log('Backend HATA: $e');
-      return 'Hata: Beklenmeyen bir hata oluştu. '
-          'Lütfen daha sonra tekrar deneyin. '
-          'Hata: ${e.toString().replaceAll('Exception: ', '')}';
+      log('Backend error: $e');
+      return 'Error: Unexpected error.';
     }
+  }
+
+  static Future<ChatStreamSession> streamChat({
+    required List<Map<String, String>> messages,
+    String? model,
+  }) async {
+    final client = SseClient();
+    return client.connect(
+      url: Uri.parse(Global.chatStreamEndpoint),
+      headers: {'Content-Type': 'application/json; charset=utf-8'},
+      body: jsonEncode(
+        _buildPayload(messages: messages, model: model, stream: true),
+      ),
+    );
   }
 }

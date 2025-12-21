@@ -48,4 +48,9 @@ class Pref {
     if (data == true) return ThemeMode.dark;
     return ThemeMode.light;
   }
+
+  static String? get selectedModel =>
+      _box.get('selectedModel') as String?;
+
+  static set selectedModel(String? value) => _box.put('selectedModel', value);
 }

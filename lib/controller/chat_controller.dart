@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:selcukaiassistant/apis/apis.dart';
 import 'package:selcukaiassistant/helper/my_dialog.dart';
+import 'package:selcukaiassistant/helper/pref.dart';
 import 'package:selcukaiassistant/model/message.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
@@ -94,7 +95,10 @@ class ChatController extends GetxController {
       textC.text = '';
 
       try {
-        final res = await APIs.getAnswer(question);
+        final res = await APIs.getAnswer(
+          question,
+          model: Pref.selectedModel,
+        );
 
         // AI response
         list
