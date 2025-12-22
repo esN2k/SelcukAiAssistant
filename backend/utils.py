@@ -4,23 +4,38 @@ from __future__ import annotations
 import json
 import logging
 from dataclasses import dataclass
-from typing import Dict, Iterable, List
+from typing import Dict, Iterable, List, Optional
 
-from prompts import SELCUK_UNIVERSITY_SYSTEM_PROMPT
+from prompts import build_default_system_prompt
 from schemas import ChatMessage
 
 logger = logging.getLogger(__name__)
 
 
-def build_default_system_message() -> ChatMessage:
-    return ChatMessage(role="system", content=SELCUK_UNIVERSITY_SYSTEM_PROMPT.strip())
+def pick_language(accept_language: Optional[str]) -> str:
+    if not accept_language:
+        return "tr"
+    for part in accept_language.split(","):
+        lang = part.split(";", 1)[0].strip().lower()
+        if lang.startswith("tr"):
+            return "tr"
+        if lang.startswith("en"):
+            return "en"
+    return "tr"
 
 
-def normalize_messages(messages: List[ChatMessage]) -> List[ChatMessage]:
+def build_default_system_message(language: str) -> ChatMessage:
+    return ChatMessage(
+        role="system",
+        content=build_default_system_prompt(language).strip(),
+    )
+
+
+def normalize_messages(messages: List[ChatMessage], language: str) -> List[ChatMessage]:
     """Ensure a system message exists and strip empty content."""
     normalized = [ChatMessage(role=m.role, content=m.content) for m in messages]
     if not any(m.role == "system" for m in normalized):
-        normalized.insert(0, build_default_system_message())
+        normalized.insert(0, build_default_system_message(language))
     return normalized
 
 

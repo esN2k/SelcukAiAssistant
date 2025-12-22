@@ -291,10 +291,13 @@ class _NewChatScreenState extends State<NewChatScreen> {
                               final image = await ImagePickerService
                                   .showImageSourceDialog();
                               if (image != null && mounted) {
+                                final fileName = image.name.isNotEmpty
+                                    ? image.name
+                                    : image.path.split('/').last;
                                 Get.snackbar(
                                   l10n.imageSelectedTitle,
                                   l10n.imageSelectedMessage(
-                                    image.path.split('/').last,
+                                    fileName,
                                   ),
                                   snackPosition: SnackPosition.BOTTOM,
                                 );

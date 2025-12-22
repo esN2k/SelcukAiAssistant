@@ -238,6 +238,17 @@ class OllamaService:
                 "error": "Connection failed",
             }
 
+    async def list_model_names(self) -> List[str]:
+        try:
+            async with httpx.AsyncClient(timeout=5.0) as client:
+                response = await client.get(f"{self.base_url}/api/tags")
+                if response.status_code != 200:
+                    return []
+                models = response.json().get("models", [])
+                return [m.get("name") for m in models if m.get("name")]
+        except httpx.RequestError:
+            return []
+
     @staticmethod
     def _is_model_available(target_model: str, available_models: List[str]) -> bool:
         if not target_model or not available_models:

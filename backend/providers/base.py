@@ -1,7 +1,7 @@
 """Provider interface and shared dataclasses."""
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import AsyncIterator, Optional, Protocol
 
 
@@ -31,6 +31,13 @@ class ModelInfo:
     provider: str
     model_id: str
     display_name: str
+    local_or_remote: str
+    requires_api_key: bool
+    available: bool
+    reason_unavailable: str = ""
+    context_length: Optional[int] = None
+    tags: list[str] = field(default_factory=list)
+    notes: str = ""
     is_default: bool = False
 
 

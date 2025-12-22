@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -8,7 +6,7 @@ import 'package:selcukaiassistant/l10n/l10n.dart';
 class ImagePickerService {
   static final ImagePicker _picker = ImagePicker();
 
-  static Future<File?> pickImage({
+  static Future<XFile?> pickImage({
     required ImageSource source,
   }) async {
     final l10n = L10n.current();
@@ -20,10 +18,7 @@ class ImagePickerService {
         imageQuality: 85,
       );
 
-      if (image != null) {
-        return File(image.path);
-      }
-      return null;
+      return image;
     } on Exception catch (e) {
       Get.snackbar(
         l10n?.imagePickerErrorTitle ?? 'Error',
@@ -37,7 +32,7 @@ class ImagePickerService {
     }
   }
 
-  static Future<File?> showImageSourceDialog() async {
+  static Future<XFile?> showImageSourceDialog() async {
     final l10n = L10n.current();
     final source = await Get.dialog<ImageSource>(
       AlertDialog(

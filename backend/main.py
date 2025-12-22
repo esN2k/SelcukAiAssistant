@@ -17,17 +17,29 @@ from providers.base import CancellationToken, ModelProvider, Usage
 from providers.huggingface_provider import HuggingFaceProvider
 from providers.ollama_provider import OllamaProvider
 from providers.registry import ModelRegistry
+from response_cleaner import StreamingResponseCleaner, clean_text
 from schemas import ChatRequest, ChatResponse, UsageInfo
-from utils import clamp_max_tokens, normalize_messages, sse_event, trim_messages_for_context
+from utils import (
+    clamp_max_tokens,
+    normalize_messages,
+    pick_language,
+    sse_event,
+    trim_messages_for_context,
+)
 
 logger = logging.getLogger(__name__)
 
 app = FastAPI(title="SelcukAiAssistant Backend")
 
+allowed_origins = [origin.strip() for origin in Config.ALLOWED_ORIGINS if origin.strip()]
+if not allowed_origins:
+    allowed_origins = ["*"]
+allow_all_origins = "*" in allowed_origins
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=Config.ALLOWED_ORIGINS,
-    allow_credentials=True,
+    allow_origins=allowed_origins,
+    allow_credentials=not allow_all_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -106,6 +118,11 @@ async def root() -> Dict[str, str]:
     return {"status": "ok", "message": "SelcukAiAssistant Backend is running"}
 
 
+@app.get("/health")
+async def health() -> Dict[str, str]:
+    return {"status": "ok", "message": "SelcukAiAssistant Backend is running"}
+
+
 @app.get("/health/ollama")
 async def ollama_health() -> Dict[str, Any]:
     health = await ollama_provider.health_check(Config.OLLAMA_MODEL)
@@ -116,19 +133,21 @@ async def ollama_health() -> Dict[str, Any]:
 
 @app.get("/models")
 async def list_models() -> Dict[str, Any]:
-    return {"models": [model.__dict__ for model in model_registry.list_models()]}
+    models = await model_registry.list_models()
+    return {"models": [model.__dict__ for model in models]}
 
 
 @app.post("/chat", response_model=ChatResponse)
-async def chat(request: ChatRequest) -> ChatResponse:
+async def chat(request: ChatRequest, http_request: Request) -> ChatResponse:
     request_id = uuid.uuid4().hex
     start_time = time.perf_counter()
+    language = pick_language(http_request.headers.get("Accept-Language"))
     resolved = model_registry.resolve(request.model)
     provider = providers.get(resolved.provider)
     if not provider:
         raise HTTPException(status_code=400, detail="Unknown model provider")
 
-    messages = normalize_messages(request.messages)
+    messages = normalize_messages(request.messages, language)
     messages = trim_messages_for_context(messages, Config.MAX_CONTEXT_TOKENS)
     max_tokens = clamp_max_tokens(request.max_tokens, Config.MAX_OUTPUT_TOKENS)
 
@@ -147,7 +166,7 @@ async def chat(request: ChatRequest) -> ChatResponse:
     except RuntimeError as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
-    answer = result.text
+    answer = clean_text(result.text, language=language)
     _log_chat_to_appwrite(
         question=next((m.content for m in reversed(messages) if m.role == "user"), ""),
         answer=answer,
@@ -172,17 +191,19 @@ async def chat(request: ChatRequest) -> ChatResponse:
 @app.post("/chat/stream")
 async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingResponse:
     request_id = uuid.uuid4().hex
+    language = pick_language(http_request.headers.get("Accept-Language"))
     resolved = model_registry.resolve(request.model)
     provider = providers.get(resolved.provider)
     if not provider:
         raise HTTPException(status_code=400, detail="Unknown model provider")
 
-    messages = normalize_messages(request.messages)
+    messages = normalize_messages(request.messages, language)
     messages = trim_messages_for_context(messages, Config.MAX_CONTEXT_TOKENS)
     max_tokens = clamp_max_tokens(request.max_tokens, Config.MAX_OUTPUT_TOKENS)
     cancel_token = CancellationToken()
 
     async def event_generator() -> Any:
+        cleaner = StreamingResponseCleaner(language=language)
         try:
             async with asyncio.timeout(Config.REQUEST_TIMEOUT):
                 async for chunk in provider.stream(
@@ -199,14 +220,25 @@ async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingR
                         break
 
                     if chunk.token:
-                        yield sse_event(
-                            {
-                                "type": "token",
-                                "token": chunk.token,
-                                "request_id": request_id,
-                            }
-                        )
+                        cleaned = cleaner.feed(chunk.token)
+                        if cleaned:
+                            yield sse_event(
+                                {
+                                    "type": "token",
+                                    "token": cleaned,
+                                    "request_id": request_id,
+                                }
+                            )
                     if chunk.done:
+                        final_chunk = cleaner.finalize()
+                        if final_chunk:
+                            yield sse_event(
+                                {
+                                    "type": "token",
+                                    "token": final_chunk,
+                                    "request_id": request_id,
+                                }
+                            )
                         usage_schema = _usage_to_schema(chunk.usage)
                         yield sse_event(
                             {

@@ -92,5 +92,8 @@ class OllamaProvider(ModelProvider):
     def list_models(self) -> list:
         return []
 
+    async def list_model_names(self) -> List[str]:
+        return await self._client.list_model_names()
+
     async def health_check(self, model_id: str) -> Dict[str, object]:
         return await self._client.health_check(model_id)

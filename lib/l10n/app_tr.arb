@@ -1,88 +1,108 @@
-{
+﻿{
   "@@locale": "tr",
-  "appTitle": "Selçuk AI Asistanı",
-  "appSubtitle": "Selçuk Üniversitesi Yapay Zeka Asistanı",
-  "splashSubtitle": "Selçuk Üniversitesi Yapay Zeka Asistanı",
+  "appTitle": "SelÃ§uk AI AsistanÄ±",
+  "appSubtitle": "SelÃ§uk Ãœniversitesi Yapay Zeka AsistanÄ±",
+  "splashSubtitle": "SelÃ§uk Ãœniversitesi Yapay Zeka AsistanÄ±",
   "ok": "Tamam",
-  "cancel": "İptal",
+  "cancel": "Ä°ptal",
   "delete": "Sil",
   "clear": "Temizle",
-  "rename": "Yeniden adlandır",
+  "rename": "Yeniden adlandÄ±r",
   "newChat": "Yeni sohbet",
-  "loginTitle": "Hoş geldiniz",
-  "loginSubtitle": "Devam etmek için giriş yapın",
-  "loginButton": "Giriş yap",
-  "loginNoAccount": "Hesabınız yok mu?",
-  "loginCreateAccount": "Kayıt olun",
-  "loginSuccessTitle": "Başarılı",
-  "loginSuccessMessage": "Giriş yapıldı!",
+  "loginTitle": "HoÅŸ geldiniz",
+  "loginSubtitle": "Devam etmek iÃ§in giriÅŸ yapÄ±n",
+  "loginButton": "GiriÅŸ yap",
+  "loginNoAccount": "HesabÄ±nÄ±z yok mu?",
+  "loginCreateAccount": "KayÄ±t olun",
+  "loginSuccessTitle": "BaÅŸarÄ±lÄ±",
+  "loginSuccessMessage": "GiriÅŸ yapÄ±ldÄ±!",
   "loginErrorTitle": "Hata",
-  "registerTitle": "Hesap oluştur",
-  "registerSubtitle": "Asistanı kullanmaya başlayın",
-  "registerButton": "Kayıt ol",
-  "registerHaveAccount": "Zaten hesabınız var mı?",
-  "registerSignIn": "Giriş yap",
-  "registerSuccessTitle": "Başarılı",
-  "registerSuccessMessage": "Kayıt tamamlandı. Hoş geldiniz!",
+  "registerTitle": "Hesap oluÅŸtur",
+  "registerSubtitle": "AsistanÄ± kullanmaya baÅŸlayÄ±n",
+  "registerButton": "KayÄ±t ol",
+  "registerHaveAccount": "Zaten hesabÄ±nÄ±z var mÄ±?",
+  "registerSignIn": "GiriÅŸ yap",
+  "registerSuccessTitle": "BaÅŸarÄ±lÄ±",
+  "registerSuccessMessage": "KayÄ±t tamamlandÄ±. HoÅŸ geldiniz!",
   "registerErrorTitle": "Hata",
   "nameLabel": "Ad soyad",
   "emailLabel": "E-posta",
-  "passwordLabel": "Şifre",
-  "confirmPasswordLabel": "Şifre tekrar",
+  "passwordLabel": "Åifre",
+  "confirmPasswordLabel": "Åifre tekrar",
   "nameRequired": "Ad soyad gerekli",
   "emailRequired": "E-posta gerekli",
-  "invalidEmail": "Geçerli bir e-posta girin",
-  "passwordRequired": "Şifre gerekli",
-  "passwordMinLength": "Şifre en az 8 karakter olmalı",
-  "confirmPasswordRequired": "Şifre tekrarını girin",
-  "passwordsDoNotMatch": "Şifreler eşleşmiyor",
-  "onboardingTitle1": "Bana bir şey sor",
-  "onboardingSubtitle1": "En iyi yol arkadaşın olabilirim. Bana her şeyi sor, yardımcı olayım!",
-  "onboardingTitle2": "Hayalden gerçeğe",
-  "onboardingSubtitle2": "Sadece hayal et ve söyle. Senin için harika bir şey yaratayım!",
-  "onboardingNext": "Sıradaki",
+  "invalidEmail": "GeÃ§erli bir e-posta girin",
+  "passwordRequired": "Åifre gerekli",
+  "passwordMinLength": "Åifre en az 8 karakter olmalÄ±",
+  "confirmPasswordRequired": "Åifre tekrarÄ±nÄ± girin",
+  "passwordsDoNotMatch": "Åifreler eÅŸleÅŸmiyor",
+  "onboardingTitle1": "Bana bir ÅŸey sor",
+  "onboardingSubtitle1": "En iyi yol arkadaÅŸÄ±n olabilirim. Bana her ÅŸeyi sor, yardÄ±mcÄ± olayÄ±m!",
+  "onboardingTitle2": "Hayalden gerÃ§eÄŸe",
+  "onboardingSubtitle2": "Sadece hayal et ve sÃ¶yle. Senin iÃ§in harika bir ÅŸey yaratayÄ±m!",
+  "onboardingNext": "SÄ±radaki",
   "onboardingDone": "Bitti",
   "settingsTitle": "Ayarlar",
-  "sectionAppearance": "GÖRÜNÜM",
-  "sectionLanguage": "DİL",
-  "sectionAiModel": "YAPAY ZEKA MODELİ",
+  "sectionAppearance": "GÃ–RÃœNÃœM",
+  "sectionLanguage": "DÄ°L",
+  "sectionAiModel": "YAPAY ZEKA MODELÄ°",
   "sectionChatSettings": "SOHBET AYARLARI",
-  "sectionStatistics": "İSTATİSTİKLER",
-  "sectionDataManagement": "VERİ YÖNETİMİ",
+  "sectionStatistics": "Ä°STATÄ°STÄ°KLER",
+  "sectionDataManagement": "VERÄ° YÃ–NETÄ°MÄ°",
   "sectionAbout": "HAKKINDA",
-  "darkModeTitle": "Karanlık mod",
-  "darkModeSubtitle": "Aydınlık ve karanlık tema arasında geçiş yapın",
+  "darkModeTitle": "KaranlÄ±k mod",
+  "darkModeSubtitle": "AydÄ±nlÄ±k ve karanlÄ±k tema arasÄ±nda geÃ§iÅŸ yapÄ±n",
   "languageTitle": "Uygulama dili",
-  "languageSubtitle": "Tercih ettiğiniz dili seçin",
-  "languageTurkish": "Türkçe",
-  "languageEnglish": "İngilizce",
+  "languageSubtitle": "Tercih ettiÄŸiniz dili seÃ§in",
+  "languageTurkish": "TÃ¼rkÃ§e",
+  "languageEnglish": "Ä°ngilizce",
   "modelLabel": "Model",
-  "modelNotSelected": "Seçilmedi",
-  "selectModelTitle": "Model seçin",
-  "voiceInputTitle": "Sesli giriş",
-  "voiceInputSubtitle": "Sesli mesajlar için mikrofonu etkinleştirin",
-  "markdownSupportTitle": "Markdown desteği",
-  "markdownSupportSubtitle": "Biçimlendirilmiş metin ve kodu göster",
-  "totalConversations": "Toplam konuşma",
+  "modelNotSelected": "SeÃ§ilmedi",
+  "modelAvailable": "Uygun",
+  "modelUnavailable": "Kullanilamaz",
+  "modelLocalSection": "Yerel modeller",
+  "modelRemoteSection": "Uzak / API modelleri",
+  "modelInstallCommand": "Kurulum: {command}",
+  "@modelInstallCommand": {
+    "placeholders": {
+      "command": {
+        "type": "String"
+      }
+    }
+  },
+  "modelUnavailableReason": "Neden: {reason}",
+  "@modelUnavailableReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "selectModelTitle": "Model seÃ§in",
+  "voiceInputTitle": "Sesli giriÅŸ",
+  "voiceInputSubtitle": "Sesli mesajlar iÃ§in mikrofonu etkinleÅŸtirin",
+  "markdownSupportTitle": "Markdown desteÄŸi",
+  "markdownSupportSubtitle": "BiÃ§imlendirilmiÅŸ metin ve kodu gÃ¶ster",
+  "totalConversations": "Toplam konuÅŸma",
   "totalMessages": "Toplam mesaj",
-  "clearAllConversationsTitle": "Tüm konuşmaları temizle",
-  "clearAllConversationsSubtitle": "Tüm sohbet geçmişini silin",
-  "clearAllDataTitle": "Tüm verileri temizle",
-  "clearAllDataMessage": "Tüm konuşmaları silmek istediğinize emin misiniz? Bu işlem geri alınamaz.",
-  "deleteAll": "Tümünü sil",
-  "clearAllSuccessTitle": "Başarılı",
-  "clearAllSuccessMessage": "Tüm konuşmalar silindi",
-  "versionLabel": "Sürüm",
-  "developerLabel": "Geliştirici",
-  "developerValue": "Selçuk AI",
-  "deleteConversationTitle": "Konuşmayı sil",
-  "deleteConversationMessage": "Bu konuşmayı silmek istediğinize emin misiniz? Bu işlem geri alınamaz.",
-  "renameConversationTitle": "Konuşmayı yeniden adlandır",
-  "renameConversationHint": "Yeni başlık girin",
-  "searchConversationsHint": "Konuşmaları ara...",
-  "noConversationsFound": "Konuşma bulunamadı",
-  "noConversationsYet": "Henüz konuşma yok",
-  "conversationsCount": "{count, plural, =0{0 konuşma} =1{1 konuşma} other{{count} konuşma}}",
+  "clearAllConversationsTitle": "TÃ¼m konuÅŸmalarÄ± temizle",
+  "clearAllConversationsSubtitle": "TÃ¼m sohbet geÃ§miÅŸini silin",
+  "clearAllDataTitle": "TÃ¼m verileri temizle",
+  "clearAllDataMessage": "TÃ¼m konuÅŸmalarÄ± silmek istediÄŸinize emin misiniz? Bu iÅŸlem geri alÄ±namaz.",
+  "deleteAll": "TÃ¼mÃ¼nÃ¼ sil",
+  "clearAllSuccessTitle": "BaÅŸarÄ±lÄ±",
+  "clearAllSuccessMessage": "TÃ¼m konuÅŸmalar silindi",
+  "versionLabel": "SÃ¼rÃ¼m",
+  "developerLabel": "GeliÅŸtirici",
+  "developerValue": "SelÃ§uk AI",
+  "deleteConversationTitle": "KonuÅŸmayÄ± sil",
+  "deleteConversationMessage": "Bu konuÅŸmayÄ± silmek istediÄŸinize emin misiniz? Bu iÅŸlem geri alÄ±namaz.",
+  "renameConversationTitle": "KonuÅŸmayÄ± yeniden adlandÄ±r",
+  "renameConversationHint": "Yeni baÅŸlÄ±k girin",
+  "searchConversationsHint": "KonuÅŸmalarÄ± ara...",
+  "noConversationsFound": "KonuÅŸma bulunamadÄ±",
+  "noConversationsYet": "HenÃ¼z konuÅŸma yok",
+  "conversationsCount": "{count, plural, =0{0 konuÅŸma} =1{1 konuÅŸma} other{{count} konuÅŸma}}",
   "@conversationsCount": {
     "placeholders": {
       "count": {
@@ -90,9 +110,9 @@
       }
     }
   },
-  "todayLabel": "Bugün",
-  "yesterdayLabel": "Dün",
-  "daysAgo": "{count, plural, =1{1 gün önce} other{{count} gün önce}}",
+  "todayLabel": "BugÃ¼n",
+  "yesterdayLabel": "DÃ¼n",
+  "daysAgo": "{count, plural, =1{1 gÃ¼n Ã¶nce} other{{count} gÃ¼n Ã¶nce}}",
   "@daysAgo": {
     "placeholders": {
       "count": {
@@ -100,7 +120,7 @@
       }
     }
   },
-  "weeksAgo": "{count, plural, =1{1 hafta önce} other{{count} hafta önce}}",
+  "weeksAgo": "{count, plural, =1{1 hafta Ã¶nce} other{{count} hafta Ã¶nce}}",
   "@weeksAgo": {
     "placeholders": {
       "count": {
@@ -108,7 +128,7 @@
       }
     }
   },
-  "monthsAgo": "{count, plural, =1{1 ay önce} other{{count} ay önce}}",
+  "monthsAgo": "{count, plural, =1{1 ay Ã¶nce} other{{count} ay Ã¶nce}}",
   "@monthsAgo": {
     "placeholders": {
       "count": {
@@ -116,7 +136,7 @@
       }
     }
   },
-  "yearsAgo": "{count, plural, =1{1 yıl önce} other{{count} yıl önce}}",
+  "yearsAgo": "{count, plural, =1{1 yÄ±l Ã¶nce} other{{count} yÄ±l Ã¶nce}}",
   "@yearsAgo": {
     "placeholders": {
       "count": {
@@ -124,12 +144,12 @@
       }
     }
   },
-  "clearConversationTitle": "Konuşmayı temizle",
-  "clearConversationMessage": "Bu konuşmayı temizlemek istediğinize emin misiniz? Bu işlem geri alınamaz.",
-  "listeningIndicator": "Dinleniyor... (bırakınca durur)",
-  "messageHint": "Selçuk AI Asistanı'na yazın...",
-  "imageSelectedTitle": "Görsel seçildi",
-  "imageSelectedMessage": "Görsel: {fileName}",
+  "clearConversationTitle": "KonuÅŸmayÄ± temizle",
+  "clearConversationMessage": "Bu konuÅŸmayÄ± temizlemek istediÄŸinize emin misiniz? Bu iÅŸlem geri alÄ±namaz.",
+  "listeningIndicator": "Dinleniyor... (bÄ±rakÄ±nca durur)",
+  "messageHint": "SelÃ§uk AI AsistanÄ±'na yazÄ±n...",
+  "imageSelectedTitle": "GÃ¶rsel seÃ§ildi",
+  "imageSelectedMessage": "GÃ¶rsel: {fileName}",
   "@imageSelectedMessage": {
     "placeholders": {
       "fileName": {
@@ -137,12 +157,12 @@
       }
     }
   },
-  "startConversationTitle": "Bir sohbet başlatın",
-  "startConversationSubtitle": "Bana istediğinizi sorun!",
-  "suggestedPrompt1": "Kuantum hesaplamayı açıkla",
-  "suggestedPrompt2": "Bir şiir yaz",
-  "suggestedPrompt3": "Kod konusunda yardım",
-  "streamErrorTitle": "Akış hatası",
+  "startConversationTitle": "Bir sohbet baÅŸlatÄ±n",
+  "startConversationSubtitle": "Bana istediÄŸinizi sorun!",
+  "suggestedPrompt1": "Kuantum hesaplamayÄ± aÃ§Ä±kla",
+  "suggestedPrompt2": "Bir ÅŸiir yaz",
+  "suggestedPrompt3": "Kod konusunda yardÄ±m",
+  "streamErrorTitle": "AkÄ±ÅŸ hatasÄ±",
   "streamErrorMessage": "{error}",
   "@streamErrorMessage": {
     "placeholders": {
@@ -151,14 +171,14 @@
       }
     }
   },
-  "streamInterruptedTag": "[Akış kesildi]",
-  "microphonePermissionRequired": "Sesli giriş için mikrofon izni gerekli",
-  "speechNotAvailable": "Ses tanıma kullanılamıyor",
-  "enterMessagePrompt": "Lütfen bir mesaj yazın veya sesli giriş kullanın!",
-  "exportFailedTitle": "Dışa aktarma başarısız",
-  "noMessagesToExport": "Dışa aktarılacak mesaj yok",
-  "exportSuccessTitle": "Dışa aktarma başarılı",
-  "exportSuccessMessage": "Şuraya kaydedildi: {path}\\nAyrıca panoya kopyalandı",
+  "streamInterruptedTag": "[AkÄ±ÅŸ kesildi]",
+  "microphonePermissionRequired": "Sesli giriÅŸ iÃ§in mikrofon izni gerekli",
+  "speechNotAvailable": "Ses tanÄ±ma kullanÄ±lamÄ±yor",
+  "enterMessagePrompt": "LÃ¼tfen bir mesaj yazÄ±n veya sesli giriÅŸ kullanÄ±n!",
+  "exportFailedTitle": "DÄ±ÅŸa aktarma baÅŸarÄ±sÄ±z",
+  "noMessagesToExport": "DÄ±ÅŸa aktarÄ±lacak mesaj yok",
+  "exportSuccessTitle": "DÄ±ÅŸa aktarma baÅŸarÄ±lÄ±",
+  "exportSuccessMessage": "Åuraya kaydedildi: {path}\\nAyrÄ±ca panoya kopyalandÄ±",
   "@exportSuccessMessage": {
     "placeholders": {
       "path": {
@@ -166,14 +186,15 @@
       }
     }
   },
-  "logout": "Çıkış",
+  "exportSuccessWebMessage": "Dosya indirildi ve panoya kopyalandÅ½Ã±",
+  "logout": "Ã‡Ä±kÄ±ÅŸ",
   "clearChat": "Sohbeti temizle",
-  "exportChat": "Sohbeti dışa aktar",
-  "logoutSuccessTitle": "Başarılı",
-  "logoutSuccessMessage": "Çıkış yapıldı",
+  "exportChat": "Sohbeti dÄ±ÅŸa aktar",
+  "logoutSuccessTitle": "BaÅŸarÄ±lÄ±",
+  "logoutSuccessMessage": "Ã‡Ä±kÄ±ÅŸ yapÄ±ldÄ±",
   "logoutErrorTitle": "Hata",
-  "copiedToClipboard": "Panoya kopyalandı",
-  "yesterdayAt": "Dün {time}",
+  "copiedToClipboard": "Panoya kopyalandÄ±",
+  "yesterdayAt": "DÃ¼n {time}",
   "@yesterdayAt": {
     "placeholders": {
       "time": {
@@ -181,12 +202,12 @@
       }
     }
   },
-  "aiThinking": "Yapay zeka düşünüyor...",
+  "aiThinking": "Yapay zeka dÃ¼ÅŸÃ¼nÃ¼yor...",
   "infoTitle": "Bilgi",
-  "successTitle": "Başarılı",
+  "successTitle": "BaÅŸarÄ±lÄ±",
   "errorTitle": "Hata",
   "imagePickerErrorTitle": "Hata",
-  "imagePickerErrorMessage": "Görsel seçilemedi: {error}",
+  "imagePickerErrorMessage": "GÃ¶rsel seÃ§ilemedi: {error}",
   "@imagePickerErrorMessage": {
     "placeholders": {
       "error": {
@@ -194,12 +215,12 @@
       }
     }
   },
-  "chooseImageSourceTitle": "Görsel kaynağını seçin",
+  "chooseImageSourceTitle": "GÃ¶rsel kaynaÄŸÄ±nÄ± seÃ§in",
   "cameraLabel": "Kamera",
   "galleryLabel": "Galeri",
-  "appwritePingSuccess": "Appwrite bağlantısı başarılı!",
-  "appwritePingNoSession": "Appwrite bağlantısı var ama oturum açık değil.",
-  "appwritePingError": "Appwrite ping hatası: {error}",
+  "appwritePingSuccess": "Appwrite baÄŸlantÄ±sÄ± baÅŸarÄ±lÄ±!",
+  "appwritePingNoSession": "Appwrite baÄŸlantÄ±sÄ± var ama oturum aÃ§Ä±k deÄŸil.",
+  "appwritePingError": "Appwrite ping hatasÄ±: {error}",
   "@appwritePingError": {
     "placeholders": {
       "error": {
@@ -207,23 +228,59 @@
       }
     }
   },
-  "sendPingTooltip": "Ping gönder",
-  "logoutTooltip": "Çıkış",
-  "assistantTitle": "Yapay zeka asistanı",
-  "assistantHint": "Bir mesaj yazın veya sesli giriş için basılı tutun...",
-  "listeningStatus": "Ses girişi dinleniyor...",
-  "startChatHint": "Yapay zeka asistanıyla konuşmaya başlayın!",
-  "errorInvalidRequest": "Hata: Geçersiz istek",
-  "errorInvalidRequestFormat": "Hata: Geçersiz istek formatı.",
-  "errorServiceUnavailable": "Hata: Yapay zeka hizmeti kullanılamıyor.",
-  "errorTimeout": "Hata: Yanıt zaman aşımına uğradı.",
-  "errorBackendUnavailable": "Hata: Sunucu hizmeti kullanılamıyor.",
-  "errorNoInternet": "Hata: İnternet bağlantısı yok.",
-  "errorInvalidServerResponse": "Hata: Geçersiz sunucu yanıtı.",
+  "sendPingTooltip": "Ping gÃ¶nder",
+  "logoutTooltip": "Ã‡Ä±kÄ±ÅŸ",
+  "assistantTitle": "Yapay zeka asistanÄ±",
+  "assistantHint": "Bir mesaj yazÄ±n veya sesli giriÅŸ iÃ§in basÄ±lÄ± tutun...",
+  "listeningStatus": "Ses giriÅŸi dinleniyor...",
+  "startChatHint": "Yapay zeka asistanÄ±yla konuÅŸmaya baÅŸlayÄ±n!",
+  "errorInvalidRequest": "Hata: GeÃ§ersiz istek",
+  "errorInvalidRequestFormat": "Hata: GeÃ§ersiz istek formatÄ±.",
+  "errorServiceUnavailable": "Hata: Yapay zeka hizmeti kullanÄ±lamÄ±yor.",
+  "errorTimeout": "Hata: YanÄ±t zaman aÅŸÄ±mÄ±na uÄŸradÄ±.",
+  "errorBackendUnavailable": "Hata: Sunucu hizmeti kullanÄ±lamÄ±yor.",
+  "errorNoInternet": "Hata: Ä°nternet baÄŸlantÄ±sÄ± yok.",
+  "errorInvalidServerResponse": "Hata: GeÃ§ersiz sunucu yanÄ±tÄ±.",
   "errorUnexpected": "Hata: Beklenmeyen hata.",
-  "noResponseGenerated": "Üzgünüm, yanıt üretilemedi.",
-  "requestTimeoutMessage": "İstek zaman aşımına uğradı. Lütfen tekrar deneyin.",
-  "speechRecognitionFailed": "Ses tanıma başarısız oldu. Lütfen tekrar deneyin.",
-  "speechRecognitionError": "Ses tanıma hatası. Lütfen ağ bağlantınızı kontrol edin.",
-  "serverConnectionFailed": "Sunucu bağlantısı başarısız."
+  "noResponseGenerated": "ÃœzgÃ¼nÃ¼m, yanÄ±t Ã¼retilemedi.",
+  "requestTimeoutMessage": "Ä°stek zaman aÅŸÄ±mÄ±na uÄŸradÄ±. LÃ¼tfen tekrar deneyin.",
+  "speechRecognitionFailed": "Ses tanÄ±ma baÅŸarÄ±sÄ±z oldu. LÃ¼tfen tekrar deneyin.",
+  "speechRecognitionError": "Ses tanÄ±ma hatasÄ±. LÃ¼tfen aÄŸ baÄŸlantÄ±nÄ±zÄ± kontrol edin.",
+  "serverConnectionFailed": "Sunucu baÄŸlantÄ±sÄ± baÅŸarÄ±sÄ±z.",
+  "sectionServer": "SUNUCU",
+  "sectionDiagnostics": "TANILAMA",
+  "backendUrlTitle": "Sunucu URL'si",
+  "backendUrlSubtitle": "Geçerli: {current}",
+  "@backendUrlSubtitle": {
+    "placeholders": {
+      "current": {
+        "type": "String"
+      }
+    }
+  },
+  "backendUrlHint": "https://example.com:8000 veya /api",
+  "backendUrlSave": "Kaydet",
+  "backendUrlClear": "Özel ayarı temizle",
+  "backendUrlSaved": "Sunucu URL'si kaydedildi",
+  "backendUrlCleared": "Sunucu URL'si özelleştirmesi temizlendi",
+  "diagnosticsTitle": "Tanılama",
+  "diagnosticsSubtitle": "Sunucu bağlantısını ve akışı test edin",
+  "diagnosticsConnectionSection": "BAĞLANTI",
+  "diagnosticsBaseUrlLabel": "Temel URL",
+  "diagnosticsModelLabel": "Seçili model",
+  "diagnosticsModelAvailable": "Uygun",
+  "diagnosticsModelUnavailable": "Kullanılamıyor",
+  "diagnosticsHealthButton": "/health test et",
+  "diagnosticsModelsButton": "/models test et",
+  "diagnosticsChatButton": "/chat test et",
+  "diagnosticsStreamButton": "/chat/stream test et",
+  "diagnosticsStreamRunning": "Akış sürüyor...",
+  "diagnosticsLastErrorTitle": "Son hata",
+  "diagnosticsNoErrors": "Henüz hata yok.",
+  "diagnosticsStreamSampleTitle": "SSE örneği",
+  "diagnosticsNoStreamSample": "Akış olayı yakalanmadı.",
+  "diagnosticsLogsTitle": "Tanılama günlüğü",
+  "diagnosticsCopyLog": "Günlüğü kopyala",
+  "diagnosticsNoLogs": "Henüz tanılama yapılmadı.",
+  "diagnosticsTestMessage": "Merhaba"
 }

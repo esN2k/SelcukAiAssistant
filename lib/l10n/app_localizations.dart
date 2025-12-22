@@ -380,6 +380,18 @@ abstract class AppLocalizations {
   /// **'CHAT SETTINGS'**
   String get sectionChatSettings;
 
+  /// No description provided for @sectionServer.
+  ///
+  /// In en, this message translates to:
+  /// **'SERVER'**
+  String get sectionServer;
+
+  /// No description provided for @sectionDiagnostics.
+  ///
+  /// In en, this message translates to:
+  /// **'DIAGNOSTICS'**
+  String get sectionDiagnostics;
+
   /// No description provided for @sectionStatistics.
   ///
   /// In en, this message translates to:
@@ -445,6 +457,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Not selected'**
   String get modelNotSelected;
+
+  /// No description provided for @modelAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Available'**
+  String get modelAvailable;
+
+  /// No description provided for @modelUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Unavailable'**
+  String get modelUnavailable;
+
+  /// No description provided for @modelLocalSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Local models'**
+  String get modelLocalSection;
+
+  /// No description provided for @modelRemoteSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote / API models'**
+  String get modelRemoteSection;
+
+  /// No description provided for @modelInstallCommand.
+  ///
+  /// In en, this message translates to:
+  /// **'Install: {command}'**
+  String modelInstallCommand(String command);
+
+  /// No description provided for @modelUnavailableReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason: {reason}'**
+  String modelUnavailableReason(String reason);
+
+  /// No description provided for @backendUrlTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Backend URL'**
+  String get backendUrlTitle;
+
+  /// No description provided for @backendUrlSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Current: {current}'**
+  String backendUrlSubtitle(String current);
+
+  /// No description provided for @backendUrlHint.
+  ///
+  /// In en, this message translates to:
+  /// **'https://example.com:8000 or /api'**
+  String get backendUrlHint;
+
+  /// No description provided for @backendUrlSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get backendUrlSave;
+
+  /// No description provided for @backendUrlClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear override'**
+  String get backendUrlClear;
+
+  /// No description provided for @backendUrlSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Backend URL saved'**
+  String get backendUrlSaved;
+
+  /// No description provided for @backendUrlCleared.
+  ///
+  /// In en, this message translates to:
+  /// **'Backend URL override cleared'**
+  String get backendUrlCleared;
+
+  /// No description provided for @diagnosticsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Diagnostics'**
+  String get diagnosticsTitle;
+
+  /// No description provided for @diagnosticsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Test backend connectivity and streaming'**
+  String get diagnosticsSubtitle;
 
   /// No description provided for @selectModelTitle.
   ///
@@ -716,6 +818,114 @@ abstract class AppLocalizations {
   /// **'[Stream interrupted]'**
   String get streamInterruptedTag;
 
+  /// No description provided for @diagnosticsConnectionSection.
+  ///
+  /// In en, this message translates to:
+  /// **'CONNECTION'**
+  String get diagnosticsConnectionSection;
+
+  /// No description provided for @diagnosticsBaseUrlLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Base URL'**
+  String get diagnosticsBaseUrlLabel;
+
+  /// No description provided for @diagnosticsModelLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected model'**
+  String get diagnosticsModelLabel;
+
+  /// No description provided for @diagnosticsModelAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Available'**
+  String get diagnosticsModelAvailable;
+
+  /// No description provided for @diagnosticsModelUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Unavailable'**
+  String get diagnosticsModelUnavailable;
+
+  /// No description provided for @diagnosticsHealthButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Test /health'**
+  String get diagnosticsHealthButton;
+
+  /// No description provided for @diagnosticsModelsButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Test /models'**
+  String get diagnosticsModelsButton;
+
+  /// No description provided for @diagnosticsChatButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Test /chat'**
+  String get diagnosticsChatButton;
+
+  /// No description provided for @diagnosticsStreamButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Test /chat/stream'**
+  String get diagnosticsStreamButton;
+
+  /// No description provided for @diagnosticsStreamRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Streaming...'**
+  String get diagnosticsStreamRunning;
+
+  /// No description provided for @diagnosticsLastErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Last error'**
+  String get diagnosticsLastErrorTitle;
+
+  /// No description provided for @diagnosticsNoErrors.
+  ///
+  /// In en, this message translates to:
+  /// **'No errors recorded yet.'**
+  String get diagnosticsNoErrors;
+
+  /// No description provided for @diagnosticsStreamSampleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'SSE sample'**
+  String get diagnosticsStreamSampleTitle;
+
+  /// No description provided for @diagnosticsNoStreamSample.
+  ///
+  /// In en, this message translates to:
+  /// **'No stream events captured.'**
+  String get diagnosticsNoStreamSample;
+
+  /// No description provided for @diagnosticsLogsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Diagnostics log'**
+  String get diagnosticsLogsTitle;
+
+  /// No description provided for @diagnosticsCopyLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy log'**
+  String get diagnosticsCopyLog;
+
+  /// No description provided for @diagnosticsNoLogs.
+  ///
+  /// In en, this message translates to:
+  /// **'No diagnostics run yet.'**
+  String get diagnosticsNoLogs;
+
+  /// No description provided for @diagnosticsTestMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello'**
+  String get diagnosticsTestMessage;
+
   /// No description provided for @microphonePermissionRequired.
   ///
   /// In en, this message translates to:
@@ -757,6 +967,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Saved to {path}\\nAlso copied to clipboard'**
   String exportSuccessMessage(String path);
+
+  /// No description provided for @exportSuccessWebMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloaded file and copied to clipboard'**
+  String get exportSuccessWebMessage;
 
   /// No description provided for @logout.
   ///

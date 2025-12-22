@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:selcukaiassistant/helper/global.dart';
@@ -108,7 +107,7 @@ class APIs {
     } on TimeoutException catch (e) {
       log('Backend timeout: $e');
       return e.message ?? timeoutMessage;
-    } on SocketException catch (e) {
+    } on http.ClientException catch (e) {
       log('Network error: $e');
       return l10n?.errorNoInternet ?? 'Error: No internet connection.';
     } on FormatException catch (e) {

@@ -152,6 +152,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sectionChatSettings => 'CHAT SETTINGS';
 
   @override
+  String get sectionServer => 'SERVER';
+
+  @override
+  String get sectionDiagnostics => 'DIAGNOSTICS';
+
+  @override
   String get sectionStatistics => 'STATISTICS';
 
   @override
@@ -183,6 +189,57 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get modelNotSelected => 'Not selected';
+
+  @override
+  String get modelAvailable => 'Available';
+
+  @override
+  String get modelUnavailable => 'Unavailable';
+
+  @override
+  String get modelLocalSection => 'Local models';
+
+  @override
+  String get modelRemoteSection => 'Remote / API models';
+
+  @override
+  String modelInstallCommand(String command) {
+    return 'Install: $command';
+  }
+
+  @override
+  String modelUnavailableReason(String reason) {
+    return 'Reason: $reason';
+  }
+
+  @override
+  String get backendUrlTitle => 'Backend URL';
+
+  @override
+  String backendUrlSubtitle(String current) {
+    return 'Current: $current';
+  }
+
+  @override
+  String get backendUrlHint => 'https://example.com:8000 or /api';
+
+  @override
+  String get backendUrlSave => 'Save';
+
+  @override
+  String get backendUrlClear => 'Clear override';
+
+  @override
+  String get backendUrlSaved => 'Backend URL saved';
+
+  @override
+  String get backendUrlCleared => 'Backend URL override cleared';
+
+  @override
+  String get diagnosticsTitle => 'Diagnostics';
+
+  @override
+  String get diagnosticsSubtitle => 'Test backend connectivity and streaming';
 
   @override
   String get selectModelTitle => 'Select model';
@@ -368,6 +425,60 @@ class AppLocalizationsEn extends AppLocalizations {
   String get streamInterruptedTag => '[Stream interrupted]';
 
   @override
+  String get diagnosticsConnectionSection => 'CONNECTION';
+
+  @override
+  String get diagnosticsBaseUrlLabel => 'Base URL';
+
+  @override
+  String get diagnosticsModelLabel => 'Selected model';
+
+  @override
+  String get diagnosticsModelAvailable => 'Available';
+
+  @override
+  String get diagnosticsModelUnavailable => 'Unavailable';
+
+  @override
+  String get diagnosticsHealthButton => 'Test /health';
+
+  @override
+  String get diagnosticsModelsButton => 'Test /models';
+
+  @override
+  String get diagnosticsChatButton => 'Test /chat';
+
+  @override
+  String get diagnosticsStreamButton => 'Test /chat/stream';
+
+  @override
+  String get diagnosticsStreamRunning => 'Streaming...';
+
+  @override
+  String get diagnosticsLastErrorTitle => 'Last error';
+
+  @override
+  String get diagnosticsNoErrors => 'No errors recorded yet.';
+
+  @override
+  String get diagnosticsStreamSampleTitle => 'SSE sample';
+
+  @override
+  String get diagnosticsNoStreamSample => 'No stream events captured.';
+
+  @override
+  String get diagnosticsLogsTitle => 'Diagnostics log';
+
+  @override
+  String get diagnosticsCopyLog => 'Copy log';
+
+  @override
+  String get diagnosticsNoLogs => 'No diagnostics run yet.';
+
+  @override
+  String get diagnosticsTestMessage => 'Hello';
+
+  @override
   String get microphonePermissionRequired =>
       'Microphone permission is required for voice input';
 
@@ -390,6 +501,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String exportSuccessMessage(String path) {
     return 'Saved to $path\\nAlso copied to clipboard';
   }
+
+  @override
+  String get exportSuccessWebMessage =>
+      'Downloaded file and copied to clipboard';
 
   @override
   String get logout => 'Logout';

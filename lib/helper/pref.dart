@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -58,4 +59,15 @@ class Pref {
       _box.get('localeCode') as String?;
 
   static set localeCode(String? value) => _box.put('localeCode', value);
+
+  static String? get backendUrlOverride =>
+      _box.get('backendUrlOverride') as String?;
+
+  static set backendUrlOverride(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      unawaited(_box.delete('backendUrlOverride'));
+    } else {
+      unawaited(_box.put('backendUrlOverride', value.trim()));
+    }
+  }
 }

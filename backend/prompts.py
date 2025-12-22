@@ -142,3 +142,20 @@ def build_chat_prompt(question: str, context: str = "") -> str:
     prompt_parts.append(f"\n\nKullanıcı sorusu: {question}")
     
     return "".join(prompt_parts)
+
+
+DEFAULT_SYSTEM_PROMPT_EN = (
+    'You are "Selcuk AI Assistant" - the official AI helper for Selcuk University. '
+    "Be professional, helpful, and clear. Use Markdown formatting.\n\n"
+    "Answer in English. Do not reveal chain-of-thought or planning. "
+    "Be concise and helpful."
+)
+
+
+def build_default_system_prompt(language: str) -> str:
+    base = SELCUK_UNIVERSITY_SYSTEM_PROMPT
+    guard = "Yaniti Turkce ver. Dusunce surecini veya planlamani gosterme. Kisa ve yardimci ol."
+    if language.lower().startswith("en"):
+        base = DEFAULT_SYSTEM_PROMPT_EN
+        guard = "Answer in English. Do not reveal chain-of-thought or planning. Be concise and helpful."
+    return f"{base.strip()}\n\n{guard}"

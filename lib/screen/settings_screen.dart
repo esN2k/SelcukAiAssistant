@@ -4,9 +4,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:selcukaiassistant/helper/global.dart';
 import 'package:selcukaiassistant/helper/pref.dart';
 import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/model/model_info.dart';
+import 'package:selcukaiassistant/screen/diagnostics_screen.dart';
 import 'package:selcukaiassistant/services/conversation_service.dart';
 import 'package:selcukaiassistant/services/model_service.dart';
 
@@ -56,10 +58,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
       return;
     }
 
-    final defaultModel = _models.firstWhere(
+    final availableModels = _models.where((m) => m.available).toList();
+    var defaultModel = _models.firstWhere(
       (m) => m.isDefault,
-      orElse: () => _models.first,
+      orElse: () =>
+          availableModels.isNotEmpty ? availableModels.first : _models.first,
     );
+    if (!defaultModel.available && availableModels.isNotEmpty) {
+      defaultModel = availableModels.first;
+    }
     _selectedModel.value = defaultModel.id;
     Pref.selectedModel = defaultModel.id;
   }
@@ -96,6 +103,190 @@ class _SettingsScreenState extends State<SettingsScreen> {
         );
       }
     }
+  }
+
+  String _resolvedBackendUrl() => Global.backendUrl;
+
+  Future<void> _editBackendUrl() async {
+    final l10n = context.l10n;
+    final controller = TextEditingController(
+      text: Pref.backendUrlOverride ?? '',
+    );
+
+    final action = await Get.dialog<String>(
+      AlertDialog(
+        title: Text(l10n.backendUrlTitle),
+        content: TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            hintText: l10n.backendUrlHint,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(result: 'cancel'),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Get.back(result: 'clear'),
+            child: Text(l10n.backendUrlClear),
+          ),
+          TextButton(
+            onPressed: () => Get.back(result: 'save'),
+            child: Text(l10n.backendUrlSave),
+          ),
+        ],
+      ),
+    );
+
+    if (!mounted || action == null || action == 'cancel') {
+      return;
+    }
+
+    if (action == 'clear') {
+      Pref.backendUrlOverride = null;
+      setState(() {});
+      Get.snackbar(
+        l10n.successTitle,
+        l10n.backendUrlCleared,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
+    Pref.backendUrlOverride = controller.text;
+    setState(() {});
+    Get.snackbar(
+      l10n.successTitle,
+      l10n.backendUrlSaved,
+      snackPosition: SnackPosition.BOTTOM,
+    );
+  }
+
+  ModelInfo? _selectedModelInfo() {
+    final selected = _selectedModel.value;
+    if (selected.isEmpty) return null;
+    for (final model in _models) {
+      if (model.id == selected) {
+        return model;
+      }
+    }
+    return null;
+  }
+
+  Future<void> _openModelPicker() async {
+    if (_models.isEmpty) return;
+    final l10n = context.l10n;
+    final localModels = _models.where((model) => model.isLocal).toList();
+    final remoteModels = _models.where((model) => model.isRemote).toList();
+
+    await Get.dialog<void>(
+      AlertDialog(
+        title: Text(l10n.selectModelTitle),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: ListView(
+            shrinkWrap: true,
+            children: [
+              _buildModelSection(
+                context,
+                l10n.modelLocalSection,
+                localModels,
+              ),
+              _buildModelSection(
+                context,
+                l10n.modelRemoteSection,
+                remoteModels,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildModelSection(
+    BuildContext context,
+    String title,
+    List<ModelInfo> models,
+  ) {
+    if (models.isEmpty) return const SizedBox.shrink();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8, top: 12),
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+        ),
+        ...models.map((model) => _buildModelTile(context, model)),
+      ],
+    );
+  }
+
+  Widget _buildModelTile(BuildContext context, ModelInfo model) {
+    final l10n = context.l10n;
+    final subtitles = <Widget>[
+      Text('${model.provider}: ${model.modelId}'),
+    ];
+    if (!model.available && model.reasonUnavailable.isNotEmpty) {
+      subtitles.add(Text(l10n.modelUnavailableReason(model.reasonUnavailable)));
+    }
+    if (!model.available && model.provider == 'ollama') {
+      final command = 'ollama pull ${model.modelId}';
+      subtitles.add(Text(l10n.modelInstallCommand(command)));
+    }
+
+    return RadioListTile<String>(
+      title: Wrap(
+        spacing: 8,
+        runSpacing: 4,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          Text(model.displayName),
+          _buildAvailabilityChip(context, model),
+        ],
+      ),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: subtitles,
+      ),
+      value: model.id,
+      groupValue: _selectedModel.value,
+      onChanged: model.available
+          ? (value) {
+              if (value != null) {
+                _selectedModel.value = value;
+                Pref.selectedModel = value;
+                Get.back<void>();
+              }
+            }
+          : null,
+    );
+  }
+
+  Widget _buildAvailabilityChip(BuildContext context, ModelInfo model) {
+    final l10n = context.l10n;
+    final scheme = Theme.of(context).colorScheme;
+    final available = model.available;
+    final label = available ? l10n.modelAvailable : l10n.modelUnavailable;
+    final background =
+        available ? scheme.secondaryContainer : scheme.surfaceVariant;
+    final foreground =
+        available ? scheme.onSecondaryContainer : scheme.onSurfaceVariant;
+
+    return Chip(
+      label: Text(label),
+      labelStyle: TextStyle(color: foreground),
+      backgroundColor: background,
+      visualDensity: VisualDensity.compact,
+    );
   }
 
   Widget _buildSection(
@@ -204,58 +395,43 @@ class _SettingsScreenState extends State<SettingsScreen> {
             l10n.sectionAiModel,
             [
               Obx(
-                () => ListTile(
-                  title: Text(l10n.modelLabel),
-                  subtitle: Text(
-                    _selectedModel.value.isEmpty
-                        ? l10n.modelNotSelected
-                        : _selectedModel.value,
-                  ),
-                  leading: const Icon(Icons.psychology),
-                  trailing: _isLoadingModels
-                      ? const SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Icon(Icons.arrow_forward_ios, size: 16),
-                  onTap: _models.isEmpty
-                      ? null
-                      : () {
-                          unawaited(
-                            Get.dialog<void>(
-                              AlertDialog(
-                                title: Text(l10n.selectModelTitle),
-                                content: SizedBox(
-                                  width: double.maxFinite,
-                                  child: ListView.builder(
-                                    shrinkWrap: true,
-                                    itemCount: _models.length,
-                                    itemBuilder: (context, index) {
-                                      final model = _models[index];
-                                      return RadioListTile<String>(
-                                        title: Text(model.displayName),
-                                        subtitle: Text(
-                                          '${model.provider}: ${model.modelId}',
-                                        ),
-                                        value: model.id,
-                                        groupValue: _selectedModel.value,
-                                        onChanged: (value) {
-                                          if (value != null) {
-                                            _selectedModel.value = value;
-                                            Pref.selectedModel = value;
-                                            Get.back<void>();
-                                          }
-                                        },
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
+                () {
+                  final selectedInfo = _selectedModelInfo();
+                  final subtitle = selectedInfo == null
+                      ? l10n.modelNotSelected
+                      : '${selectedInfo.displayName} '
+                          '(${selectedInfo.provider}: ${selectedInfo.modelId})';
+                  return ListTile(
+                    title: Text(l10n.modelLabel),
+                    subtitle: Text(subtitle),
+                    leading: const Icon(Icons.psychology),
+                    trailing: _isLoadingModels
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.arrow_forward_ios, size: 16),
+                    onTap: _models.isEmpty ? null : _openModelPicker,
+                  );
+                },
+              ),
+            ],
+          ),
+
+          // Server Section
+          _buildSection(
+            context,
+            l10n.sectionServer,
+            [
+              ListTile(
+                title: Text(l10n.backendUrlTitle),
+                subtitle: Text(
+                  l10n.backendUrlSubtitle(_resolvedBackendUrl()),
                 ),
+                leading: const Icon(Icons.link),
+                trailing: const Icon(Icons.edit, size: 16),
+                onTap: _editBackendUrl,
               ),
             ],
           ),
@@ -289,6 +465,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   },
                   secondary: const Icon(Icons.code),
                 ),
+              ),
+            ],
+          ),
+
+          // Diagnostics Section
+          _buildSection(
+            context,
+            l10n.sectionDiagnostics,
+            [
+              ListTile(
+                title: Text(l10n.diagnosticsTitle),
+                subtitle: Text(l10n.diagnosticsSubtitle),
+                leading: const Icon(Icons.monitor_heart),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                onTap: () {
+                  unawaited(Get.to<void>(() => const DiagnosticsScreen()));
+                },
               ),
             ],
           ),

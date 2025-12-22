@@ -47,6 +47,8 @@
   "sectionLanguage": "LANGUAGE",
   "sectionAiModel": "AI MODEL",
   "sectionChatSettings": "CHAT SETTINGS",
+  "sectionServer": "SERVER",
+  "sectionDiagnostics": "DIAGNOSTICS",
   "sectionStatistics": "STATISTICS",
   "sectionDataManagement": "DATA MANAGEMENT",
   "sectionAbout": "ABOUT",
@@ -58,6 +60,42 @@
   "languageEnglish": "English",
   "modelLabel": "Model",
   "modelNotSelected": "Not selected",
+  "modelAvailable": "Available",
+  "modelUnavailable": "Unavailable",
+  "modelLocalSection": "Local models",
+  "modelRemoteSection": "Remote / API models",
+  "modelInstallCommand": "Install: {command}",
+  "@modelInstallCommand": {
+    "placeholders": {
+      "command": {
+        "type": "String"
+      }
+    }
+  },
+  "modelUnavailableReason": "Reason: {reason}",
+  "@modelUnavailableReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "backendUrlTitle": "Backend URL",
+  "backendUrlSubtitle": "Current: {current}",
+  "@backendUrlSubtitle": {
+    "placeholders": {
+      "current": {
+        "type": "String"
+      }
+    }
+  },
+  "backendUrlHint": "https://example.com:8000 or /api",
+  "backendUrlSave": "Save",
+  "backendUrlClear": "Clear override",
+  "backendUrlSaved": "Backend URL saved",
+  "backendUrlCleared": "Backend URL override cleared",
+  "diagnosticsTitle": "Diagnostics",
+  "diagnosticsSubtitle": "Test backend connectivity and streaming",
   "selectModelTitle": "Select model",
   "voiceInputTitle": "Voice input",
   "voiceInputSubtitle": "Enable microphone for voice messages",
@@ -152,6 +190,24 @@
     }
   },
   "streamInterruptedTag": "[Stream interrupted]",
+  "diagnosticsConnectionSection": "CONNECTION",
+  "diagnosticsBaseUrlLabel": "Base URL",
+  "diagnosticsModelLabel": "Selected model",
+  "diagnosticsModelAvailable": "Available",
+  "diagnosticsModelUnavailable": "Unavailable",
+  "diagnosticsHealthButton": "Test /health",
+  "diagnosticsModelsButton": "Test /models",
+  "diagnosticsChatButton": "Test /chat",
+  "diagnosticsStreamButton": "Test /chat/stream",
+  "diagnosticsStreamRunning": "Streaming...",
+  "diagnosticsLastErrorTitle": "Last error",
+  "diagnosticsNoErrors": "No errors recorded yet.",
+  "diagnosticsStreamSampleTitle": "SSE sample",
+  "diagnosticsNoStreamSample": "No stream events captured.",
+  "diagnosticsLogsTitle": "Diagnostics log",
+  "diagnosticsCopyLog": "Copy log",
+  "diagnosticsNoLogs": "No diagnostics run yet.",
+  "diagnosticsTestMessage": "Hello",
   "microphonePermissionRequired": "Microphone permission is required for voice input",
   "speechNotAvailable": "Speech recognition is not available",
   "enterMessagePrompt": "Please enter a message or use voice input!",
@@ -166,6 +222,7 @@
       }
     }
   },
+  "exportSuccessWebMessage": "Downloaded file and copied to clipboard",
   "logout": "Logout",
   "clearChat": "Clear chat",
   "exportChat": "Export chat",

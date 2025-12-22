@@ -1,17 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:selcukaiassistant/apis/apis.dart';
 import 'package:selcukaiassistant/helper/my_dialog.dart';
 import 'package:selcukaiassistant/helper/pref.dart';
 import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/model/conversation.dart';
+import 'package:selcukaiassistant/services/conversation_export_service.dart';
 import 'package:selcukaiassistant/services/conversation_service.dart';
 import 'package:selcukaiassistant/services/response_cleaner.dart';
 import 'package:selcukaiassistant/services/sse_client.dart';
@@ -380,18 +379,20 @@ class EnhancedChatController extends GetxController {
       final jsonData = ConversationService.exportConversation(conversation.id);
       final jsonString = const JsonEncoder.withIndent('  ').convert(jsonData);
 
-      final directory = await getApplicationDocumentsDirectory();
-      final file = File(
-        '${directory.path}/chat_${conversation.id.substring(0, 8)}.json',
-      );
-      await file.writeAsString(jsonString);
+      final filename = 'chat_${conversation.id.substring(0, 8)}.json';
+      final result = await exportConversation(filename, jsonString);
 
       await Clipboard.setData(ClipboardData(text: jsonString));
 
+      final successMessage = result.path != null
+          ? l10n?.exportSuccessMessage(result.path!) ??
+              'Saved to ${result.path}\nAlso copied to clipboard'
+          : l10n?.exportSuccessWebMessage ??
+              'Downloaded file and copied to clipboard';
+
       Get.snackbar(
         l10n?.exportSuccessTitle ?? 'Export successful',
-        l10n?.exportSuccessMessage(file.path) ??
-            'Saved to ${file.path}\nAlso copied to clipboard',
+        successMessage,
         snackPosition: SnackPosition.BOTTOM,
         duration: const Duration(seconds: 4),
       );
