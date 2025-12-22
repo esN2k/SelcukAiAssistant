@@ -270,6 +270,30 @@
   "diagnosticsModelLabel": "Seçili model",
   "diagnosticsModelAvailable": "Uygun",
   "diagnosticsModelUnavailable": "Kullanılamıyor",
+  "diagnosticsHfLabel": "HF GPU Hazir",
+  "diagnosticsHfReady": "Hazir",
+  "diagnosticsHfUnavailable": "Uygun degil",
+  "diagnosticsHfButton": "/health/hf test et",
+  "diagnosticsHfDetail": "GPU: {gpu} | Torch: {torch} | CUDA: {cuda} | Transformers: {transformers} | bitsandbytes: {bnb}",
+  "@diagnosticsHfDetail": {
+    "placeholders": {
+      "gpu": {
+        "type": "String"
+      },
+      "torch": {
+        "type": "String"
+      },
+      "cuda": {
+        "type": "String"
+      },
+      "transformers": {
+        "type": "String"
+      },
+      "bnb": {
+        "type": "String"
+      }
+    }
+  },
   "diagnosticsHealthButton": "/health test et",
   "diagnosticsModelsButton": "/models test et",
   "diagnosticsChatButton": "/chat test et",

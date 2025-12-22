@@ -26,6 +26,9 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
   bool _isLoadingModels = false;
   bool _isStreaming = false;
   String _streamSample = '';
+  bool _isLoadingHf = false;
+  Map<String, dynamic>? _hfInfo;
+  String? _hfError;
   String? _lastErrorDetails;
   String? _lastErrorTimestamp;
 
@@ -33,6 +36,7 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
   void initState() {
     super.initState();
     unawaited(_loadModels());
+    unawaited(_loadHfHealth());
   }
 
   @override
@@ -49,6 +53,50 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
       _models = models;
       _isLoadingModels = false;
     });
+  }
+
+  Future<void> _loadHfHealth({bool log = false}) async {
+    final url = Uri.parse('${Global.backendUrl}/health/hf');
+    setState(() => _isLoadingHf = true);
+    if (log) {
+      _appendLog('GET /health/hf -> start');
+    }
+    try {
+      final response = await http.get(url, headers: _headers()).timeout(
+        const Duration(seconds: 12),
+        onTimeout: () => http.Response('Timeout', 408),
+      );
+      final body = utf8.decode(response.bodyBytes);
+      if (response.statusCode == 200) {
+        setState(() {
+          _hfInfo = jsonDecode(body) as Map<String, dynamic>;
+          _hfError = null;
+        });
+      } else {
+        final snippet = _truncate(body);
+        setState(() {
+          _hfError = 'HTTP ${response.statusCode} $snippet';
+          _hfInfo = null;
+        });
+        _recordError('GET /health/hf -> ${response.statusCode} $snippet');
+      }
+      if (log) {
+        _appendLog('GET /health/hf -> ${response.statusCode} ${_truncate(body)}');
+      }
+    } on Exception catch (e) {
+      setState(() {
+        _hfError = e.toString();
+        _hfInfo = null;
+      });
+      _recordError('GET /health/hf -> $e');
+      if (log) {
+        _appendLog('GET /health/hf -> error: $e');
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoadingHf = false);
+      }
+    }
   }
 
   Map<String, String> _headers() {
@@ -138,6 +186,10 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
       'GET /models',
       () => http.get(url, headers: _headers()),
     );
+  }
+
+  Future<void> _testHfHealth() async {
+    await _loadHfHealth(log: true);
   }
 
   Future<void> _testChat() async {
@@ -265,6 +317,21 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
             selectedModel.reasonUnavailable.isNotEmpty
         ? l10n.modelUnavailableReason(selectedModel.reasonUnavailable)
         : null;
+    final hfStatus = _hfInfo?['status'] as String?;
+    final hfCuda = _hfInfo?['cuda_available'] as bool? ?? false;
+    final hfReady = hfStatus == 'ok' && hfCuda;
+    final hfLabel = hfReady
+        ? l10n.diagnosticsHfReady
+        : l10n.diagnosticsHfUnavailable;
+    final hfDetail = _hfInfo == null
+        ? _hfError
+        : l10n.diagnosticsHfDetail(
+            (_hfInfo?['gpu_name'] as String?) ?? '-',
+            (_hfInfo?['torch_version'] as String?) ?? '-',
+            (_hfInfo?['cuda_version'] as String?) ?? '-',
+            (_hfInfo?['transformers_version'] as String?) ?? '-',
+            (_hfInfo?['bitsandbytes_version'] as String?) ?? '-',
+          );
 
     return Scaffold(
       appBar: AppBar(
@@ -303,6 +370,18 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
                     : Text(availabilityLabel),
                 leading: const Icon(Icons.psychology),
               ),
+              ListTile(
+                title: Text(l10n.diagnosticsHfLabel),
+                subtitle: hfDetail == null ? null : Text(hfDetail),
+                trailing: _isLoadingHf
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : Text(hfLabel),
+                leading: const Icon(Icons.memory),
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
@@ -319,6 +398,10 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
                     ElevatedButton(
                       onPressed: _testModels,
                       child: Text(l10n.diagnosticsModelsButton),
+                    ),
+                    ElevatedButton(
+                      onPressed: _testHfHealth,
+                      child: Text(l10n.diagnosticsHfButton),
                     ),
                     ElevatedButton(
                       onPressed: _testChat,

@@ -131,6 +131,47 @@ async def ollama_health() -> Dict[str, Any]:
     return health
 
 
+@app.get("/health/hf")
+async def hf_health() -> Dict[str, Any]:
+    info: Dict[str, Any] = {
+        "status": "unavailable",
+        "torch_version": None,
+        "cuda_available": False,
+        "cuda_version": None,
+        "gpu_name": None,
+        "transformers_version": None,
+        "bitsandbytes_version": None,
+    }
+
+    try:
+        import torch
+        import transformers
+
+        info["torch_version"] = torch.__version__
+        info["cuda_available"] = torch.cuda.is_available()
+        info["cuda_version"] = torch.version.cuda
+        if info["cuda_available"]:
+            try:
+                info["gpu_name"] = torch.cuda.get_device_name(0)
+            except Exception:
+                info["gpu_name"] = None
+
+        info["transformers_version"] = transformers.__version__
+
+        try:
+            import bitsandbytes
+
+            info["bitsandbytes_version"] = bitsandbytes.__version__
+        except Exception:
+            info["bitsandbytes_version"] = None
+
+        info["status"] = "ok"
+    except Exception as exc:
+        info["error"] = str(exc)
+
+    return info
+
+
 @app.get("/models")
 async def list_models() -> Dict[str, Any]:
     models = await model_registry.list_models()

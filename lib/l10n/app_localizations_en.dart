@@ -440,6 +440,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get diagnosticsModelUnavailable => 'Unavailable';
 
   @override
+  String get diagnosticsHfLabel => 'HF GPU Ready';
+
+  @override
+  String get diagnosticsHfReady => 'Ready';
+
+  @override
+  String get diagnosticsHfUnavailable => 'Unavailable';
+
+  @override
+  String get diagnosticsHfButton => 'Test /health/hf';
+
+  @override
+  String diagnosticsHfDetail(
+      String gpu, String torch, String cuda, String transformers, String bnb) {
+    return 'GPU: $gpu | Torch: $torch | CUDA: $cuda | Transformers: $transformers | bitsandbytes: $bnb';
+  }
+
+  @override
   String get diagnosticsHealthButton => 'Test /health';
 
   @override

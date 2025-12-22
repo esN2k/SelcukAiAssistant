@@ -195,6 +195,30 @@
   "diagnosticsModelLabel": "Selected model",
   "diagnosticsModelAvailable": "Available",
   "diagnosticsModelUnavailable": "Unavailable",
+  "diagnosticsHfLabel": "HF GPU Ready",
+  "diagnosticsHfReady": "Ready",
+  "diagnosticsHfUnavailable": "Unavailable",
+  "diagnosticsHfButton": "Test /health/hf",
+  "diagnosticsHfDetail": "GPU: {gpu} | Torch: {torch} | CUDA: {cuda} | Transformers: {transformers} | bitsandbytes: {bnb}",
+  "@diagnosticsHfDetail": {
+    "placeholders": {
+      "gpu": {
+        "type": "String"
+      },
+      "torch": {
+        "type": "String"
+      },
+      "cuda": {
+        "type": "String"
+      },
+      "transformers": {
+        "type": "String"
+      },
+      "bnb": {
+        "type": "String"
+      }
+    }
+  },
   "diagnosticsHealthButton": "Test /health",
   "diagnosticsModelsButton": "Test /models",
   "diagnosticsChatButton": "Test /chat",

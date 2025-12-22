@@ -848,6 +848,37 @@ abstract class AppLocalizations {
   /// **'Unavailable'**
   String get diagnosticsModelUnavailable;
 
+  /// No description provided for @diagnosticsHfLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'HF GPU Ready'**
+  String get diagnosticsHfLabel;
+
+  /// No description provided for @diagnosticsHfReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get diagnosticsHfReady;
+
+  /// No description provided for @diagnosticsHfUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Unavailable'**
+  String get diagnosticsHfUnavailable;
+
+  /// No description provided for @diagnosticsHfButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Test /health/hf'**
+  String get diagnosticsHfButton;
+
+  /// No description provided for @diagnosticsHfDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'GPU: {gpu} | Torch: {torch} | CUDA: {cuda} | Transformers: {transformers} | bitsandbytes: {bnb}'**
+  String diagnosticsHfDetail(
+      String gpu, String torch, String cuda, String transformers, String bnb);
+
   /// No description provided for @diagnosticsHealthButton.
   ///
   /// In en, this message translates to:
