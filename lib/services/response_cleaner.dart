@@ -44,9 +44,11 @@ class ResponseCleaner {
   static String _stripLeadingMetaLines(String s) {
     final lines = s.replaceAll('\r\n', '\n').split('\n');
 
-    int idx = 0;
+    var idx = 0;
     // Skip initial empty lines
-    while (idx < lines.length && lines[idx].trim().isEmpty) idx++;
+    while (idx < lines.length && lines[idx].trim().isEmpty) {
+      idx++;
+    }
 
     final metaLine = RegExp(
       r'^\s*(?:'
@@ -58,12 +60,12 @@ class ResponseCleaner {
       r'(?:final answer|final|answer)\s*:?\s*$|'
       // Common preamble
       r'okay[, ]+i need to respond.*$'
-      r')',
+      ')',
       caseSensitive: false,
     );
 
     // Remove up to first ~6 meta lines
-    int removed = 0;
+    var removed = 0;
     while (idx < lines.length && removed < 6) {
       final line = lines[idx].trim();
       if (line.isEmpty) {
@@ -82,8 +84,8 @@ class ResponseCleaner {
   static List<(String, bool)> _splitByFences(String s) {
     final out = <(String, bool)>[];
     const fence = '```';
-    int i = 0;
-    bool inCode = false;
+    var i = 0;
+    var inCode = false;
 
     while (i < s.length) {
       final j = s.indexOf(fence, i);
