@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, AsyncIterator, Dict, List, Optional, Tuple
+from typing import Any, AsyncIterator, Dict, List, Optional, Tuple, cast
 
 from config import Config
 from providers.base import CancellationToken, ChatResult, ModelProvider, StreamChunk, Usage
@@ -54,6 +54,7 @@ class HuggingFaceProvider(ModelProvider):
 
     def _load_model(self, model_id: str):
         self._ensure_dependencies()
+        import torch
         from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 
         device = self._pick_device(Config.HF_DEVICE)
@@ -91,8 +92,9 @@ class HuggingFaceProvider(ModelProvider):
             kwargs.pop("attn_implementation", None)
             model = AutoModelForCausalLM.from_pretrained(model_id, **kwargs)
 
+        model = cast(Any, model)
         if device != "cuda":
-            model.to(device)
+            model.to(torch.device(device))
 
         model.eval()
         self._cache[model_id] = (model, tokenizer, device)

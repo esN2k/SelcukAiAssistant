@@ -14,7 +14,8 @@ class Global {
   static String get backendUrl {
     final envUrl = dotenv.env['BACKEND_URL']?.trim();
     if (envUrl != null && envUrl.isNotEmpty) {
-      if (kIsWeb && (envUrl.contains('10.0.2.2') || envUrl.contains('10.0.3.2'))) {
+      if (kIsWeb &&
+          (envUrl.contains('10.0.2.2') || envUrl.contains('10.0.3.2'))) {
         return 'http://localhost:8000';
       }
       if (!kIsWeb &&
