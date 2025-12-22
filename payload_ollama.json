@@ -1,0 +1,1 @@
+{"model":"qwen2.5:7b","messages":[{"role":"user","content":"Merhaba! Selçuk Üniversitesi hakkında kısaca bilgi verir misin?"}],"stream":true,"max_tokens":128}
