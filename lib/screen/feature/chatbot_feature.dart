@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:selcukaiassistant/controller/chat_controller.dart';
 import 'package:selcukaiassistant/helper/global.dart';
 import 'package:selcukaiassistant/helper/pref.dart';
+import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/screen/auth/login_screen.dart';
 import 'package:selcukaiassistant/services/appwrite_service.dart';
 import 'package:selcukaiassistant/widget/message_card.dart';
@@ -27,29 +28,26 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
   @override
   void initState() {
     super.initState();
-    // Initialize dark mode state from saved preference
     _isDarkMode.value = Get.isDarkMode;
   }
 
   Future<void> _sendPing() async {
+    final l10n = context.l10n;
     try {
-      // Use the safe method from the service
       final user = await _appwriteService.getCurrentUser();
 
       if (mounted) {
         if (user != null) {
-          // Successfully got user, connection is OK
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Appwrite bağlantı başarılı! ✅'),
+            SnackBar(
+              content: Text(l10n.appwritePingSuccess),
               backgroundColor: Colors.green,
             ),
           );
         } else {
-          // Service might be configured but user not logged in
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Appwrite bağlantısı var ama oturum açılmamış.'),
+            SnackBar(
+              content: Text(l10n.appwritePingNoSession),
               backgroundColor: Colors.orange,
             ),
           );
@@ -57,11 +55,10 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
       }
     } on Exception catch (e) {
       if (mounted) {
-        // This catches errors like 'Appwrite Service not initialized'
         final errorMessage = e.toString().replaceAll('Exception: ', '');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Appwrite ping hatası: $errorMessage'),
+            content: Text(l10n.appwritePingError(errorMessage)),
             backgroundColor: Colors.red,
           ),
         );
@@ -70,13 +67,14 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
   }
 
   Future<void> _logout() async {
+    final l10n = context.l10n;
     try {
       await _appwriteService.deleteCurrentSession();
       if (mounted) {
         unawaited(Get.offAll<void>(() => const LoginScreen()));
         Get.snackbar(
-          'Başarılı',
-          'Çıkış yapıldı',
+          l10n.logoutSuccessTitle,
+          l10n.logoutSuccessMessage,
           backgroundColor: Colors.green,
           colorText: Colors.white,
           snackPosition: SnackPosition.BOTTOM,
@@ -85,7 +83,7 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
     } on Exception catch (e) {
       if (mounted) {
         Get.snackbar(
-          'Hata',
+          l10n.errorTitle,
           e.toString().replaceAll('Exception: ', ''),
           backgroundColor: Colors.red,
           colorText: Colors.white,
@@ -97,9 +95,10 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Yapay zeka akıllı asistanı'),
+        title: Text(l10n.assistantTitle),
         centerTitle: true,
         elevation: 1,
         actions: [
@@ -108,7 +107,7 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
             padding: const EdgeInsets.only(right: 10),
             onPressed: _sendPing,
             icon: const Icon(Icons.wifi_rounded, size: 24),
-            tooltip: 'Send a ping',
+            tooltip: l10n.sendPingTooltip,
           ),
           // Dark mode toggle
           IconButton(
@@ -118,8 +117,6 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
                   _isDarkMode.value ? ThemeMode.light : ThemeMode.dark;
               Get.changeThemeMode(newMode);
               _isDarkMode.value = !_isDarkMode.value;
-              
-              // Persist the preference
               Pref.isDarkMode = _isDarkMode.value;
             },
             icon: Obx(
@@ -136,7 +133,7 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
             padding: const EdgeInsets.only(right: 10),
             onPressed: _logout,
             icon: const Icon(Icons.logout_rounded, size: 24),
-            tooltip: 'Çıkış Yap',
+            tooltip: l10n.logoutTooltip,
           ),
         ],
       ),
@@ -200,8 +197,7 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
                     textInputAction: TextInputAction.send,
                     onFieldSubmitted: (_) => _c.askQuestion(),
                     decoration: InputDecoration(
-                      hintText: 'Bir mesaj yazın veya sesli giriş için '
-                          'basılı tutun...',
+                      hintText: l10n.assistantHint,
                       hintStyle: TextStyle(
                         fontSize: 14,
                         color: Theme.of(context)
@@ -248,14 +244,14 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(12),
                 color: Colors.red.withOpacity(0.1),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.mic, color: Colors.red, size: 16),
-                    SizedBox(width: 8),
+                    const Icon(Icons.mic, color: Colors.red, size: 16),
+                    const SizedBox(width: 8),
                     Text(
-                      'Ses girişi dinleniyor...',
-                      style: TextStyle(
+                      l10n.listeningStatus,
+                      style: const TextStyle(
                         color: Colors.red,
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
@@ -281,7 +277,7 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            'Yapay zeka asistanıyla konuşmaya başlayın! ',
+                            l10n.startChatHint,
                             style: TextStyle(
                               fontSize: 16,
                               color: Theme.of(context)

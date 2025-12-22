@@ -121,7 +121,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get onboardingSubtitle1 =>
-      'En iyi arkadaşın olabilirim. Bana her şeyi sor, yardımcı olayım!';
+      'En iyi yol arkadaşın olabilirim. Bana her şeyi sor, yardımcı olayım!';
 
   @override
   String get onboardingTitle2 => 'Hayalden gerçeğe';
@@ -146,7 +146,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get sectionLanguage => 'DİL';
 
   @override
-  String get sectionAiModel => 'AI MODEL';
+  String get sectionAiModel => 'YAPAY ZEKA MODELİ';
 
   @override
   String get sectionChatSettings => 'SOHBET AYARLARI';
@@ -236,7 +236,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get developerLabel => 'Geliştirici';
 
   @override
-  String get developerValue => 'Selcuk AI';
+  String get developerValue => 'Selçuk AI';
 
   @override
   String get deleteConversationTitle => 'Konuşmayı sil';
@@ -333,7 +333,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get listeningIndicator => 'Dinleniyor... (bırakınca durur)';
 
   @override
-  String get messageHint => 'Selçuk AI Asistanına yazın...';
+  String get messageHint => 'Selçuk AI Asistanı\'na yazın...';
 
   @override
   String get imageSelectedTitle => 'Görsel seçildi';
@@ -350,7 +350,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get startConversationSubtitle => 'Bana istediğinizi sorun!';
 
   @override
-  String get suggestedPrompt1 => 'Kuantum bilgisayarını açıkla';
+  String get suggestedPrompt1 => 'Kuantum hesaplamayı açıkla';
 
   @override
   String get suggestedPrompt2 => 'Bir şiir yaz';
@@ -441,7 +441,7 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get chooseImageSourceTitle => 'Görsel kaynağı seçin';
+  String get chooseImageSourceTitle => 'Görsel kaynağını seçin';
 
   @override
   String get cameraLabel => 'Kamera';
@@ -450,7 +450,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get galleryLabel => 'Galeri';
 
   @override
-  String get appwritePingSuccess => 'Appwrite bağlantısı başarılı! ✅';
+  String get appwritePingSuccess => 'Appwrite bağlantısı başarılı!';
 
   @override
   String get appwritePingNoSession =>

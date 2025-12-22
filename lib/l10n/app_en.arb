@@ -197,7 +197,7 @@
   "chooseImageSourceTitle": "Choose image source",
   "cameraLabel": "Camera",
   "galleryLabel": "Gallery",
-  "appwritePingSuccess": "Appwrite connection is successful! ✅",
+  "appwritePingSuccess": "Appwrite connection is successful!",
   "appwritePingNoSession": "Appwrite connection is OK but no session is active.",
   "appwritePingError": "Appwrite ping error: {error}",
   "@appwritePingError": {

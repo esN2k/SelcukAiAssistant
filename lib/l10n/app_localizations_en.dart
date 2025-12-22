@@ -447,7 +447,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get galleryLabel => 'Gallery';
 
   @override
-  String get appwritePingSuccess => 'Appwrite connection is successful! ✅';
+  String get appwritePingSuccess => 'Appwrite connection is successful!';
 
   @override
   String get appwritePingNoSession =>

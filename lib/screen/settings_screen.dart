@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:selcukaiassistant/helper/pref.dart';
+import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/model/model_info.dart';
 import 'package:selcukaiassistant/services/conversation_service.dart';
 import 'package:selcukaiassistant/services/model_service.dart';
@@ -21,6 +22,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final RxString _selectedModel = ''.obs;
   final RxBool _speechEnabled = true.obs;
   final RxBool _markdownEnabled = true.obs;
+  final RxString _selectedLanguage =
+      (Pref.localeCode ?? L10n.fallbackLocale.languageCode).obs;
   List<ModelInfo> _models = [];
   bool _isLoadingModels = false;
 
@@ -62,23 +65,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _clearAllData() async {
+    final l10n = context.l10n;
     final confirmed = await Get.dialog<bool>(
       AlertDialog(
-        title: const Text('Clear All Data'),
-        content: const Text(
-          'Are you sure you want to delete all conversations? '
-          'This action cannot be undone.',
-        ),
+        title: Text(l10n.clearAllDataTitle),
+        content: Text(l10n.clearAllDataMessage),
         actions: [
           TextButton(
             onPressed: () => Get.back(result: false),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           TextButton(
             onPressed: () => Get.back(result: true),
-            child: const Text(
-              'Delete All',
-              style: TextStyle(color: Colors.red),
+            child: Text(
+              l10n.deleteAll,
+              style: const TextStyle(color: Colors.red),
             ),
           ),
         ],
@@ -89,15 +90,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
       await ConversationService.clearAll();
       if (mounted) {
         Get.snackbar(
-          'Success',
-          'All conversations deleted',
+          l10n.clearAllSuccessTitle,
+          l10n.clearAllSuccessMessage,
           snackPosition: SnackPosition.BOTTOM,
         );
       }
     }
   }
 
-  Widget _buildSection(String title, List<Widget> children) {
+  Widget _buildSection(
+    BuildContext context,
+    String title,
+    List<Widget> children,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -108,7 +113,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: Colors.amber.shade700,
+              color: Theme.of(context).colorScheme.primary,
             ),
           ),
         ),
@@ -122,25 +127,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final stats = ConversationService.getStatistics();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings'),
+        title: Text(l10n.settingsTitle),
         centerTitle: true,
       ),
       body: ListView(
         children: [
           // Appearance Section
           _buildSection(
-            'APPEARANCE',
+            context,
+            l10n.sectionAppearance,
             [
               Obx(
                 () => SwitchListTile(
-                  title: const Text('Dark Mode'),
-                  subtitle: const Text('Toggle between light and dark theme'),
+                  title: Text(l10n.darkModeTitle),
+                  subtitle: Text(l10n.darkModeSubtitle),
                   value: _isDarkMode.value,
-                  activeThumbColor: Colors.amber,
+                  activeThumbColor: Theme.of(context).colorScheme.primary,
                   onChanged: (value) {
                     final newMode = value ? ThemeMode.dark : ThemeMode.light;
                     Get.changeThemeMode(newMode);
@@ -155,16 +162,53 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],
           ),
 
-          // AI Model Section
+          // Language Section
           _buildSection(
-            'AI MODEL',
+            context,
+            l10n.sectionLanguage,
             [
               Obx(
                 () => ListTile(
-                  title: const Text('Model'),
+                  title: Text(l10n.languageTitle),
+                  subtitle: Text(l10n.languageSubtitle),
+                  leading: const Icon(Icons.language),
+                  trailing: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: _selectedLanguage.value,
+                      items: [
+                        DropdownMenuItem(
+                          value: 'tr',
+                          child: Text(l10n.languageTurkish),
+                        ),
+                        DropdownMenuItem(
+                          value: 'en',
+                          child: Text(l10n.languageEnglish),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        if (value == null) return;
+                        _selectedLanguage.value = value;
+                        Pref.localeCode = value;
+                        unawaited(Get.updateLocale(Locale(value)));
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          // AI Model Section
+          _buildSection(
+            context,
+            l10n.sectionAiModel,
+            [
+              Obx(
+                () => ListTile(
+                  title: Text(l10n.modelLabel),
                   subtitle: Text(
                     _selectedModel.value.isEmpty
-                        ? 'Not selected'
+                        ? l10n.modelNotSelected
                         : _selectedModel.value,
                   ),
                   leading: const Icon(Icons.psychology),
@@ -181,7 +225,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           unawaited(
                             Get.dialog<void>(
                               AlertDialog(
-                                title: const Text('Select Model'),
+                                title: Text(l10n.selectModelTitle),
                                 content: SizedBox(
                                   width: double.maxFinite,
                                   child: ListView.builder(
@@ -218,14 +262,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
           // Chat Settings Section
           _buildSection(
-            'CHAT SETTINGS',
+            context,
+            l10n.sectionChatSettings,
             [
               Obx(
                 () => SwitchListTile(
-                  title: const Text('Voice Input'),
-                  subtitle: const Text('Enable microphone for voice messages'),
+                  title: Text(l10n.voiceInputTitle),
+                  subtitle: Text(l10n.voiceInputSubtitle),
                   value: _speechEnabled.value,
-                  activeThumbColor: Colors.amber,
+                  activeThumbColor: Theme.of(context).colorScheme.primary,
                   onChanged: (value) {
                     _speechEnabled.value = value;
                   },
@@ -235,10 +280,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               const Divider(height: 1),
               Obx(
                 () => SwitchListTile(
-                  title: const Text('Markdown Support'),
-                  subtitle: const Text('Render formatted text and code'),
+                  title: Text(l10n.markdownSupportTitle),
+                  subtitle: Text(l10n.markdownSupportSubtitle),
                   value: _markdownEnabled.value,
-                  activeThumbColor: Colors.amber,
+                  activeThumbColor: Theme.of(context).colorScheme.primary,
                   onChanged: (value) {
                     _markdownEnabled.value = value;
                   },
@@ -250,10 +295,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
           // Statistics Section
           _buildSection(
-            'STATISTICS',
+            context,
+            l10n.sectionStatistics,
             [
               ListTile(
-                title: const Text('Total Conversations'),
+                title: Text(l10n.totalConversations),
                 trailing: Text(
                   '${stats['totalConversations']}',
                   style: const TextStyle(
@@ -265,7 +311,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               const Divider(height: 1),
               ListTile(
-                title: const Text('Total Messages'),
+                title: Text(l10n.totalMessages),
                 trailing: Text(
                   '${stats['totalMessages']}',
                   style: const TextStyle(
@@ -280,11 +326,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
           // Data Management Section
           _buildSection(
-            'DATA MANAGEMENT',
+            context,
+            l10n.sectionDataManagement,
             [
               ListTile(
-                title: const Text('Clear All Conversations'),
-                subtitle: const Text('Delete all chat history'),
+                title: Text(l10n.clearAllConversationsTitle),
+                subtitle: Text(l10n.clearAllConversationsSubtitle),
                 leading: const Icon(Icons.delete_forever, color: Colors.red),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                 onTap: _clearAllData,
@@ -294,18 +341,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
           // About Section
           _buildSection(
-            'ABOUT',
+            context,
+            l10n.sectionAbout,
             [
-              const ListTile(
-                title: Text('Version'),
-                trailing: Text('1.0.2'),
-                leading: Icon(Icons.info),
+              ListTile(
+                title: Text(l10n.versionLabel),
+                trailing: const Text('1.0.2'),
+                leading: const Icon(Icons.info),
               ),
               const Divider(height: 1),
-              const ListTile(
-                title: Text('Developer'),
-                trailing: Text('Selcuk AI'),
-                leading: Icon(Icons.person),
+              ListTile(
+                title: Text(l10n.developerLabel),
+                trailing: Text(l10n.developerValue),
+                leading: const Icon(Icons.person),
               ),
             ],
           ),

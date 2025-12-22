@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/screen/feature/new_chat_screen.dart';
 
 enum HomeType { aiChatBot }
@@ -8,7 +8,8 @@ enum HomeType { aiChatBot }
 extension MyHomeType on HomeType {
   //title
   String get title => switch (this) {
-        HomeType.aiChatBot => 'Yapay zeka akıllı diyalog',
+        HomeType.aiChatBot =>
+          L10n.current()?.assistantTitle ?? 'AI assistant',
       };
 
   //lottie

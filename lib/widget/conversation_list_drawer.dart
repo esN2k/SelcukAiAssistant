@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:selcukaiassistant/l10n/app_localizations.dart';
+import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/model/conversation.dart';
 import 'package:selcukaiassistant/screen/settings_screen.dart';
 import 'package:selcukaiassistant/services/conversation_service.dart';
@@ -50,23 +52,21 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
   }
 
   Future<void> _deleteConversation(String id) async {
+    final l10n = context.l10n;
     final confirmed = await Get.dialog<bool>(
       AlertDialog(
-        title: const Text('Delete Conversation'),
-        content: const Text(
-          'Are you sure you want to delete this conversation? '
-          'This action cannot be undone.',
-        ),
+        title: Text(l10n.deleteConversationTitle),
+        content: Text(l10n.deleteConversationMessage),
         actions: [
           TextButton(
             onPressed: () => Get.back<bool>(result: false),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           TextButton(
             onPressed: () => Get.back<bool>(result: true),
-            child: const Text(
-              'Delete',
-              style: TextStyle(color: Colors.red),
+            child: Text(
+              l10n.delete,
+              style: const TextStyle(color: Colors.red),
             ),
           ),
         ],
@@ -86,28 +86,29 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
   }
 
   Future<void> _renameConversation(Conversation conversation) async {
+    final l10n = context.l10n;
     final controller = TextEditingController(text: conversation.title);
 
     final newTitle = await Get.dialog<String>(
       AlertDialog(
-        title: const Text('Rename Conversation'),
+        title: Text(l10n.renameConversationTitle),
         content: TextField(
           controller: controller,
           autofocus: true,
-          decoration: const InputDecoration(
-            hintText: 'Enter new title',
-            border: OutlineInputBorder(),
+          decoration: InputDecoration(
+            hintText: l10n.renameConversationHint,
+            border: const OutlineInputBorder(),
           ),
           onSubmitted: (value) => Get.back(result: value),
         ),
         actions: [
           TextButton(
             onPressed: () => Get.back<String>(),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           TextButton(
             onPressed: () => Get.back<String>(result: controller.text),
-            child: const Text('Rename'),
+            child: Text(l10n.rename),
           ),
         ],
       ),
@@ -122,30 +123,39 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
     }
   }
 
-  String _formatDate(DateTime date) {
+  String _formatDate(DateTime date, AppLocalizations l10n) {
     final now = DateTime.now();
     final difference = now.difference(date);
 
     if (difference.inDays == 0) {
-      return 'Today';
+      return l10n.todayLabel;
     } else if (difference.inDays == 1) {
-      return 'Yesterday';
+      return l10n.yesterdayLabel;
     } else if (difference.inDays < 7) {
-      return '${difference.inDays} days ago';
+      return l10n.daysAgo(difference.inDays);
     } else if (difference.inDays < 30) {
       final weeks = (difference.inDays / 7).floor();
-      return '$weeks ${weeks == 1 ? "week" : "weeks"} ago';
+      return l10n.weeksAgo(weeks);
     } else if (difference.inDays < 365) {
       final months = (difference.inDays / 30).floor();
-      return '$months ${months == 1 ? "month" : "months"} ago';
+      return l10n.monthsAgo(months);
     } else {
       final years = (difference.inDays / 365).floor();
-      return '$years ${years == 1 ? "year" : "years"} ago';
+      return l10n.yearsAgo(years);
     }
+  }
+
+  String _displayTitle(AppLocalizations l10n, String title) {
+    const defaults = {'New Chat', 'Yeni sohbet'};
+    if (defaults.contains(title)) {
+      return l10n.newChat;
+    }
+    return title;
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Drawer(
       child: SafeArea(
         child: Column(
@@ -176,9 +186,9 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
                         }
                       },
                       icon: const Icon(Icons.add),
-                      label: const Text('New Chat'),
+                      label: Text(l10n.newChat),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.amber,
+                        backgroundColor: Theme.of(context).colorScheme.primary,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
@@ -195,7 +205,7 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
                 controller: _searchController,
                 onChanged: _searchConversations,
                 decoration: InputDecoration(
-                  hintText: 'Search conversations...',
+                  hintText: l10n.searchConversationsHint,
                   prefixIcon: const Icon(Icons.search),
                   suffixIcon: _isSearching
                       ? IconButton(
@@ -238,8 +248,8 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
                           const SizedBox(height: 16),
                           Text(
                             _isSearching
-                                ? 'No conversations found'
-                                : 'No conversations yet',
+                                ? l10n.noConversationsFound
+                                : l10n.noConversationsYet,
                             style: TextStyle(
                               fontSize: 16,
                               color: Theme.of(context)
@@ -281,7 +291,7 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
                                   : null,
                             ),
                             title: Text(
-                              conversation.title,
+                              _displayTitle(l10n, conversation.title),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
@@ -289,7 +299,7 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
                               ),
                             ),
                             subtitle: Text(
-                              _formatDate(conversation.updatedAt),
+                              _formatDate(conversation.updatedAt, l10n),
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Theme.of(context)
@@ -311,29 +321,31 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
                                 }
                               },
                               itemBuilder: (context) => [
-                                const PopupMenuItem(
+                                PopupMenuItem(
                                   value: 'rename',
                                   child: Row(
                                     children: [
-                                      Icon(Icons.edit, size: 20),
-                                      SizedBox(width: 12),
-                                      Text('Rename'),
+                                      const Icon(Icons.edit, size: 20),
+                                      const SizedBox(width: 12),
+                                      Text(l10n.rename),
                                     ],
                                   ),
                                 ),
-                                const PopupMenuItem(
+                                PopupMenuItem(
                                   value: 'delete',
                                   child: Row(
                                     children: [
-                                      Icon(
+                                      const Icon(
                                         Icons.delete,
                                         size: 20,
                                         color: Colors.red,
                                       ),
-                                      SizedBox(width: 12),
+                                      const SizedBox(width: 12),
                                       Text(
-                                        'Delete',
-                                        style: TextStyle(color: Colors.red),
+                                        l10n.delete,
+                                        style: const TextStyle(
+                                          color: Colors.red,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -365,7 +377,7 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '${_filteredConversations.length} conversations',
+                    l10n.conversationsCount(_filteredConversations.length),
                     style: TextStyle(
                       fontSize: 12,
                       color: Theme.of(context)
@@ -378,7 +390,6 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
                   IconButton(
                     icon: const Icon(Icons.settings),
                     onPressed: () {
-                      // Navigate to settings
                       Navigator.pop(context);
                       unawaited(Get.to<void>(() => const SettingsScreen()));
                     },

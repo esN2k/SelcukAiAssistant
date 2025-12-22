@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:selcukaiassistant/helper/global.dart';
+import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/model/message.dart';
 import 'package:selcukaiassistant/widget/typing_indicator.dart';
 
@@ -51,13 +52,13 @@ class MessageCard extends StatelessWidget {
                     ),
                   ),
                   child: message.msg.isEmpty
-                      ? const Row(
+                      ? Row(
                           children: [
-                            TypingIndicator(),
-                            SizedBox(width: 12),
+                            const TypingIndicator(),
+                            const SizedBox(width: 12),
                             Text(
-                              'AI düşünüyor...',
-                              style: TextStyle(
+                              context.l10n.aiThinking,
+                              style: const TextStyle(
                                 fontSize: 14,
                                 fontStyle: FontStyle.italic,
                               ),

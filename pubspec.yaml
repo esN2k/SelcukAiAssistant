@@ -76,9 +76,13 @@ flutter:
 flutter_native_splash:
   color: "#F7F7F5"
   color_dark: "#101010"
+  image: "assets/branding/selcuk_seal.jpg"
+  image_dark: "assets/branding/selcuk_seal.jpg"
   android_12:
     color: "#F7F7F5"
     color_dark: "#101010"
+    image: "assets/branding/selcuk_seal.jpg"
+    image_dark: "assets/branding/selcuk_seal.jpg"
 
 flutter_launcher_icons:
   android: true

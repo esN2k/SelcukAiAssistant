@@ -5,6 +5,7 @@ import 'package:get/route_manager.dart';
 import 'package:lottie/lottie.dart';
 import 'package:selcukaiassistant/helper/app_theme.dart';
 import 'package:selcukaiassistant/helper/global.dart';
+import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/model/onboard.dart';
 import 'package:selcukaiassistant/screen/home_screen.dart';
 import 'package:selcukaiassistant/widget/custom_btn.dart';
@@ -17,20 +18,15 @@ class OnboardingScreen extends StatelessWidget {
     final c = PageController();
 
     final list = [
-      //onboarding 1
       Onboard(
-        title: 'Bana bir şey sor',
-        subtitle: 'Senin en iyi arkadaşın olabilirim ve bana her şeyi '
-            'sorabilirsin, sana yardım ederim!',
+        title: context.l10n.onboardingTitle1,
+        subtitle: context.l10n.onboardingSubtitle1,
         lottie: 'ai_ask_me',
       ),
-
-      //onboarding 2
       Onboard(
-        title: 'Hayalden Gerçeğe',
+        title: context.l10n.onboardingTitle2,
+        subtitle: context.l10n.onboardingSubtitle2,
         lottie: 'ai_play',
-        subtitle: 'Sadece hayal edin ve bana söyleyin, '
-            'sizin için harika bir şey yaratacağım!',
       ),
     ];
 
@@ -103,8 +99,6 @@ class OnboardingScreen extends StatelessWidget {
                 onTap: () {
                   if (isLast) {
                     unawaited(Get.off<dynamic>(() => const HomeScreen()));
-                    // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    //     builder: (_) => const HomeScreen()));
                   } else {
                     unawaited(
                       c.nextPage(
@@ -114,7 +108,9 @@ class OnboardingScreen extends StatelessWidget {
                     );
                   }
                 },
-                text: isLast ? 'Bitti' : 'Sıradaki',
+                text: isLast
+                    ? context.l10n.onboardingDone
+                    : context.l10n.onboardingNext,
               ),
 
               const Spacer(flex: 2),

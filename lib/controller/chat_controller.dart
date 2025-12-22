@@ -6,7 +6,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:selcukaiassistant/apis/apis.dart';
 import 'package:selcukaiassistant/helper/my_dialog.dart';
 import 'package:selcukaiassistant/helper/pref.dart';
+import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/model/message.dart';
+import 'package:selcukaiassistant/services/response_cleaner.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
 class ChatController extends GetxController {
@@ -18,18 +20,44 @@ class ChatController extends GetxController {
   final RxBool speechEnabled = false.obs;
   final RxString recognizedText = ''.obs;
 
-  final RxList<Message> list = <Message>[
-    Message(
-      msg: 'Merhaba! Ben bir yapay zeka asistanıyım, '
-          'size nasıl yardımcı olabilirim?',
-      msgType: MessageType.bot,
-    ),
-  ].obs;
+  final RxList<Message> list = <Message>[].obs;
 
   @override
   void onInit() {
     super.onInit();
+    _initDefaultMessage();
     unawaited(_initSpeech());
+  }
+
+  void _initDefaultMessage() {
+    final l10n = L10n.current();
+    list.assignAll([
+      Message(
+        msg: l10n?.startChatHint ?? 'Start chatting with the AI assistant!',
+        msgType: MessageType.bot,
+      ),
+    ]);
+  }
+
+  String _languageCode() {
+    return Pref.localeCode ?? L10n.fallbackLocale.languageCode;
+  }
+
+  String _speechLocaleId() {
+    return _languageCode() == 'en' ? 'en_US' : 'tr_TR';
+  }
+
+  String _systemPrompt() {
+    if (_languageCode() == 'en') {
+      return 'You are a helpful assistant for Selcuk University. '
+          'Reply in English. Do not reveal reasoning or internal thoughts. '
+          'If the user greets vaguely (e.g. "Hello"), ask what they need about '
+          'Selcuk University.';
+    }
+    return 'Sel?uk ?niversitesi i?in yard?mc? bir asistans?n. '
+        'Yan?tlar?n? T?rk?e ver. Ak?l y?r?tme veya i? konu?ma payla?ma. '
+        'Kullan?c? genel bir selam verirse (?r. "Merhaba"), '
+        'Sel?uk ?niversitesi ile ilgili neye ihtiya? duydu?unu sor.';
   }
 
   Future<void> _initSpeech() async {
@@ -46,17 +74,20 @@ class ChatController extends GetxController {
   }
 
   Future<void> startListening() async {
+    final l10n = L10n.current();
     final status = await Permission.microphone.request();
     if (status != PermissionStatus.granted) {
       MyDialog.info(
-        'Ses girişi özelliğini kullanmak için '
-        'mikrofon izni gereklidir',
+        l10n?.microphonePermissionRequired ??
+            'Microphone permission is required for voice input',
       );
       return;
     }
 
     if (!speechEnabled.value) {
-      MyDialog.info('Ses tanıma kullanılamıyor');
+      MyDialog.info(
+        l10n?.speechNotAvailable ?? 'Speech recognition is not available',
+      );
       return;
     }
 
@@ -72,7 +103,7 @@ class ChatController extends GetxController {
             isListening.value = false;
           }
         },
-        localeId: 'tr_TR',
+        localeId: _speechLocaleId(),
       );
     }
   }
@@ -85,6 +116,7 @@ class ChatController extends GetxController {
   }
 
   Future<void> askQuestion() async {
+    final l10n = L10n.current();
     if (textC.text.trim().isNotEmpty) {
       list
         ..add(Message(msg: textC.text, msgType: MessageType.user))
@@ -94,24 +126,32 @@ class ChatController extends GetxController {
       final question = textC.text;
       textC.text = '';
 
+      final payload = [
+        {'role': 'system', 'content': _systemPrompt()},
+        {'role': 'user', 'content': question},
+      ];
+
       try {
-        final res = await APIs.getAnswer(
-          question,
+        final res = await APIs.sendChat(
+          messages: payload,
           model: Pref.selectedModel,
         );
 
-        // AI response
         list
           ..removeLast()
-          ..add(Message(msg: res, msgType: MessageType.bot));
+          ..add(
+            Message(
+              msg: ResponseCleaner.clean(res),
+              msgType: MessageType.bot,
+            ),
+          );
         _scrollDown();
       } on Exception {
         list
           ..removeLast()
           ..add(
             Message(
-              msg: 'Üzgünüz, bir şeyler ters gitti, '
-                  'lütfen daha sonra tekrar deneyin.',
+              msg: l10n?.errorUnexpected ?? 'Error: Unexpected error.',
               msgType: MessageType.bot,
             ),
           );
@@ -119,7 +159,8 @@ class ChatController extends GetxController {
       }
     } else {
       MyDialog.info(
-        'Lütfen bir soru girin veya sesli girişi kullanın！',
+        l10n?.enterMessagePrompt ??
+            'Please enter a message or use voice input!',
       );
     }
   }

@@ -6,6 +6,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:selcukaiassistant/controller/enhanced_chat_controller.dart';
+import 'package:selcukaiassistant/helper/pref.dart';
+import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/screen/auth/login_screen.dart';
 import 'package:selcukaiassistant/services/appwrite_service.dart';
 import 'package:selcukaiassistant/services/conversation_service.dart';
@@ -36,14 +38,27 @@ class _NewChatScreenState extends State<NewChatScreen> {
     unawaited(ConversationService.init());
   }
 
+  String _displayTitle(BuildContext context, String? title) {
+    final l10n = context.l10n;
+    if (title == null || title.trim().isEmpty) {
+      return l10n.newChat;
+    }
+    const defaults = {'New Chat', 'Yeni sohbet'};
+    if (defaults.contains(title)) {
+      return l10n.newChat;
+    }
+    return title;
+  }
+
   Future<void> _logout() async {
+    final l10n = L10n.current();
     try {
       await _appwriteService.deleteCurrentSession();
       if (mounted) {
         unawaited(Get.offAll<void>(() => const LoginScreen()));
         Get.snackbar(
-          'Success',
-          'Logged out successfully',
+          l10n?.logoutSuccessTitle ?? 'Success',
+          l10n?.logoutSuccessMessage ?? 'Logged out successfully',
           backgroundColor: Colors.green,
           colorText: Colors.white,
           snackPosition: SnackPosition.BOTTOM,
@@ -52,7 +67,7 @@ class _NewChatScreenState extends State<NewChatScreen> {
     } on Exception catch (e) {
       if (mounted) {
         Get.snackbar(
-          'Error',
+          l10n?.logoutErrorTitle ?? 'Error',
           e.toString().replaceAll('Exception: ', ''),
           backgroundColor: Colors.red,
           colorText: Colors.white,
@@ -64,6 +79,7 @@ class _NewChatScreenState extends State<NewChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
       key: _scaffoldKey,
       drawer: Obx(
@@ -82,11 +98,17 @@ class _NewChatScreenState extends State<NewChatScreen> {
           },
         ),
         title: Obx(
-          () => Text(
-            _controller.currentConversation.value?.title ?? 'New Chat',
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
+          () {
+            final title = _displayTitle(
+              context,
+              _controller.currentConversation.value?.title,
+            );
+            return Text(
+              title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            );
+          },
         ),
         centerTitle: true,
         elevation: 1,
@@ -99,6 +121,7 @@ class _NewChatScreenState extends State<NewChatScreen> {
                   _isDarkMode.value ? ThemeMode.light : ThemeMode.dark;
               Get.changeThemeMode(newMode);
               _isDarkMode.value = !_isDarkMode.value;
+              Pref.isDarkMode = _isDarkMode.value;
             },
             icon: Obx(
               () => Icon(
@@ -122,33 +145,36 @@ class _NewChatScreenState extends State<NewChatScreen> {
               }
             },
             itemBuilder: (context) => [
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'clear',
                 child: Row(
                   children: [
-                    Icon(Icons.delete_sweep, size: 20),
-                    SizedBox(width: 12),
-                    Text('Clear Chat'),
+                    const Icon(Icons.delete_sweep, size: 20),
+                    const SizedBox(width: 12),
+                    Text(l10n.clearChat),
                   ],
                 ),
               ),
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'export',
                 child: Row(
                   children: [
-                    Icon(Icons.download, size: 20),
-                    SizedBox(width: 12),
-                    Text('Export Chat'),
+                    const Icon(Icons.download, size: 20),
+                    const SizedBox(width: 12),
+                    Text(l10n.exportChat),
                   ],
                 ),
               ),
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'logout',
                 child: Row(
                   children: [
-                    Icon(Icons.logout, size: 20, color: Colors.red),
-                    SizedBox(width: 12),
-                    Text('Logout', style: TextStyle(color: Colors.red)),
+                    const Icon(Icons.logout, size: 20, color: Colors.red),
+                    const SizedBox(width: 12),
+                    Text(
+                      l10n.logout,
+                      style: const TextStyle(color: Colors.red),
+                    ),
                   ],
                 ),
               ),
@@ -190,14 +216,14 @@ class _NewChatScreenState extends State<NewChatScreen> {
                             color: Colors.red.withValues(alpha: 0.3),
                           ),
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.mic, color: Colors.red, size: 16),
-                            SizedBox(width: 8),
+                            const Icon(Icons.mic, color: Colors.red, size: 16),
+                            const SizedBox(width: 8),
                             Text(
-                              'Listening... (Release to stop)',
-                              style: TextStyle(
+                              l10n.listeningIndicator,
+                              style: const TextStyle(
                                 color: Colors.red,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
@@ -223,12 +249,15 @@ class _NewChatScreenState extends State<NewChatScreen> {
                         decoration: BoxDecoration(
                           color: _controller.isListening.value
                               ? Colors.red.withValues(alpha: 0.1)
-                              : Colors.amber.withValues(alpha: 0.1),
+                              : Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withValues(alpha: 0.1),
                           shape: BoxShape.circle,
                           border: Border.all(
                             color: _controller.isListening.value
                                 ? Colors.red
-                                : Colors.amber,
+                                : Theme.of(context).colorScheme.primary,
                             width: 2,
                           ),
                         ),
@@ -238,7 +267,7 @@ class _NewChatScreenState extends State<NewChatScreen> {
                               : Icons.mic_none,
                           color: _controller.isListening.value
                               ? Colors.red
-                              : Colors.amber,
+                              : Theme.of(context).colorScheme.primary,
                           size: 24,
                         ),
                       ),
@@ -263,8 +292,10 @@ class _NewChatScreenState extends State<NewChatScreen> {
                                   .showImageSourceDialog();
                               if (image != null && mounted) {
                                 Get.snackbar(
-                                  'Image Selected',
-                                  'Image: ${image.path.split('/').last}',
+                                  l10n.imageSelectedTitle,
+                                  l10n.imageSelectedMessage(
+                                    image.path.split('/').last,
+                                  ),
                                   snackPosition: SnackPosition.BOTTOM,
                                 );
                               }
@@ -280,10 +311,11 @@ class _NewChatScreenState extends State<NewChatScreen> {
                               controller: _controller.textC,
                               maxLines: null,
                               textInputAction: TextInputAction.send,
-                              onFieldSubmitted: (_) =>
-                                  _controller.sendMessage(),
+                              onFieldSubmitted: (_) {
+                                unawaited(_controller.sendMessage());
+                              },
                               decoration: InputDecoration(
-                                hintText: 'Message AI Assistant...',
+                                hintText: l10n.messageHint,
                                 hintStyle: TextStyle(
                                   fontSize: 14,
                                   color: Theme.of(context)
@@ -316,7 +348,7 @@ class _NewChatScreenState extends State<NewChatScreen> {
                         decoration: BoxDecoration(
                           color: _controller.isGenerating.value
                               ? Colors.red
-                              : Colors.amber,
+                              : Theme.of(context).colorScheme.primary,
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
@@ -355,7 +387,7 @@ class _NewChatScreenState extends State<NewChatScreen> {
                           ),
                           const SizedBox(height: 24),
                           Text(
-                            'Start a conversation',
+                            l10n.startConversationTitle,
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.w600,
@@ -368,7 +400,7 @@ class _NewChatScreenState extends State<NewChatScreen> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Ask me anything!',
+                            l10n.startConversationSubtitle,
                             style: TextStyle(
                               fontSize: 14,
                               color: Theme.of(context)
@@ -386,29 +418,29 @@ class _NewChatScreenState extends State<NewChatScreen> {
                             alignment: WrapAlignment.center,
                             children: [
                               _SuggestedPrompt(
-                                text: 'Explain quantum computing',
+                                text: l10n.suggestedPrompt1,
                                 icon: Icons.science,
                                 onTap: () {
                                   _controller.textC.text =
-                                      'Explain quantum computing';
+                                      l10n.suggestedPrompt1;
                                   unawaited(_controller.sendMessage());
                                 },
                               ),
                               _SuggestedPrompt(
-                                text: 'Write a poem',
+                                text: l10n.suggestedPrompt2,
                                 icon: Icons.edit,
                                 onTap: () {
                                   _controller.textC.text =
-                                      'Write a short poem about nature';
+                                      l10n.suggestedPrompt2;
                                   unawaited(_controller.sendMessage());
                                 },
                               ),
                               _SuggestedPrompt(
-                                text: 'Help with code',
+                                text: l10n.suggestedPrompt3,
                                 icon: Icons.code,
                                 onTap: () {
                                   _controller.textC.text =
-                                      'Help me write a Flutter widget';
+                                      l10n.suggestedPrompt3;
                                   unawaited(_controller.sendMessage());
                                 },
                               ),

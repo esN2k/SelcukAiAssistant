@@ -863,7 +863,7 @@ abstract class AppLocalizations {
   /// No description provided for @appwritePingSuccess.
   ///
   /// In en, this message translates to:
-  /// **'Appwrite connection is successful! ✅'**
+  /// **'Appwrite connection is successful!'**
   String get appwritePingSuccess;
 
   /// No description provided for @appwritePingNoSession.

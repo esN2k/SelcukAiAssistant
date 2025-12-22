@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-
+import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/model/conversation.dart';
 
 class EnhancedMessageCard extends StatelessWidget {
@@ -17,26 +17,28 @@ class EnhancedMessageCard extends StatelessWidget {
   void _copyToClipboard(BuildContext context) {
     unawaited(Clipboard.setData(ClipboardData(text: message.content)));
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Copied to clipboard'),
-        duration: Duration(seconds: 2),
+      SnackBar(
+        content: Text(context.l10n.copiedToClipboard),
+        duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
       ),
     );
   }
 
-  String _formatTime(DateTime timestamp) {
+  String _formatTime(BuildContext context, DateTime timestamp) {
+    final l10n = context.l10n;
+    final locale = Localizations.localeOf(context).languageCode;
     final now = DateTime.now();
     final difference = now.difference(timestamp);
 
     if (difference.inDays == 0) {
-      return DateFormat('HH:mm').format(timestamp);
+      return DateFormat('HH:mm', locale).format(timestamp);
     } else if (difference.inDays == 1) {
-      return 'Yesterday ${DateFormat('HH:mm').format(timestamp)}';
+      return l10n.yesterdayAt(DateFormat('HH:mm', locale).format(timestamp));
     } else if (difference.inDays < 7) {
-      return DateFormat('EEEE HH:mm').format(timestamp);
+      return DateFormat('EEEE HH:mm', locale).format(timestamp);
     } else {
-      return DateFormat('MMM d, HH:mm').format(timestamp);
+      return DateFormat('MMM d, HH:mm', locale).format(timestamp);
     }
   }
 
@@ -105,7 +107,7 @@ class EnhancedMessageCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      _formatTime(message.timestamp),
+                      _formatTime(context, message.timestamp),
                       style: TextStyle(
                         fontSize: 11,
                         color: Theme.of(context)

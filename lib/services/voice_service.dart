@@ -2,15 +2,17 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:http/http.dart' as http;
+import 'package:selcukaiassistant/helper/pref.dart';
+import 'package:selcukaiassistant/l10n/l10n.dart';
 
 class VoiceService {
   static const String _baseUrl = 'http://your-server-url.com/api';
 
   /// [audioPath]
-
   static Future<String> speechToText(String audioPath) async {
+    final l10n = L10n.current();
     try {
-      log('Konuşma tanıma başlatılıyor, ses dosyası yolu: $audioPath');
+      log('Starting speech recognition, audio path: $audioPath');
 
       final request = http.MultipartRequest(
         'POST',
@@ -21,7 +23,8 @@ class VoiceService {
         await http.MultipartFile.fromPath('audio', audioPath),
       );
 
-      request.fields['language'] = 'tr-TR';
+      final language = Pref.localeCode == 'en' ? 'en-US' : 'tr-TR';
+      request.fields['language'] = language;
 
       final response = await request.send();
       final responseData = await response.stream.bytesToString();
@@ -29,28 +32,32 @@ class VoiceService {
       if (response.statusCode == 200) {
         final jsonData = json.decode(responseData) as Map<String, dynamic>;
         final recognizedText = (jsonData['text'] as String?) ?? '';
-        log('Ses tanıma başarılı: $recognizedText');
+        log('Speech recognition success: $recognizedText');
         return recognizedText;
       } else {
-        log('Ses tanıma başarısız, durum kodu: ${response.statusCode}');
-        return 'Ses tanıma başarısız oldu. Lütfen tekrar deneyin.';
+        log('Speech recognition failed, status: ${response.statusCode}');
+        return l10n?.speechRecognitionFailed ??
+            'Speech recognition failed. Please try again.';
       }
     } on Exception catch (e) {
-      log('Ses tanıma hatası: $e');
-      return 'Ses tanıma hatası. Lütfen ağ bağlantınızı kontrol edin.';
+      log('Speech recognition error: $e');
+      return l10n?.speechRecognitionError ??
+          'Speech recognition error. Please check your network.';
     }
   }
 
   static Future<bool> checkServerConnection() async {
     try {
-      final response = await http.get(
-        Uri.parse('$_baseUrl/health'),
-        headers: {'Content-Type': 'application/json'},
-      ).timeout(const Duration(seconds: 5));
+      final response = await http
+          .get(
+            Uri.parse('$_baseUrl/health'),
+            headers: {'Content-Type': 'application/json'},
+          )
+          .timeout(const Duration(seconds: 5));
 
       return response.statusCode == 200;
     } on Exception catch (e) {
-      log('Sunucu bağlantısı kontrolü başarısız oldu: $e');
+      log('Server connection check failed: $e');
       return false;
     }
   }

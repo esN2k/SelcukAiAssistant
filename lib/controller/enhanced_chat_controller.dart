@@ -10,8 +10,10 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:selcukaiassistant/apis/apis.dart';
 import 'package:selcukaiassistant/helper/my_dialog.dart';
 import 'package:selcukaiassistant/helper/pref.dart';
+import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/model/conversation.dart';
 import 'package:selcukaiassistant/services/conversation_service.dart';
+import 'package:selcukaiassistant/services/response_cleaner.dart';
 import 'package:selcukaiassistant/services/sse_client.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:uuid/uuid.dart';
@@ -39,6 +41,27 @@ class EnhancedChatController extends GetxController {
     super.onInit();
     unawaited(_initSpeech());
     unawaited(_initializeConversation());
+  }
+
+  String _languageCode() {
+    return Pref.localeCode ?? L10n.fallbackLocale.languageCode;
+  }
+
+  String _speechLocaleId() {
+    return _languageCode() == 'en' ? 'en_US' : 'tr_TR';
+  }
+
+  String _systemPrompt() {
+    if (_languageCode() == 'en') {
+      return 'You are a helpful assistant for Selcuk University. '
+          'Reply in English. Do not reveal reasoning or internal thoughts. '
+          'If the user greets vaguely (e.g. "Hello"), ask what they need about '
+          'Selcuk University.';
+    }
+    return 'Sel?uk ?niversitesi i?in yard?mc? bir asistans?n. '
+        'Yan?tlar?n? T?rk?e ver. Ak?l y?r?tme veya i? konu?ma payla?ma. '
+        'Kullan?c? genel bir selam verirse (?r. "Merhaba"), '
+        'Sel?uk ?niversitesi ile ilgili neye ihtiya? duydu?unu sor.';
   }
 
   Future<void> _initializeConversation() async {
@@ -80,14 +103,20 @@ class EnhancedChatController extends GetxController {
   }
 
   Future<void> startListening() async {
+    final l10n = L10n.current();
     final status = await Permission.microphone.request();
     if (status != PermissionStatus.granted) {
-      MyDialog.info('Microphone permission is required for voice input');
+      MyDialog.info(
+        l10n?.microphonePermissionRequired ??
+            'Microphone permission is required for voice input',
+      );
       return;
     }
 
     if (!speechEnabled.value) {
-      MyDialog.info('Speech recognition is not available');
+      MyDialog.info(
+        l10n?.speechNotAvailable ?? 'Speech recognition is not available',
+      );
       return;
     }
 
@@ -101,7 +130,7 @@ class EnhancedChatController extends GetxController {
             isListening.value = false;
           }
         },
-        localeId: 'en_US',
+        localeId: _speechLocaleId(),
       );
     }
   }
@@ -121,8 +150,12 @@ class EnhancedChatController extends GetxController {
   }
 
   Future<void> sendMessage({String? imageUrl}) async {
+    final l10n = L10n.current();
     if (textC.text.trim().isEmpty) {
-      MyDialog.info('Please enter a message or use voice input!');
+      MyDialog.info(
+        l10n?.enterMessagePrompt ??
+            'Please enter a message or use voice input!',
+      );
       return;
     }
 
@@ -185,9 +218,10 @@ class EnhancedChatController extends GetxController {
           messages: payloadMessages,
           model: selectedModel,
         );
-        aiMessage.content = fallback;
+        aiMessage.content = ResponseCleaner.clean(fallback);
       } else {
-        aiMessage.content += '\n\n[Stream interrupted]';
+        aiMessage.content +=
+            "\n\n${l10n?.streamInterruptedTag ?? '[Stream interrupted]'}";
       }
       messages.refresh();
       await ConversationService.addMessage(
@@ -195,8 +229,8 @@ class EnhancedChatController extends GetxController {
         aiMessage,
       );
       Get.snackbar(
-        'Stream error',
-        '$e',
+        l10n?.streamErrorTitle ?? 'Stream error',
+        e.toString(),
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -218,14 +252,20 @@ class EnhancedChatController extends GetxController {
         ? history.sublist(history.length - maxHistory)
         : history;
 
-    return recent
-        .map(
-          (msg) => {
-            'role': msg.isUser ? 'user' : 'assistant',
-            'content': msg.content,
-          },
-        )
-        .toList();
+    final payload = <Map<String, String>>[
+      {
+        'role': 'system',
+        'content': _systemPrompt(),
+      },
+      ...recent.map(
+        (msg) => {
+          'role': msg.isUser ? 'user' : 'assistant',
+          'content': msg.content,
+        },
+      ),
+    ];
+
+    return payload;
   }
 
   Future<void> _streamResponse(
@@ -233,6 +273,7 @@ class EnhancedChatController extends GetxController {
     ChatMessage aiMessage, {
     String? model,
   }) async {
+    final cleaner = ResponseCleaner();
     _streamSession = await APIs.streamChat(
       messages: messagesPayload,
       model: model,
@@ -242,10 +283,12 @@ class EnhancedChatController extends GetxController {
     _streamSubscription = _streamSession!.stream.listen(
       (ChatStreamEvent event) {
         if (event.type == 'token' && event.token != null) {
-          aiMessage.content += event.token!;
+          aiMessage.content = cleaner.push(event.token!);
           messages.refresh();
           _scrollDown();
         } else if (event.type == 'end') {
+          aiMessage.content = cleaner.finalize();
+          messages.refresh();
           if (!completer.isCompleted) {
             completer.complete();
           }
@@ -269,6 +312,8 @@ class EnhancedChatController extends GetxController {
     );
 
     await completer.future;
+    aiMessage.content = cleaner.finalize();
+    messages.refresh();
     _streamSession?.close();
   }
 
@@ -287,21 +332,26 @@ class EnhancedChatController extends GetxController {
   }
 
   Future<void> clearCurrentConversation() async {
+    final l10n = L10n.current();
     final confirmed = await Get.dialog<bool>(
       AlertDialog(
-        title: const Text('Clear Conversation'),
-        content: const Text(
-          'Are you sure you want to clear this conversation? '
-          'This action cannot be undone.',
+        title: Text(l10n?.clearConversationTitle ?? 'Clear conversation'),
+        content: Text(
+          l10n?.clearConversationMessage ??
+              'Are you sure you want to clear this conversation? '
+                  'This action cannot be undone.',
         ),
         actions: [
           TextButton(
             onPressed: () => Get.back(result: false),
-            child: const Text('Cancel'),
+            child: Text(l10n?.cancel ?? 'Cancel'),
           ),
           TextButton(
             onPressed: () => Get.back(result: true),
-            child: const Text('Clear', style: TextStyle(color: Colors.red)),
+            child: Text(
+              l10n?.clear ?? 'Clear',
+              style: const TextStyle(color: Colors.red),
+            ),
           ),
         ],
       ),
@@ -315,12 +365,13 @@ class EnhancedChatController extends GetxController {
   }
 
   Future<void> exportCurrentConversation() async {
+    final l10n = L10n.current();
     try {
       final conversation = currentConversation.value;
       if (conversation == null || conversation.messages.isEmpty) {
         Get.snackbar(
-          'Export Failed',
-          'No messages to export',
+          l10n?.exportFailedTitle ?? 'Export failed',
+          l10n?.noMessagesToExport ?? 'No messages to export',
           snackPosition: SnackPosition.BOTTOM,
         );
         return;
@@ -338,14 +389,15 @@ class EnhancedChatController extends GetxController {
       await Clipboard.setData(ClipboardData(text: jsonString));
 
       Get.snackbar(
-        'Export Successful',
-        'Saved to ${file.path}\nAlso copied to clipboard',
+        l10n?.exportSuccessTitle ?? 'Export successful',
+        l10n?.exportSuccessMessage(file.path) ??
+            'Saved to ${file.path}\nAlso copied to clipboard',
         snackPosition: SnackPosition.BOTTOM,
         duration: const Duration(seconds: 4),
       );
     } on Exception catch (e) {
       Get.snackbar(
-        'Export Failed',
+        l10n?.exportFailedTitle ?? 'Export failed',
         '$e',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
