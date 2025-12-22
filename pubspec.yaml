@@ -40,6 +40,28 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/roboto/Roboto-Regular.ttf
+        - asset: assets/fonts/roboto/Roboto-Italic.ttf
+          style: italic
+        - asset: assets/fonts/roboto/Roboto-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/roboto/Roboto-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/roboto/Roboto-BoldItalic.ttf
+          weight: 700
+          style: italic
+        - asset: assets/fonts/roboto/Roboto-Black.ttf
+          weight: 900
+    - family: NotoSansSymbols
+      fonts:
+        - asset: assets/fonts/noto_sans_symbols/NotoSansSymbols-wght.ttf
+    - family: NotoSansSymbols2
+      fonts:
+        - asset: assets/fonts/noto_sans_symbols2/NotoSansSymbols2-Regular.ttf
+
   assets:
     - assets/images/
     - assets/lottie/

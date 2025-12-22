@@ -47,6 +47,8 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData(
         useMaterial3: false,
         brightness: Brightness.dark,
+        fontFamily: 'Roboto',
+        fontFamilyFallback: const ['NotoSansSymbols', 'NotoSansSymbols2'],
         appBarTheme: const AppBarTheme(
           elevation: 1,
           centerTitle: true,
@@ -57,6 +59,8 @@ class MyApp extends StatelessWidget {
       //light
       theme: ThemeData(
         useMaterial3: false,
+        fontFamily: 'Roboto',
+        fontFamilyFallback: const ['NotoSansSymbols', 'NotoSansSymbols2'],
         appBarTheme: const AppBarTheme(
           elevation: 1,
           centerTitle: true,
