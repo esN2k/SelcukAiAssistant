@@ -37,7 +37,8 @@ class ResponseCleaner {
 
     final rebuilt = parts.map((p) => p.$1).join();
 
-    // Avoid aggressive trim that can cause streaming jitter; only trim leading whitespace.
+    // Avoid aggressive trim that can cause streaming jitter
+    //only trim leading whitespace.
     return rebuilt.replaceFirst(RegExp(r'^\s+'), '');
   }
 
@@ -54,7 +55,8 @@ class ResponseCleaner {
       r'^\s*(?:'
       // English meta headers
       r'(?:reasoning|analysis|thoughts?|chain of thought|let me think)\s*:?\s*$|'
-      // Turkish meta headers (NOTE: intentionally excludes "mantık" to avoid false positives)
+      // Turkish meta headers
+      // (NOTE: intentionally excludes "mantık" to avoid false positives)
       r'(?:düşünce|akıl yürütme|gerekçe)\s*:?\s*$|'
       // "Final" wrappers
       r'(?:final answer|final|answer)\s*:?\s*$|'
