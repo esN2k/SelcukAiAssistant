@@ -1,0 +1,229 @@
+{
+  "@@locale": "en",
+  "appTitle": "Selcuk AI Assistant",
+  "appSubtitle": "Selcuk University AI Assistant",
+  "splashSubtitle": "Selcuk University AI Assistant",
+  "ok": "OK",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "clear": "Clear",
+  "rename": "Rename",
+  "newChat": "New chat",
+  "loginTitle": "Welcome back",
+  "loginSubtitle": "Sign in to continue",
+  "loginButton": "Sign in",
+  "loginNoAccount": "Don't have an account?",
+  "loginCreateAccount": "Create account",
+  "loginSuccessTitle": "Success",
+  "loginSuccessMessage": "Signed in successfully!",
+  "loginErrorTitle": "Error",
+  "registerTitle": "Create account",
+  "registerSubtitle": "Start using the assistant",
+  "registerButton": "Create account",
+  "registerHaveAccount": "Already have an account?",
+  "registerSignIn": "Sign in",
+  "registerSuccessTitle": "Success",
+  "registerSuccessMessage": "Registration complete. Welcome!",
+  "registerErrorTitle": "Error",
+  "nameLabel": "Full name",
+  "emailLabel": "Email",
+  "passwordLabel": "Password",
+  "confirmPasswordLabel": "Confirm password",
+  "nameRequired": "Full name is required",
+  "emailRequired": "Email is required",
+  "invalidEmail": "Enter a valid email",
+  "passwordRequired": "Password is required",
+  "passwordMinLength": "Password must be at least 8 characters",
+  "confirmPasswordRequired": "Please confirm your password",
+  "passwordsDoNotMatch": "Passwords do not match",
+  "onboardingTitle1": "Ask me anything",
+  "onboardingSubtitle1": "I can be your best companion. Ask me anything and I will help!",
+  "onboardingTitle2": "From imagination to reality",
+  "onboardingSubtitle2": "Just imagine and tell me. I will create something great for you!",
+  "onboardingNext": "Next",
+  "onboardingDone": "Done",
+  "settingsTitle": "Settings",
+  "sectionAppearance": "APPEARANCE",
+  "sectionLanguage": "LANGUAGE",
+  "sectionAiModel": "AI MODEL",
+  "sectionChatSettings": "CHAT SETTINGS",
+  "sectionStatistics": "STATISTICS",
+  "sectionDataManagement": "DATA MANAGEMENT",
+  "sectionAbout": "ABOUT",
+  "darkModeTitle": "Dark mode",
+  "darkModeSubtitle": "Toggle between light and dark theme",
+  "languageTitle": "App language",
+  "languageSubtitle": "Choose your preferred language",
+  "languageTurkish": "Turkish",
+  "languageEnglish": "English",
+  "modelLabel": "Model",
+  "modelNotSelected": "Not selected",
+  "selectModelTitle": "Select model",
+  "voiceInputTitle": "Voice input",
+  "voiceInputSubtitle": "Enable microphone for voice messages",
+  "markdownSupportTitle": "Markdown support",
+  "markdownSupportSubtitle": "Render formatted text and code",
+  "totalConversations": "Total conversations",
+  "totalMessages": "Total messages",
+  "clearAllConversationsTitle": "Clear all conversations",
+  "clearAllConversationsSubtitle": "Delete all chat history",
+  "clearAllDataTitle": "Clear all data",
+  "clearAllDataMessage": "Are you sure you want to delete all conversations? This action cannot be undone.",
+  "deleteAll": "Delete all",
+  "clearAllSuccessTitle": "Success",
+  "clearAllSuccessMessage": "All conversations deleted",
+  "versionLabel": "Version",
+  "developerLabel": "Developer",
+  "developerValue": "Selcuk AI",
+  "deleteConversationTitle": "Delete conversation",
+  "deleteConversationMessage": "Are you sure you want to delete this conversation? This action cannot be undone.",
+  "renameConversationTitle": "Rename conversation",
+  "renameConversationHint": "Enter new title",
+  "searchConversationsHint": "Search conversations...",
+  "noConversationsFound": "No conversations found",
+  "noConversationsYet": "No conversations yet",
+  "conversationsCount": "{count, plural, =0{0 conversations} =1{1 conversation} other{{count} conversations}}",
+  "@conversationsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayLabel": "Today",
+  "yesterdayLabel": "Yesterday",
+  "daysAgo": "{count, plural, =1{1 day ago} other{{count} days ago}}",
+  "@daysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "weeksAgo": "{count, plural, =1{1 week ago} other{{count} weeks ago}}",
+  "@weeksAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "monthsAgo": "{count, plural, =1{1 month ago} other{{count} months ago}}",
+  "@monthsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "yearsAgo": "{count, plural, =1{1 year ago} other{{count} years ago}}",
+  "@yearsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "clearConversationTitle": "Clear conversation",
+  "clearConversationMessage": "Are you sure you want to clear this conversation? This action cannot be undone.",
+  "listeningIndicator": "Listening... (release to stop)",
+  "messageHint": "Message Selcuk AI Assistant...",
+  "imageSelectedTitle": "Image selected",
+  "imageSelectedMessage": "Image: {fileName}",
+  "@imageSelectedMessage": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "startConversationTitle": "Start a conversation",
+  "startConversationSubtitle": "Ask me anything!",
+  "suggestedPrompt1": "Explain quantum computing",
+  "suggestedPrompt2": "Write a poem",
+  "suggestedPrompt3": "Help with code",
+  "streamErrorTitle": "Stream error",
+  "streamErrorMessage": "{error}",
+  "@streamErrorMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "streamInterruptedTag": "[Stream interrupted]",
+  "microphonePermissionRequired": "Microphone permission is required for voice input",
+  "speechNotAvailable": "Speech recognition is not available",
+  "enterMessagePrompt": "Please enter a message or use voice input!",
+  "exportFailedTitle": "Export failed",
+  "noMessagesToExport": "No messages to export",
+  "exportSuccessTitle": "Export successful",
+  "exportSuccessMessage": "Saved to {path}\\nAlso copied to clipboard",
+  "@exportSuccessMessage": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "logout": "Logout",
+  "clearChat": "Clear chat",
+  "exportChat": "Export chat",
+  "logoutSuccessTitle": "Success",
+  "logoutSuccessMessage": "Logged out successfully",
+  "logoutErrorTitle": "Error",
+  "copiedToClipboard": "Copied to clipboard",
+  "yesterdayAt": "Yesterday {time}",
+  "@yesterdayAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "aiThinking": "AI is thinking...",
+  "infoTitle": "Info",
+  "successTitle": "Success",
+  "errorTitle": "Error",
+  "imagePickerErrorTitle": "Error",
+  "imagePickerErrorMessage": "Failed to pick image: {error}",
+  "@imagePickerErrorMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chooseImageSourceTitle": "Choose image source",
+  "cameraLabel": "Camera",
+  "galleryLabel": "Gallery",
+  "appwritePingSuccess": "Appwrite connection is successful! ✅",
+  "appwritePingNoSession": "Appwrite connection is OK but no session is active.",
+  "appwritePingError": "Appwrite ping error: {error}",
+  "@appwritePingError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sendPingTooltip": "Send a ping",
+  "logoutTooltip": "Logout",
+  "assistantTitle": "AI assistant",
+  "assistantHint": "Type a message or hold for voice input...",
+  "listeningStatus": "Listening to voice input...",
+  "startChatHint": "Start chatting with the AI assistant!",
+  "errorInvalidRequest": "Error: Invalid request",
+  "errorInvalidRequestFormat": "Error: Invalid request format.",
+  "errorServiceUnavailable": "Error: AI service is unavailable.",
+  "errorTimeout": "Error: AI response timeout.",
+  "errorBackendUnavailable": "Error: Backend service unavailable.",
+  "errorNoInternet": "Error: No internet connection.",
+  "errorInvalidServerResponse": "Error: Invalid server response.",
+  "errorUnexpected": "Error: Unexpected error.",
+  "noResponseGenerated": "Sorry, no response generated.",
+  "requestTimeoutMessage": "Request timed out. Please try again.",
+  "speechRecognitionFailed": "Speech recognition failed. Please try again.",
+  "speechRecognitionError": "Speech recognition error. Please check your network.",
+  "serverConnectionFailed": "Server connection failed."
+}

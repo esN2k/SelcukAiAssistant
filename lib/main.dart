@@ -6,7 +6,10 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:selcukaiassistant/helper/ad_helper.dart';
 import 'package:selcukaiassistant/helper/global.dart';
 import 'package:selcukaiassistant/helper/pref.dart';
+import 'package:selcukaiassistant/l10n/app_localizations.dart';
+import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/screen/splash_screen.dart';
+import 'package:selcukaiassistant/theme/selcuk_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,41 +43,17 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: Global.appName,
       debugShowCheckedModeBanner: false,
-
       themeMode: Pref.defaultTheme,
-
-      //dark
-      darkTheme: ThemeData(
-        useMaterial3: false,
-        brightness: Brightness.dark,
-        fontFamily: 'Roboto',
-        fontFamilyFallback: const ['NotoSansSymbols', 'NotoSansSymbols2'],
-        appBarTheme: const AppBarTheme(
-          elevation: 1,
-          centerTitle: true,
-          titleTextStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-        ),
-      ),
-
-      //light
-      theme: ThemeData(
-        useMaterial3: false,
-        fontFamily: 'Roboto',
-        fontFamilyFallback: const ['NotoSansSymbols', 'NotoSansSymbols2'],
-        appBarTheme: const AppBarTheme(
-          elevation: 1,
-          centerTitle: true,
-          backgroundColor: Colors.white,
-          iconTheme: IconThemeData(color: Colors.amber),
-          titleTextStyle: TextStyle(
-            color: Colors.amber,
-            fontSize: 20,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ),
-
-      //
+      theme: SelcukTheme.light(),
+      darkTheme: SelcukTheme.dark(),
+      supportedLocales: L10n.supportedLocales,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      locale: L10n.currentLocale,
+      fallbackLocale: L10n.fallbackLocale,
+      localeResolutionCallback: (deviceLocale, supportedLocales) {
+        return L10n.resolveLocale(deviceLocale);
+      },
+      onGenerateTitle: (context) => context.l10n.appTitle,
       home: const SplashScreen(),
     );
   }

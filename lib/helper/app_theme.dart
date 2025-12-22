@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 extension AppTheme on ThemeData {
   //light text color
-  Color get lightTextColor =>
-      brightness == Brightness.dark ? Colors.white70 : Colors.black54;
+  Color get lightTextColor {
+    final alpha = brightness == Brightness.dark ? 0.7 : 0.6;
+    return colorScheme.onSurface.withValues(alpha: alpha);
+  }
 
   //button color
-  Color get buttonColor => brightness == Brightness.dark
-      ? Colors.cyan.withValues(alpha: 0.5)
-      : Colors.amber;
+  Color get buttonColor => colorScheme.primary;
 }

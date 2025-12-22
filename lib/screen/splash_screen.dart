@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:selcukaiassistant/helper/global.dart';
 import 'package:selcukaiassistant/helper/pref.dart';
+import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/screen/home_screen.dart';
 import 'package:selcukaiassistant/screen/onboarding_screen.dart';
 import 'package:selcukaiassistant/widget/custom_loading.dart';
@@ -20,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
-    //wait for some time on splash & then move to next screen
+    // wait for some time on splash & then move to next screen
     Future.delayed(const Duration(seconds: 2), () {
       unawaited(
         Get.off<Widget>(
@@ -34,40 +35,50 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //initializing device size
+    // initializing device size
     Global.mq = MediaQuery.sizeOf(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final maxLogoSize = Global.mq.width * 0.45;
 
     return Scaffold(
-      //body
-      body: SizedBox(
-        width: double.maxFinite,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: Center(
         child: Column(
           children: [
-            //for adding some space
             const Spacer(flex: 2),
-
-            //logo
-            Card(
-              // <-- Card yapısı buradaydı
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20)),
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: isDark
+                    ? Theme.of(context).colorScheme.surface
+                    : Colors.white,
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: isDark ? 0.4 : 0.08),
+                    blurRadius: 24,
+                    offset: const Offset(0, 12),
+                  ),
+                ],
               ),
-              child: Padding(
-                padding: EdgeInsets.all(Global.mq.width * .05),
-                child: Image.asset(
-                  'assets/images/selcuk_logo.png', // <-- Logo dosya adı orijinaldi
-                  width: Global.mq.width * .4, // <-- Orijinal genişlik
-                ),
+              child: Image.asset(
+                'assets/branding/selcuk_seal.jpg',
+                width: maxLogoSize,
+                height: maxLogoSize,
+                fit: BoxFit.contain,
               ),
             ),
-
-            //for adding some space
+            const SizedBox(height: 24),
+            Text(
+              context.l10n.splashSubtitle,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+            ),
             const Spacer(),
-
-            //lottie loading
             const CustomLoading(),
-
-            //for adding some space
             const Spacer(),
           ],
         ),

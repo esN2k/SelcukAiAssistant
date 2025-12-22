@@ -6,7 +6,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class Global {
   // App constants
-  static const String appName = 'Selçuk AI Assistant';
+  static const String appName = 'Selcuk AI Assistant';
 
   // Media query size (should be initialized in app)
   static Size mq = Size.zero;

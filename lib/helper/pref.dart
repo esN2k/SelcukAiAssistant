@@ -53,4 +53,9 @@ class Pref {
       _box.get('selectedModel') as String?;
 
   static set selectedModel(String? value) => _box.put('selectedModel', value);
+
+  static String? get localeCode =>
+      _box.get('localeCode') as String?;
+
+  static set localeCode(String? value) => _box.put('localeCode', value);
 }
