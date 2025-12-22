@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:selcukaiassistant/screen/feature/chatbot_feature.dart';
+import 'package:selcukaiassistant/screen/feature/new_chat_screen.dart';
 
 enum HomeType { aiChatBot }
 
@@ -28,6 +28,6 @@ extension MyHomeType on HomeType {
 
   //for navigation
   VoidCallback get onTap => switch (this) {
-        HomeType.aiChatBot => () => Get.to<void>(() => const ChatBotFeature()),
+        HomeType.aiChatBot => () => Get.to<void>(() => const NewChatScreen()),
       };
 }

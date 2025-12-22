@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:selcukaiassistant/screen/auth/register_screen.dart';
-import 'package:selcukaiassistant/screen/feature/chatbot_feature.dart';
+import 'package:selcukaiassistant/screen/feature/new_chat_screen.dart';
 import 'package:selcukaiassistant/services/appwrite_service.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -37,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
         _passwordController.text,
       );
       if (mounted) {
-        unawaited(Get.offAll<void>(() => const ChatBotFeature()));
+        unawaited(Get.offAll<void>(() => const NewChatScreen()));
         Get.snackbar(
           'Başarılı',
           'Giriş yapıldı!',
