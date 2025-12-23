@@ -449,6 +449,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get streamInterruptedTag => '[Stream interrupted]';
 
   @override
+  String get copyAction => 'Copy';
+
+  @override
+  String get editMessageTitle => 'Edit message';
+
+  @override
+  String get editMessageHint => 'Update your message';
+
+  @override
+  String get editMessageAction => 'Resend';
+
+  @override
+  String get regenerateAction => 'Regenerate';
+
+  @override
+  String get retryAction => 'Retry';
+
+  @override
   String get diagnosticsConnectionSection => 'CONNECTION';
 
   @override

@@ -866,6 +866,42 @@ abstract class AppLocalizations {
   /// **'[Stream interrupted]'**
   String get streamInterruptedTag;
 
+  /// No description provided for @copyAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get copyAction;
+
+  /// No description provided for @editMessageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit message'**
+  String get editMessageTitle;
+
+  /// No description provided for @editMessageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Update your message'**
+  String get editMessageHint;
+
+  /// No description provided for @editMessageAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend'**
+  String get editMessageAction;
+
+  /// No description provided for @regenerateAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Regenerate'**
+  String get regenerateAction;
+
+  /// No description provided for @retryAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retryAction;
+
   /// No description provided for @diagnosticsConnectionSection.
   ///
   /// In en, this message translates to:

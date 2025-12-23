@@ -452,6 +452,24 @@ class AppLocalizationsTr extends AppLocalizations {
   String get streamInterruptedTag => '[AkÄ±ÅŸ kesildi]';
 
   @override
+  String get copyAction => 'Kopyala';
+
+  @override
+  String get editMessageTitle => 'Mesajı düzenle';
+
+  @override
+  String get editMessageHint => 'Mesajınızı güncelleyin';
+
+  @override
+  String get editMessageAction => 'Yeniden gönder';
+
+  @override
+  String get regenerateAction => 'Yeniden üret';
+
+  @override
+  String get retryAction => 'Tekrar dene';
+
+  @override
   String get diagnosticsConnectionSection => 'BAĞLANTI';
 
   @override

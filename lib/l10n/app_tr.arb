@@ -180,6 +180,12 @@
     }
   },
   "streamInterruptedTag": "[AkÄ±ÅŸ kesildi]",
+  "copyAction": "Kopyala",
+  "editMessageTitle": "Mesaj\u0131 d\u00fczenle",
+  "editMessageHint": "Mesaj\u0131n\u0131z\u0131 g\u00fcncelleyin",
+  "editMessageAction": "Yeniden g\u00f6nder",
+  "regenerateAction": "Yeniden \u00fcret",
+  "retryAction": "Tekrar dene",
   "microphonePermissionRequired": "Sesli giriÅŸ iÃ§in mikrofon izni gerekli",
   "speechNotAvailable": "Ses tanÄ±ma kullanÄ±lamÄ±yor",
   "enterMessagePrompt": "LÃ¼tfen bir mesaj yazÄ±n veya sesli giriÅŸ kullanÄ±n!",

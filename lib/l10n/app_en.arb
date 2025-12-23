@@ -198,6 +198,12 @@
     }
   },
   "streamInterruptedTag": "[Stream interrupted]",
+  "copyAction": "Copy",
+  "editMessageTitle": "Edit message",
+  "editMessageHint": "Update your message",
+  "editMessageAction": "Resend",
+  "regenerateAction": "Regenerate",
+  "retryAction": "Retry",
   "diagnosticsConnectionSection": "CONNECTION",
   "diagnosticsBaseUrlLabel": "Base URL",
   "diagnosticsBaseUrlSource": "Source: {source}",

@@ -80,7 +80,7 @@ class ConversationService {
           message.isUser &&
           conversation.messages.where((m) => m.isUser).length == 1) {
         conversation
-          ..title = _generateTitle(message.content)
+          ..title = generateTitle(message.content)
           ..updatedAt = DateTime.now();
       }
 
@@ -91,18 +91,42 @@ class ConversationService {
   // Update a message in a conversation
   static Future<void> updateMessage(
     String conversationId,
-    String messageId,
-    String newContent,
-  ) async {
+    String messageId, {
+    String? newContent,
+    String? error,
+    String? errorCode,
+  }) async {
     final conversation = box.get(conversationId);
     if (conversation != null) {
       final messageIndex =
           conversation.messages.indexWhere((m) => m.id == messageId);
       if (messageIndex != -1) {
-        conversation.messages[messageIndex].content = newContent;
+        final message = conversation.messages[messageIndex];
+        if (newContent != null) {
+          message.content = newContent;
+        }
+        if (error != null) {
+          message.error = error.isEmpty ? null : error;
+        }
+        if (errorCode != null) {
+          message.errorCode = errorCode.isEmpty ? null : errorCode;
+        }
         conversation.updatedAt = DateTime.now();
         await conversation.save();
       }
+    }
+  }
+
+  static Future<void> setMessages(
+    String conversationId,
+    List<ChatMessage> messages,
+  ) async {
+    final conversation = box.get(conversationId);
+    if (conversation != null) {
+      conversation
+        ..messages = messages
+        ..updatedAt = DateTime.now();
+      await conversation.save();
     }
   }
 
@@ -182,7 +206,7 @@ class ConversationService {
   }
 
   // Generate a smart title from the first message
-  static String _generateTitle(String content) {
+  static String generateTitle(String content) {
     // Take first 50 characters or first sentence
     var title = content.trim();
 

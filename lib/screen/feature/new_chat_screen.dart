@@ -461,8 +461,34 @@ class _NewChatScreenState extends State<NewChatScreen> {
                       ),
                       itemCount: _controller.messages.length,
                       itemBuilder: (context, index) {
+                        final lastUserIndex = _controller.messages
+                            .lastIndexWhere((m) => m.isUser);
+                        final lastAssistantIndex = _controller.messages
+                            .lastIndexWhere((m) => !m.isUser);
+                        final message = _controller.messages[index];
+                        final actionsEnabled =
+                            !_controller.isGenerating.value;
+                        final canEdit = actionsEnabled &&
+                            message.isUser &&
+                            index == lastUserIndex;
+                        final canRetry = actionsEnabled &&
+                            !message.isUser &&
+                            message.hasError;
+                        final canRegenerate = actionsEnabled &&
+                            !message.isUser &&
+                            index == lastAssistantIndex &&
+                            !message.hasError;
                         return EnhancedMessageCard(
-                          message: _controller.messages[index],
+                          message: message,
+                          onEdit: canEdit
+                              ? () => _controller.editLastUserMessage(message)
+                              : null,
+                          onRetry: canRetry
+                              ? () => _controller.retryResponse(message)
+                              : null,
+                          onRegenerate: canRegenerate
+                              ? () => _controller.regenerateResponse(message)
+                              : null,
                         );
                       },
                     ),

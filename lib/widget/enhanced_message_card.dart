@@ -9,10 +9,16 @@ import 'package:selcukaiassistant/model/conversation.dart';
 class EnhancedMessageCard extends StatelessWidget {
   const EnhancedMessageCard({
     required this.message,
+    this.onEdit,
+    this.onRegenerate,
+    this.onRetry,
     super.key,
   });
 
   final ChatMessage message;
+  final VoidCallback? onEdit;
+  final VoidCallback? onRegenerate;
+  final VoidCallback? onRetry;
 
   void _copyToClipboard(BuildContext context) {
     unawaited(Clipboard.setData(ClipboardData(text: message.content)));
@@ -22,6 +28,30 @@ class EnhancedMessageCard extends StatelessWidget {
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
       ),
+    );
+  }
+
+  Widget _buildActionIcon({
+    required BuildContext context,
+    required IconData icon,
+    required String tooltip,
+    required VoidCallback onPressed,
+  }) {
+    final color = Theme.of(context)
+        .textTheme
+        .bodySmall
+        ?.color
+        ?.withValues(alpha: 0.6);
+    return IconButton(
+      tooltip: tooltip,
+      onPressed: onPressed,
+      iconSize: 16,
+      padding: EdgeInsets.zero,
+      constraints: const BoxConstraints(
+        minWidth: 24,
+        minHeight: 24,
+      ),
+      icon: Icon(icon, color: color),
     );
   }
 
@@ -118,17 +148,37 @@ class EnhancedMessageCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    GestureDetector(
-                      onTap: () => _copyToClipboard(context),
-                      child: Icon(
-                        Icons.copy,
-                        size: 14,
-                        color: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.color
-                            ?.withValues(alpha: 0.5),
-                      ),
+                    Wrap(
+                      spacing: 4,
+                      children: [
+                        if (onEdit != null)
+                          _buildActionIcon(
+                            context: context,
+                            icon: Icons.edit,
+                            tooltip: context.l10n.editMessageTitle,
+                            onPressed: onEdit!,
+                          ),
+                        if (onRegenerate != null)
+                          _buildActionIcon(
+                            context: context,
+                            icon: Icons.refresh,
+                            tooltip: context.l10n.regenerateAction,
+                            onPressed: onRegenerate!,
+                          ),
+                        if (onRetry != null)
+                          _buildActionIcon(
+                            context: context,
+                            icon: Icons.replay,
+                            tooltip: context.l10n.retryAction,
+                            onPressed: onRetry!,
+                          ),
+                        _buildActionIcon(
+                          context: context,
+                          icon: Icons.copy,
+                          tooltip: context.l10n.copyAction,
+                          onPressed: () => _copyToClipboard(context),
+                        ),
+                      ],
                     ),
                   ],
                 ),

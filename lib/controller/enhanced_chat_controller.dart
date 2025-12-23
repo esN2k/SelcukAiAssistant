@@ -150,9 +150,15 @@ class EnhancedChatController extends GetxController {
     _streamSession?.close();
   }
 
-  Future<void> sendMessage({String? imageUrl}) async {
+  Future<void> sendMessage({
+    String? imageUrl,
+    String? overrideText,
+    String? parentMessageId,
+  }) async {
     final l10n = L10n.current();
-    if (textC.text.trim().isEmpty) {
+    final rawText = overrideText ?? textC.text;
+    final messageText = rawText.trim();
+    if (messageText.isEmpty) {
       MyDialog.info(
         l10n?.enterMessagePrompt ??
             'Please enter a message or use voice input!',
@@ -162,10 +168,11 @@ class EnhancedChatController extends GetxController {
 
     final userMessage = ChatMessage(
       id: _uuid.v4(),
-      content: textC.text.trim(),
+      content: messageText,
       isUser: true,
       createdAt: DateTime.now(),
       imageUrl: imageUrl,
+      parentMessageId: parentMessageId,
     );
 
     messages.add(userMessage);
@@ -183,9 +190,14 @@ class EnhancedChatController extends GetxController {
     messages.add(aiMessage);
     _scrollDown();
 
-    textC.clear();
+    if (overrideText == null) {
+      textC.clear();
+    }
     isGenerating.value = true;
     _stopRequested = false;
+    aiMessage
+      ..error = null
+      ..errorCode = null;
 
     final payloadMessages = _buildPayloadMessages();
     final selectedModel = Pref.selectedModel;
@@ -198,6 +210,9 @@ class EnhancedChatController extends GetxController {
       );
 
       if (!_stopRequested) {
+        aiMessage
+          ..error = null
+          ..errorCode = null;
         await ConversationService.addMessage(
           currentConversationId.value,
           aiMessage,
@@ -214,6 +229,9 @@ class EnhancedChatController extends GetxController {
       if (_stopRequested) {
         return;
       }
+      aiMessage
+        ..error = e.toString()
+        ..errorCode = 'stream_error';
       if (aiMessage.content.isEmpty) {
         final fallback = await APIs.sendChat(
           messages: payloadMessages,
@@ -243,8 +261,15 @@ class EnhancedChatController extends GetxController {
     }
   }
 
-  List<Map<String, String>> _buildPayloadMessages() {
-    final history = messages
+  List<Map<String, String>> _buildPayloadMessages({
+    int? lastMessageIndex,
+  }) {
+    final limitIndex =
+        lastMessageIndex ?? (messages.isEmpty ? -1 : messages.length - 1);
+    final slice = limitIndex >= 0
+        ? messages.sublist(0, limitIndex + 1)
+        : <ChatMessage>[];
+    final history = slice
         .where((msg) => msg.content.trim().isNotEmpty)
         .toList();
 
@@ -267,6 +292,177 @@ class EnhancedChatController extends GetxController {
     ];
 
     return payload;
+  }
+
+  ChatMessage _cloneMessage(ChatMessage message) {
+    return ChatMessage(
+      id: _uuid.v4(),
+      content: message.content,
+      isUser: message.isUser,
+      createdAt: message.createdAt,
+      imageUrl: message.imageUrl,
+      role: message.role,
+      provider: message.provider,
+      modelId: message.modelId,
+      error: message.error,
+      errorCode: message.errorCode,
+      parentMessageId: message.parentMessageId,
+      citations: List<String>.from(message.citations),
+    );
+  }
+
+  int? _findPreviousUserIndex(int fromIndex) {
+    for (var i = fromIndex - 1; i >= 0; i--) {
+      if (messages[i].isUser) {
+        return i;
+      }
+    }
+    return null;
+  }
+
+  Future<void> editLastUserMessage(ChatMessage message) async {
+    if (isGenerating.value) {
+      return;
+    }
+
+    final lastUserIndex = messages.lastIndexWhere((m) => m.isUser);
+    final messageIndex = messages.indexOf(message);
+    if (messageIndex == -1 || messageIndex != lastUserIndex) {
+      return;
+    }
+
+    final l10n = L10n.current();
+    final controller = TextEditingController(text: message.content);
+
+    final updated = await Get.dialog<String>(
+      AlertDialog(
+        title: Text(l10n?.editMessageTitle ?? 'Edit message'),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          maxLines: null,
+          decoration: InputDecoration(
+            hintText: l10n?.editMessageHint ?? 'Update your message',
+            border: const OutlineInputBorder(),
+          ),
+          onSubmitted: (value) => Get.back(result: value),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back<String>(),
+            child: Text(l10n?.cancel ?? 'Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Get.back<String>(result: controller.text),
+            child: Text(l10n?.editMessageAction ?? 'Resend'),
+          ),
+        ],
+      ),
+    );
+
+    controller.dispose();
+
+    final trimmed = updated?.trim();
+    if (trimmed == null ||
+        trimmed.isEmpty ||
+        trimmed == message.content.trim()) {
+      return;
+    }
+
+    final newConversation = await ConversationService.createConversation();
+    final history =
+        messages.take(messageIndex).map(_cloneMessage).toList();
+
+    await ConversationService.setMessages(newConversation.id, history);
+    newConversation
+      ..title = ConversationService.generateTitle(trimmed)
+      ..updatedAt = DateTime.now();
+    await newConversation.save();
+
+    currentConversation.value = newConversation;
+    currentConversationId.value = newConversation.id;
+    messages.value = List.from(history);
+    _scrollDown();
+
+    await sendMessage(
+      overrideText: trimmed,
+      parentMessageId: message.id,
+    );
+  }
+
+  Future<void> regenerateResponse(ChatMessage message) async {
+    if (isGenerating.value || message.isUser) {
+      return;
+    }
+
+    final lastAssistantIndex =
+        messages.lastIndexWhere((msg) => !msg.isUser);
+    final messageIndex = messages.indexOf(message);
+    if (messageIndex == -1 || messageIndex != lastAssistantIndex) {
+      return;
+    }
+
+    final userIndex = _findPreviousUserIndex(messageIndex);
+    if (userIndex == null) {
+      return;
+    }
+
+    message
+      ..content = ''
+      ..error = null
+      ..errorCode = null
+      ..createdAt = DateTime.now();
+    messages.refresh();
+
+    final l10n = L10n.current();
+    isGenerating.value = true;
+    _stopRequested = false;
+
+    final payloadMessages =
+        _buildPayloadMessages(lastMessageIndex: userIndex);
+    final selectedModel = Pref.selectedModel;
+
+    String? errorMessage;
+    String? errorCode;
+
+    try {
+      await _streamResponse(
+        payloadMessages,
+        message,
+        model: selectedModel,
+      );
+    } on Exception catch (e) {
+      if (!_stopRequested) {
+        errorMessage = e.toString();
+        errorCode = 'stream_error';
+        message
+          ..error = errorMessage
+          ..errorCode = errorCode;
+        messages.refresh();
+        Get.snackbar(
+          l10n?.streamErrorTitle ?? 'Stream error',
+          e.toString(),
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    } finally {
+      await ConversationService.updateMessage(
+        currentConversationId.value,
+        message.id,
+        newContent: message.content,
+        error: errorMessage ?? '',
+        errorCode: errorCode ?? '',
+      );
+      isGenerating.value = false;
+      _stopRequested = false;
+      _scrollDown();
+    }
+  }
+
+  Future<void> retryResponse(ChatMessage message) async {
+    await regenerateResponse(message);
   }
 
   Future<void> _streamResponse(
