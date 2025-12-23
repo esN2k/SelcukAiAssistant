@@ -1,6 +1,6 @@
-# SelcukAiAssistant
+﻿# Selçuk YZ Asistan (Selcuk AI Assistant)
 
-Selçuk Üniversitesi için geliştirilmiş yapay zeka asistan uygulaması.
+Selçuk Üniversitesi için geliştirilen yapay zeka asistan uygulaması.
 
 ---
 

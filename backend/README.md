@@ -1,6 +1,6 @@
-# SelcukAiAssistant Backend
+﻿# Selçuk YZ Asistan Backend
 
-FastAPI backend for SelcukAiAssistant - A graduation project AI chatbot for Selçuk University students using local AI models via Ollama.
+FastAPI backend for Selçuk YZ Asistan (Selcuk AI Assistant) - a graduation project AI chatbot for Selçuk University students using local AI models via Ollama.
 
 ## 🎯 Project Overview
 

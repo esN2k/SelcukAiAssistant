@@ -1,4 +1,4 @@
-# 🤖 AI Assistant - ChatGPT/Gemini-like Mobile App
+﻿# Selçuk YZ Asistan (Selcuk AI Assistant) - ChatGPT/Gemini-like Mobile App
 
 A fully-featured AI chat assistant mobile application built with Flutter, similar to ChatGPT and Google Gemini mobile apps. This app provides an intuitive interface for conversing with AI, complete with conversation management, markdown support, voice input, and more.
 
