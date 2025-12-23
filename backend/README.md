@@ -1,4 +1,4 @@
-﻿# Backend (FastAPI)
+# Backend (FastAPI)
 
 Bu klasor Selcuk YZ Asistan backend servisidir.
 

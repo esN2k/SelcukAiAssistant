@@ -1,4 +1,4 @@
-﻿# Hizli Referans
+# Hizli Referans
 
 ## Backend
 - Baslatma: `uvicorn main:app --reload`

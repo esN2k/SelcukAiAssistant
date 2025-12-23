@@ -1,4 +1,4 @@
-﻿# Modeller
+# Modeller
 
 ## Kategoriler
 - **Yerel (Ollama)**: Cihazda calisir, kurulum icin `ollama pull <model>` gerekir.

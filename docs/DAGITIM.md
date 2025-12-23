@@ -1,4 +1,4 @@
-﻿# Dagitim
+# Dagitim
 
 Bu dokuman Selcuk YZ Asistan icin yerel, self-host ve konteyner dagitimini ozetler.
 

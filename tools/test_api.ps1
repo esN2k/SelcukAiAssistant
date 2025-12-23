@@ -30,7 +30,7 @@ function Write-Result {
   }
 }
 
-function Truncate-Text {
+function Limit-Text {
   param(
     [string]$Text,
     [int]$MaxLength = 500
@@ -49,7 +49,7 @@ function Write-Utf8NoBom {
   [System.IO.File]::WriteAllText($Path, $Content, $utf8)
 }
 
-function Quote-Arg {
+function Format-Argument {
   param([string]$Arg)
   if ($Arg -match '[\s"]') {
     return '"' + ($Arg -replace '"','\"') + '"'
@@ -62,7 +62,7 @@ function Invoke-Curl {
     [string[]]$CurlArgs
   )
 
-  $argsString = ($CurlArgs | ForEach-Object { Quote-Arg $_ }) -join ' '
+  $argsString = ($CurlArgs | ForEach-Object { Format-Argument $_ }) -join ' '
 
   $prev = $ErrorActionPreference
   $ErrorActionPreference = "Continue"
@@ -118,7 +118,7 @@ function Invoke-CurlWithRetry {
   return $result
 }
 
-function Require-Model {
+function Get-Model {
   param(
     [object[]]$Models,
     [string]$Provider,
@@ -155,7 +155,7 @@ function Build-Payload {
   return ($payload | ConvertTo-Json -Depth 6)
 }
 
-Write-Host "== Selcuk YZ Asistan API smoke =="
+Write-Host "== Selçuk YZ Asistan API smoke testi =="
 Write-Host "Taban URL: $BaseUrl"
 
 $health = Invoke-Curl @("-sS", "--max-time", "$TimeoutSec", "$BaseUrl/health")
@@ -168,7 +168,7 @@ if ($health.ExitCode -eq 0) {
     $healthOk = $false
   }
 }
-Write-Result "GET /health" $healthOk (Truncate-Text $health.Output)
+Write-Result "GET /health" $healthOk (Limit-Text $health.Output)
 
 $models = Invoke-Curl @("-sS", "--max-time", "$TimeoutSec", "$BaseUrl/models")
 $modelsOk = $false
@@ -182,15 +182,15 @@ if ($models.ExitCode -eq 0) {
     $modelsOk = $false
   }
 }
-Write-Result "GET /models" $modelsOk (Truncate-Text $models.Output)
+Write-Result "GET /models" $modelsOk (Limit-Text $models.Output)
 
 if (-not $modelsOk) {
-  Write-Host "/chat ve /chat/stream atlandi (uygun model yok)."
+  Write-Host "/chat ve /chat/stream atlandı (uygun model yok)."
   exit 1
 }
 
 $availableModels = @($modelsJson.models)
-$ollamaModel = Require-Model -Models $availableModels -Provider "ollama" -PreferredIds @(
+$ollamaModel = Get-Model -Models $availableModels -Provider "ollama" -PreferredIds @(
   "gemma2:2b",
   "mistral",
   "qwen2.5:7b",
@@ -198,16 +198,16 @@ $ollamaModel = Require-Model -Models $availableModels -Provider "ollama" -Prefer
   "selcuk_ai_assistant",
   "selcuk-assistant"
 )
-$hfModel = Require-Model -Models $availableModels -Provider "huggingface" -PreferredIds @(
+$hfModel = Get-Model -Models $availableModels -Provider "huggingface" -PreferredIds @(
   "hf_qwen2_5_1_5b",
   "hf_phi3_mini"
 )
 
 if (-not $ollamaModel) {
-  Write-Result "Ollama modeli secimi" $false "/models icinde uygun ollama modeli yok"
+  Write-Result "Ollama modeli seçimi" $false "/models içinde uygun ollama modeli yok"
 }
 if (-not $hfModel) {
-  Write-Result "HuggingFace modeli secimi" $false "/models icinde uygun huggingface modeli yok"
+  Write-Result "HuggingFace modeli seçimi" $false "/models içinde uygun huggingface modeli yok"
 }
 
 $tmpDir = Join-Path $PSScriptRoot ".tmp"
@@ -236,7 +236,7 @@ if ($ollamaModel) {
       $chatOk = $false
     }
   }
-  Write-Result "POST /chat (ollama: $($ollamaModel.id))" $chatOk (Truncate-Text $chat.Output)
+  Write-Result "POST /chat (ollama: $($ollamaModel.id))" $chatOk (Limit-Text $chat.Output)
 
   $ollamaStreamPayload = Build-Payload -ModelId $ollamaModel.id -Stream:$true
   $ollamaStreamPath = Join-Path $tmpDir "payload_ollama_stream.json"
@@ -258,8 +258,8 @@ if ($ollamaModel) {
   $hasEnd = $streamText -match '"type"\s*:\s*"end"'
   $hasError = $streamText -match '"type"\s*:\s*"error"'
   $streamOk = ($hasToken -or $hasEnd) -and (-not $hasError)
-  Write-Result "POST /chat/stream (ollama: $($ollamaModel.id))" $streamOk (Truncate-Text $streamText)
-  Write-Host "SSE ornek (ollama):"
+  Write-Result "POST /chat/stream (ollama: $($ollamaModel.id))" $streamOk (Limit-Text $streamText)
+  Write-Host "SSE örnek (ollama):"
   ($streamText -split "`r?`n" | Where-Object { $_ -ne "" } | Select-Object -First 20) | ForEach-Object { Write-Host $_ }
 }
 
@@ -286,7 +286,7 @@ if ($hfModel) {
       $chatOk = $false
     }
   }
-  Write-Result "POST /chat (hf: $($hfModel.id))" $chatOk (Truncate-Text $chat.Output)
+  Write-Result "POST /chat (hf: $($hfModel.id))" $chatOk (Limit-Text $chat.Output)
 
   $hfStreamPayload = Build-Payload -ModelId $hfModel.id -Stream:$true
   $hfStreamPath = Join-Path $tmpDir "payload_hf_stream.json"
@@ -308,14 +308,14 @@ if ($hfModel) {
   $hasEnd = $streamText -match '"type"\s*:\s*"end"'
   $hasError = $streamText -match '"type"\s*:\s*"error"'
   $streamOk = ($hasToken -or $hasEnd) -and (-not $hasError)
-  Write-Result "POST /chat/stream (hf: $($hfModel.id))" $streamOk (Truncate-Text $streamText)
-  Write-Host "SSE ornek (hf):"
+  Write-Result "POST /chat/stream (hf: $($hfModel.id))" $streamOk (Limit-Text $streamText)
+  Write-Host "SSE örnek (hf):"
   ($streamText -split "`r?`n" | Where-Object { $_ -ne "" } | Select-Object -First 20) | ForEach-Object { Write-Host $_ }
 }
 
 if ($script:failures -gt 0) {
-  Write-Host "FAILED: $script:failures kontrol basarisiz."
+  Write-Host "BAŞARISIZ: $script:failures kontrol başarısız."
   exit 1
 }
 
-Write-Host "Tum kontroller basarili."
+Write-Host "Tüm kontroller başarılı."

@@ -174,7 +174,7 @@ function Write-Report {
   }
 
   $lines = @(
-    "# Selcuk YZ Asistan Smoke Raporu",
+    "# Selçuk YZ Asistan Smoke Testi Raporu",
     "",
     "Zaman: $(Get-Date -Format o)",
     "Taban URL: $BaseUrl",
@@ -194,7 +194,7 @@ function Write-Report {
   Write-Utf8NoBom -Path $Path -Content ($lines -join "`n")
 }
 
-Write-Host "== Selcuk YZ Asistan smoke =="
+Write-Host "== Selçuk YZ Asistan smoke testi =="
 Write-Host "Taban URL: $BaseUrl"
 
 Write-Result "Ortam" $true "OS: $([System.Environment]::OSVersion)"
@@ -274,13 +274,13 @@ $invalidBody = ""
 if (Test-Path $invalidBodyOut) {
   $invalidBody = Get-Content -Path $invalidBodyOut -Raw
 }
-Write-Result "POST /chat (gecersiz payload)" $invalidOk "HTTP $invalidCode $(Truncate-Text $invalidBody)"
+Write-Result "POST /chat (geçersiz payload)" $invalidOk "HTTP $invalidCode $(Truncate-Text $invalidBody)"
 
 if (-not $modelsOk) {
-  Write-Result "POST /chat (ollama)" $false "Atlandi: uygun model yok"
-  Write-Result "POST /chat/stream (ollama)" $false "Atlandi: uygun model yok"
-  Write-Result "POST /chat (hf)" $false "Atlandi: uygun model yok"
-  Write-Result "POST /chat/stream (hf)" $false "Atlandi: uygun model yok"
+  Write-Result "POST /chat (ollama)" $false "Atlandı: uygun model yok"
+  Write-Result "POST /chat/stream (ollama)" $false "Atlandı: uygun model yok"
+  Write-Result "POST /chat (hf)" $false "Atlandı: uygun model yok"
+  Write-Result "POST /chat/stream (hf)" $false "Atlandı: uygun model yok"
   Write-Report -Path $ReportPath
   Write-Host "Rapor kaydedildi: $ReportPath"
   exit 1
@@ -347,7 +347,7 @@ if ($ollamaModel) {
   $streamOk = ($hasToken -or $hasEnd) -and (-not $hasError)
   Write-Result "POST /chat/stream (ollama: $($ollamaModel.id))" $streamOk (Truncate-Text $streamText)
 } else {
-  Write-Result "Ollama modeli secimi" $false "/models icinde uygun ollama modeli yok"
+  Write-Result "Ollama modeli seçimi" $false "/models içinde uygun ollama modeli yok"
 }
 
 if ($hfModel) {
@@ -397,15 +397,15 @@ if ($hfModel) {
   $streamOk = ($hasToken -or $hasEnd) -and (-not $hasError)
   Write-Result "POST /chat/stream (hf: $($hfModel.id))" $streamOk (Truncate-Text $streamText)
 } else {
-  Write-Result "HuggingFace modeli secimi" $false "/models icinde uygun huggingface modeli yok"
+  Write-Result "HuggingFace modeli seçimi" $false "/models içinde uygun huggingface modeli yok"
 }
 
 Write-Report -Path $ReportPath
 Write-Host "Rapor kaydedildi: $ReportPath"
 
 if ($script:failures -gt 0) {
-  Write-Host "FAILED: $script:failures kontrol basarisiz."
+  Write-Host "BAŞARISIZ: $script:failures kontrol başarısız."
   exit 1
 }
 
-Write-Host "Tum kontroller basarili."
+Write-Host "Tüm kontroller başarılı."

@@ -1,74 +1,87 @@
-# DeepSeek-R1-Distill Qwen 7B Setup Script
-# Downloads and sets up uncensored DeepSeek-R1 model
+# DeepSeek-R1-Distill Qwen 7B kurulum scripti
+# Uncensored DeepSeek-R1 modelini indirir ve kurar
+$utf8 = [System.Text.UTF8Encoding]::new($false)
+[Console]::InputEncoding  = $utf8
+[Console]::OutputEncoding = $utf8
+$OutputEncoding = $utf8
 
-Write-Host "=== DeepSeek-R1-Distill Setup ===" -ForegroundColor Cyan
+function Write-Utf8NoBom {
+  param(
+    [string]$Path,
+    [string]$Content
+  )
+  $encoding = New-Object System.Text.UTF8Encoding($false)
+  [System.IO.File]::WriteAllText($Path, $Content, $encoding)
+}
+
+Write-Host "=== DeepSeek-R1-Distill Kurulumu ===" -ForegroundColor Cyan
 Write-Host ""
 
-# Model details
+# Model detayları
 $modelName = "deepseek-r1-distill-qwen-7b"
 $quantLevel = "Q4_K_M"  # 4-bit quantization (~4.4GB)
 $fileName = "DeepSeek-R1-Distill-Qwen-7B-$quantLevel.gguf"
 $downloadUrl = "https://huggingface.co/unsloth/DeepSeek-R1-Distill-Qwen-7B-GGUF/resolve/main/$fileName"
 
-# Ollama model directory
+# Ollama model dizini
 $ollamaDir = "$env:USERPROFILE\.ollama\models"
 $blobsDir = "$ollamaDir\blobs"
 
 Write-Host "Model: DeepSeek-R1-Distill-Qwen-7B" -ForegroundColor Green
-Write-Host "Quantization: $quantLevel (4-bit)" -ForegroundColor Green
-Write-Host "Size: ~4.4 GB" -ForegroundColor Green
-Write-Host "Capabilities: Uncensored, Advanced Reasoning" -ForegroundColor Green
+Write-Host "Nicemleme: $quantLevel (4-bit)" -ForegroundColor Green
+Write-Host "Boyut: ~4.4 GB" -ForegroundColor Green
+Write-Host "Yetenekler: Sınırsız, Gelişmiş muhakeme" -ForegroundColor Green
 Write-Host ""
 
-# Create directories if they don't exist
+# Dizinler yoksa oluştur
 New-Item -ItemType Directory -Force -Path $blobsDir | Out-Null
 
-# Download location
+# İndirme konumu
 $downloadPath = "D:\Projects\SelcukAiAssistant\backend\$fileName"
 
-Write-Host "Step 1: Checking if model file exists..." -ForegroundColor Yellow
+Write-Host "Adım 1: Model dosyası var mı kontrol ediliyor..." -ForegroundColor Yellow
 if (Test-Path $downloadPath)
 {
-    Write-Host "  Model file already exists: $downloadPath" -ForegroundColor Green
+    Write-Host "  Model dosyası zaten var: $downloadPath" -ForegroundColor Green
 }
 else
 {
-    Write-Host "  Downloading model from HuggingFace..." -ForegroundColor Yellow
+    Write-Host "  Model HuggingFace üzerinden indiriliyor..." -ForegroundColor Yellow
     Write-Host "  URL: $downloadUrl" -ForegroundColor Gray
-    Write-Host "  This will take 10-20 minutes depending on your connection..." -ForegroundColor Gray
+    Write-Host "  Bağlantınıza göre 10-20 dakika sürebilir..." -ForegroundColor Gray
     Write-Host ""
 
-    # Download with progress
+    # İndirme (ilerleme göstergeli)
     $ProgressPreference = 'Continue'
     try
     {
         Invoke-WebRequest -Uri $downloadUrl -OutFile $downloadPath -UseBasicParsing
-        Write-Host "  Download complete!" -ForegroundColor Green
+        Write-Host "  İndirme tamamlandı." -ForegroundColor Green
     }
     catch
     {
-        Write-Host "  Download failed: $( $_.Exception.Message )" -ForegroundColor Red
+        Write-Host "  İndirme başarısız: $( $_.Exception.Message )" -ForegroundColor Red
         Write-Host ""
-        Write-Host "ALTERNATIVE: Download manually from:" -ForegroundColor Yellow
+        Write-Host "ALTERNATİF: Şuradan manuel indirin:" -ForegroundColor Yellow
         Write-Host "  $downloadUrl" -ForegroundColor Blue
         Write-Host ""
-        Write-Host "Save to: $downloadPath" -ForegroundColor Blue
+        Write-Host "Şuraya kaydedin: $downloadPath" -ForegroundColor Blue
         exit 1
     }
 }
 
 Write-Host ""
-Write-Host "Step 2: Creating Ollama Modelfile..." -ForegroundColor Yellow
+Write-Host "Adım 2: Ollama Modelfile oluşturuluyor..." -ForegroundColor Yellow
 
-# Create Modelfile
+# Modelfile oluştur
 $modelfilePath = "D:\Projects\SelcukAiAssistant\backend\Modelfile.deepseek"
 $modelfileContent = @"
 # DeepSeek-R1-Distill-Qwen-7B (Uncensored)
-# Advanced reasoning model for Selcuk University AI Assistant
+# Selçuk Üniversitesi Yapay Zeka Asistanı için gelişmiş muhakeme modeli
 
 FROM $downloadPath
 
-# System prompt for Selcuk University AI Assistant
+# Selçuk Üniversitesi Yapay Zeka Asistanı için sistem istemi
 SYSTEM """Sen Selçuk Üniversitesi'nin resmi yapay zeka asistanısın. Adın "Selçuk AI Asistanı".
 
 **Görevlerin:**
@@ -109,11 +122,11 @@ Selçuk Üniversitesi'nde kayıt işlemleri şu adımlardan oluşur:
      * 6 adet vesikalık fotoğraf
      * Sağlık raporu
 
-📅 **Tarihler**: Her yıl akademik takvimde duyurulur
-📞 **İletişim**: Öğrenci İşleri Daire Başkanlığı - 0332 223 XXXX
+- Tarihler: Her yıl akademik takvimde duyurulur
+- İletişim: Öğrenci İşleri Daire Başkanlığı - 0332 223 XXXX
 """
 
-# Template for Qwen models
+# Qwen modelleri için şablon
 TEMPLATE """<|im_start|>system
 {{.System}}<|im_end|>
 <|im_start|>user
@@ -121,7 +134,7 @@ TEMPLATE """<|im_start|>system
 <|im_start|>assistant
 """
 
-# Optimized parameters for RTX 3060
+# RTX 3060 için optimize parametreler
 PARAMETER temperature 0.7
 PARAMETER top_p 0.9
 PARAMETER top_k 40
@@ -132,55 +145,54 @@ PARAMETER stop "<|im_end|>"
 PARAMETER stop "<|im_start|>"
 "@
 
-Set-Content -Path $modelfilePath -Value $modelfileContent -Encoding UTF8
-Write-Host "  Modelfile created: $modelfilePath" -ForegroundColor Green
+Write-Utf8NoBom -Path $modelfilePath -Content $modelfileContent
+Write-Host "  Modelfile oluşturuldu: $modelfilePath" -ForegroundColor Green
 
 Write-Host ""
-Write-Host "Step 3: Creating Ollama model..." -ForegroundColor Yellow
+Write-Host "Adım 3: Ollama modeli oluşturuluyor..." -ForegroundColor Yellow
 
-# Create model with Ollama
-Write-Host "  Running: ollama create selcuk_ai_assistant -f $modelfilePath" -ForegroundColor Gray
+# Ollama ile model oluştur
+Write-Host "  Çalıştırılıyor: ollama create selcuk_ai_assistant -f $modelfilePath" -ForegroundColor Gray
 
 try
 {
     ollama create selcuk_ai_assistant -f $modelfilePath
-    Write-Host "  Model created successfully!" -ForegroundColor Green
+    Write-Host "  Model başarıyla oluşturuldu." -ForegroundColor Green
 }
 catch
 {
-    Write-Host "  Error creating model: $( $_.Exception.Message )" -ForegroundColor Red
+    Write-Host "  Model oluşturma hatası: $( $_.Exception.Message )" -ForegroundColor Red
     exit 1
 }
 
 Write-Host ""
-Write-Host "Step 4: Testing model..." -ForegroundColor Yellow
+Write-Host "Adım 4: Model test ediliyor..." -ForegroundColor Yellow
 
 $testPrompt = "Merhaba, sen kimsin?"
-Write-Host "  Test prompt: $testPrompt" -ForegroundColor Gray
+Write-Host "  Test istemi: $testPrompt" -ForegroundColor Gray
 
 try
 {
     $response = ollama run selcuk_ai_assistant $testPrompt
     Write-Host ""
-    Write-Host "  Model Response:" -ForegroundColor Cyan
+    Write-Host "  Model yanıtı:" -ForegroundColor Cyan
     Write-Host "  $response" -ForegroundColor White
 }
 catch
 {
-    Write-Host "  Test failed: $( $_.Exception.Message )" -ForegroundColor Red
+    Write-Host "  Test başarısız: $( $_.Exception.Message )" -ForegroundColor Red
 }
 
 Write-Host ""
-Write-Host "=== Setup Complete! ===" -ForegroundColor Green
+Write-Host "=== Kurulum tamamlandı! ===" -ForegroundColor Green
 Write-Host ""
 Write-Host "Model: selcuk_ai_assistant" -ForegroundColor Cyan
-Write-Host "Base: DeepSeek-R1-Distill-Qwen-7B (Q4_K_M)" -ForegroundColor Cyan
-Write-Host "Status: Uncensored, Ready for use" -ForegroundColor Green
+Write-Host "Taban: DeepSeek-R1-Distill-Qwen-7B (Q4_K_M)" -ForegroundColor Cyan
+Write-Host "Durum: Hazır, kullanıma açık" -ForegroundColor Green
 Write-Host ""
-Write-Host "Next steps:" -ForegroundColor Yellow
-Write-Host "1. Restart backend: cd backend; python main.py" -ForegroundColor White
-Write-Host "2. Test in Flutter app" -ForegroundColor White
-Write-Host "3. Check AI response quality improvement" -ForegroundColor White
+Write-Host "Sonraki adımlar:" -ForegroundColor Yellow
+Write-Host "1. Backend'i yeniden başlat: cd backend; python main.py" -ForegroundColor White
+Write-Host "2. Flutter uygulamasında test et" -ForegroundColor White
+Write-Host "3. Yanıt kalitesindeki iyileşmeyi kontrol et" -ForegroundColor White
 Write-Host ""
-Write-Host "GPU Utilization: RTX 3060 6GB should handle this perfectly!" -ForegroundColor Green
-
+Write-Host "GPU Kullanımı: RTX 3060 6GB bu model için yeterli." -ForegroundColor Green

@@ -1,4 +1,4 @@
-﻿# Surum Kontrol Listesi
+# Surum Kontrol Listesi
 
 ## Backend kalite kapilari
 - `python -m pytest -q`

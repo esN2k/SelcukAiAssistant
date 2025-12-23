@@ -1,31 +1,44 @@
-# Create Ollama Model from Downloaded GGUF
-# Run this AFTER downloading the model file
+# İndirilen GGUF dosyasından Ollama modeli oluştur
+# Model dosyası indirildikten sonra çalıştırın
+$utf8 = [System.Text.UTF8Encoding]::new($false)
+[Console]::InputEncoding  = $utf8
+[Console]::OutputEncoding = $utf8
+$OutputEncoding = $utf8
 
-Write-Host "=== Creating Ollama Model ===" -ForegroundColor Cyan
+function Write-Utf8NoBom {
+  param(
+    [string]$Path,
+    [string]$Content
+  )
+  $encoding = New-Object System.Text.UTF8Encoding($false)
+  [System.IO.File]::WriteAllText($Path, $Content, $encoding)
+}
+
+Write-Host "=== Ollama modeli oluşturuluyor ===" -ForegroundColor Cyan
 Write-Host ""
 
 $modelFile = "D:\Projects\SelcukAiAssistant\backend\DeepSeek-R1-Distill-Qwen-7B-Q4_K_M.gguf"
 $modelfilePath = "D:\Projects\SelcukAiAssistant\backend\Modelfile.deepseek"
 
-# Check if model file exists
+# Model dosyası var mı kontrol et
 if (-not (Test-Path $modelFile))
 {
-    Write-Host "ERROR: Model file not found!" -ForegroundColor Red
-    Write-Host "Expected: $modelFile" -ForegroundColor Red
+    Write-Host "HATA: Model dosyası bulunamadı!" -ForegroundColor Red
+    Write-Host "Beklenen konum: $modelFile" -ForegroundColor Red
     Write-Host ""
-    Write-Host "Please download the model first using download_model.ps1" -ForegroundColor Yellow
+    Write-Host "Önce download_model.ps1 ile modeli indirin." -ForegroundColor Yellow
     exit 1
 }
 
-Write-Host "Model file found: $modelFile" -ForegroundColor Green
+Write-Host "Model dosyası bulundu: $modelFile" -ForegroundColor Green
 $fileSize = (Get-Item $modelFile).Length / 1GB
-Write-Host "File size: $([math]::Round($fileSize, 2) ) GB" -ForegroundColor Green
+Write-Host "Dosya boyutu: $([math]::Round($fileSize, 2) ) GB" -ForegroundColor Green
 Write-Host ""
 
-# Create Modelfile if it doesn't exist
+# Modelfile yoksa oluştur
 if (-not (Test-Path $modelfilePath))
 {
-    Write-Host "Creating Modelfile..." -ForegroundColor Yellow
+    Write-Host "Modelfile oluşturuluyor..." -ForegroundColor Yellow
 
     $modelfileContent = @"
 # DeepSeek-R1-Distill-Qwen-7B (Uncensored)
@@ -53,8 +66,8 @@ SYSTEM """Sen Selçuk Üniversitesi'nin resmi yapay zeka asistanısın. Adın "S
 1. **Ön Kayıt**: YÖK Atlas
 2. **Kesin Kayıt**: Belgelerle fakülte
 
-📅 Tarihler: Akademik takvimde
-📞 İletişim: Öğrenci İşleri
+- Tarihler: Akademik takvimde
+- İletişim: Öğrenci İşleri
 """
 
 TEMPLATE """<|im_start|>system
@@ -74,17 +87,17 @@ PARAMETER stop "<|im_end|>"
 PARAMETER stop "<|im_start|>"
 "@
 
-    Set-Content -Path $modelfilePath -Value $modelfileContent -Encoding UTF8
-    Write-Host "Modelfile created!" -ForegroundColor Green
+    Write-Utf8NoBom -Path $modelfilePath -Content $modelfileContent
+    Write-Host "Modelfile oluşturuldu." -ForegroundColor Green
 }
 else
 {
-    Write-Host "Modelfile already exists: $modelfilePath" -ForegroundColor Green
+    Write-Host "Modelfile zaten var: $modelfilePath" -ForegroundColor Green
 }
 
 Write-Host ""
-Write-Host "Creating Ollama model: selcuk_ai_assistant" -ForegroundColor Yellow
-Write-Host "This will take 1-2 minutes..." -ForegroundColor Gray
+Write-Host "Ollama modeli oluşturuluyor: selcuk_ai_assistant" -ForegroundColor Yellow
+Write-Host "Bu işlem 1-2 dakika sürebilir..." -ForegroundColor Gray
 Write-Host ""
 
 try
@@ -92,30 +105,29 @@ try
     ollama create selcuk_ai_assistant -f $modelfilePath
 
     Write-Host ""
-    Write-Host "SUCCESS! Model created!" -ForegroundColor Green
+    Write-Host "BAŞARILI! Model oluşturuldu." -ForegroundColor Green
     Write-Host ""
-    Write-Host "Testing model..." -ForegroundColor Yellow
+    Write-Host "Model test ediliyor..." -ForegroundColor Yellow
 
     $testResponse = ollama run selcuk_ai_assistant "Merhaba, sen kimsin?" --verbose:false
 
     Write-Host ""
-    Write-Host "Test Response:" -ForegroundColor Cyan
+    Write-Host "Test yanıtı:" -ForegroundColor Cyan
     Write-Host $testResponse -ForegroundColor White
     Write-Host ""
-    Write-Host "=== Setup Complete! ===" -ForegroundColor Green
+    Write-Host "=== Kurulum tamamlandı! ===" -ForegroundColor Green
     Write-Host ""
-    Write-Host "Next steps:" -ForegroundColor Yellow
-    Write-Host "1. Start backend: cd backend; python main.py" -ForegroundColor White
-    Write-Host "2. Test in Flutter app" -ForegroundColor White
+    Write-Host "Sonraki adımlar:" -ForegroundColor Yellow
+    Write-Host "1. Backend'i başlat: cd backend; python main.py" -ForegroundColor White
+    Write-Host "2. Flutter uygulamasında test et" -ForegroundColor White
     Write-Host ""
 
 }
 catch
 {
     Write-Host ""
-    Write-Host "ERROR creating model: $( $_.Exception.Message )" -ForegroundColor Red
+    Write-Host "Model oluşturma hatası: $( $_.Exception.Message )" -ForegroundColor Red
     Write-Host ""
-    Write-Host "Try manually:" -ForegroundColor Yellow
+    Write-Host "Manuel dene:" -ForegroundColor Yellow
     Write-Host "  ollama create selcuk_ai_assistant -f $modelfilePath" -ForegroundColor Gray
 }
-

@@ -1,4 +1,4 @@
-﻿# DeepSeek Model Kurulumu (Opsiyonel)
+# DeepSeek Model Kurulumu (Opsiyonel)
 
 Bu dokuman, yerel DeepSeek modelini Ollama uzerinden kurmak icin kisa bir ozet sunar.
 

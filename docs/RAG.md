@@ -1,4 +1,4 @@
-﻿# RAG (Kaynak Destekli Yanitlar)
+# RAG (Kaynak Destekli Yanitlar)
 
 ## Genel bakis
 RAG, belgelerden alinmis parcalari modele baglam olarak vererek yanit kalitesini artirir.

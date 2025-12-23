@@ -1,4 +1,4 @@
-﻿# API Kontrati
+# API Kontrati
 
 Bu dokuman backend API sozlesmesini ozetler.
 

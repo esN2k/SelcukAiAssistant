@@ -1,4 +1,4 @@
-﻿# Ozellikler
+# Ozellikler
 
 - ChatGPT benzeri sohbet arayuzu
 - Konusma listesi, pin/arsiv ve arama

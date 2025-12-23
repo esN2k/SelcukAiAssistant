@@ -1,4 +1,4 @@
-﻿# API Smoke Testleri (Windows PowerShell)
+# API Smoke Testleri (Windows PowerShell)
 
 Bu repo, UTF-8 (BOM yok) JSON yazan ve `curl.exe --data-binary` kullanan Windows uyumlu smoke test scriptleri icerir.
 

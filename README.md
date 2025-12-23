@@ -1,4 +1,4 @@
-﻿# Selcuk YZ Asistan
+# Selcuk YZ Asistan
 
 Selcuk Universitesi icin gelistirilen ChatGPT benzeri yapay zeka asistani.
 

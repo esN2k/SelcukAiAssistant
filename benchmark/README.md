@@ -1,4 +1,4 @@
-﻿# Benchmark
+# Benchmark
 
 Bu klasor model karsilastirma testleri icindir.
 

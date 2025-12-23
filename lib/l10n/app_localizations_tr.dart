@@ -21,7 +21,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get ok => 'Tamam';
 
   @override
-  String get cancel => 'Ä°ptal';
+  String get cancel => 'İptal';
 
   @override
   String get delete => 'Sil';
@@ -30,55 +30,55 @@ class AppLocalizationsTr extends AppLocalizations {
   String get clear => 'Temizle';
 
   @override
-  String get rename => 'Yeniden adlandÄ±r';
+  String get rename => 'Yeniden adlandır';
 
   @override
   String get newChat => 'Yeni sohbet';
 
   @override
-  String get loginTitle => 'HoÅŸ geldiniz';
+  String get loginTitle => 'Hoş geldiniz';
 
   @override
-  String get loginSubtitle => 'Devam etmek iÃ§in giriÅŸ yapÄ±n';
+  String get loginSubtitle => 'Devam etmek için giriş yapın';
 
   @override
-  String get loginButton => 'GiriÅŸ yap';
+  String get loginButton => 'Giriş yap';
 
   @override
-  String get loginNoAccount => 'HesabÄ±nÄ±z yok mu?';
+  String get loginNoAccount => 'Hesabınız yok mu?';
 
   @override
-  String get loginCreateAccount => 'KayÄ±t olun';
+  String get loginCreateAccount => 'Kayıt olun';
 
   @override
-  String get loginSuccessTitle => 'BaÅŸarÄ±lÄ±';
+  String get loginSuccessTitle => 'Başarılı';
 
   @override
-  String get loginSuccessMessage => 'GiriÅŸ yapÄ±ldÄ±!';
+  String get loginSuccessMessage => 'Giriş yapıldı!';
 
   @override
   String get loginErrorTitle => 'Hata';
 
   @override
-  String get registerTitle => 'Hesap oluÅŸtur';
+  String get registerTitle => 'Hesap oluştur';
 
   @override
-  String get registerSubtitle => 'AsistanÄ± kullanmaya baÅŸlayÄ±n';
+  String get registerSubtitle => 'Asistanı kullanmaya başlayın';
 
   @override
-  String get registerButton => 'KayÄ±t ol';
+  String get registerButton => 'Kayıt ol';
 
   @override
-  String get registerHaveAccount => 'Zaten hesabÄ±nÄ±z var mÄ±?';
+  String get registerHaveAccount => 'Zaten hesabınız var mı?';
 
   @override
-  String get registerSignIn => 'GiriÅŸ yap';
+  String get registerSignIn => 'Giriş yap';
 
   @override
-  String get registerSuccessTitle => 'BaÅŸarÄ±lÄ±';
+  String get registerSuccessTitle => 'Başarılı';
 
   @override
-  String get registerSuccessMessage => 'KayÄ±t tamamlandÄ±. HoÅŸ geldiniz!';
+  String get registerSuccessMessage => 'Kayıt tamamlandı. Hoş geldiniz!';
 
   @override
   String get registerErrorTitle => 'Hata';
@@ -90,10 +90,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get emailLabel => 'E-posta';
 
   @override
-  String get passwordLabel => 'Åifre';
+  String get passwordLabel => 'Şifre';
 
   @override
-  String get confirmPasswordLabel => 'Åifre tekrar';
+  String get confirmPasswordLabel => 'Şifre tekrar';
 
   @override
   String get nameRequired => 'Ad soyad gerekli';
@@ -102,36 +102,36 @@ class AppLocalizationsTr extends AppLocalizations {
   String get emailRequired => 'E-posta gerekli';
 
   @override
-  String get invalidEmail => 'GeÃ§erli bir e-posta girin';
+  String get invalidEmail => 'Geçerli bir e-posta girin';
 
   @override
-  String get passwordRequired => 'Åifre gerekli';
+  String get passwordRequired => 'Şifre gerekli';
 
   @override
-  String get passwordMinLength => 'Åifre en az 8 karakter olmalÄ±';
+  String get passwordMinLength => 'Şifre en az 8 karakter olmalı';
 
   @override
-  String get confirmPasswordRequired => 'Åifre tekrarÄ±nÄ± girin';
+  String get confirmPasswordRequired => 'Şifre tekrarını girin';
 
   @override
-  String get passwordsDoNotMatch => 'Åifreler eÅŸleÅŸmiyor';
+  String get passwordsDoNotMatch => 'Şifreler eşleşmiyor';
 
   @override
-  String get onboardingTitle1 => 'Bana bir ÅŸey sor';
+  String get onboardingTitle1 => 'Bana bir şey sor';
 
   @override
   String get onboardingSubtitle1 =>
-      'En iyi yol arkadaÅŸÄ±n olabilirim. Bana her ÅŸeyi sor, yardÄ±mcÄ± olayÄ±m!';
+      'En iyi yol arkadaşın olabilirim. Bana her şeyi sor, yardımcı olayım!';
 
   @override
-  String get onboardingTitle2 => 'Hayalden gerÃ§eÄŸe';
+  String get onboardingTitle2 => 'Hayalden gerçeğe';
 
   @override
   String get onboardingSubtitle2 =>
-      'Sadece hayal et ve sÃ¶yle. Senin iÃ§in harika bir ÅŸey yaratayÄ±m!';
+      'Sadece hayal et ve söyle. Senin için harika bir şey yaratayım!';
 
   @override
-  String get onboardingNext => 'SÄ±radaki';
+  String get onboardingNext => 'Sıradaki';
 
   @override
   String get onboardingDone => 'Bitti';
@@ -140,13 +140,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get settingsTitle => 'Ayarlar';
 
   @override
-  String get sectionAppearance => 'GÃ–RÃœNÃœM';
+  String get sectionAppearance => 'GÖRÜNÜM';
 
   @override
-  String get sectionLanguage => 'DÄ°L';
+  String get sectionLanguage => 'DİL';
 
   @override
-  String get sectionAiModel => 'YAPAY ZEKA MODELÄ°';
+  String get sectionAiModel => 'YAPAY ZEKA MODELİ';
 
   @override
   String get sectionChatSettings => 'SOHBET AYARLARI';
@@ -158,44 +158,44 @@ class AppLocalizationsTr extends AppLocalizations {
   String get sectionDiagnostics => 'TANILAMA';
 
   @override
-  String get sectionStatistics => 'Ä°STATÄ°STÄ°KLER';
+  String get sectionStatistics => 'İSTATİSTİKLER';
 
   @override
-  String get sectionDataManagement => 'VERÄ° YÃ–NETÄ°MÄ°';
+  String get sectionDataManagement => 'VERİ YÖNETİMİ';
 
   @override
   String get sectionAbout => 'HAKKINDA';
 
   @override
-  String get darkModeTitle => 'KaranlÄ±k mod';
+  String get darkModeTitle => 'Karanlık mod';
 
   @override
   String get darkModeSubtitle =>
-      'AydÄ±nlÄ±k ve karanlÄ±k tema arasÄ±nda geÃ§iÅŸ yapÄ±n';
+      'Aydınlık ve karanlık tema arasında geçiş yapın';
 
   @override
   String get languageTitle => 'Uygulama dili';
 
   @override
-  String get languageSubtitle => 'Tercih ettiÄŸiniz dili seÃ§in';
+  String get languageSubtitle => 'Tercih ettiğiniz dili seçin';
 
   @override
-  String get languageTurkish => 'TÃ¼rkÃ§e';
+  String get languageTurkish => 'Türkçe';
 
   @override
-  String get languageEnglish => 'Ä°ngilizce';
+  String get languageEnglish => 'İngilizce';
 
   @override
   String get modelLabel => 'Model';
 
   @override
-  String get modelNotSelected => 'SeÃ§ilmedi';
+  String get modelNotSelected => 'Seçilmedi';
 
   @override
   String get modelAvailable => 'Uygun';
 
   @override
-  String get modelUnavailable => 'Kullanilamaz';
+  String get modelUnavailable => 'Kullanılamaz';
 
   @override
   String get modelLocalSection => 'Yerel modeller';
@@ -257,104 +257,104 @@ class AppLocalizationsTr extends AppLocalizations {
   String get diagnosticsTitle => 'Tanılama';
 
   @override
-  String get diagnosticsSubtitle => 'Backend baglantisi ve streaming testi';
+  String get diagnosticsSubtitle => 'Backend bağlantısı ve streaming testi';
 
   @override
-  String get selectModelTitle => 'Model sec';
+  String get selectModelTitle => 'Model seç';
 
   @override
-  String get voiceInputTitle => 'Sesli giris';
+  String get voiceInputTitle => 'Sesli giriş';
 
   @override
   String get voiceInputSubtitle =>
-      'Sesli mesajlar icin mikrofonu etkinlestirin';
+      'Sesli mesajlar için mikrofonu etkinleştirin';
 
   @override
-  String get markdownSupportTitle => 'Markdown destegi';
+  String get markdownSupportTitle => 'Markdown desteği';
 
   @override
-  String get markdownSupportSubtitle => 'Bicimlendirilmis metin ve kodu goster';
+  String get markdownSupportSubtitle => 'Biçimlendirilmiş metin ve kodu göster';
 
   @override
-  String get ragEnabledTitle => 'Kaynakli yanitlar (RAG)';
+  String get ragEnabledTitle => 'Kaynaklı yanıtlar (RAG)';
 
   @override
   String get ragEnabledSubtitle =>
-      'Uygunsa dizinlenen belgelerden yanit uretir';
+      'Uygunsa dizinlenen belgelerden yanıt üretir';
 
   @override
-  String get ragStrictTitle => 'Siki kaynak modu';
+  String get ragStrictTitle => 'Sıkı kaynak modu';
 
   @override
-  String get ragStrictSubtitle => 'Kaynak yoksa sabit uyari verir';
+  String get ragStrictSubtitle => 'Kaynak yoksa sabit uyarı verir';
 
   @override
-  String get totalConversations => 'Toplam konuÅŸma';
+  String get totalConversations => 'Toplam konuşma';
 
   @override
   String get totalMessages => 'Toplam mesaj';
 
   @override
-  String get clearAllConversationsTitle => 'TÃ¼m konuÅŸmalarÄ± temizle';
+  String get clearAllConversationsTitle => 'Tüm konuşmaları temizle';
 
   @override
-  String get clearAllConversationsSubtitle => 'TÃ¼m sohbet geÃ§miÅŸini silin';
+  String get clearAllConversationsSubtitle => 'Tüm sohbet geçmişini silin';
 
   @override
-  String get clearAllDataTitle => 'TÃ¼m verileri temizle';
+  String get clearAllDataTitle => 'Tüm verileri temizle';
 
   @override
   String get clearAllDataMessage =>
-      'TÃ¼m konuÅŸmalarÄ± silmek istediÄŸinize emin misiniz? Bu iÅŸlem geri alÄ±namaz.';
+      'Tüm konuşmaları silmek istediğinize emin misiniz? Bu işlem geri alınamaz.';
 
   @override
-  String get deleteAll => 'TÃ¼mÃ¼nÃ¼ sil';
+  String get deleteAll => 'Tümünü sil';
 
   @override
-  String get clearAllSuccessTitle => 'BaÅŸarÄ±lÄ±';
+  String get clearAllSuccessTitle => 'Başarılı';
 
   @override
-  String get clearAllSuccessMessage => 'TÃ¼m konuÅŸmalar silindi';
+  String get clearAllSuccessMessage => 'Tüm konuşmalar silindi';
 
   @override
-  String get versionLabel => 'SÃ¼rÃ¼m';
+  String get versionLabel => 'Sürüm';
 
   @override
-  String get developerLabel => 'GeliÅŸtirici';
+  String get developerLabel => 'Geliştirici';
 
   @override
   String get developerValue => 'Selçuk AI';
 
   @override
-  String get deleteConversationTitle => 'KonuÅŸmayÄ± sil';
+  String get deleteConversationTitle => 'Konuşmayı sil';
 
   @override
   String get deleteConversationMessage =>
-      'Bu konuÅŸmayÄ± silmek istediÄŸinize emin misiniz? Bu iÅŸlem geri alÄ±namaz.';
+      'Bu konuşmayı silmek istediğinize emin misiniz? Bu işlem geri alınamaz.';
 
   @override
-  String get renameConversationTitle => 'KonuÅŸmayÄ± yeniden adlandÄ±r';
+  String get renameConversationTitle => 'Konuşmayı yeniden adlandır';
 
   @override
-  String get renameConversationHint => 'Yeni baÅŸlÄ±k girin';
+  String get renameConversationHint => 'Yeni başlık girin';
 
   @override
-  String get searchConversationsHint => 'KonuÅŸmalarÄ± ara...';
+  String get searchConversationsHint => 'Konuşmaları ara...';
 
   @override
-  String get noConversationsFound => 'KonuÅŸma bulunamadÄ±';
+  String get noConversationsFound => 'Konuşma bulunamadı';
 
   @override
-  String get noConversationsYet => 'HenÃ¼z konuÅŸma yok';
+  String get noConversationsYet => 'Henüz konuşma yok';
 
   @override
   String conversationsCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count konuÅŸma',
-      one: '1 konuÅŸma',
-      zero: '0 konuÅŸma',
+      other: '$count konuşma',
+      one: '1 konuşma',
+      zero: '0 konuşma',
     );
     return '$_temp0';
   }
@@ -384,18 +384,18 @@ class AppLocalizationsTr extends AppLocalizations {
   String get unarchiveConversation => 'Arşivden çıkar';
 
   @override
-  String get todayLabel => 'BugÃ¼n';
+  String get todayLabel => 'Bugün';
 
   @override
-  String get yesterdayLabel => 'DÃ¼n';
+  String get yesterdayLabel => 'Dün';
 
   @override
   String daysAgo(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count gÃ¼n Ã¶nce',
-      one: '1 gÃ¼n Ã¶nce',
+      other: '$count gün önce',
+      one: '1 gün önce',
     );
     return '$_temp0';
   }
@@ -405,8 +405,8 @@ class AppLocalizationsTr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count hafta Ã¶nce',
-      one: '1 hafta Ã¶nce',
+      other: '$count hafta önce',
+      one: '1 hafta önce',
     );
     return '$_temp0';
   }
@@ -416,8 +416,8 @@ class AppLocalizationsTr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count ay Ã¶nce',
-      one: '1 ay Ã¶nce',
+      other: '$count ay önce',
+      one: '1 ay önce',
     );
     return '$_temp0';
   }
@@ -427,50 +427,50 @@ class AppLocalizationsTr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count yÄ±l Ã¶nce',
-      one: '1 yÄ±l Ã¶nce',
+      other: '$count yıl önce',
+      one: '1 yıl önce',
     );
     return '$_temp0';
   }
 
   @override
-  String get clearConversationTitle => 'KonuÅŸmayÄ± temizle';
+  String get clearConversationTitle => 'Konuşmayı temizle';
 
   @override
   String get clearConversationMessage =>
-      'Bu konuÅŸmayÄ± temizlemek istediÄŸinize emin misiniz? Bu iÅŸlem geri alÄ±namaz.';
+      'Bu konuşmayı temizlemek istediğinize emin misiniz? Bu işlem geri alınamaz.';
 
   @override
-  String get listeningIndicator => 'Dinleniyor... (bÄ±rakÄ±nca durur)';
+  String get listeningIndicator => 'Dinleniyor... (bırakınca durur)';
 
   @override
   String get messageHint => 'Selçuk YZ Asistan\'a yazın...';
 
   @override
-  String get imageSelectedTitle => 'GÃ¶rsel seÃ§ildi';
+  String get imageSelectedTitle => 'Görsel seçildi';
 
   @override
   String imageSelectedMessage(String fileName) {
-    return 'GÃ¶rsel: $fileName';
+    return 'Görsel: $fileName';
   }
 
   @override
-  String get startConversationTitle => 'Bir sohbet baÅŸlatÄ±n';
+  String get startConversationTitle => 'Bir sohbet başlatın';
 
   @override
-  String get startConversationSubtitle => 'Bana istediÄŸinizi sorun!';
+  String get startConversationSubtitle => 'Bana istediğinizi sorun!';
 
   @override
-  String get suggestedPrompt1 => 'Kuantum hesaplamayÄ± aÃ§Ä±kla';
+  String get suggestedPrompt1 => 'Kuantum hesaplamayı açıkla';
 
   @override
-  String get suggestedPrompt2 => 'Bir ÅŸiir yaz';
+  String get suggestedPrompt2 => 'Bir şiir yaz';
 
   @override
-  String get suggestedPrompt3 => 'Kod konusunda yardÄ±m';
+  String get suggestedPrompt3 => 'Kod konusunda yardım';
 
   @override
-  String get streamErrorTitle => 'AkÄ±ÅŸ hatasÄ±';
+  String get streamErrorTitle => 'Akış hatası';
 
   @override
   String streamErrorMessage(String error) {
@@ -478,22 +478,22 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get streamInterruptedTag => '[AkÄ±ÅŸ kesildi]';
+  String get streamInterruptedTag => '[Akış kesildi]';
 
   @override
   String get copyAction => 'Kopyala';
 
   @override
-  String get editMessageTitle => 'Mesaji duzenle';
+  String get editMessageTitle => 'Mesajı düzenle';
 
   @override
-  String get editMessageHint => 'Mesajinizi guncelleyin';
+  String get editMessageHint => 'Mesajınızı güncelleyin';
 
   @override
-  String get editMessageAction => 'Yeniden gonder';
+  String get editMessageAction => 'Yeniden gönder';
 
   @override
-  String get regenerateAction => 'Yeniden uret';
+  String get regenerateAction => 'Yeniden üret';
 
   @override
   String get retryAction => 'Tekrar dene';
@@ -549,13 +549,13 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get diagnosticsHfLabel => 'HF GPU Hazir';
+  String get diagnosticsHfLabel => 'HF GPU Hazır';
 
   @override
-  String get diagnosticsHfReady => 'Hazir';
+  String get diagnosticsHfReady => 'Hazır';
 
   @override
-  String get diagnosticsHfUnavailable => 'Uygun degil';
+  String get diagnosticsHfUnavailable => 'Uygun değil';
 
   @override
   String get diagnosticsHfButton => '/health/hf test et';
@@ -637,67 +637,66 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get microphonePermissionRequired =>
-      'Sesli giriÅŸ iÃ§in mikrofon izni gerekli';
+      'Sesli giriş için mikrofon izni gerekli';
 
   @override
-  String get speechNotAvailable => 'Ses tanÄ±ma kullanÄ±lamÄ±yor';
+  String get speechNotAvailable => 'Ses tanıma kullanılamıyor';
 
   @override
   String get enterMessagePrompt =>
-      'LÃ¼tfen bir mesaj yazÄ±n veya sesli giriÅŸ kullanÄ±n!';
+      'Lütfen bir mesaj yazın veya sesli giriş kullanın!';
 
   @override
-  String get exportFailedTitle => 'DÄ±ÅŸa aktarma baÅŸarÄ±sÄ±z';
+  String get exportFailedTitle => 'Dışa aktarma başarısız';
 
   @override
-  String get noMessagesToExport => 'DÄ±ÅŸa aktarÄ±lacak mesaj yok';
+  String get noMessagesToExport => 'Dışa aktarılacak mesaj yok';
 
   @override
-  String get exportSuccessTitle => 'DÄ±ÅŸa aktarma baÅŸarÄ±lÄ±';
+  String get exportSuccessTitle => 'Dışa aktarma başarılı';
 
   @override
   String exportSuccessMessage(String path) {
-    return 'Åuraya kaydedildi: $path\\nAyrÄ±ca panoya kopyalandÄ±';
+    return 'Şuraya kaydedildi: $path\\nAyrıca panoya kopyalandı';
   }
 
   @override
-  String get exportSuccessWebMessage =>
-      'Dosya indirildi ve panoya kopyalandÅ½Ã±';
+  String get exportSuccessWebMessage => 'Dosya indirildi ve panoya kopyalandı';
 
   @override
-  String get logout => 'Ã‡Ä±kÄ±ÅŸ';
+  String get logout => 'Çıkış';
 
   @override
   String get clearChat => 'Sohbeti temizle';
 
   @override
-  String get exportChat => 'Sohbeti dÄ±ÅŸa aktar';
+  String get exportChat => 'Sohbeti dışa aktar';
 
   @override
-  String get logoutSuccessTitle => 'BaÅŸarÄ±lÄ±';
+  String get logoutSuccessTitle => 'Başarılı';
 
   @override
-  String get logoutSuccessMessage => 'Ã‡Ä±kÄ±ÅŸ yapÄ±ldÄ±';
+  String get logoutSuccessMessage => 'Çıkış yapıldı';
 
   @override
   String get logoutErrorTitle => 'Hata';
 
   @override
-  String get copiedToClipboard => 'Panoya kopyalandÄ±';
+  String get copiedToClipboard => 'Panoya kopyalandı';
 
   @override
   String yesterdayAt(String time) {
-    return 'DÃ¼n $time';
+    return 'Dün $time';
   }
 
   @override
-  String get aiThinking => 'Yapay zeka dÃ¼ÅŸÃ¼nÃ¼yor...';
+  String get aiThinking => 'Yapay zeka düşünüyor...';
 
   @override
   String get infoTitle => 'Bilgi';
 
   @override
-  String get successTitle => 'BaÅŸarÄ±lÄ±';
+  String get successTitle => 'Başarılı';
 
   @override
   String get errorTitle => 'Hata';
@@ -707,11 +706,11 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String imagePickerErrorMessage(String error) {
-    return 'GÃ¶rsel seÃ§ilemedi: $error';
+    return 'Görsel seçilemedi: $error';
   }
 
   @override
-  String get chooseImageSourceTitle => 'GÃ¶rsel kaynaÄŸÄ±nÄ± seÃ§in';
+  String get chooseImageSourceTitle => 'Görsel kaynağını seçin';
 
   @override
   String get cameraLabel => 'Kamera';
@@ -720,77 +719,76 @@ class AppLocalizationsTr extends AppLocalizations {
   String get galleryLabel => 'Galeri';
 
   @override
-  String get appwritePingSuccess => 'Appwrite baÄŸlantÄ±sÄ± baÅŸarÄ±lÄ±!';
+  String get appwritePingSuccess => 'Appwrite bağlantısı başarılı!';
 
   @override
   String get appwritePingNoSession =>
-      'Appwrite baÄŸlantÄ±sÄ± var ama oturum aÃ§Ä±k deÄŸil.';
+      'Appwrite bağlantısı var ama oturum açık değil.';
 
   @override
   String appwritePingError(String error) {
-    return 'Appwrite ping hatasÄ±: $error';
+    return 'Appwrite ping hatası: $error';
   }
 
   @override
-  String get sendPingTooltip => 'Ping gÃ¶nder';
+  String get sendPingTooltip => 'Ping gönder';
 
   @override
-  String get logoutTooltip => 'Ã‡Ä±kÄ±ÅŸ';
+  String get logoutTooltip => 'Çıkış';
 
   @override
-  String get assistantTitle => 'Yapay zeka asistanÄ±';
+  String get assistantTitle => 'Yapay zeka asistanı';
 
   @override
   String get assistantHint =>
-      'Bir mesaj yazÄ±n veya sesli giriÅŸ iÃ§in basÄ±lÄ± tutun...';
+      'Bir mesaj yazın veya sesli giriş için basılı tutun...';
 
   @override
-  String get listeningStatus => 'Ses giriÅŸi dinleniyor...';
+  String get listeningStatus => 'Ses girişi dinleniyor...';
 
   @override
-  String get startChatHint => 'Yapay zeka asistanÄ±yla konuÅŸmaya baÅŸlayÄ±n!';
+  String get startChatHint => 'Yapay zeka asistanıyla konuşmaya başlayın!';
 
   @override
-  String get errorInvalidRequest => 'Hata: GeÃ§ersiz istek';
+  String get errorInvalidRequest => 'Hata: Geçersiz istek';
 
   @override
-  String get errorInvalidRequestFormat => 'Hata: GeÃ§ersiz istek formatÄ±.';
+  String get errorInvalidRequestFormat => 'Hata: Geçersiz istek formatı.';
 
   @override
   String get errorServiceUnavailable =>
-      'Hata: Yapay zeka hizmeti kullanÄ±lamÄ±yor.';
+      'Hata: Yapay zeka hizmeti kullanılamıyor.';
 
   @override
-  String get errorTimeout => 'Hata: YanÄ±t zaman aÅŸÄ±mÄ±na uÄŸradÄ±.';
+  String get errorTimeout => 'Hata: Yanıt zaman aşımına uğradı.';
 
   @override
-  String get errorBackendUnavailable =>
-      'Hata: Sunucu hizmeti kullanÄ±lamÄ±yor.';
+  String get errorBackendUnavailable => 'Hata: Sunucu hizmeti kullanılamıyor.';
 
   @override
-  String get errorNoInternet => 'Hata: Ä°nternet baÄŸlantÄ±sÄ± yok.';
+  String get errorNoInternet => 'Hata: İnternet bağlantısı yok.';
 
   @override
-  String get errorInvalidServerResponse => 'Hata: GeÃ§ersiz sunucu yanÄ±tÄ±.';
+  String get errorInvalidServerResponse => 'Hata: Geçersiz sunucu yanıtı.';
 
   @override
   String get errorUnexpected => 'Hata: Beklenmeyen hata.';
 
   @override
-  String get noResponseGenerated => 'ÃœzgÃ¼nÃ¼m, yanÄ±t Ã¼retilemedi.';
+  String get noResponseGenerated => 'Üzgünüm, yanıt üretilemedi.';
 
   @override
   String get requestTimeoutMessage =>
-      'Ä°stek zaman aÅŸÄ±mÄ±na uÄŸradÄ±. LÃ¼tfen tekrar deneyin.';
+      'İstek zaman aşımına uğradı. Lütfen tekrar deneyin.';
 
   @override
   String get speechRecognitionFailed =>
-      'Ses tanÄ±ma baÅŸarÄ±sÄ±z oldu. LÃ¼tfen tekrar deneyin.';
+      'Ses tanıma başarısız oldu. Lütfen tekrar deneyin.';
 
   @override
   String get speechRecognitionError =>
-      'Ses tanÄ±ma hatasÄ±. LÃ¼tfen aÄŸ baÄŸlantÄ±nÄ±zÄ± kontrol edin.';
+      'Ses tanıma hatası. Lütfen ağ bağlantınızı kontrol edin.';
 
   @override
-  String get serverConnectionFailed => 'Sunucu baÄŸlantÄ±sÄ± baÅŸarÄ±sÄ±z.';
+  String get serverConnectionFailed => 'Sunucu bağlantısı başarısız.';
 }

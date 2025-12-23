@@ -1,4 +1,4 @@
-﻿# Kurulum Rehberi
+# Kurulum Rehberi
 
 1) Backend bagimliliklari: `backend/requirements.txt`
 2) Flutter bagimliliklari: `flutter pub get`

@@ -20,6 +20,34 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Check mojibake and validate ARB JSON
+
+        run: |
+          if rg -n "[ÃÅÄÂÐÞ]" -g "*.arb" -g "*.dart" -g "*.md" -g "*.py" -g "*.yml" -g "*.yaml" -g "*.json" -g "*.ps1" -g "*.sh"; then
+            echo "Mojibake pattern bulundu."
+            exit 1
+          fi
+          if rg -n "�" -g "*.arb" -g "*.dart" -g "*.md" -g "*.py" -g "*.yml" -g "*.yaml" -g "*.json" -g "*.ps1" -g "*.sh"; then
+            echo "Bozuk karakter (�) bulundu."
+            exit 1
+          fi
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          errors = []
+          for path in Path("lib/l10n").glob("*.arb"):
+            try:
+              json.loads(path.read_text(encoding="utf-8"))
+            except Exception as exc:
+              errors.append(f"{path}: {exc}")
+
+          if errors:
+            print("Geçersiz ARB JSON bulundu:")
+            print("\n".join(errors))
+            raise SystemExit(1)
+          PY
+
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:

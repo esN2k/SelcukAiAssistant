@@ -1,4 +1,4 @@
-﻿# Mimari
+# Mimari
 
 ## Genel akis
 - Flutter istemci (Android, Windows, Web) -> FastAPI backend (/chat, /chat/stream)

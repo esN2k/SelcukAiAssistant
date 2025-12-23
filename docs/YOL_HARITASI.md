@@ -1,4 +1,4 @@
-﻿# Yol Haritasi
+# Yol Haritasi
 
 ## P1 - ChatGPT benzeri UX (tamamlandi)
 - Depolama + Hive migrasyon

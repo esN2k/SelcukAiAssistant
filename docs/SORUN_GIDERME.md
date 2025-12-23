@@ -1,4 +1,4 @@
-﻿# Sorun Giderme
+# Sorun Giderme
 
 ## Backend erisilemiyor
 - `backend/.env` icindeki HOST/PORT ayarlarini kontrol edin.
