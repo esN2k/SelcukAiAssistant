@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/model/conversation.dart';
+import 'package:selcukaiassistant/widget/markdown_message_view.dart';
+import 'package:selcukaiassistant/widget/typing_indicator.dart';
 
 class EnhancedMessageCard extends StatelessWidget {
   const EnhancedMessageCard({
@@ -12,6 +14,7 @@ class EnhancedMessageCard extends StatelessWidget {
     this.onEdit,
     this.onRegenerate,
     this.onRetry,
+    this.showTypingIndicator = false,
     super.key,
   });
 
@@ -19,6 +22,7 @@ class EnhancedMessageCard extends StatelessWidget {
   final VoidCallback? onEdit;
   final VoidCallback? onRegenerate;
   final VoidCallback? onRetry;
+  final bool showTypingIndicator;
 
   void _copyToClipboard(BuildContext context) {
     unawaited(Clipboard.setData(ClipboardData(text: message.content)));
@@ -123,10 +127,39 @@ class EnhancedMessageCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                       ],
-                      SelectableText(
-                        message.content,
-                        style: const TextStyle(fontSize: 15, height: 1.5),
-                      ),
+                      if (message.isUser)
+                        SelectableText(
+                          message.content,
+                          style: const TextStyle(fontSize: 15, height: 1.5),
+                        )
+                      else if (message.content.trim().isEmpty &&
+                          showTypingIndicator)
+                        Row(
+                          children: [
+                            const TypingIndicator(),
+                            const SizedBox(width: 12),
+                            Text(
+                              context.l10n.aiThinking,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                          ],
+                        )
+                      else
+                        MarkdownMessageView(data: message.content),
+                      if (!message.isUser && message.hasError)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: Text(
+                            message.error ?? '',
+                            style: const TextStyle(
+                              color: Colors.redAccent,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),

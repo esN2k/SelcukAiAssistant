@@ -471,6 +471,8 @@ class EnhancedChatController extends GetxController {
     String? model,
   }) async {
     final cleaner = ResponseCleaner();
+    const updateInterval = Duration(milliseconds: 50);
+    var lastUpdate = DateTime.fromMillisecondsSinceEpoch(0);
     _streamSession = await APIs.streamChat(
       messages: messagesPayload,
       model: model,
@@ -481,11 +483,16 @@ class EnhancedChatController extends GetxController {
       (ChatStreamEvent event) {
         if (event.type == 'token' && event.token != null) {
           aiMessage.content = cleaner.push(event.token!);
-          messages.refresh();
-          _scrollDown();
+          final now = DateTime.now();
+          if (now.difference(lastUpdate) >= updateInterval) {
+            messages.refresh();
+            _scrollDown();
+            lastUpdate = now;
+          }
         } else if (event.type == 'end') {
           aiMessage.content = cleaner.finalize();
           messages.refresh();
+          _scrollDown();
           if (!completer.isCompleted) {
             completer.complete();
           }

@@ -478,6 +478,11 @@ class _NewChatScreenState extends State<NewChatScreen> {
                             !message.isUser &&
                             index == lastAssistantIndex &&
                             !message.hasError;
+                        final showTypingIndicator = _controller
+                                .isGenerating.value &&
+                            !message.isUser &&
+                            index == lastAssistantIndex &&
+                            message.content.trim().isEmpty;
                         return EnhancedMessageCard(
                           message: message,
                           onEdit: canEdit
@@ -489,6 +494,7 @@ class _NewChatScreenState extends State<NewChatScreen> {
                           onRegenerate: canRegenerate
                               ? () => _controller.regenerateResponse(message)
                               : null,
+                          showTypingIndicator: showTypingIndicator,
                         );
                       },
                     ),
