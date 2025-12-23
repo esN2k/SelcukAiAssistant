@@ -107,13 +107,13 @@ abstract class AppLocalizations {
   /// No description provided for @appSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Selcuk University AI Assistant'**
+  /// **'Selcuk AI Assistant'**
   String get appSubtitle;
 
   /// No description provided for @splashSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Selcuk University AI Assistant'**
+  /// **'Selcuk AI Assistant'**
   String get splashSubtitle;
 
   /// No description provided for @ok.
@@ -647,7 +647,7 @@ abstract class AppLocalizations {
   /// No description provided for @developerValue.
   ///
   /// In en, this message translates to:
-  /// **'Selcuk AI'**
+  /// **'Selçuk AI'**
   String get developerValue;
 
   /// No description provided for @deleteConversationTitle.
@@ -830,6 +830,30 @@ abstract class AppLocalizations {
   /// **'Base URL'**
   String get diagnosticsBaseUrlLabel;
 
+  /// No description provided for @diagnosticsBaseUrlSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Source: {source}'**
+  String diagnosticsBaseUrlSource(String source);
+
+  /// No description provided for @diagnosticsPlatformLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform'**
+  String get diagnosticsPlatformLabel;
+
+  /// No description provided for @diagnosticsLatencyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Latency'**
+  String get diagnosticsLatencyLabel;
+
+  /// No description provided for @diagnosticsLatencyUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No latency recorded yet.'**
+  String get diagnosticsLatencyUnavailable;
+
   /// No description provided for @diagnosticsModelLabel.
   ///
   /// In en, this message translates to:
@@ -847,6 +871,37 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unavailable'**
   String get diagnosticsModelUnavailable;
+
+  /// No description provided for @diagnosticsOllamaLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Ollama health'**
+  String get diagnosticsOllamaLabel;
+
+  /// No description provided for @diagnosticsOllamaReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get diagnosticsOllamaReady;
+
+  /// No description provided for @diagnosticsOllamaUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Unavailable'**
+  String get diagnosticsOllamaUnavailable;
+
+  /// No description provided for @diagnosticsOllamaButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Test /health/ollama'**
+  String get diagnosticsOllamaButton;
+
+  /// No description provided for @diagnosticsOllamaDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Status: {status} | Model: {model} | {availability} | Models: {count}'**
+  String diagnosticsOllamaDetail(
+      String status, String model, String availability, String count);
 
   /// No description provided for @diagnosticsHfLabel.
   ///
@@ -891,6 +946,48 @@ abstract class AppLocalizations {
   /// **'Test /models'**
   String get diagnosticsModelsButton;
 
+  /// No description provided for @diagnosticsSourceOverride.
+  ///
+  /// In en, this message translates to:
+  /// **'User override'**
+  String get diagnosticsSourceOverride;
+
+  /// No description provided for @diagnosticsSourceDartDefine.
+  ///
+  /// In en, this message translates to:
+  /// **'Dart define'**
+  String get diagnosticsSourceDartDefine;
+
+  /// No description provided for @diagnosticsSourceDotenv.
+  ///
+  /// In en, this message translates to:
+  /// **'Dotenv'**
+  String get diagnosticsSourceDotenv;
+
+  /// No description provided for @diagnosticsSourceWebRelease.
+  ///
+  /// In en, this message translates to:
+  /// **'Web release (/api)'**
+  String get diagnosticsSourceWebRelease;
+
+  /// No description provided for @diagnosticsSourceWebDev.
+  ///
+  /// In en, this message translates to:
+  /// **'Web dev (localhost)'**
+  String get diagnosticsSourceWebDev;
+
+  /// No description provided for @diagnosticsSourceAndroidEmulator.
+  ///
+  /// In en, this message translates to:
+  /// **'Android emulator (10.0.2.2)'**
+  String get diagnosticsSourceAndroidEmulator;
+
+  /// No description provided for @diagnosticsSourceDesktop.
+  ///
+  /// In en, this message translates to:
+  /// **'Desktop (localhost)'**
+  String get diagnosticsSourceDesktop;
+
   /// No description provided for @diagnosticsChatButton.
   ///
   /// In en, this message translates to:
@@ -914,6 +1011,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Last error'**
   String get diagnosticsLastErrorTitle;
+
+  /// No description provided for @diagnosticsErrorStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get diagnosticsErrorStatusLabel;
+
+  /// No description provided for @diagnosticsErrorBodyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Body'**
+  String get diagnosticsErrorBodyLabel;
+
+  /// No description provided for @diagnosticsErrorHeadersLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Headers'**
+  String get diagnosticsErrorHeadersLabel;
 
   /// No description provided for @diagnosticsNoErrors.
   ///

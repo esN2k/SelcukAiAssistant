@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:selcukaiassistant/helper/global.dart';
+import 'package:selcukaiassistant/config/backend_config.dart';
 import 'package:selcukaiassistant/helper/pref.dart';
+import 'package:selcukaiassistant/l10n/app_localizations.dart';
 import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/model/model_info.dart';
 import 'package:selcukaiassistant/services/model_service.dart';
@@ -29,13 +31,23 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
   bool _isLoadingHf = false;
   Map<String, dynamic>? _hfInfo;
   String? _hfError;
+  bool _isLoadingOllama = false;
+  Map<String, dynamic>? _ollamaInfo;
+  String? _ollamaError;
+  int? _lastLatencyMs;
+  String? _lastRequestLabel;
+  int? _lastRequestStatus;
   String? _lastErrorDetails;
   String? _lastErrorTimestamp;
+  int? _lastErrorStatus;
+  String? _lastErrorBody;
+  Map<String, String>? _lastErrorHeaders;
 
   @override
   void initState() {
     super.initState();
     unawaited(_loadModels());
+    unawaited(_loadOllamaHealth());
     unawaited(_loadHfHealth());
   }
 
@@ -55,16 +67,87 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
     });
   }
 
-  Future<void> _loadHfHealth({bool log = false}) async {
-    final url = Uri.parse('${Global.backendUrl}/health/hf');
-    setState(() => _isLoadingHf = true);
+  Future<void> _loadOllamaHealth({bool log = false}) async {
+    final url = Uri.parse('${BackendConfig.baseUrl}/health/ollama');
+    setState(() => _isLoadingOllama = true);
     if (log) {
-      _appendLog('GET /health/hf -> start');
+      _appendLog('GET /health/ollama -> start');
     }
+    final stopwatch = Stopwatch()..start();
     try {
       final response = await http.get(url, headers: _headers()).timeout(
         const Duration(seconds: 12),
         onTimeout: () => http.Response('Timeout', 408),
+      );
+      stopwatch.stop();
+      _updateLastRequest(
+        'GET /health/ollama',
+        response.statusCode,
+        stopwatch.elapsedMilliseconds,
+      );
+      final body = utf8.decode(response.bodyBytes);
+      if (response.statusCode == 200) {
+        setState(() {
+          _ollamaInfo = jsonDecode(body) as Map<String, dynamic>;
+          _ollamaError = null;
+        });
+      } else {
+        final snippet = _truncate(body);
+        setState(() {
+          _ollamaError = 'HTTP ${response.statusCode} $snippet';
+          _ollamaInfo = null;
+        });
+        _recordError(
+          'GET /health/ollama -> ${response.statusCode} $snippet',
+          statusCode: response.statusCode,
+          body: snippet,
+          headers: response.headers,
+        );
+      }
+      if (log) {
+        _appendLog(
+          'GET /health/ollama -> ${response.statusCode} ${_truncate(body)}',
+        );
+      }
+    } on Exception catch (e) {
+      stopwatch.stop();
+      _updateLastRequest(
+        'GET /health/ollama',
+        null,
+        stopwatch.elapsedMilliseconds,
+      );
+      setState(() {
+        _ollamaError = e.toString();
+        _ollamaInfo = null;
+      });
+      _recordError('GET /health/ollama -> $e');
+      if (log) {
+        _appendLog('GET /health/ollama -> error: $e');
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoadingOllama = false);
+      }
+    }
+  }
+
+  Future<void> _loadHfHealth({bool log = false}) async {
+    final url = Uri.parse('${BackendConfig.baseUrl}/health/hf');
+    setState(() => _isLoadingHf = true);
+    if (log) {
+      _appendLog('GET /health/hf -> start');
+    }
+    final stopwatch = Stopwatch()..start();
+    try {
+      final response = await http.get(url, headers: _headers()).timeout(
+        const Duration(seconds: 12),
+        onTimeout: () => http.Response('Timeout', 408),
+      );
+      stopwatch.stop();
+      _updateLastRequest(
+        'GET /health/hf',
+        response.statusCode,
+        stopwatch.elapsedMilliseconds,
       );
       final body = utf8.decode(response.bodyBytes);
       if (response.statusCode == 200) {
@@ -78,12 +161,23 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
           _hfError = 'HTTP ${response.statusCode} $snippet';
           _hfInfo = null;
         });
-        _recordError('GET /health/hf -> ${response.statusCode} $snippet');
+        _recordError(
+          'GET /health/hf -> ${response.statusCode} $snippet',
+          statusCode: response.statusCode,
+          body: snippet,
+          headers: response.headers,
+        );
       }
       if (log) {
         _appendLog('GET /health/hf -> ${response.statusCode} ${_truncate(body)}');
       }
     } on Exception catch (e) {
+      stopwatch.stop();
+      _updateLastRequest(
+        'GET /health/hf',
+        null,
+        stopwatch.elapsedMilliseconds,
+      );
       setState(() {
         _hfError = e.toString();
         _hfInfo = null;
@@ -138,10 +232,31 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
     });
   }
 
-  void _recordError(String details) {
+  void _updateLastRequest(
+    String label,
+    int? statusCode,
+    int elapsedMs,
+  ) {
+    if (!mounted) return;
+    setState(() {
+      _lastRequestLabel = label;
+      _lastRequestStatus = statusCode;
+      _lastLatencyMs = elapsedMs;
+    });
+  }
+
+  void _recordError(
+    String details, {
+    int? statusCode,
+    String? body,
+    Map<String, String>? headers,
+  }) {
     setState(() {
       _lastErrorDetails = details;
       _lastErrorTimestamp = DateTime.now().toIso8601String();
+      _lastErrorStatus = statusCode;
+      _lastErrorBody = body;
+      _lastErrorHeaders = headers;
     });
   }
 
@@ -155,25 +270,39 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
     Future<http.Response> Function() request,
   ) async {
     _appendLog('$label -> start');
+    final stopwatch = Stopwatch()..start();
     try {
       final response = await request().timeout(
         const Duration(seconds: 12),
         onTimeout: () => http.Response('Timeout', 408),
       );
+      stopwatch.stop();
+      _updateLastRequest(
+        label,
+        response.statusCode,
+        stopwatch.elapsedMilliseconds,
+      );
       final body = utf8.decode(response.bodyBytes);
       final snippet = _truncate(body);
       _appendLog('$label -> ${response.statusCode} $snippet');
       if (response.statusCode < 200 || response.statusCode >= 300) {
-        _recordError('$label -> ${response.statusCode} $snippet');
+        _recordError(
+          '$label -> ${response.statusCode} $snippet',
+          statusCode: response.statusCode,
+          body: snippet,
+          headers: response.headers,
+        );
       }
     } on Exception catch (e) {
+      stopwatch.stop();
+      _updateLastRequest(label, null, stopwatch.elapsedMilliseconds);
       _appendLog('$label -> error: $e');
       _recordError('$label -> $e');
     }
   }
 
   Future<void> _testHealth() async {
-    final url = Uri.parse('${Global.backendUrl}/health');
+    final url = Uri.parse('${BackendConfig.baseUrl}/health');
     await _runRequest(
       'GET /health',
       () => http.get(url, headers: _headers()),
@@ -181,11 +310,15 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
   }
 
   Future<void> _testModels() async {
-    final url = Uri.parse(Global.modelsEndpoint);
+    final url = Uri.parse(BackendConfig.modelsEndpoint);
     await _runRequest(
       'GET /models',
       () => http.get(url, headers: _headers()),
     );
+  }
+
+  Future<void> _testOllamaHealth() async {
+    await _loadOllamaHealth(log: true);
   }
 
   Future<void> _testHfHealth() async {
@@ -193,7 +326,7 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
   }
 
   Future<void> _testChat() async {
-    final url = Uri.parse(Global.chatEndpoint);
+    final url = Uri.parse(BackendConfig.chatEndpoint);
     await _runRequest(
       'POST /chat',
       () => http.post(
@@ -216,7 +349,7 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
 
     try {
       session = await SseClient().connect(
-        url: Uri.parse(Global.chatStreamEndpoint),
+        url: Uri.parse(BackendConfig.chatStreamEndpoint),
         headers: _headers(),
         body: jsonEncode(_buildPayload(stream: true)),
       );
@@ -299,6 +432,72 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
     return null;
   }
 
+  String _platformLabel() {
+    if (kIsWeb) {
+      return 'Web';
+    }
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+        return 'Android';
+      case TargetPlatform.iOS:
+        return 'iOS';
+      case TargetPlatform.macOS:
+        return 'macOS';
+      case TargetPlatform.windows:
+        return 'Windows';
+      case TargetPlatform.linux:
+        return 'Linux';
+      case TargetPlatform.fuchsia:
+        return 'Fuchsia';
+    }
+  }
+
+  String _formatHeaders(Map<String, String>? headers) {
+    if (headers == null || headers.isEmpty) {
+      return '-';
+    }
+    return headers.entries
+        .map((entry) => '${entry.key}: ${entry.value}')
+        .join('\n');
+  }
+
+  String _buildErrorDetails(AppLocalizations l10n) {
+    final parts = <String>[];
+    if (_lastErrorStatus != null) {
+      parts.add('${l10n.diagnosticsErrorStatusLabel}: $_lastErrorStatus');
+    }
+    if (_lastErrorBody != null && _lastErrorBody!.isNotEmpty) {
+      parts.add('${l10n.diagnosticsErrorBodyLabel}: $_lastErrorBody');
+    }
+    if (_lastErrorHeaders != null && _lastErrorHeaders!.isNotEmpty) {
+      parts.add('${l10n.diagnosticsErrorHeadersLabel}:\n'
+          '${_formatHeaders(_lastErrorHeaders)}');
+    }
+    return parts.join('\n');
+  }
+
+  String _backendSourceLabel(
+    AppLocalizations l10n,
+    BackendUrlSource source,
+  ) {
+    switch (source) {
+      case BackendUrlSource.override:
+        return l10n.diagnosticsSourceOverride;
+      case BackendUrlSource.dartDefine:
+        return l10n.diagnosticsSourceDartDefine;
+      case BackendUrlSource.dotenv:
+        return l10n.diagnosticsSourceDotenv;
+      case BackendUrlSource.webRelease:
+        return l10n.diagnosticsSourceWebRelease;
+      case BackendUrlSource.webDev:
+        return l10n.diagnosticsSourceWebDev;
+      case BackendUrlSource.androidEmulator:
+        return l10n.diagnosticsSourceAndroidEmulator;
+      case BackendUrlSource.desktop:
+        return l10n.diagnosticsSourceDesktop;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -332,6 +531,34 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
             (_hfInfo?['transformers_version'] as String?) ?? '-',
             (_hfInfo?['bitsandbytes_version'] as String?) ?? '-',
           );
+    final resolution = BackendConfig.resolution;
+    final sourceLabel = _backendSourceLabel(l10n, resolution.source);
+    final baseUrlSubtitle =
+        '${resolution.url}\n${l10n.diagnosticsBaseUrlSource(sourceLabel)}';
+    final latencyLabel = _lastLatencyMs == null
+        ? l10n.diagnosticsLatencyUnavailable
+        : '$_lastLatencyMs ms'
+            '${_lastRequestLabel == null ? '' : ' - ${_lastRequestLabel!}'}'
+            '${_lastRequestStatus == null ? '' : ' ($_lastRequestStatus)'}';
+    final ollamaStatus = _ollamaInfo?['status'] as String?;
+    final ollamaAvailable =
+        _ollamaInfo?['model_available'] as bool? ?? false;
+    final ollamaModels =
+        _ollamaInfo?['available_models'] as List<dynamic>? ?? const [];
+    final ollamaReady = ollamaStatus == 'healthy';
+    final ollamaLabel = ollamaReady
+        ? l10n.diagnosticsOllamaReady
+        : l10n.diagnosticsOllamaUnavailable;
+    final ollamaDetail = _ollamaInfo == null
+        ? _ollamaError
+        : l10n.diagnosticsOllamaDetail(
+            ollamaStatus ?? '-',
+            (_ollamaInfo?['model'] as String?) ?? '-',
+            ollamaAvailable ? l10n.modelAvailable : l10n.modelUnavailable,
+            ollamaModels.length.toString(),
+          );
+    final errorDetails =
+        _lastErrorDetails == null ? null : _buildErrorDetails(l10n);
 
     return Scaffold(
       appBar: AppBar(
@@ -347,8 +574,18 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
             [
               ListTile(
                 title: Text(l10n.diagnosticsBaseUrlLabel),
-                subtitle: Text(Global.backendUrl),
+                subtitle: Text(baseUrlSubtitle),
                 leading: const Icon(Icons.link),
+              ),
+              ListTile(
+                title: Text(l10n.diagnosticsPlatformLabel),
+                subtitle: Text(_platformLabel()),
+                leading: const Icon(Icons.devices),
+              ),
+              ListTile(
+                title: Text(l10n.diagnosticsLatencyLabel),
+                subtitle: Text(latencyLabel),
+                leading: const Icon(Icons.speed),
               ),
               ListTile(
                 title: Text(l10n.diagnosticsModelLabel),
@@ -369,6 +606,18 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
                       )
                     : Text(availabilityLabel),
                 leading: const Icon(Icons.psychology),
+              ),
+              ListTile(
+                title: Text(l10n.diagnosticsOllamaLabel),
+                subtitle: ollamaDetail == null ? null : Text(ollamaDetail),
+                trailing: _isLoadingOllama
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : Text(ollamaLabel),
+                leading: const Icon(Icons.storage),
               ),
               ListTile(
                 title: Text(l10n.diagnosticsHfLabel),
@@ -398,6 +647,10 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
                     ElevatedButton(
                       onPressed: _testModels,
                       child: Text(l10n.diagnosticsModelsButton),
+                    ),
+                    ElevatedButton(
+                      onPressed: _testOllamaHealth,
+                      child: Text(l10n.diagnosticsOllamaButton),
                     ),
                     ElevatedButton(
                       onPressed: _testHfHealth,
@@ -434,6 +687,11 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
                   color: _lastErrorDetails == null ? Colors.green : Colors.red,
                 ),
               ),
+              if (errorDetails != null && errorDetails.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                  child: SelectableText(errorDetails),
+                ),
             ],
           ),
           _buildSection(

@@ -12,10 +12,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'Selcuk AI Assistant';
 
   @override
-  String get appSubtitle => 'Selcuk University AI Assistant';
+  String get appSubtitle => 'Selcuk AI Assistant';
 
   @override
-  String get splashSubtitle => 'Selcuk University AI Assistant';
+  String get splashSubtitle => 'Selcuk AI Assistant';
 
   @override
   String get ok => 'OK';
@@ -291,7 +291,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get developerLabel => 'Developer';
 
   @override
-  String get developerValue => 'Selcuk AI';
+  String get developerValue => 'Selçuk AI';
 
   @override
   String get deleteConversationTitle => 'Delete conversation';
@@ -431,6 +431,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get diagnosticsBaseUrlLabel => 'Base URL';
 
   @override
+  String diagnosticsBaseUrlSource(String source) {
+    return 'Source: $source';
+  }
+
+  @override
+  String get diagnosticsPlatformLabel => 'Platform';
+
+  @override
+  String get diagnosticsLatencyLabel => 'Latency';
+
+  @override
+  String get diagnosticsLatencyUnavailable => 'No latency recorded yet.';
+
+  @override
   String get diagnosticsModelLabel => 'Selected model';
 
   @override
@@ -438,6 +452,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get diagnosticsModelUnavailable => 'Unavailable';
+
+  @override
+  String get diagnosticsOllamaLabel => 'Ollama health';
+
+  @override
+  String get diagnosticsOllamaReady => 'Ready';
+
+  @override
+  String get diagnosticsOllamaUnavailable => 'Unavailable';
+
+  @override
+  String get diagnosticsOllamaButton => 'Test /health/ollama';
+
+  @override
+  String diagnosticsOllamaDetail(
+      String status, String model, String availability, String count) {
+    return 'Status: $status | Model: $model | $availability | Models: $count';
+  }
 
   @override
   String get diagnosticsHfLabel => 'HF GPU Ready';
@@ -464,6 +496,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get diagnosticsModelsButton => 'Test /models';
 
   @override
+  String get diagnosticsSourceOverride => 'User override';
+
+  @override
+  String get diagnosticsSourceDartDefine => 'Dart define';
+
+  @override
+  String get diagnosticsSourceDotenv => 'Dotenv';
+
+  @override
+  String get diagnosticsSourceWebRelease => 'Web release (/api)';
+
+  @override
+  String get diagnosticsSourceWebDev => 'Web dev (localhost)';
+
+  @override
+  String get diagnosticsSourceAndroidEmulator => 'Android emulator (10.0.2.2)';
+
+  @override
+  String get diagnosticsSourceDesktop => 'Desktop (localhost)';
+
+  @override
   String get diagnosticsChatButton => 'Test /chat';
 
   @override
@@ -474,6 +527,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get diagnosticsLastErrorTitle => 'Last error';
+
+  @override
+  String get diagnosticsErrorStatusLabel => 'Status';
+
+  @override
+  String get diagnosticsErrorBodyLabel => 'Body';
+
+  @override
+  String get diagnosticsErrorHeadersLabel => 'Headers';
 
   @override
   String get diagnosticsNoErrors => 'No errors recorded yet.';

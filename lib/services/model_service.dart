@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:http/http.dart' as http;
-import 'package:selcukaiassistant/helper/global.dart';
+import 'package:selcukaiassistant/config/backend_config.dart';
 import 'package:selcukaiassistant/helper/pref.dart';
 import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/model/model_info.dart';
@@ -12,7 +12,7 @@ class ModelService {
     try {
       final locale = Pref.localeCode ?? L10n.fallbackLocale.languageCode;
       final response = await http.get(
-        Uri.parse(Global.modelsEndpoint),
+        Uri.parse(BackendConfig.modelsEndpoint),
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
           'Accept-Language': locale,

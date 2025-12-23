@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:http/http.dart' as http;
-import 'package:selcukaiassistant/helper/global.dart';
+import 'package:selcukaiassistant/config/backend_config.dart';
 import 'package:selcukaiassistant/helper/pref.dart';
 import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/services/sse_client.dart';
@@ -59,7 +59,7 @@ class APIs {
     final timeoutMessage =
         l10n?.requestTimeoutMessage ?? 'Request timed out. Please try again.';
     try {
-      log('Backend API: ${Global.chatEndpoint}');
+      log('Backend API: ${BackendConfig.chatEndpoint}');
 
       final requestBody = jsonEncode(
         _buildPayload(messages: messages, model: model),
@@ -67,7 +67,7 @@ class APIs {
 
       final response = await http
           .post(
-            Uri.parse(Global.chatEndpoint),
+            Uri.parse(BackendConfig.chatEndpoint),
             headers: _buildHeaders(),
             body: requestBody,
           )
@@ -126,7 +126,7 @@ class APIs {
   }) async {
     final client = SseClient();
     return client.connect(
-      url: Uri.parse(Global.chatStreamEndpoint),
+      url: Uri.parse(BackendConfig.chatStreamEndpoint),
       headers: _buildHeaders(),
       body: jsonEncode(
         _buildPayload(messages: messages, model: model, stream: true),

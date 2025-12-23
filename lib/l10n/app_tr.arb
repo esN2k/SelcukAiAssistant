@@ -1,8 +1,8 @@
 ﻿{
   "@@locale": "tr",
-  "appTitle": "SelÃ§uk AI AsistanÄ±",
-  "appSubtitle": "SelÃ§uk Ãœniversitesi Yapay Zeka AsistanÄ±",
-  "splashSubtitle": "SelÃ§uk Ãœniversitesi Yapay Zeka AsistanÄ±",
+  "appTitle": "Sel\u00e7uk YZ Asistan",
+  "appSubtitle": "Sel\u00e7uk YZ Asistan",
+  "splashSubtitle": "Sel\u00e7uk YZ Asistan",
   "ok": "Tamam",
   "cancel": "Ä°ptal",
   "delete": "Sil",
@@ -94,7 +94,7 @@
   "clearAllSuccessMessage": "TÃ¼m konuÅŸmalar silindi",
   "versionLabel": "SÃ¼rÃ¼m",
   "developerLabel": "GeliÅŸtirici",
-  "developerValue": "SelÃ§uk AI",
+  "developerValue": "Sel\u00e7uk AI",
   "deleteConversationTitle": "KonuÅŸmayÄ± sil",
   "deleteConversationMessage": "Bu konuÅŸmayÄ± silmek istediÄŸinize emin misiniz? Bu iÅŸlem geri alÄ±namaz.",
   "renameConversationTitle": "KonuÅŸmayÄ± yeniden adlandÄ±r",
@@ -147,7 +147,7 @@
   "clearConversationTitle": "KonuÅŸmayÄ± temizle",
   "clearConversationMessage": "Bu konuÅŸmayÄ± temizlemek istediÄŸinize emin misiniz? Bu iÅŸlem geri alÄ±namaz.",
   "listeningIndicator": "Dinleniyor... (bÄ±rakÄ±nca durur)",
-  "messageHint": "SelÃ§uk AI AsistanÄ±'na yazÄ±n...",
+  "messageHint": "Sel\u00e7uk YZ Asistan'a yaz\u0131n...",
   "imageSelectedTitle": "GÃ¶rsel seÃ§ildi",
   "imageSelectedMessage": "GÃ¶rsel: {fileName}",
   "@imageSelectedMessage": {
@@ -267,9 +267,41 @@
   "diagnosticsSubtitle": "Sunucu bağlantısını ve akışı test edin",
   "diagnosticsConnectionSection": "BAĞLANTI",
   "diagnosticsBaseUrlLabel": "Temel URL",
+  "diagnosticsBaseUrlSource": "Kaynak: {source}",
+  "@diagnosticsBaseUrlSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "diagnosticsPlatformLabel": "Platform",
+  "diagnosticsLatencyLabel": "Gecikme",
+  "diagnosticsLatencyUnavailable": "Hen\u00fcz gecikme \u00f6l\u00e7\u00fclmedi.",
   "diagnosticsModelLabel": "Seçili model",
   "diagnosticsModelAvailable": "Uygun",
   "diagnosticsModelUnavailable": "Kullanılamıyor",
+  "diagnosticsOllamaLabel": "Ollama sağlığı",
+  "diagnosticsOllamaReady": "Hazır",
+  "diagnosticsOllamaUnavailable": "Uygun değil",
+  "diagnosticsOllamaButton": "/health/ollama test et",
+  "diagnosticsOllamaDetail": "Durum: {status} | Model: {model} | {availability} | Modeller: {count}",
+  "@diagnosticsOllamaDetail": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      },
+      "model": {
+        "type": "String"
+      },
+      "availability": {
+        "type": "String"
+      },
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "diagnosticsHfLabel": "HF GPU Hazir",
   "diagnosticsHfReady": "Hazir",
   "diagnosticsHfUnavailable": "Uygun degil",
@@ -296,10 +328,20 @@
   },
   "diagnosticsHealthButton": "/health test et",
   "diagnosticsModelsButton": "/models test et",
+  "diagnosticsSourceOverride": "Kullan\u0131c\u0131 \u00f6zelle\u015ftirmesi",
+  "diagnosticsSourceDartDefine": "Dart tan\u0131m\u0131",
+  "diagnosticsSourceDotenv": "Dotenv",
+  "diagnosticsSourceWebRelease": "Web s\u00fcr\u00fcm\u00fc (/api)",
+  "diagnosticsSourceWebDev": "Web geli\u015ftirme (localhost)",
+  "diagnosticsSourceAndroidEmulator": "Android em\u00fclat\u00f6r\u00fc (10.0.2.2)",
+  "diagnosticsSourceDesktop": "Masa\u00fcst\u00fc (localhost)",
   "diagnosticsChatButton": "/chat test et",
   "diagnosticsStreamButton": "/chat/stream test et",
   "diagnosticsStreamRunning": "Akış sürüyor...",
   "diagnosticsLastErrorTitle": "Son hata",
+  "diagnosticsErrorStatusLabel": "Durum",
+  "diagnosticsErrorBodyLabel": "\u0130\u00e7erik",
+  "diagnosticsErrorHeadersLabel": "\u00dcstbilgiler",
   "diagnosticsNoErrors": "Henüz hata yok.",
   "diagnosticsStreamSampleTitle": "SSE örneği",
   "diagnosticsNoStreamSample": "Akış olayı yakalanmadı.",

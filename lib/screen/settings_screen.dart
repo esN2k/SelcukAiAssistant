@@ -4,7 +4,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:selcukaiassistant/helper/global.dart';
+import 'package:selcukaiassistant/config/backend_config.dart';
 import 'package:selcukaiassistant/helper/pref.dart';
 import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/model/model_info.dart';
@@ -105,7 +105,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
-  String _resolvedBackendUrl() => Global.backendUrl;
+  String _resolvedBackendUrl() => BackendConfig.baseUrl;
 
   Future<void> _editBackendUrl() async {
     final l10n = context.l10n;

@@ -9,13 +9,13 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
-  String get appTitle => 'SelÃ§uk AI AsistanÄ±';
+  String get appTitle => 'Selçuk YZ Asistan';
 
   @override
-  String get appSubtitle => 'SelÃ§uk Ãœniversitesi Yapay Zeka AsistanÄ±';
+  String get appSubtitle => 'Selçuk YZ Asistan';
 
   @override
-  String get splashSubtitle => 'SelÃ§uk Ãœniversitesi Yapay Zeka AsistanÄ±';
+  String get splashSubtitle => 'Selçuk YZ Asistan';
 
   @override
   String get ok => 'Tamam';
@@ -294,7 +294,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get developerLabel => 'GeliÅŸtirici';
 
   @override
-  String get developerValue => 'SelÃ§uk AI';
+  String get developerValue => 'Selçuk AI';
 
   @override
   String get deleteConversationTitle => 'KonuÅŸmayÄ± sil';
@@ -391,7 +391,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get listeningIndicator => 'Dinleniyor... (bÄ±rakÄ±nca durur)';
 
   @override
-  String get messageHint => 'SelÃ§uk AI AsistanÄ±\'na yazÄ±n...';
+  String get messageHint => 'Selçuk YZ Asistan\'a yazın...';
 
   @override
   String get imageSelectedTitle => 'GÃ¶rsel seÃ§ildi';
@@ -434,6 +434,20 @@ class AppLocalizationsTr extends AppLocalizations {
   String get diagnosticsBaseUrlLabel => 'Temel URL';
 
   @override
+  String diagnosticsBaseUrlSource(String source) {
+    return 'Kaynak: $source';
+  }
+
+  @override
+  String get diagnosticsPlatformLabel => 'Platform';
+
+  @override
+  String get diagnosticsLatencyLabel => 'Gecikme';
+
+  @override
+  String get diagnosticsLatencyUnavailable => 'Henüz gecikme ölçülmedi.';
+
+  @override
   String get diagnosticsModelLabel => 'Seçili model';
 
   @override
@@ -441,6 +455,24 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get diagnosticsModelUnavailable => 'Kullanılamıyor';
+
+  @override
+  String get diagnosticsOllamaLabel => 'Ollama sağlığı';
+
+  @override
+  String get diagnosticsOllamaReady => 'Hazır';
+
+  @override
+  String get diagnosticsOllamaUnavailable => 'Uygun değil';
+
+  @override
+  String get diagnosticsOllamaButton => '/health/ollama test et';
+
+  @override
+  String diagnosticsOllamaDetail(
+      String status, String model, String availability, String count) {
+    return 'Durum: $status | Model: $model | $availability | Modeller: $count';
+  }
 
   @override
   String get diagnosticsHfLabel => 'HF GPU Hazir';
@@ -467,6 +499,27 @@ class AppLocalizationsTr extends AppLocalizations {
   String get diagnosticsModelsButton => '/models test et';
 
   @override
+  String get diagnosticsSourceOverride => 'Kullanıcı özelleştirmesi';
+
+  @override
+  String get diagnosticsSourceDartDefine => 'Dart tanımı';
+
+  @override
+  String get diagnosticsSourceDotenv => 'Dotenv';
+
+  @override
+  String get diagnosticsSourceWebRelease => 'Web sürümü (/api)';
+
+  @override
+  String get diagnosticsSourceWebDev => 'Web geliştirme (localhost)';
+
+  @override
+  String get diagnosticsSourceAndroidEmulator => 'Android emülatörü (10.0.2.2)';
+
+  @override
+  String get diagnosticsSourceDesktop => 'Masaüstü (localhost)';
+
+  @override
   String get diagnosticsChatButton => '/chat test et';
 
   @override
@@ -477,6 +530,15 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get diagnosticsLastErrorTitle => 'Son hata';
+
+  @override
+  String get diagnosticsErrorStatusLabel => 'Durum';
+
+  @override
+  String get diagnosticsErrorBodyLabel => 'İçerik';
+
+  @override
+  String get diagnosticsErrorHeadersLabel => 'Üstbilgiler';
 
   @override
   String get diagnosticsNoErrors => 'Henüz hata yok.';
