@@ -608,6 +608,30 @@ abstract class AppLocalizations {
   /// **'Render formatted text and code'**
   String get markdownSupportSubtitle;
 
+  /// No description provided for @ragEnabledTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Source-grounded answers (RAG)'**
+  String get ragEnabledTitle;
+
+  /// No description provided for @ragEnabledSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Use indexed documents as context when available'**
+  String get ragEnabledSubtitle;
+
+  /// No description provided for @ragStrictTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Strict source mode'**
+  String get ragStrictTitle;
+
+  /// No description provided for @ragStrictSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'If sources are missing, reply with a fixed notice'**
+  String get ragStrictSubtitle;
+
   /// No description provided for @totalConversations.
   ///
   /// In en, this message translates to:
@@ -931,6 +955,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Retry'**
   String get retryAction;
+
+  /// No description provided for @sourcesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sources'**
+  String get sourcesTitle;
 
   /// No description provided for @diagnosticsConnectionSection.
   ///

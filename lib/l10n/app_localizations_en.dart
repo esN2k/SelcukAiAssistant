@@ -274,6 +274,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get markdownSupportSubtitle => 'Render formatted text and code';
 
   @override
+  String get ragEnabledTitle => 'Source-grounded answers (RAG)';
+
+  @override
+  String get ragEnabledSubtitle =>
+      'Use indexed documents as context when available';
+
+  @override
+  String get ragStrictTitle => 'Strict source mode';
+
+  @override
+  String get ragStrictSubtitle =>
+      'If sources are missing, reply with a fixed notice';
+
+  @override
   String get totalConversations => 'Total conversations';
 
   @override
@@ -482,6 +496,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get retryAction => 'Retry';
+
+  @override
+  String get sourcesTitle => 'Sources';
 
   @override
   String get diagnosticsConnectionSection => 'CONNECTION';

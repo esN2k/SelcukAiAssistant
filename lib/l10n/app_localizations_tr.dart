@@ -257,24 +257,36 @@ class AppLocalizationsTr extends AppLocalizations {
   String get diagnosticsTitle => 'Tanılama';
 
   @override
-  String get diagnosticsSubtitle => 'Sunucu bağlantısını ve akışı test edin';
+  String get diagnosticsSubtitle => 'Backend baglantisi ve streaming testi';
 
   @override
-  String get selectModelTitle => 'Model seÃ§in';
+  String get selectModelTitle => 'Model sec';
 
   @override
-  String get voiceInputTitle => 'Sesli giriÅŸ';
+  String get voiceInputTitle => 'Sesli giris';
 
   @override
   String get voiceInputSubtitle =>
-      'Sesli mesajlar iÃ§in mikrofonu etkinleÅŸtirin';
+      'Sesli mesajlar icin mikrofonu etkinlestirin';
 
   @override
-  String get markdownSupportTitle => 'Markdown desteÄŸi';
+  String get markdownSupportTitle => 'Markdown destegi';
 
   @override
-  String get markdownSupportSubtitle =>
-      'BiÃ§imlendirilmiÅŸ metin ve kodu gÃ¶ster';
+  String get markdownSupportSubtitle => 'Bicimlendirilmis metin ve kodu goster';
+
+  @override
+  String get ragEnabledTitle => 'Kaynakli yanitlar (RAG)';
+
+  @override
+  String get ragEnabledSubtitle =>
+      'Uygunsa dizinlenen belgelerden yanit uretir';
+
+  @override
+  String get ragStrictTitle => 'Siki kaynak modu';
+
+  @override
+  String get ragStrictSubtitle => 'Kaynak yoksa sabit uyari verir';
 
   @override
   String get totalConversations => 'Toplam konuÅŸma';
@@ -472,19 +484,22 @@ class AppLocalizationsTr extends AppLocalizations {
   String get copyAction => 'Kopyala';
 
   @override
-  String get editMessageTitle => 'Mesajı düzenle';
+  String get editMessageTitle => 'Mesaji duzenle';
 
   @override
-  String get editMessageHint => 'Mesajınızı güncelleyin';
+  String get editMessageHint => 'Mesajinizi guncelleyin';
 
   @override
-  String get editMessageAction => 'Yeniden gönder';
+  String get editMessageAction => 'Yeniden gonder';
 
   @override
-  String get regenerateAction => 'Yeniden üret';
+  String get regenerateAction => 'Yeniden uret';
 
   @override
   String get retryAction => 'Tekrar dene';
+
+  @override
+  String get sourcesTitle => 'Kaynaklar';
 
   @override
   String get diagnosticsConnectionSection => 'BAĞLANTI';

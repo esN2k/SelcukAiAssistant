@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -56,6 +57,48 @@ class EnhancedMessageCard extends StatelessWidget {
         minHeight: 24,
       ),
       icon: Icon(icon, color: color),
+    );
+  }
+
+  Widget _buildSources(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = context.l10n;
+    final citations =
+        LinkedHashSet<String>.from(message.citations).toList();
+
+    if (citations.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Container(
+      margin: const EdgeInsets.only(top: 8),
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest
+            .withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.sourcesTitle,
+            style: theme.textTheme.labelLarge?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 6),
+          ...citations.map(
+            (item) => Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Text(
+                '• $item',
+                style: theme.textTheme.bodySmall,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -163,6 +206,8 @@ class EnhancedMessageCard extends StatelessWidget {
                     ],
                   ),
                 ),
+                if (!message.isUser && message.citations.isNotEmpty)
+                  _buildSources(context),
                 const SizedBox(height: 4),
 
                 // Timestamp and actions

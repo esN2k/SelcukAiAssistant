@@ -23,6 +23,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final RxString _selectedModel = ''.obs;
   final RxBool _speechEnabled = true.obs;
   final RxBool _markdownEnabled = true.obs;
+  final RxBool _ragEnabled = Pref.ragEnabled.obs;
+  final RxBool _ragStrict = Pref.ragStrict.obs;
   final RxString _selectedLanguage =
       (Pref.localeCode ?? L10n.fallbackLocale.languageCode).obs;
   List<ModelInfo> _models = [];
@@ -359,6 +361,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     _markdownEnabled.value = value;
                   },
                   secondary: const Icon(Icons.code),
+                ),
+              ),
+              const Divider(height: 1),
+              Obx(
+                () => SwitchListTile(
+                  title: Text(l10n.ragEnabledTitle),
+                  subtitle: Text(l10n.ragEnabledSubtitle),
+                  value: _ragEnabled.value,
+                  activeThumbColor: Theme.of(context).colorScheme.primary,
+                  onChanged: (value) {
+                    _ragEnabled.value = value;
+                    Pref.ragEnabled = value;
+                  },
+                  secondary: const Icon(Icons.menu_book_outlined),
+                ),
+              ),
+              const Divider(height: 1),
+              Obx(
+                () => SwitchListTile(
+                  title: Text(l10n.ragStrictTitle),
+                  subtitle: Text(l10n.ragStrictSubtitle),
+                  value: _ragStrict.value,
+                  activeThumbColor: Theme.of(context).colorScheme.primary,
+                  onChanged: _ragEnabled.value
+                      ? (value) {
+                          _ragStrict.value = value;
+                          Pref.ragStrict = value;
+                        }
+                      : null,
+                  secondary: const Icon(Icons.verified_outlined),
                 ),
               ),
             ],
