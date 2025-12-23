@@ -1,0 +1,35 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    env_file:
+      - ./backend/.env
+    environment:
+      HOST: 0.0.0.0
+      PORT: 8000
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://ollama:11434}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost,http://127.0.0.1}
+      ALLOWED_ORIGINS_STRICT: ${ALLOWED_ORIGINS_STRICT:-false}
+    ports:
+      - "8000:8000"
+
+  nginx:
+    image: nginx:1.25-alpine
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    volumes:
+      - ./build/web:/var/www/selcuk-ai/web:ro
+      - ./nginx/selcuk-ai.conf:/etc/nginx/conf.d/default.conf:ro
+
+  ollama:
+    image: ollama/ollama:latest
+    profiles: ["ollama"]
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+
+volumes:
+  ollama-data:

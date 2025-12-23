@@ -31,9 +31,30 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(title="SelcukAiAssistant Backend")
 
+default_dev_origins = [
+    "http://localhost",
+    "http://localhost:3000",
+    "http://localhost:5000",
+    "http://localhost:5001",
+    "http://localhost:8000",
+    "http://localhost:8080",
+    "http://127.0.0.1",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:5000",
+    "http://127.0.0.1:5001",
+    "http://127.0.0.1:8000",
+    "http://127.0.0.1:8080",
+]
+
 allowed_origins = [origin.strip() for origin in Config.ALLOWED_ORIGINS if origin.strip()]
 if not allowed_origins:
-    allowed_origins = ["*"]
+    if Config.ALLOWED_ORIGINS_STRICT:
+        logger.warning(
+            "ALLOWED_ORIGINS_STRICT enabled but ALLOWED_ORIGINS is empty; "
+            "CORS will block all origins."
+        )
+    else:
+        allowed_origins = default_dev_origins
 allow_all_origins = "*" in allowed_origins
 
 app.add_middleware(

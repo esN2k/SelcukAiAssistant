@@ -1,4 +1,4 @@
-# Deployment Guide
+# Selçuk YZ Asistan Deployment Guide
 
 This project ships as a Flutter web app with a FastAPI backend. The web build
 expects the backend to be available at the same origin under `/api`.
@@ -35,6 +35,7 @@ For a production process manager:
 Copy `backend/.env.example` to `backend/.env` and update:
 
 - `ALLOWED_ORIGINS` (prefer explicit origins)
+- `ALLOWED_ORIGINS_STRICT` (true = require explicit origins; no dev fallback)
 - `OLLAMA_BASE_URL`, `OLLAMA_MODEL`
 - `MODEL_BACKEND` (`ollama` or `huggingface`)
 - `MAX_CONTEXT_TOKENS`, `MAX_OUTPUT_TOKENS`, `REQUEST_TIMEOUT`
@@ -48,10 +49,15 @@ Note: If `ALLOWED_ORIGINS="*"`, credentials are disabled by the backend.
 
 ## 4) Reverse Proxy (nginx)
 
-Use the provided `nginx.conf` as a starting point. It serves the Flutter web
+Use `nginx/selcuk-ai.conf` as a starting point. It serves the Flutter web
 build at `/` and proxies the backend at `/api` with SSE-friendly settings.
 
 ## 5) HTTPS
 
 Terminate TLS at the proxy (nginx/Caddy). Ensure your backend is reachable only
 from the proxy in production.
+
+## 6) Docker Compose (optional)
+
+The repo includes `docker-compose.yml` with `nginx`, `backend`, and an optional
+`ollama` service (profiled). Build the web app first so `build/web` exists.

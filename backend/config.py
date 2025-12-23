@@ -82,7 +82,10 @@ class Config:
     PORT: int = int(os.getenv("PORT", "8000"))
     
     # CORS configuration
-    ALLOWED_ORIGINS: List[str] = os.getenv("ALLOWED_ORIGINS", "*").split(",")
+    ALLOWED_ORIGINS: List[str] = os.getenv("ALLOWED_ORIGINS", "").split(",")
+    ALLOWED_ORIGINS_STRICT: bool = os.getenv(
+        "ALLOWED_ORIGINS_STRICT", "false"
+    ).lower() == "true"
     
     # Ollama configuration
     OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
