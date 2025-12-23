@@ -60,3 +60,6 @@ backend/.env
 
 # Benchmarks
 benchmark/outputs/
+
+# Tooling temp
+tools/.tmp/

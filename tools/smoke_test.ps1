@@ -1,10 +1,12 @@
 param(
   [string]$BaseUrl = "http://localhost:8000",
-  [int]$TimeoutSec = 60
+  [int]$TimeoutSec = 60,
+  [string]$ReportPath
 )
 
 $ErrorActionPreference = "Stop"
 $script:failures = 0
+$script:results = @()
 $curl = (Get-Command curl.exe -ErrorAction Stop).Source
 
 $utf8 = [System.Text.UTF8Encoding]::new($false)
@@ -12,19 +14,27 @@ $utf8 = [System.Text.UTF8Encoding]::new($false)
 [Console]::OutputEncoding = $utf8
 $OutputEncoding = $utf8
 
+if ([string]::IsNullOrWhiteSpace($ReportPath)) {
+  $ReportPath = Join-Path $PSScriptRoot ".tmp\smoke_report.md"
+}
+
 function Write-Result {
   param(
     [string]$Name,
     [bool]$Ok,
     [string]$Detail = ""
   )
+  $status = if ($Ok) { "PASS" } else { "FAIL" }
+  if (-not $Ok) { $script:failures++ }
+
+  $script:results += [PSCustomObject]@{
+    Name   = $Name
+    Status = $status
+    Detail = $Detail
+  }
+
   if ($Ok) {
     Write-Host "PASS: $Name"
-    return
-  }
-  $script:failures++
-  if ([string]::IsNullOrWhiteSpace($Detail)) {
-    Write-Host "FAIL: $Name"
   } else {
     Write-Host "FAIL: $Name - $Detail"
   }
@@ -63,7 +73,6 @@ function Invoke-Curl {
   )
 
   $argsString = ($CurlArgs | ForEach-Object { Quote-Arg $_ }) -join ' '
-
   $prev = $ErrorActionPreference
   $ErrorActionPreference = "Continue"
 
@@ -155,8 +164,40 @@ function Build-Payload {
   return ($payload | ConvertTo-Json -Depth 6)
 }
 
-Write-Host "== Selcuk AI Assistant API smoke =="
+function Write-Report {
+  param(
+    [string]$Path
+  )
+  $dir = Split-Path -Path $Path -Parent
+  if ($dir) {
+    New-Item -ItemType Directory -Path $dir -Force | Out-Null
+  }
+
+  $lines = @(
+    "# Selcuk AI Assistant Smoke Report",
+    "",
+    "Timestamp: $(Get-Date -Format o)",
+    "Base URL: $BaseUrl",
+    "Host: $env:COMPUTERNAME",
+    "OS: $([System.Environment]::OSVersion)",
+    "PowerShell: $($PSVersionTable.PSVersion)",
+    "",
+    "| Check | Status | Detail |",
+    "| --- | --- | --- |"
+  )
+
+  foreach ($result in $script:results) {
+    $detail = ($result.Detail -replace '\|', '/')
+    $lines += "| $($result.Name) | $($result.Status) | $detail |"
+  }
+
+  Write-Utf8NoBom -Path $Path -Content ($lines -join "`n")
+}
+
+Write-Host "== Selcuk AI Assistant smoke =="
 Write-Host "Base URL: $BaseUrl"
+
+Write-Result "Environment" $true "OS: $([System.Environment]::OSVersion)"
 
 $health = Invoke-Curl @("-sS", "--max-time", "$TimeoutSec", "$BaseUrl/health")
 $healthOk = $false
@@ -169,6 +210,30 @@ if ($health.ExitCode -eq 0) {
   }
 }
 Write-Result "GET /health" $healthOk (Truncate-Text $health.Output)
+
+$ollama = Invoke-Curl @("-sS", "--max-time", "$TimeoutSec", "$BaseUrl/health/ollama")
+$ollamaOk = $false
+if ($ollama.ExitCode -eq 0) {
+  try {
+    $ollamaJson = $ollama.Output | ConvertFrom-Json
+    $ollamaOk = ($ollamaJson.status -ne "unhealthy") -and ($ollamaJson.model_available -eq $true)
+  } catch {
+    $ollamaOk = $false
+  }
+}
+Write-Result "GET /health/ollama" $ollamaOk (Truncate-Text $ollama.Output)
+
+$hf = Invoke-Curl @("-sS", "--max-time", "$TimeoutSec", "$BaseUrl/health/hf")
+$hfOk = $false
+if ($hf.ExitCode -eq 0) {
+  try {
+    $hfJson = $hf.Output | ConvertFrom-Json
+    $hfOk = -not [string]::IsNullOrWhiteSpace($hfJson.status)
+  } catch {
+    $hfOk = $false
+  }
+}
+Write-Result "GET /health/hf" $hfOk (Truncate-Text $hf.Output)
 
 $models = Invoke-Curl @("-sS", "--max-time", "$TimeoutSec", "$BaseUrl/models")
 $modelsOk = $false
@@ -184,8 +249,40 @@ if ($models.ExitCode -eq 0) {
 }
 Write-Result "GET /models" $modelsOk (Truncate-Text $models.Output)
 
+$tmpDir = Join-Path $PSScriptRoot ".tmp"
+New-Item -ItemType Directory -Path $tmpDir -Force | Out-Null
+
+$invalidBodyPath = Join-Path $tmpDir "payload_invalid.json"
+Write-Utf8NoBom -Path $invalidBodyPath -Content '{ "foo": "bar" }'
+$invalidBodyOut = Join-Path $tmpDir "payload_invalid_response.json"
+$invalid = Invoke-Curl @(
+  "-sS",
+  "--max-time", "$TimeoutSec",
+  "-H", "Content-Type: application/json",
+  "-X", "POST",
+  "$BaseUrl/chat",
+  "--data-binary", "@$invalidBodyPath",
+  "-o", "$invalidBodyOut",
+  "-w", "%{http_code}"
+)
+$invalidCode = [regex]::Match($invalid.Output, '\d{3}').Value
+$invalidOk = $false
+if ($invalidCode) {
+  $invalidOk = [int]$invalidCode -ge 400
+}
+$invalidBody = ""
+if (Test-Path $invalidBodyOut) {
+  $invalidBody = Get-Content -Path $invalidBodyOut -Raw
+}
+Write-Result "POST /chat (invalid payload)" $invalidOk "HTTP $invalidCode $(Truncate-Text $invalidBody)"
+
 if (-not $modelsOk) {
-  Write-Host "Skipping /chat and /chat/stream (no models available)."
+  Write-Result "POST /chat (ollama)" $false "Skipped: no models available"
+  Write-Result "POST /chat/stream (ollama)" $false "Skipped: no models available"
+  Write-Result "POST /chat (hf)" $false "Skipped: no models available"
+  Write-Result "POST /chat/stream (hf)" $false "Skipped: no models available"
+  Write-Report -Path $ReportPath
+  Write-Host "Report saved: $ReportPath"
   exit 1
 }
 
@@ -202,16 +299,6 @@ $hfModel = Require-Model -Models $availableModels -Provider "huggingface" -Prefe
   "hf_qwen2_5_1_5b",
   "hf_phi3_mini"
 )
-
-if (-not $ollamaModel) {
-  Write-Result "Select ollama model" $false "No available ollama models in /models"
-}
-if (-not $hfModel) {
-  Write-Result "Select huggingface model" $false "No available huggingface models in /models"
-}
-
-$tmpDir = Join-Path $PSScriptRoot ".tmp"
-New-Item -ItemType Directory -Path $tmpDir -Force | Out-Null
 
 if ($ollamaModel) {
   $ollamaPayload = Build-Payload -ModelId $ollamaModel.id -Stream:$false
@@ -259,8 +346,8 @@ if ($ollamaModel) {
   $hasError = $streamText -match '"type"\s*:\s*"error"'
   $streamOk = ($hasToken -or $hasEnd) -and (-not $hasError)
   Write-Result "POST /chat/stream (ollama: $($ollamaModel.id))" $streamOk (Truncate-Text $streamText)
-  Write-Host "SSE sample (ollama):"
-  ($streamText -split "`r?`n" | Where-Object { $_ -ne "" } | Select-Object -First 20) | ForEach-Object { Write-Host $_ }
+} else {
+  Write-Result "Select ollama model" $false "No available ollama models in /models"
 }
 
 if ($hfModel) {
@@ -309,9 +396,12 @@ if ($hfModel) {
   $hasError = $streamText -match '"type"\s*:\s*"error"'
   $streamOk = ($hasToken -or $hasEnd) -and (-not $hasError)
   Write-Result "POST /chat/stream (hf: $($hfModel.id))" $streamOk (Truncate-Text $streamText)
-  Write-Host "SSE sample (hf):"
-  ($streamText -split "`r?`n" | Where-Object { $_ -ne "" } | Select-Object -First 20) | ForEach-Object { Write-Host $_ }
+} else {
+  Write-Result "Select huggingface model" $false "No available huggingface models in /models"
 }
+
+Write-Report -Path $ReportPath
+Write-Host "Report saved: $ReportPath"
 
 if ($script:failures -gt 0) {
   Write-Host "FAILED: $script:failures checks failed."
