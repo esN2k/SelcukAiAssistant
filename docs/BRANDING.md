@@ -1,18 +1,14 @@
-# Branding & App Naming
+﻿# Markalama
 
-Official product naming must stay consistent across all platforms and UI.
+## Resmi isimler
+- TR: Selcuk YZ Asistan
+- EN: Selcuk AI Assistant
+- Kisa: Selcuk AI
 
-## Display names
+## Dil varsayilani
+- Uygulama ici varsayilan dil Turkce.
+- Ingilizce, ayarlardan secilebilir.
 
-- TR (display): Selçuk YZ Asistan
-- EN (display): Selcuk AI Assistant
-- Short name: Selçuk AI
-
-## Where this is applied
-
-- Android: `android/app/src/main/AndroidManifest.xml` + `android/app/src/main/res/values*/strings.xml`
-- iOS: `ios/Runner/Info.plist`
-- Web: `web/index.html` + `web/manifest.json`
-- Windows: `windows/runner/main.cpp`
-- Flutter UI: `lib/l10n/app_tr.arb`, `lib/l10n/app_en.arb`, and generated `lib/l10n/app_localizations_*.dart`
-- Docs: `README.md`, `README_NEW.md`, `backend/README.md`, `DEPLOYMENT.md`
+## Kullanim notlari
+- Marka adi tum platformlarda ayni yazimla kullanilir.
+- Dosya adlari ve dokumanlarda Turkce tercih edilir.

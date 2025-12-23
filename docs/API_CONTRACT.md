@@ -1,77 +1,44 @@
-# API Contract
+﻿# API Kontrati
 
-This document defines the canonical request/response schema for `/chat` and `/chat/stream`.
+Bu dokuman backend API sozlesmesini ozetler.
 
-## Request Schema
+## GET /health
+- Cevap: `{ "status": "ok", "message": "..." }`
 
+## GET /models
+- Cevap: `{ "models": [ ... ] }`
+- Model nesnesi: `id`, `provider`, `model_id`, `display_name`, `local_or_remote`, `requires_api_key`, `available`, `reason_unavailable`, `tags`, `notes`.
+
+## POST /chat
+### Istek
 ```json
 {
-  "model": "alias_or_provider:model_id",
-  "messages": [
-    {"role": "system", "content": "You are a helpful assistant."},
-    {"role": "user", "content": "Merhaba! Selcuk University yemekhane saatleri nedir?"}
-  ],
+  "model": "ollama:llama3.1",
+  "messages": [{ "role": "user", "content": "Merhaba" }],
   "temperature": 0.2,
   "top_p": 0.9,
   "max_tokens": 256,
-  "stream": true
+  "rag_enabled": false,
+  "rag_strict": true,
+  "rag_top_k": 4
 }
 ```
 
-Rules:
-- `messages[]` is required and must contain at least one user message.
-- `role` must be one of: `system`, `user`, `assistant`.
-- `model` is optional. If omitted, the backend uses its default provider/model.
-
-## Non-Streaming Response (`POST /chat`)
-
+### Cevap
 ```json
 {
-  "answer": "Merhaba! ...",
-  "request_id": "abcd1234",
+  "answer": "...",
+  "request_id": "...",
   "provider": "ollama",
-  "model": "selcuk_ai_assistant",
-  "usage": {
-    "prompt_tokens": 120,
-    "completion_tokens": 48,
-    "total_tokens": 168
-  }
+  "model": "llama3.1",
+  "usage": { "prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0 },
+  "citations": ["kaynak.pdf (sayfa 2)"]
 }
 ```
 
-## Streaming Response (`POST /chat/stream`)
-
-The endpoint returns Server-Sent Events (SSE). Each event is a `data:` line with JSON.
-
-Token event:
-```
-data: {"type":"token","token":"Merhaba","request_id":"abcd1234"}
-```
-
-End event:
-```
-data: {"type":"end","usage":{"prompt_tokens":120,"completion_tokens":48,"total_tokens":168},"request_id":"abcd1234"}
-```
-
-Error event:
-```
-data: {"type":"error","message":"Request timeout","request_id":"abcd1234"}
-```
-
-## Models
-
-`GET /models` returns the available model aliases for this deployment:
-
-```json
-{
-  "models": [
-    {
-      "id": "default",
-      "provider": "ollama",
-      "model_id": "selcuk_ai_assistant",
-      "display_name": "Default",
-      "is_default": true
-    }
-  ]
-}
-```
+## POST /chat/stream
+- SSE ile parcali yanit doner.
+- Etkinlik tipleri:
+  - `token`: `{ "type": "token", "token": "...", "request_id": "..." }`
+  - `end`: `{ "type": "end", "usage": { ... }, "citations": [ ... ], "request_id": "..." }`
+  - `error`: `{ "type": "error", "message": "...", "request_id": "..." }`

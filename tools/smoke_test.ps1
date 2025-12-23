@@ -174,15 +174,15 @@ function Write-Report {
   }
 
   $lines = @(
-    "# Selcuk AI Assistant Smoke Report",
+    "# Selcuk YZ Asistan Smoke Raporu",
     "",
-    "Timestamp: $(Get-Date -Format o)",
-    "Base URL: $BaseUrl",
+    "Zaman: $(Get-Date -Format o)",
+    "Taban URL: $BaseUrl",
     "Host: $env:COMPUTERNAME",
     "OS: $([System.Environment]::OSVersion)",
     "PowerShell: $($PSVersionTable.PSVersion)",
     "",
-    "| Check | Status | Detail |",
+    "| Kontrol | Durum | Detay |",
     "| --- | --- | --- |"
   )
 
@@ -194,10 +194,10 @@ function Write-Report {
   Write-Utf8NoBom -Path $Path -Content ($lines -join "`n")
 }
 
-Write-Host "== Selcuk AI Assistant smoke =="
-Write-Host "Base URL: $BaseUrl"
+Write-Host "== Selcuk YZ Asistan smoke =="
+Write-Host "Taban URL: $BaseUrl"
 
-Write-Result "Environment" $true "OS: $([System.Environment]::OSVersion)"
+Write-Result "Ortam" $true "OS: $([System.Environment]::OSVersion)"
 
 $health = Invoke-Curl @("-sS", "--max-time", "$TimeoutSec", "$BaseUrl/health")
 $healthOk = $false
@@ -274,15 +274,15 @@ $invalidBody = ""
 if (Test-Path $invalidBodyOut) {
   $invalidBody = Get-Content -Path $invalidBodyOut -Raw
 }
-Write-Result "POST /chat (invalid payload)" $invalidOk "HTTP $invalidCode $(Truncate-Text $invalidBody)"
+Write-Result "POST /chat (gecersiz payload)" $invalidOk "HTTP $invalidCode $(Truncate-Text $invalidBody)"
 
 if (-not $modelsOk) {
-  Write-Result "POST /chat (ollama)" $false "Skipped: no models available"
-  Write-Result "POST /chat/stream (ollama)" $false "Skipped: no models available"
-  Write-Result "POST /chat (hf)" $false "Skipped: no models available"
-  Write-Result "POST /chat/stream (hf)" $false "Skipped: no models available"
+  Write-Result "POST /chat (ollama)" $false "Atlandi: uygun model yok"
+  Write-Result "POST /chat/stream (ollama)" $false "Atlandi: uygun model yok"
+  Write-Result "POST /chat (hf)" $false "Atlandi: uygun model yok"
+  Write-Result "POST /chat/stream (hf)" $false "Atlandi: uygun model yok"
   Write-Report -Path $ReportPath
-  Write-Host "Report saved: $ReportPath"
+  Write-Host "Rapor kaydedildi: $ReportPath"
   exit 1
 }
 
@@ -347,7 +347,7 @@ if ($ollamaModel) {
   $streamOk = ($hasToken -or $hasEnd) -and (-not $hasError)
   Write-Result "POST /chat/stream (ollama: $($ollamaModel.id))" $streamOk (Truncate-Text $streamText)
 } else {
-  Write-Result "Select ollama model" $false "No available ollama models in /models"
+  Write-Result "Ollama modeli secimi" $false "/models icinde uygun ollama modeli yok"
 }
 
 if ($hfModel) {
@@ -397,15 +397,15 @@ if ($hfModel) {
   $streamOk = ($hasToken -or $hasEnd) -and (-not $hasError)
   Write-Result "POST /chat/stream (hf: $($hfModel.id))" $streamOk (Truncate-Text $streamText)
 } else {
-  Write-Result "Select huggingface model" $false "No available huggingface models in /models"
+  Write-Result "HuggingFace modeli secimi" $false "/models icinde uygun huggingface modeli yok"
 }
 
 Write-Report -Path $ReportPath
-Write-Host "Report saved: $ReportPath"
+Write-Host "Rapor kaydedildi: $ReportPath"
 
 if ($script:failures -gt 0) {
-  Write-Host "FAILED: $script:failures checks failed."
+  Write-Host "FAILED: $script:failures kontrol basarisiz."
   exit 1
 }
 
-Write-Host "All checks passed."
+Write-Host "Tum kontroller basarili."

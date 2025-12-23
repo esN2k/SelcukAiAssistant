@@ -155,8 +155,8 @@ function Build-Payload {
   return ($payload | ConvertTo-Json -Depth 6)
 }
 
-Write-Host "== Selcuk AI Assistant API smoke =="
-Write-Host "Base URL: $BaseUrl"
+Write-Host "== Selcuk YZ Asistan API smoke =="
+Write-Host "Taban URL: $BaseUrl"
 
 $health = Invoke-Curl @("-sS", "--max-time", "$TimeoutSec", "$BaseUrl/health")
 $healthOk = $false
@@ -185,7 +185,7 @@ if ($models.ExitCode -eq 0) {
 Write-Result "GET /models" $modelsOk (Truncate-Text $models.Output)
 
 if (-not $modelsOk) {
-  Write-Host "Skipping /chat and /chat/stream (no models available)."
+  Write-Host "/chat ve /chat/stream atlandi (uygun model yok)."
   exit 1
 }
 
@@ -204,10 +204,10 @@ $hfModel = Require-Model -Models $availableModels -Provider "huggingface" -Prefe
 )
 
 if (-not $ollamaModel) {
-  Write-Result "Select ollama model" $false "No available ollama models in /models"
+  Write-Result "Ollama modeli secimi" $false "/models icinde uygun ollama modeli yok"
 }
 if (-not $hfModel) {
-  Write-Result "Select huggingface model" $false "No available huggingface models in /models"
+  Write-Result "HuggingFace modeli secimi" $false "/models icinde uygun huggingface modeli yok"
 }
 
 $tmpDir = Join-Path $PSScriptRoot ".tmp"
@@ -259,7 +259,7 @@ if ($ollamaModel) {
   $hasError = $streamText -match '"type"\s*:\s*"error"'
   $streamOk = ($hasToken -or $hasEnd) -and (-not $hasError)
   Write-Result "POST /chat/stream (ollama: $($ollamaModel.id))" $streamOk (Truncate-Text $streamText)
-  Write-Host "SSE sample (ollama):"
+  Write-Host "SSE ornek (ollama):"
   ($streamText -split "`r?`n" | Where-Object { $_ -ne "" } | Select-Object -First 20) | ForEach-Object { Write-Host $_ }
 }
 
@@ -309,13 +309,13 @@ if ($hfModel) {
   $hasError = $streamText -match '"type"\s*:\s*"error"'
   $streamOk = ($hasToken -or $hasEnd) -and (-not $hasError)
   Write-Result "POST /chat/stream (hf: $($hfModel.id))" $streamOk (Truncate-Text $streamText)
-  Write-Host "SSE sample (hf):"
+  Write-Host "SSE ornek (hf):"
   ($streamText -split "`r?`n" | Where-Object { $_ -ne "" } | Select-Object -First 20) | ForEach-Object { Write-Host $_ }
 }
 
 if ($script:failures -gt 0) {
-  Write-Host "FAILED: $script:failures checks failed."
+  Write-Host "FAILED: $script:failures kontrol basarisiz."
   exit 1
 }
 
-Write-Host "All checks passed."
+Write-Host "Tum kontroller basarili."
