@@ -41,9 +41,8 @@ jobs:
 
       - name: Type Check with Mypy
         run: |
-          # Optional: fail on type errors. Currently allow-failure for gradual adoption.
-          mypy . || true
+          mypy .
 
       - name: Test with Pytest
         run: |
-          pytest -v
+          python -m pytest -q

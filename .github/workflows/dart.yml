@@ -47,3 +47,7 @@ jobs:
       # want to change this to 'flutter test'.
       - name: Run tests
         run: flutter test
+
+      - name: Build web (optional)
+        run: flutter build web --release
+        continue-on-error: true
