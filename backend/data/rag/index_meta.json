@@ -1,0 +1,7 @@
+{
+  "embedding_model": "sentence-transformers/paraphrase-multilingual-mpnet-base-v2",
+  "dimension": 768,
+  "chunk_size": 500,
+  "chunk_overlap": 50,
+  "documents": 1005
+}

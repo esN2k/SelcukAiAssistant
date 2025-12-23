@@ -238,7 +238,7 @@ başlığı kullanmıyorsanız diğer kullandığınız başlığı buraya yazı
 ……………………………………………………….
 Çizelge 3.1. Atomu oluşturan taneciklerin kütleleri ve yükleri
 Madde
-Atom çapı (Å)
+Atom çapı (Ångström)
 Kaynama noktası (°C)
 Standart şartlardaki
 fiziksel hali
