@@ -95,6 +95,7 @@ class ConversationService {
     String? newContent,
     String? error,
     String? errorCode,
+    List<String>? citations,
   }) async {
     final conversation = box.get(conversationId);
     if (conversation != null) {
@@ -110,6 +111,9 @@ class ConversationService {
         }
         if (errorCode != null) {
           message.errorCode = errorCode.isEmpty ? null : errorCode;
+        }
+        if (citations != null) {
+          message.citations = citations;
         }
         conversation.updatedAt = DateTime.now();
         await conversation.save();

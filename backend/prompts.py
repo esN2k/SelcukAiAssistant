@@ -159,3 +159,41 @@ def build_default_system_prompt(language: str) -> str:
         base = DEFAULT_SYSTEM_PROMPT_EN
         guard = "Answer in English. Do not reveal chain-of-thought or planning. Be concise and helpful."
     return f"{base.strip()}\n\n{guard}"
+
+
+RAG_RULES_TR = (
+    "RAG KURALLARI:\n"
+    "- Yanitlarini yalnizca saglanan kaynak parcalarina dayandir.\n"
+    "- Kaynaklarda yoksa: \"Bu bilgi kaynaklarda yok.\" de.\n"
+    "- Kaynak uydurma.\n"
+)
+
+RAG_RULES_EN = (
+    "RAG RULES:\n"
+    "- Base your answer only on the provided source snippets.\n"
+    "- If the sources do not contain the answer, say: \"This information is not in the sources.\".\n"
+    "- Do not invent sources.\n"
+)
+
+
+def rag_no_source_message(language: str) -> str:
+    if language.lower().startswith("en"):
+        return "This information is not in the sources."
+    return "Bu bilgi kaynaklarda yok."
+
+
+def build_rag_system_prompt(
+    base_prompt: str,
+    context: str,
+    language: str,
+    strict: bool,
+) -> str:
+    rules = RAG_RULES_EN if language.lower().startswith("en") else RAG_RULES_TR
+    strict_note = ""
+    if strict:
+        strict_note = "Mod: STRICT\n"
+    header = "Sources" if language.lower().startswith("en") else "Kaynaklar"
+    return (
+        f"{base_prompt.strip()}\n\n{rules}{strict_note}\n"
+        f"{header}:\n{context.strip()}"
+    )

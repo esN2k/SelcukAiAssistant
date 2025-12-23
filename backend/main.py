@@ -17,6 +17,8 @@ from providers.base import CancellationToken, ModelProvider, Usage
 from providers.huggingface_provider import HuggingFaceProvider
 from providers.ollama_provider import OllamaProvider
 from providers.registry import ModelRegistry
+from prompts import build_rag_system_prompt, rag_no_source_message
+from rag_service import rag_service
 from response_cleaner import StreamingResponseCleaner, clean_text
 from schemas import ChatRequest, ChatResponse, UsageInfo
 from utils import (
@@ -209,7 +211,37 @@ async def chat(request: ChatRequest, http_request: Request) -> ChatResponse:
     if not provider:
         raise HTTPException(status_code=400, detail="Unknown model provider")
 
+    rag_enabled = request.rag_enabled and Config.RAG_ENABLED
+    rag_strict = (
+        Config.RAG_STRICT_DEFAULT
+        if request.rag_strict is None
+        else request.rag_strict
+    )
+    rag_top_k = request.rag_top_k or Config.RAG_TOP_K
+
     messages = normalize_messages(request.messages, language)
+    citations: list[str] = []
+
+    if rag_enabled:
+        question = next((m.content for m in reversed(messages) if m.role == "user"), "")
+        context, citations = rag_service.get_context(question, top_k=rag_top_k)
+        if rag_strict and not context:
+            answer = rag_no_source_message(language)
+            return ChatResponse(
+                answer=answer,
+                request_id=request_id,
+                provider=resolved.provider,
+                model=resolved.model_id,
+                usage=None,
+                citations=citations,
+            )
+        if context:
+            messages[0].content = build_rag_system_prompt(
+                messages[0].content,
+                context,
+                language,
+                rag_strict,
+            )
     messages = trim_messages_for_context(messages, Config.MAX_CONTEXT_TOKENS)
     max_tokens = clamp_max_tokens(request.max_tokens, Config.MAX_OUTPUT_TOKENS)
 
@@ -247,6 +279,7 @@ async def chat(request: ChatRequest, http_request: Request) -> ChatResponse:
         provider=resolved.provider,
         model=resolved.model_id,
         usage=_usage_to_schema(result.usage),
+        citations=citations or None,
     )
 
 
@@ -259,12 +292,52 @@ async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingR
     if not provider:
         raise HTTPException(status_code=400, detail="Unknown model provider")
 
+    rag_enabled = request.rag_enabled and Config.RAG_ENABLED
+    rag_strict = (
+        Config.RAG_STRICT_DEFAULT
+        if request.rag_strict is None
+        else request.rag_strict
+    )
+    rag_top_k = request.rag_top_k or Config.RAG_TOP_K
+
     messages = normalize_messages(request.messages, language)
+    citations: list[str] = []
+    rag_context = ""
+
+    if rag_enabled:
+        question = next((m.content for m in reversed(messages) if m.role == "user"), "")
+        rag_context, citations = rag_service.get_context(question, top_k=rag_top_k)
+        if rag_context:
+            messages[0].content = build_rag_system_prompt(
+                messages[0].content,
+                rag_context,
+                language,
+                rag_strict,
+            )
     messages = trim_messages_for_context(messages, Config.MAX_CONTEXT_TOKENS)
     max_tokens = clamp_max_tokens(request.max_tokens, Config.MAX_OUTPUT_TOKENS)
     cancel_token = CancellationToken()
 
     async def event_generator() -> Any:
+        if rag_enabled and rag_strict and not rag_context:
+            no_source = rag_no_source_message(language)
+            yield sse_event(
+                {
+                    "type": "token",
+                    "token": no_source,
+                    "request_id": request_id,
+                }
+            )
+            yield sse_event(
+                {
+                    "type": "end",
+                    "usage": None,
+                    "request_id": request_id,
+                    "citations": citations,
+                }
+            )
+            return
+
         cleaner = StreamingResponseCleaner(language=language)
         try:
             async with asyncio.timeout(Config.REQUEST_TIMEOUT):
@@ -309,6 +382,7 @@ async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingR
                                 if usage_schema
                                 else None,
                                 "request_id": request_id,
+                                "citations": citations or None,
                             }
                         )
                         break

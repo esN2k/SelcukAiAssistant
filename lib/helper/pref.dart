@@ -109,4 +109,18 @@ class Pref {
       unawaited(box.put('backendUrlOverride', value.trim()));
     }
   }
+
+  static bool get ragEnabled =>
+      (box.get('ragEnabled') as bool?) ?? false;
+
+  static set ragEnabled(bool value) => box.put('ragEnabled', value);
+
+  static bool get ragStrict =>
+      (box.get('ragStrict') as bool?) ?? true;
+
+  static set ragStrict(bool value) => box.put('ragStrict', value);
+
+  static int get ragTopK => (box.get('ragTopK') as int?) ?? 4;
+
+  static set ragTopK(int value) => box.put('ragTopK', value);
 }

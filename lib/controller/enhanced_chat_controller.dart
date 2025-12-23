@@ -237,7 +237,9 @@ class EnhancedChatController extends GetxController {
           messages: payloadMessages,
           model: selectedModel,
         );
-        aiMessage.content = ResponseCleaner.clean(fallback);
+        aiMessage
+          ..content = ResponseCleaner.clean(fallback.answer)
+          ..citations = fallback.citations;
       } else {
         aiMessage.content +=
             "\n\n${l10n?.streamInterruptedTag ?? '[Stream interrupted]'}";
@@ -411,6 +413,7 @@ class EnhancedChatController extends GetxController {
       ..content = ''
       ..error = null
       ..errorCode = null
+      ..citations = []
       ..createdAt = DateTime.now();
     messages.refresh();
 
@@ -424,6 +427,7 @@ class EnhancedChatController extends GetxController {
 
     String? errorMessage;
     String? errorCode;
+    List<String>? citations;
 
     try {
       await _streamResponse(
@@ -431,6 +435,7 @@ class EnhancedChatController extends GetxController {
         message,
         model: selectedModel,
       );
+      citations = message.citations;
     } on Exception catch (e) {
       if (!_stopRequested) {
         errorMessage = e.toString();
@@ -454,6 +459,7 @@ class EnhancedChatController extends GetxController {
         newContent: message.content,
         error: errorMessage ?? '',
         errorCode: errorCode ?? '',
+        citations: citations,
       );
       isGenerating.value = false;
       _stopRequested = false;
@@ -491,6 +497,9 @@ class EnhancedChatController extends GetxController {
           }
         } else if (event.type == 'end') {
           aiMessage.content = cleaner.finalize();
+          if (event.citations != null) {
+            aiMessage.citations = event.citations!;
+          }
           messages.refresh();
           _scrollDown();
           if (!completer.isCompleted) {

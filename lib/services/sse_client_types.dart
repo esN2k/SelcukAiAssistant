@@ -5,6 +5,7 @@ class ChatStreamEvent {
     this.token,
     this.message,
     this.usage,
+    this.citations,
   });
 
   factory ChatStreamEvent.fromJson(Map<String, dynamic> json) {
@@ -14,6 +15,9 @@ class ChatStreamEvent {
       token: json['token'] as String?,
       message: json['message'] as String?,
       usage: json['usage'] as Map<String, dynamic>?,
+      citations: (json['citations'] as List<dynamic>?)
+          ?.map((item) => item.toString())
+          .toList(),
     );
   }
 
@@ -22,6 +26,7 @@ class ChatStreamEvent {
   final String? token;
   final String? message;
   final Map<String, dynamic>? usage;
+  final List<String>? citations;
 }
 
 class ChatStreamSession {

@@ -143,7 +143,7 @@ class ChatController extends GetxController {
           ..removeLast()
           ..add(
             Message(
-              msg: ResponseCleaner.clean(res),
+              msg: ResponseCleaner.clean(res.answer),
               msgType: MessageType.bot,
             ),
           );

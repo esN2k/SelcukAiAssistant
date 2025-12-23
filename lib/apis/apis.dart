@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:selcukaiassistant/config/backend_config.dart';
 import 'package:selcukaiassistant/helper/pref.dart';
 import 'package:selcukaiassistant/l10n/l10n.dart';
+import 'package:selcukaiassistant/model/chat_api_response.dart';
 import 'package:selcukaiassistant/services/sse_client.dart';
 
 class APIs {
@@ -31,6 +32,9 @@ class APIs {
       'top_p': 0.9,
       'max_tokens': 256,
       'stream': stream,
+      'rag_enabled': Pref.ragEnabled,
+      'rag_strict': Pref.ragStrict,
+      'rag_top_k': Pref.ragTopK,
     };
   }
 
@@ -45,13 +49,14 @@ class APIs {
     }
     messages.add({'role': 'user', 'content': question});
 
-    return sendChat(
+    final response = await sendChat(
       messages: messages,
       model: model,
     );
+    return response.answer;
   }
 
-  static Future<String> sendChat({
+  static Future<ChatApiResponse> sendChat({
     required List<Map<String, String>> messages,
     String? model,
   }) async {
@@ -83,40 +88,67 @@ class APIs {
             as Map<String, dynamic>;
         final answer = (responseData['answer'] as String?) ??
             (l10n?.noResponseGenerated ?? 'Sorry, no response generated.');
-        return answer;
+        final citations = (responseData['citations'] as List<dynamic>?)
+                ?.map((item) => item.toString())
+                .toList() ??
+            <String>[];
+        final usage =
+            responseData['usage'] as Map<String, dynamic>? ??
+                <String, dynamic>{};
+        return ChatApiResponse(
+          answer: answer,
+          citations: citations,
+          usage: usage,
+        );
       } else if (response.statusCode == 400) {
         try {
           final errorData =
               jsonDecode(response.body) as Map<String, dynamic>;
           final errorMessage =
               errorData['detail'] as String? ?? l10n?.errorInvalidRequest;
-          return errorMessage ?? 'Error: Invalid request';
+          return ChatApiResponse(
+            answer: errorMessage ?? 'Error: Invalid request',
+          );
         } on FormatException {
-          return l10n?.errorInvalidRequestFormat ??
-              'Error: Invalid request format.';
+          return ChatApiResponse(
+            answer: l10n?.errorInvalidRequestFormat ??
+                'Error: Invalid request format.',
+          );
         }
       } else if (response.statusCode == 503) {
-        return l10n?.errorServiceUnavailable ??
-            'Error: AI service is unavailable.';
+        return ChatApiResponse(
+          answer: l10n?.errorServiceUnavailable ??
+              'Error: AI service is unavailable.',
+        );
       } else if (response.statusCode == 504) {
-        return l10n?.errorTimeout ?? 'Error: AI response timeout.';
+        return ChatApiResponse(
+          answer: l10n?.errorTimeout ?? 'Error: AI response timeout.',
+        );
       }
 
-      return l10n?.errorBackendUnavailable ??
-          'Error: Backend service unavailable.';
+      return ChatApiResponse(
+        answer: l10n?.errorBackendUnavailable ??
+            'Error: Backend service unavailable.',
+      );
     } on TimeoutException catch (e) {
       log('Backend timeout: $e');
-      return e.message ?? timeoutMessage;
+      return ChatApiResponse(answer: e.message ?? timeoutMessage);
     } on http.ClientException catch (e) {
       log('Network error: $e');
-      return l10n?.errorNoInternet ?? 'Error: No internet connection.';
+      return ChatApiResponse(
+        answer: l10n?.errorNoInternet ?? 'Error: No internet connection.',
+      );
     } on FormatException catch (e) {
       log('Parse error: $e');
-      return l10n?.errorInvalidServerResponse ??
-          'Error: Invalid server response.';
+      return ChatApiResponse(
+        answer: l10n?.errorInvalidServerResponse ??
+            'Error: Invalid server response.',
+      );
     } on Exception catch (e) {
       log('Backend error: $e');
-      return l10n?.errorUnexpected ?? 'Error: Unexpected error.';
+      return ChatApiResponse(
+        answer: l10n?.errorUnexpected ?? 'Error: Unexpected error.',
+      );
     }
   }
 

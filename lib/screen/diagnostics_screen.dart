@@ -215,6 +215,9 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
       'top_p': 0.9,
       'max_tokens': 128,
       'stream': stream,
+      'rag_enabled': Pref.ragEnabled,
+      'rag_strict': Pref.ragStrict,
+      'rag_top_k': Pref.ragTopK,
     };
   }
 
