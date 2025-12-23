@@ -1,303 +1,314 @@
-"""RAG (Retrieval-Augmented Generation) service for SelcukAiAssistant.
+"""RAG (Retrieval-Augmented Generation) service and FAISS-backed index."""
+from __future__ import annotations
 
-This module provides document ingestion, vector storage, and similarity search
-for enhancing AI responses with relevant Selçuk University documents.
-
-Future implementation will use ChromaDB for vector storage and similarity search.
-"""
+import json
 import logging
-from typing import List, Optional, Dict, Any
+import re
+import uuid
+from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any, Optional, Sequence
+
+import numpy as np
 
 from config import Config
 
 logger = logging.getLogger(__name__)
 
+try:  # pragma: no cover - exercised via runtime imports
+    import faiss  # type: ignore
+except Exception:  # pragma: no cover - allow import failure when RAG is disabled
+    faiss = None
 
+
+@dataclass
 class Document:
-    """Represents a document chunk with metadata."""
-    
+    """Single document chunk with metadata."""
+
+    content: str
+    metadata: dict[str, Any] = field(default_factory=dict)
+    doc_id: Optional[str] = None
+    score: Optional[float] = None
+
+
+class EmbeddingBackend:
+    """Embedding backend contract."""
+
+    @property
+    def dimension(self) -> int:
+        raise NotImplementedError
+
+    def embed(self, texts: Sequence[str]) -> np.ndarray:
+        raise NotImplementedError
+
+
+class SentenceTransformerBackend(EmbeddingBackend):
+    """SentenceTransformers embedding backend."""
+
+    def __init__(self, model_name: str) -> None:
+        from sentence_transformers import SentenceTransformer
+
+        self.model_name = model_name
+        self._model = SentenceTransformer(model_name)
+        dimension = self._model.get_sentence_embedding_dimension()
+        if dimension is None:
+            raise RuntimeError("Embedding dimension not available")
+        self._dimension = int(dimension)
+
+    @property
+    def dimension(self) -> int:
+        return self._dimension
+
+    def embed(self, texts: Sequence[str]) -> np.ndarray:
+        if not texts:
+            return np.zeros((0, self._dimension), dtype="float32")
+        embeddings = self._model.encode(
+            list(texts),
+            show_progress_bar=False,
+            convert_to_numpy=True,
+            normalize_embeddings=True,
+        )
+        return embeddings.astype("float32")
+
+
+def chunk_text(text: str, chunk_size: int, chunk_overlap: int) -> list[str]:
+    """Chunk text with simple paragraph-aware splitting."""
+    cleaned = text.replace("\r", "\n")
+    cleaned = re.sub(r"\n{3,}", "\n\n", cleaned).strip()
+    if not cleaned:
+        return []
+
+    paragraphs = [p.strip() for p in re.split(r"\n\s*\n", cleaned) if p.strip()]
+    chunks: list[str] = []
+    current: list[str] = []
+    current_len = 0
+
+    for paragraph in paragraphs:
+        paragraph_len = len(paragraph)
+        if current_len + paragraph_len + 2 <= chunk_size:
+            current.append(paragraph)
+            current_len += paragraph_len + 2
+            continue
+
+        if current:
+            chunk = "\n\n".join(current).strip()
+            if chunk:
+                chunks.append(chunk)
+            if chunk_overlap > 0 and chunk:
+                overlap_text = chunk[-chunk_overlap:]
+                current = [overlap_text]
+                current_len = len(overlap_text)
+            else:
+                current = []
+                current_len = 0
+
+        if paragraph_len >= chunk_size:
+            start = 0
+            step = max(1, chunk_size - chunk_overlap)
+            while start < paragraph_len:
+                end = min(start + chunk_size, paragraph_len)
+                chunk = paragraph[start:end].strip()
+                if chunk:
+                    chunks.append(chunk)
+                start += step
+            current = []
+            current_len = 0
+        else:
+            current = [paragraph]
+            current_len = paragraph_len
+
+    if current:
+        chunk = "\n\n".join(current).strip()
+        if chunk:
+            chunks.append(chunk)
+
+    return chunks
+
+
+class RagIndex:
+    """FAISS index with JSON metadata storage."""
+
     def __init__(
         self,
-        content: str,
-        metadata: Optional[Dict[str, Any]] = None,
-        doc_id: Optional[str] = None
-    ):
-        """
-        Initialize a document.
-        
-        Args:
-            content: The text content of the document chunk
-            metadata: Optional metadata (source, date, category, etc.)
-            doc_id: Optional unique identifier for the document
-        """
-        self.content = content
-        self.metadata = metadata or {}
-        self.doc_id = doc_id
-    
-    def __repr__(self) -> str:
-        """String representation of the document."""
-        preview = self.content[:50] + "..." if len(self.content) > 50 else self.content
-        return f"Document(id={self.doc_id}, content='{preview}')"
+        root: Path,
+        embedder: EmbeddingBackend,
+    ) -> None:
+        if faiss is None:
+            raise RuntimeError("faiss-cpu is not installed")
+        self.root = root
+        self.embedder = embedder
+        self.index_path = self.root / "index.faiss"
+        self.meta_path = self.root / "metadata.json"
+        self.meta_info_path = self.root / "index_meta.json"
+        self.index: Any = None
+        self.metadata: list[dict[str, Any]] = []
+        self._load_existing()
+
+    def _load_existing(self) -> None:
+        if not self.index_path.exists():
+            return
+        self.index = faiss.read_index(str(self.index_path))
+        if self.meta_path.exists():
+            self.metadata = json.loads(self.meta_path.read_text(encoding="utf-8"))
+        if self.index is not None and self.metadata:
+            if self.index.ntotal != len(self.metadata):
+                raise RuntimeError(
+                    "Index/metadata mismatch: "
+                    f"{self.index.ntotal} vs {len(self.metadata)}"
+                )
+
+    def _ensure_index(self) -> None:
+        if self.index is None:
+            self.index = faiss.IndexFlatIP(self.embedder.dimension)
+
+    def add_documents(self, documents: Sequence[Document]) -> int:
+        if not documents:
+            return 0
+        self._ensure_index()
+        assert self.index is not None
+        embeddings = self.embedder.embed([doc.content for doc in documents])
+        if embeddings.size == 0:
+            return 0
+        self.index.add(embeddings)
+        for doc in documents:
+            doc_id = doc.doc_id or uuid.uuid4().hex
+            payload = {
+                "id": doc_id,
+                "content": doc.content,
+                **doc.metadata,
+            }
+            self.metadata.append(payload)
+        return len(documents)
+
+    def search(self, query: str, top_k: int) -> list[Document]:
+        if not query.strip() or self.index is None or self.index.ntotal == 0:
+            return []
+        top_k = max(1, min(top_k, self.index.ntotal))
+        embeddings = self.embedder.embed([query])
+        if embeddings.size == 0:
+            return []
+        scores, indices = self.index.search(embeddings, top_k)
+        results: list[Document] = []
+        for score, idx in zip(scores[0], indices[0]):
+            if idx < 0 or idx >= len(self.metadata):
+                continue
+            meta = self.metadata[idx]
+            results.append(
+                Document(
+                    content=meta.get("content", ""),
+                    metadata={k: v for k, v in meta.items() if k != "content"},
+                    doc_id=meta.get("id"),
+                    score=float(score),
+                )
+            )
+        return results
+
+    def save(self, meta_info: Optional[dict[str, Any]] = None) -> None:
+        if self.index is None:
+            return
+        self.root.mkdir(parents=True, exist_ok=True)
+        faiss.write_index(self.index, str(self.index_path))
+        self.meta_path.write_text(
+            json.dumps(self.metadata, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+        if meta_info is not None:
+            self.meta_info_path.write_text(
+                json.dumps(meta_info, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+
+
+def _citation_label(meta: dict[str, Any]) -> str:
+    source = meta.get("source") or "Bilinmeyen kaynak"
+    page = meta.get("page")
+    if page:
+        return f"{source} (sayfa {page})"
+    return source
 
 
 class RAGService:
-    """
-    Service for RAG (Retrieval-Augmented Generation) operations.
-    
-    This service handles:
-    - Document ingestion and chunking
-    - Vector embedding generation
-    - Similarity search for relevant context
-    - Context injection into prompts
-    
-    Note: This is a placeholder implementation. Full implementation requires:
-    - ChromaDB for vector storage
-    - Sentence transformers for embeddings
-    - Document processing utilities
-    """
-    
+    """Runtime RAG retriever wrapper."""
+
     def __init__(
         self,
         enabled: bool = False,
         vector_db_path: Optional[str] = None,
         collection_name: str = "selcuk_documents",
         chunk_size: int = 500,
-        chunk_overlap: int = 50
-    ):
-        """
-        Initialize RAG service.
-        
-        Args:
-            enabled: Whether RAG is enabled (from Config.RAG_ENABLED)
-            vector_db_path: Path to ChromaDB storage
-            collection_name: Name of the document collection
-            chunk_size: Size of document chunks in characters
-            chunk_overlap: Overlap between chunks in characters
-        """
+        chunk_overlap: int = 50,
+        embedding_model: Optional[str] = None,
+        top_k: int = 3,
+        embedder: Optional[EmbeddingBackend] = None,
+    ) -> None:
         self.enabled = enabled
         self.vector_db_path = vector_db_path
         self.collection_name = collection_name
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
-        
-        if self.enabled:
-            logger.info(
-                f"RAG service initialized: path={vector_db_path}, "
-                f"collection={collection_name}, chunk_size={chunk_size}"
-            )
-            # TODO: Initialize ChromaDB client
-            # self.client = chromadb.PersistentClient(path=vector_db_path)
-            # self.collection = self.client.get_or_create_collection(collection_name)
-        else:
+        self.embedding_model = embedding_model or Config.RAG_EMBEDDING_MODEL
+        self.top_k = top_k
+        self._embedder = embedder
+        self._index: Optional[RagIndex] = None
+
+        if not self.enabled:
             logger.info("RAG service disabled (RAG_ENABLED=false)")
-    
-    def ingest_document(
-        self,
-        content: str,
-        metadata: Optional[Dict[str, Any]] = None
-    ) -> List[str]:
-        """
-        Ingest a document into the RAG system.
-        
-        This method:
-        1. Chunks the document into smaller pieces
-        2. Generates embeddings for each chunk
-        3. Stores chunks and embeddings in the vector database
-        
-        Args:
-            content: The full document text
-            metadata: Optional metadata (source, date, category, etc.)
-            
-        Returns:
-            List of document IDs for the ingested chunks
-            
-        Raises:
-            RuntimeError: If RAG is not enabled
-            
-        TODO: Implement full functionality with:
-        - Document chunking with overlap
-        - Embedding generation using sentence transformers
-        - Storage in ChromaDB
-        """
-        if not self.enabled:
-            raise RuntimeError("RAG service is not enabled")
-        
-        logger.info(f"Ingesting document (length: {len(content)} chars)")
-        
-        # TODO: Implement document chunking
-        # chunks = self._chunk_document(content)
-        
-        # TODO: Generate embeddings
-        # embeddings = self._generate_embeddings(chunks)
-        
-        # TODO: Store in ChromaDB
-        # doc_ids = self.collection.add(
-        #     documents=chunks,
-        #     embeddings=embeddings,
-        #     metadatas=[metadata] * len(chunks),
-        #     ids=[f"doc_{i}" for i in range(len(chunks))]
-        # )
-        
-        logger.warning("RAG ingestion not yet implemented")
-        return []
-    
-    def ingest_directory(
-        self,
-        directory_path: str,
-        file_patterns: List[str] = ["*.txt", "*.md", "*.pdf"]
-    ) -> int:
-        """
-        Ingest all documents from a directory.
-        
-        Args:
-            directory_path: Path to directory containing documents
-            file_patterns: List of glob patterns for files to ingest
-            
-        Returns:
-            Number of documents successfully ingested
-            
-        TODO: Implement full functionality with:
-        - Directory traversal
-        - File reading and parsing (including PDF)
-        - Batch ingestion
-        """
-        if not self.enabled:
-            raise RuntimeError("RAG service is not enabled")
-        
-        directory = Path(directory_path)
-        if not directory.exists():
-            raise ValueError(f"Directory not found: {directory_path}")
-        
-        logger.info(f"Ingesting documents from: {directory_path}")
-        
-        # TODO: Implement directory ingestion
-        logger.warning("Directory ingestion not yet implemented")
-        return 0
-    
-    def search(
-        self,
-        query: str,
-        top_k: int = 3
-    ) -> List[Document]:
-        """
-        Search for relevant documents using similarity search.
-        
-        This method:
-        1. Generates an embedding for the query
-        2. Performs similarity search in the vector database
-        3. Returns the most relevant document chunks
-        
-        Args:
-            query: The search query
-            top_k: Number of top results to return
-            
-        Returns:
-            List of relevant Document objects
-            
-        TODO: Implement full functionality with:
-        - Query embedding generation
-        - ChromaDB similarity search
-        - Result filtering and ranking
-        """
-        if not self.enabled:
-            logger.debug("RAG search skipped (RAG not enabled)")
+            return
+
+        if not self.vector_db_path:
+            raise ValueError("RAG_VECTOR_DB_PATH must be set when RAG is enabled")
+        if faiss is None:
+            raise RuntimeError("faiss-cpu is required for RAG")
+
+        self._embedder = self._embedder or SentenceTransformerBackend(
+            self.embedding_model
+        )
+        self._index = RagIndex(Path(self.vector_db_path), self._embedder)
+        logger.info(
+            "RAG service initialized: path=%s collection=%s model=%s",
+            self.vector_db_path,
+            self.collection_name,
+            self.embedding_model,
+        )
+
+    def search(self, query: str, top_k: Optional[int] = None) -> list[Document]:
+        if not self.enabled or self._index is None:
             return []
-        
-        logger.debug(f"Searching for relevant documents: query='{query[:50]}...', top_k={top_k}")
-        
-        # TODO: Generate query embedding
-        # query_embedding = self._generate_embeddings([query])[0]
-        
-        # TODO: Search in ChromaDB
-        # results = self.collection.query(
-        #     query_embeddings=[query_embedding],
-        #     n_results=top_k
-        # )
-        
-        # TODO: Convert results to Document objects
-        logger.warning("RAG search not yet implemented")
-        return []
-    
-    def get_context(self, query: str, top_k: int = 3) -> str:
-        """
-        Get formatted context for a query.
-        
-        This is a convenience method that performs similarity search
-        and formats the results as context for the LLM prompt.
-        
-        Args:
-            query: The user's question
-            top_k: Number of relevant documents to retrieve
-            
-        Returns:
-            Formatted context string for prompt injection
-        """
+        return self._index.search(query, top_k or self.top_k)
+
+    def get_context(
+        self, query: str, top_k: Optional[int] = None
+    ) -> tuple[str, list[str]]:
         if not self.enabled:
-            return ""
-        
-        documents = self.search(query, top_k=top_k)
-        
-        if not documents:
-            return ""
-        
-        # Format documents as context
-        context_parts = []
-        for i, doc in enumerate(documents, 1):
-            source = doc.metadata.get("source", "Bilinmeyen kaynak")
-            context_parts.append(f"[{i}] ({source}): {doc.content}")
-        
-        return "\n\n".join(context_parts)
-    
-    def _chunk_document(self, content: str) -> List[str]:
-        """
-        Split document into chunks with overlap.
-        
-        Args:
-            content: Full document text
-            
-        Returns:
-            List of text chunks
-            
-        TODO: Implement sophisticated chunking:
-        - Respect sentence boundaries
-        - Handle paragraphs intelligently
-        - Maintain context at chunk boundaries
-        """
-        # Simple placeholder implementation
-        chunks = []
-        start = 0
-        while start < len(content):
-            end = start + self.chunk_size
-            chunks.append(content[start:end])
-            start += self.chunk_size - self.chunk_overlap
-        
-        return chunks
-    
-    def _generate_embeddings(self, texts: List[str]) -> List[List[float]]:
-        """
-        Generate embeddings for text chunks.
-        
-        Args:
-            texts: List of text strings
-            
-        Returns:
-            List of embedding vectors
-            
-        TODO: Implement using sentence transformers:
-        - Use Turkish language model (e.g., 'sentence-transformers/paraphrase-multilingual-mpnet-base-v2')
-        - Batch processing for efficiency
-        - Normalize embeddings
-        """
-        logger.warning("Embedding generation not yet implemented")
-        return [[0.0] * 384] * len(texts)  # Placeholder
+            return "", []
+        docs = self.search(query, top_k=top_k)
+        if not docs:
+            return "", []
+
+        context_parts: list[str] = []
+        citations: list[str] = []
+        for idx, doc in enumerate(docs, 1):
+            citations.append(_citation_label(doc.metadata))
+            context_parts.append(f"[{idx}] {doc.content}")
+        return "\n\n".join(context_parts), citations
+
+    def add_documents(self, documents: Sequence[Document]) -> int:
+        if not self.enabled or self._index is None:
+            raise RuntimeError("RAG service is not enabled")
+        return self._index.add_documents(documents)
+
+    def save_index(self, meta_info: Optional[dict[str, Any]] = None) -> None:
+        if not self.enabled or self._index is None:
+            return
+        self._index.save(meta_info=meta_info)
 
 
-# Create global RAG service instance (initialized from Config)
 rag_service = RAGService(
     enabled=Config.RAG_ENABLED,
     vector_db_path=Config.RAG_VECTOR_DB_PATH,
     collection_name=Config.RAG_COLLECTION_NAME,
     chunk_size=Config.RAG_CHUNK_SIZE,
-    chunk_overlap=Config.RAG_CHUNK_OVERLAP
+    chunk_overlap=Config.RAG_CHUNK_OVERLAP,
+    embedding_model=Config.RAG_EMBEDDING_MODEL,
+    top_k=Config.RAG_TOP_K,
 )

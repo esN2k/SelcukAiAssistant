@@ -119,6 +119,14 @@ class Config:
     RAG_COLLECTION_NAME: str = os.getenv("RAG_COLLECTION_NAME", "selcuk_documents")
     RAG_CHUNK_SIZE: int = int(os.getenv("RAG_CHUNK_SIZE", "500"))
     RAG_CHUNK_OVERLAP: int = int(os.getenv("RAG_CHUNK_OVERLAP", "50"))
+    RAG_TOP_K: int = int(os.getenv("RAG_TOP_K", "4"))
+    RAG_EMBEDDING_MODEL: str = os.getenv(
+        "RAG_EMBEDDING_MODEL",
+        "sentence-transformers/paraphrase-multilingual-mpnet-base-v2",
+    )
+    RAG_STRICT_DEFAULT: bool = (
+        os.getenv("RAG_STRICT_DEFAULT", "true").lower() == "true"
+    )
 
     # Appwrite configuration (optional)
     APPWRITE_ENDPOINT: Optional[str] = os.getenv("APPWRITE_ENDPOINT")
@@ -183,6 +191,9 @@ class Config:
             
             if cls.RAG_CHUNK_OVERLAP >= cls.RAG_CHUNK_SIZE:
                 raise ValueError("RAG_CHUNK_OVERLAP must be less than RAG_CHUNK_SIZE")
+
+            if cls.RAG_TOP_K < 1:
+                raise ValueError("RAG_TOP_K must be at least 1")
     
     @classmethod
     def setup_logging(cls) -> None:

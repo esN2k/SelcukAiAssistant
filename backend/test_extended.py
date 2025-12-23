@@ -18,7 +18,9 @@ from main import app
 from ollama_service import OllamaService
 from providers.base import ChatResult
 from providers.ollama_provider import OllamaProvider
-from rag_service import RAGService, Document
+import numpy as np
+
+from rag_service import RAGService, Document, RagIndex, chunk_text
 
 client = TestClient(app)
 
@@ -239,19 +241,44 @@ async def test_no_retry_on_http_error(mock_post):
 def test_rag_service_initialization_disabled():
     service = RAGService(enabled=False)
     assert service.enabled is False
-    assert service.get_context("test query") == ""
+    context, citations = service.get_context("test query")
+    assert context == ""
+    assert citations == []
 
 
-def test_rag_service_initialization_enabled():
+class DummyEmbeddingBackend:
+    def __init__(self) -> None:
+        self._dimension = 3
+
+    @property
+    def dimension(self) -> int:
+        return self._dimension
+
+    def embed(self, texts):
+        vectors = []
+        for text in texts:
+            vectors.append(
+                [float(len(text)), float(text.count("a")), float(text.count("b"))]
+            )
+        array = np.array(vectors, dtype="float32")
+        if array.size == 0:
+            return array
+        norms = np.linalg.norm(array, axis=1, keepdims=True)
+        norms[norms == 0] = 1.0
+        return array / norms
+
+
+def test_rag_service_initialization_enabled(tmp_path):
     service = RAGService(
         enabled=True,
-        vector_db_path="/tmp/test_db",
+        vector_db_path=str(tmp_path),
         collection_name="test_collection",
         chunk_size=300,
         chunk_overlap=30,
+        embedder=DummyEmbeddingBackend(),
     )
     assert service.enabled is True
-    assert service.vector_db_path == "/tmp/test_db"
+    assert service.vector_db_path == str(tmp_path)
     assert service.collection_name == "test_collection"
     assert service.chunk_size == 300
     assert service.chunk_overlap == 30
@@ -266,7 +293,7 @@ def test_rag_service_search_when_disabled():
 def test_rag_service_ingest_when_disabled():
     service = RAGService(enabled=False)
     with pytest.raises(RuntimeError, match="RAG service is not enabled"):
-        service.ingest_document("test content")
+        service.add_documents([Document(content="test content")])
 
 
 def test_document_creation():
@@ -282,12 +309,25 @@ def test_document_creation():
 
 
 def test_rag_chunk_document():
-    service = RAGService(enabled=True, chunk_size=10, chunk_overlap=3)
-
     content = "0123456789abcdefghij"
-    chunks = service._chunk_document(content)
+    chunks = chunk_text(content, chunk_size=10, chunk_overlap=3)
     assert all(len(chunk) <= 10 for chunk in chunks)
     assert len(chunks) > 1
+
+
+def test_rag_index_add_and_search(tmp_path):
+    embedder = DummyEmbeddingBackend()
+    index = RagIndex(tmp_path, embedder)
+    docs = [
+        Document(content="aaa bbb", metadata={"source": "a.txt"}),
+        Document(content="cccc dddd", metadata={"source": "b.txt"}),
+    ]
+    added = index.add_documents(docs)
+    assert added == 2
+
+    results = index.search("aaa", top_k=1)
+    assert len(results) == 1
+    assert results[0].metadata.get("source") == "a.txt"
 
 
 if __name__ == "__main__":
