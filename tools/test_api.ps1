@@ -7,6 +7,11 @@ $ErrorActionPreference = "Stop"
 $script:failures = 0
 $curl = (Get-Command curl.exe -ErrorAction Stop).Source
 
+$utf8 = [System.Text.UTF8Encoding]::new($false)
+[Console]::InputEncoding  = $utf8
+[Console]::OutputEncoding = $utf8
+$OutputEncoding = $utf8
+
 function Write-Result {
   param(
     [string]$Name,
@@ -44,21 +49,57 @@ function Write-Utf8NoBom {
   [System.IO.File]::WriteAllText($Path, $Content, $utf8)
 }
 
+function Quote-Arg {
+  param([string]$Arg)
+  if ($Arg -match '[\s"]') {
+    return '"' + ($Arg -replace '"','\"') + '"'
+  }
+  return $Arg
+}
+
 function Invoke-Curl {
   param(
     [string[]]$CurlArgs
   )
+
+  $argsString = ($CurlArgs | ForEach-Object { Quote-Arg $_ }) -join ' '
+
   $prev = $ErrorActionPreference
   $ErrorActionPreference = "Continue"
+
   try {
-    $output = & $curl @CurlArgs 2>&1
-  } finally {
-    $ErrorActionPreference = $prev
+    $pinfo = New-Object System.Diagnostics.ProcessStartInfo
+    $pinfo.FileName = $curl
+    $pinfo.Arguments = $argsString
+    $pinfo.UseShellExecute = $false
+    $pinfo.RedirectStandardOutput = $true
+    $pinfo.RedirectStandardError = $true
+
+    $utf8 = [System.Text.UTF8Encoding]::new($false)
+    $pinfo.StandardOutputEncoding = $utf8
+    $pinfo.StandardErrorEncoding  = $utf8
+
+    $p = New-Object System.Diagnostics.Process
+    $p.StartInfo = $pinfo
+
+    [void]$p.Start()
+    $stdout = $p.StandardOutput.ReadToEnd()
+    $stderr = $p.StandardError.ReadToEnd()
+    $p.WaitForExit()
+
+    $combined = $stdout
+    if (-not [string]::IsNullOrWhiteSpace($stderr)) {
+      if (-not [string]::IsNullOrWhiteSpace($combined)) { $combined += "`n" }
+      $combined += $stderr
+    }
+
+    return [PSCustomObject]@{
+      Output   = $combined
+      ExitCode = $p.ExitCode
+    }
   }
-  $exitCode = $LASTEXITCODE
-  return [PSCustomObject]@{
-    Output = $output
-    ExitCode = $exitCode
+  finally {
+    $ErrorActionPreference = $prev
   }
 }
 
@@ -212,7 +253,7 @@ if ($ollamaModel) {
     "--data-binary", "@$ollamaStreamPath"
   )
 
-  $streamText = [string]$stream.Output
+  $streamText = $stream.Output
   $hasToken = $streamText -match '"type"\s*:\s*"token"'
   $hasEnd = $streamText -match '"type"\s*:\s*"end"'
   $hasError = $streamText -match '"type"\s*:\s*"error"'
@@ -262,7 +303,7 @@ if ($hfModel) {
     "--data-binary", "@$hfStreamPath"
   )
 
-  $streamText = [string]$stream.Output
+  $streamText = $stream.Output
   $hasToken = $streamText -match '"type"\s*:\s*"token"'
   $hasEnd = $streamText -match '"type"\s*:\s*"end"'
   $hasError = $streamText -match '"type"\s*:\s*"error"'

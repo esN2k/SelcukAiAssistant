@@ -1,0 +1,13 @@
+{
+    "messages":  [
+                     {
+                         "content":  "Merhaba",
+                         "role":  "user"
+                     }
+                 ],
+    "stream":  false,
+    "max_tokens":  128,
+    "temperature":  0.2,
+    "model":  "hf_qwen2_5_1_5b",
+    "top_p":  0.9
+}

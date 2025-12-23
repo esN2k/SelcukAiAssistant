@@ -75,22 +75,34 @@ class HuggingFaceProvider(ModelProvider):
         if tokenizer.pad_token is None and tokenizer.eos_token is not None:
             tokenizer.pad_token = tokenizer.eos_token
 
-        kwargs = {
-            "torch_dtype": dtype,
-        }
+        kwargs: Dict[str, Any] = {}
         if quant_config is not None:
             kwargs["quantization_config"] = quant_config
         if device == "cuda":
             kwargs["device_map"] = "auto"
-
+            kwargs["max_memory"] = {"cuda:0": "5GiB"}  # adjust for your 6GB card
         if Config.HF_ATTENTION_IMPL:
             kwargs["attn_implementation"] = Config.HF_ATTENTION_IMPL
 
+        # Prefer new API: dtype=..., but keep backward-compat with torch_dtype=...
         try:
-            model = AutoModelForCausalLM.from_pretrained(model_id, **kwargs)
+            model = AutoModelForCausalLM.from_pretrained(model_id, dtype=dtype, **kwargs)
         except TypeError:
-            kwargs.pop("attn_implementation", None)
-            model = AutoModelForCausalLM.from_pretrained(model_id, **kwargs)
+            # Either dtype or attn_implementation may not be supported in older stacks
+            try:
+                model = AutoModelForCausalLM.from_pretrained(
+                    model_id, torch_dtype=dtype, **kwargs
+                )
+            except TypeError:
+                kwargs.pop("attn_implementation", None)
+                try:
+                    model = AutoModelForCausalLM.from_pretrained(
+                        model_id, dtype=dtype, **kwargs
+                    )
+                except TypeError:
+                    model = AutoModelForCausalLM.from_pretrained(
+                        model_id, torch_dtype=dtype, **kwargs
+                    )
 
         model = cast(Any, model)
         if device != "cuda":
@@ -114,19 +126,20 @@ class HuggingFaceProvider(ModelProvider):
     def _tokenize(
         self, tokenizer: Any, messages: List[Dict[str, str]]
     ) -> Tuple[Any, Optional[Any]]:
+        # Prefer: template -> text prompt -> tokenizer(...) so we always get attention_mask
         if hasattr(tokenizer, "apply_chat_template"):
             try:
-                output = tokenizer.apply_chat_template(
+                prompt = tokenizer.apply_chat_template(
                     messages,
-                    tokenize=True,
+                    tokenize=False,
                     add_generation_prompt=True,
-                    return_tensors="pt",
                 )
-                if isinstance(output, dict):
-                    return output["input_ids"], output.get("attention_mask")
-                return output, None
+                if isinstance(prompt, str) and prompt.strip():
+                    encoded = tokenizer(prompt, return_tensors="pt")
+                    return encoded["input_ids"], encoded.get("attention_mask")
             except TypeError:
                 pass
+
         prompt = self._fallback_prompt(messages)
         encoded = tokenizer(prompt, return_tensors="pt")
         return encoded["input_ids"], encoded.get("attention_mask")
@@ -162,6 +175,9 @@ class HuggingFaceProvider(ModelProvider):
         input_ids = input_ids.to(device)
         if attention_mask is not None:
             attention_mask = attention_mask.to(device)
+        else:
+            import torch
+            attention_mask = torch.ones_like(input_ids)
 
         do_sample = temperature > 0
         output_ids = model.generate(
@@ -172,6 +188,7 @@ class HuggingFaceProvider(ModelProvider):
             top_p=top_p,
             do_sample=do_sample,
             repetition_penalty=1.1,
+            pad_token_id=tokenizer.pad_token_id,
         )
 
         generated_ids = output_ids[0][prompt_tokens:]
@@ -209,6 +226,9 @@ class HuggingFaceProvider(ModelProvider):
         input_ids = input_ids.to(device)
         if attention_mask is not None:
             attention_mask = attention_mask.to(device)
+        else:
+            import torch
+            attention_mask = torch.ones_like(input_ids)
 
         class StopOnCancel(StoppingCriteria):
             def __init__(self, token: CancellationToken) -> None:
@@ -232,6 +252,7 @@ class HuggingFaceProvider(ModelProvider):
                 top_p=top_p,
                 do_sample=do_sample,
                 repetition_penalty=1.1,
+                pad_token_id=tokenizer.pad_token_id,
                 streamer=streamer,
                 stopping_criteria=stop_criteria,
             )
