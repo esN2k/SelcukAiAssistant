@@ -1,24 +1,18 @@
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive/hive.dart';
 import 'package:selcukaiassistant/model/conversation.dart';
+import 'package:selcukaiassistant/services/storage/storage_service.dart';
 import 'package:uuid/uuid.dart';
 
 class ConversationService {
-  static const String _boxName = 'conversations';
   static Box<Conversation>? _box;
   static const _uuid = Uuid();
 
   static Future<void> init() async {
-    await Hive.initFlutter();
-
-    // Register adapters if not already registered
-    if (!Hive.isAdapterRegistered(0)) {
-      Hive.registerAdapter(ConversationAdapter());
+    if (_box != null) {
+      return;
     }
-    if (!Hive.isAdapterRegistered(1)) {
-      Hive.registerAdapter(ChatMessageAdapter());
-    }
-
-    _box = await Hive.openBox<Conversation>(_boxName);
+    await StorageService.initialize();
+    _box = StorageService.conversationsBox;
   }
 
   static Box<Conversation> get box {

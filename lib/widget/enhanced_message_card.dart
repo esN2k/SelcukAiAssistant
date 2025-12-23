@@ -107,7 +107,7 @@ class EnhancedMessageCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      _formatTime(context, message.timestamp),
+                      _formatTime(context, message.createdAt),
                       style: TextStyle(
                         fontSize: 11,
                         color: Theme.of(context)

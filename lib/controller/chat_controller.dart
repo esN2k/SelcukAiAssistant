@@ -54,10 +54,12 @@ class ChatController extends GetxController {
           'If the user greets vaguely (e.g. "Hello"), ask what they need about '
           'Selcuk University.';
     }
-    return 'Sel?uk ?niversitesi i?in yard?mc? bir asistans?n. '
-        'Yan?tlar?n? T?rk?e ver. Ak?l y?r?tme veya i? konu?ma payla?ma. '
-        'Kullan?c? genel bir selam verirse (?r. "Merhaba"), '
-        'Sel?uk ?niversitesi ile ilgili neye ihtiya? duydu?unu sor.';
+    return 'Sel\u00e7uk \u00dcniversitesi i\u00e7in yard\u0131mc\u0131 bir '
+        'asistans\u0131n. Yan\u0131tlar\u0131n\u0131 T\u00fcrk\u00e7e ver. '
+        'Ak\u0131l y\u00fcr\u00fctme veya i\u00e7 konu\u015fma '
+        'payla\u015fma. Kullan\u0131c\u0131 genel bir selam verirse '
+        '(\u00f6r. "Merhaba"), Sel\u00e7uk \u00dcniversitesi ile ilgili '
+        'neye ihtiya\u00e7 duydu\u011funu sor.';
   }
 
   Future<void> _initSpeech() async {

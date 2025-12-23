@@ -1,39 +1,42 @@
 import 'package:hive/hive.dart';
+import 'package:selcukaiassistant/model/chat_message.dart';
 
-part 'conversation.g.dart';
+export 'package:selcukaiassistant/model/chat_message.dart';
 
-@HiveType(typeId: 0)
 class Conversation extends HiveObject {
   Conversation({
     required this.id,
     required this.title,
     required this.createdAt,
     required this.updatedAt,
-    this.messages = const [],
-  });
+    this.pinned = false,
+    this.archived = false,
+    this.selectedModelId,
+    List<ChatMessage>? messages,
+  }) : messages = messages ?? <ChatMessage>[];
 
-  Conversation.fromJson(Map<String, dynamic> json)
-      : id = json['id'] as String,
-        title = json['title'] as String,
-        createdAt = DateTime.parse(json['createdAt'] as String),
-        updatedAt = DateTime.parse(json['updatedAt'] as String),
-        messages = (json['messages'] as List<dynamic>)
-            .map((m) => ChatMessage.fromJson(m as Map<String, dynamic>))
-            .toList();
+  factory Conversation.fromJson(Map<String, dynamic> json) {
+    return Conversation(
+      id: json['id'] as String,
+      title: json['title'] as String,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      pinned: json['pinned'] as bool? ?? false,
+      archived: json['archived'] as bool? ?? false,
+      selectedModelId: json['selectedModelId'] as String?,
+      messages: (json['messages'] as List<dynamic>? ?? const [])
+          .map((item) => ChatMessage.fromJson(item as Map<String, dynamic>))
+          .toList(),
+    );
+  }
 
-  @HiveField(0)
   String id;
-
-  @HiveField(1)
   String title;
-
-  @HiveField(2)
   DateTime createdAt;
-
-  @HiveField(3)
   DateTime updatedAt;
-
-  @HiveField(4)
+  bool pinned;
+  bool archived;
+  String? selectedModelId;
   List<ChatMessage> messages;
 
   Map<String, dynamic> toJson() => {
@@ -41,47 +44,55 @@ class Conversation extends HiveObject {
         'title': title,
         'createdAt': createdAt.toIso8601String(),
         'updatedAt': updatedAt.toIso8601String(),
+        'pinned': pinned,
+        'archived': archived,
+        'selectedModelId': selectedModelId,
         'messages': messages.map((m) => m.toJson()).toList(),
       };
 }
 
-@HiveType(typeId: 1)
-class ChatMessage extends HiveObject {
-  ChatMessage({
-    required this.id,
-    required this.content,
-    required this.isUser,
-    required this.timestamp,
-    this.imageUrl,
-  });
+class ConversationAdapter extends TypeAdapter<Conversation> {
+  @override
+  final int typeId = 0;
 
-  ChatMessage.fromJson(Map<String, dynamic> json)
-      : id = json['id'] as String,
-        content = json['content'] as String,
-        isUser = json['isUser'] as bool,
-        timestamp = DateTime.parse(json['timestamp'] as String),
-        imageUrl = json['imageUrl'] as String?;
+  @override
+  Conversation read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
 
-  @HiveField(0)
-  String id;
+    return Conversation(
+      id: fields[0] as String,
+      title: fields[1] as String,
+      createdAt: fields[2] as DateTime,
+      updatedAt: fields[3] as DateTime,
+      messages: (fields[4] as List?)?.cast<ChatMessage>(),
+      pinned: fields[5] as bool? ?? false,
+      archived: fields[6] as bool? ?? false,
+      selectedModelId: fields[7] as String?,
+    );
+  }
 
-  @HiveField(1)
-  String content;
-
-  @HiveField(2)
-  bool isUser;
-
-  @HiveField(3)
-  DateTime timestamp;
-
-  @HiveField(4)
-  String? imageUrl;
-
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'content': content,
-        'isUser': isUser,
-        'timestamp': timestamp.toIso8601String(),
-        'imageUrl': imageUrl,
-      };
+  @override
+  void write(BinaryWriter writer, Conversation obj) {
+    writer
+      ..writeByte(8)
+      ..writeByte(0)
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.title)
+      ..writeByte(2)
+      ..write(obj.createdAt)
+      ..writeByte(3)
+      ..write(obj.updatedAt)
+      ..writeByte(4)
+      ..write(obj.messages)
+      ..writeByte(5)
+      ..write(obj.pinned)
+      ..writeByte(6)
+      ..write(obj.archived)
+      ..writeByte(7)
+      ..write(obj.selectedModelId);
+  }
 }

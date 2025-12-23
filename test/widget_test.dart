@@ -1,33 +1,19 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hive/hive.dart';
 import 'package:selcukaiassistant/helper/pref.dart';
 import 'package:selcukaiassistant/main.dart';
+import 'package:selcukaiassistant/services/storage/storage_service.dart';
 
 void main() {
+  late Directory tempDir;
+
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
 
-    // Mock path_provider
-    const channel = MethodChannel('plugins.flutter.io/path_provider');
-    final tempDir = Directory.systemTemp.createTempSync();
-
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(channel, (MethodCall methodCall) async {
-      return tempDir.path;
-    });
-
-    // Initialize Hive manually for the test environment
-    Hive.init(tempDir.path);
-
-    // Open the box used by Pref manually to ensure it's ready.
-    // This avoids Pref.initialize() getting stuck if initFlutter behaves oddly.
-    if (!Hive.isBoxOpen('myData')) {
-      await Hive.openBox<dynamic>('myData');
-    }
+    tempDir = Directory.systemTemp.createTempSync();
+    await StorageService.initializeForTesting(tempDir.path);
   });
 
   testWidgets('AI Asistanı uygulama testi', (WidgetTester tester) async {
@@ -46,6 +32,7 @@ void main() {
   });
 
   tearDownAll(() async {
-    await Hive.close();
+    await StorageService.close();
+    await tempDir.delete(recursive: true);
   });
 }

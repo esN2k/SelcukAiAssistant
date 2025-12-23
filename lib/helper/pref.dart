@@ -2,24 +2,38 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/adapters.dart';
+import 'package:hive/hive.dart';
+import 'package:selcukaiassistant/model/model_pref.dart';
+import 'package:selcukaiassistant/services/storage/storage_service.dart';
 
 class Pref {
-  static late Box<dynamic> _box;
+  static Box<dynamic>? _box;
+  static Box<ModelPreference>? _modelBox;
 
   static Future<void> initialize() async {
-    //for initializing hive to use app directory
-    // Hive.defaultDirectory = (await getApplicationDocumentsDirectory()).path;
-    // _box = Hive.box(name: 'myData');
+    await StorageService.initialize();
+    _box = StorageService.settingsBox;
+    _modelBox = StorageService.modelPrefsBox;
+  }
 
-    await Hive.initFlutter();
-    _box = await Hive.openBox('myData');
+  static Box<dynamic> get box {
+    if (_box == null) {
+      throw StateError('Pref not initialized');
+    }
+    return _box!;
+  }
+
+  static Box<ModelPreference> get modelBox {
+    if (_modelBox == null) {
+      throw StateError('Pref not initialized');
+    }
+    return _modelBox!;
   }
 
   static bool get showOnboarding =>
-      _box.get('showOnboarding', defaultValue: true) as bool;
+      box.get('showOnboarding', defaultValue: true) as bool;
 
-  static set showOnboarding(bool v) => _box.put('showOnboarding', v);
+  static set showOnboarding(bool v) => box.put('showOnboarding', v);
 
   // Normal Way - Get
   // how to call
@@ -38,36 +52,61 @@ class Pref {
   // }
 
   //for storing theme data
-  static bool get isDarkMode => (_box.get('isDarkMode') as bool?) ?? false;
+  static bool get isDarkMode => (box.get('isDarkMode') as bool?) ?? false;
 
-  static set isDarkMode(bool v) => _box.put('isDarkMode', v);
+  static set isDarkMode(bool v) => box.put('isDarkMode', v);
 
   static ThemeMode get defaultTheme {
-    final data = _box.get('isDarkMode');
+    final data = box.get('isDarkMode');
     log('data: $data');
     if (data == null) return ThemeMode.system;
     if (data == true) return ThemeMode.dark;
     return ThemeMode.light;
   }
 
-  static String? get selectedModel =>
-      _box.get('selectedModel') as String?;
+  static String? get selectedModel {
+    final stored = modelBox.get(defaultModelPreferenceId)?.selectedModelId;
+    if (stored != null && stored.isNotEmpty) {
+      return stored;
+    }
+    final legacy = box.get('selectedModel') as String?;
+    if (legacy != null && legacy.isNotEmpty) {
+      final pref = ModelPreference(
+        id: defaultModelPreferenceId,
+        selectedModelId: legacy,
+      );
+      unawaited(modelBox.put(defaultModelPreferenceId, pref));
+    }
+    return legacy;
+  }
 
-  static set selectedModel(String? value) => _box.put('selectedModel', value);
+  static set selectedModel(String? value) {
+    final trimmed = value?.trim();
+    if (trimmed == null || trimmed.isEmpty) {
+      unawaited(modelBox.delete(defaultModelPreferenceId));
+      return;
+    }
+
+    final pref = (modelBox.get(defaultModelPreferenceId) ??
+          ModelPreference(id: defaultModelPreferenceId))
+        ..selectedModelId = trimmed
+        ..updatedAt = DateTime.now();
+    unawaited(modelBox.put(defaultModelPreferenceId, pref));
+  }
 
   static String? get localeCode =>
-      _box.get('localeCode') as String?;
+      box.get('localeCode') as String?;
 
-  static set localeCode(String? value) => _box.put('localeCode', value);
+  static set localeCode(String? value) => box.put('localeCode', value);
 
   static String? get backendUrlOverride =>
-      _box.get('backendUrlOverride') as String?;
+      box.get('backendUrlOverride') as String?;
 
   static set backendUrlOverride(String? value) {
     if (value == null || value.trim().isEmpty) {
-      unawaited(_box.delete('backendUrlOverride'));
+      unawaited(box.delete('backendUrlOverride'));
     } else {
-      unawaited(_box.put('backendUrlOverride', value.trim()));
+      unawaited(box.put('backendUrlOverride', value.trim()));
     }
   }
 }

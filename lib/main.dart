@@ -9,10 +9,14 @@ import 'package:selcukaiassistant/helper/pref.dart';
 import 'package:selcukaiassistant/l10n/app_localizations.dart';
 import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/screen/splash_screen.dart';
+import 'package:selcukaiassistant/services/storage/storage_service.dart';
 import 'package:selcukaiassistant/theme/selcuk_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize storage before app bootstraps.
+  await StorageService.initialize();
 
   // Initialize preferences
   await Pref.initialize();
