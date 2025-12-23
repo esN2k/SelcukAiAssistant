@@ -214,6 +214,23 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
+  String get modelSearchHint => 'Model ara...';
+
+  @override
+  String get modelNoResults => 'Model bulunamadı';
+
+  @override
+  String get modelApiKeyRequired => 'API anahtarı gerekli';
+
+  @override
+  String get modelNotInstalled => 'Yüklü değil';
+
+  @override
+  String modelContextLength(int count) {
+    return 'Bağlam: $count belirteç';
+  }
+
+  @override
   String get backendUrlTitle => 'Sunucu URL\'si';
 
   @override

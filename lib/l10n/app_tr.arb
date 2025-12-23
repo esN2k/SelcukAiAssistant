@@ -78,6 +78,18 @@
       }
     }
   },
+  "modelSearchHint": "Model ara...",
+  "modelNoResults": "Model bulunamad\u0131",
+  "modelApiKeyRequired": "API anahtar\u0131 gerekli",
+  "modelNotInstalled": "Y\u00fckl\u00fc de\u011fil",
+  "modelContextLength": "Ba\u011flam: {count} belirte\u00e7",
+  "@modelContextLength": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "selectModelTitle": "Model seÃ§in",
   "voiceInputTitle": "Sesli giriÅŸ",
   "voiceInputSubtitle": "Sesli mesajlar iÃ§in mikrofonu etkinleÅŸtirin",

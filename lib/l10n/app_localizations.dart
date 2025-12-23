@@ -494,6 +494,36 @@ abstract class AppLocalizations {
   /// **'Reason: {reason}'**
   String modelUnavailableReason(String reason);
 
+  /// No description provided for @modelSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search models...'**
+  String get modelSearchHint;
+
+  /// No description provided for @modelNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No models found'**
+  String get modelNoResults;
+
+  /// No description provided for @modelApiKeyRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'API key required'**
+  String get modelApiKeyRequired;
+
+  /// No description provided for @modelNotInstalled.
+  ///
+  /// In en, this message translates to:
+  /// **'Not installed'**
+  String get modelNotInstalled;
+
+  /// No description provided for @modelContextLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Context: {count} tokens'**
+  String modelContextLength(int count);
+
   /// No description provided for @backendUrlTitle.
   ///
   /// In en, this message translates to:

@@ -80,6 +80,18 @@
       }
     }
   },
+  "modelSearchHint": "Search models...",
+  "modelNoResults": "No models found",
+  "modelApiKeyRequired": "API key required",
+  "modelNotInstalled": "Not installed",
+  "modelContextLength": "Context: {count} tokens",
+  "@modelContextLength": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "backendUrlTitle": "Backend URL",
   "backendUrlSubtitle": "Current: {current}",
   "@backendUrlSubtitle": {

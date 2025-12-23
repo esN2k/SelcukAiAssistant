@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use // TODO: migrate to RadioGroup APIs.
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -9,6 +7,7 @@ import 'package:selcukaiassistant/helper/pref.dart';
 import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/model/model_info.dart';
 import 'package:selcukaiassistant/screen/diagnostics_screen.dart';
+import 'package:selcukaiassistant/screen/model_picker_screen.dart';
 import 'package:selcukaiassistant/services/conversation_service.dart';
 import 'package:selcukaiassistant/services/model_service.dart';
 
@@ -176,117 +175,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _openModelPicker() async {
     if (_models.isEmpty) return;
-    final l10n = context.l10n;
-    final localModels = _models.where((model) => model.isLocal).toList();
-    final remoteModels = _models.where((model) => model.isRemote).toList();
-
-    await Get.dialog<void>(
-      AlertDialog(
-        title: Text(l10n.selectModelTitle),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: ListView(
-            shrinkWrap: true,
-            children: [
-              _buildModelSection(
-                context,
-                l10n.modelLocalSection,
-                localModels,
-              ),
-              _buildModelSection(
-                context,
-                l10n.modelRemoteSection,
-                remoteModels,
-              ),
-            ],
-          ),
-        ),
-      ),
+    final selected = await Get.to<String>(
+      () => ModelPickerScreen(initialModels: _models),
     );
-  }
-
-  Widget _buildModelSection(
-    BuildContext context,
-    String title,
-    List<ModelInfo> models,
-  ) {
-    if (models.isEmpty) return const SizedBox.shrink();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 8, top: 12),
-          child: Text(
-            title,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-          ),
-        ),
-        ...models.map((model) => _buildModelTile(context, model)),
-      ],
-    );
-  }
-
-  Widget _buildModelTile(BuildContext context, ModelInfo model) {
-    final l10n = context.l10n;
-    final subtitles = <Widget>[
-      Text('${model.provider}: ${model.modelId}'),
-    ];
-    if (!model.available && model.reasonUnavailable.isNotEmpty) {
-      subtitles.add(Text(l10n.modelUnavailableReason(model.reasonUnavailable)));
+    if (selected != null && selected.isNotEmpty) {
+      _selectedModel.value = selected;
+      setState(() {});
     }
-    if (!model.available && model.provider == 'ollama') {
-      final command = 'ollama pull ${model.modelId}';
-      subtitles.add(Text(l10n.modelInstallCommand(command)));
-    }
-
-    return RadioListTile<String>(
-      title: Wrap(
-        spacing: 8,
-        runSpacing: 4,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          Text(model.displayName),
-          _buildAvailabilityChip(context, model),
-        ],
-      ),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: subtitles,
-      ),
-      value: model.id,
-      groupValue: _selectedModel.value,
-      onChanged: model.available
-          ? (value) {
-              if (value != null) {
-                _selectedModel.value = value;
-                Pref.selectedModel = value;
-                Get.back<void>();
-              }
-            }
-          : null,
-    );
-  }
-
-  Widget _buildAvailabilityChip(BuildContext context, ModelInfo model) {
-    final l10n = context.l10n;
-    final scheme = Theme.of(context).colorScheme;
-    final available = model.available;
-    final label = available ? l10n.modelAvailable : l10n.modelUnavailable;
-    final background =
-        available ? scheme.secondaryContainer : scheme.surfaceVariant;
-    final foreground =
-        available ? scheme.onSecondaryContainer : scheme.onSurfaceVariant;
-
-    return Chip(
-      label: Text(label),
-      labelStyle: TextStyle(color: foreground),
-      backgroundColor: background,
-      visualDensity: VisualDensity.compact,
-    );
   }
 
   Widget _buildSection(

@@ -213,6 +213,23 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get modelSearchHint => 'Search models...';
+
+  @override
+  String get modelNoResults => 'No models found';
+
+  @override
+  String get modelApiKeyRequired => 'API key required';
+
+  @override
+  String get modelNotInstalled => 'Not installed';
+
+  @override
+  String modelContextLength(int count) {
+    return 'Context: $count tokens';
+  }
+
+  @override
   String get backendUrlTitle => 'Backend URL';
 
   @override
