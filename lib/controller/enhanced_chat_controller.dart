@@ -68,7 +68,7 @@ class EnhancedChatController extends GetxController {
   Future<void> _initializeConversation() async {
     await ConversationService.init();
 
-    final conversations = ConversationService.getAllConversations();
+    final conversations = ConversationService.getActiveConversations();
     if (conversations.isEmpty) {
       final newConversation = await ConversationService.createConversation();
       currentConversation.value = newConversation;

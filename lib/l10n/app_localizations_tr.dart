@@ -331,6 +331,30 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
+  String get pinnedLabel => 'Sabitlenenler';
+
+  @override
+  String get archivedLabel => 'Arşivlenenler';
+
+  @override
+  String get last7DaysLabel => 'Son 7 gün';
+
+  @override
+  String get olderLabel => 'Daha eski';
+
+  @override
+  String get pinConversation => 'Sabitle';
+
+  @override
+  String get unpinConversation => 'Sabitlemeyi kaldır';
+
+  @override
+  String get archiveConversation => 'Arşivle';
+
+  @override
+  String get unarchiveConversation => 'Arşivden çıkar';
+
+  @override
   String get todayLabel => 'BugÃ¼n';
 
   @override

@@ -37,8 +37,25 @@ class ConversationService {
   }
 
   // Get all conversations sorted by updated time
-  static List<Conversation> getAllConversations() {
-    return box.values.toList()
+  static List<Conversation> getAllConversations({
+    bool includeArchived = true,
+  }) {
+    final conversations = box.values.where((conversation) {
+      if (includeArchived) {
+        return true;
+      }
+      return !conversation.archived;
+    }).toList()
+      ..sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+    return conversations;
+  }
+
+  static List<Conversation> getActiveConversations() {
+    return getAllConversations(includeArchived: false);
+  }
+
+  static List<Conversation> getArchivedConversations() {
+    return box.values.where((conversation) => conversation.archived).toList()
       ..sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
   }
 
@@ -106,9 +123,15 @@ class ConversationService {
   }
 
   // Search conversations
-  static List<Conversation> searchConversations(String query) {
+  static List<Conversation> searchConversations(
+    String query, {
+    bool includeArchived = true,
+  }) {
     final lowerQuery = query.toLowerCase();
-    return box.values.where((conversation) {
+    final results = box.values.where((conversation) {
+      if (!includeArchived && conversation.archived) {
+        return false;
+      }
       // Search in title
       if (conversation.title.toLowerCase().contains(lowerQuery)) {
         return true;
@@ -117,7 +140,31 @@ class ConversationService {
       return conversation.messages.any(
         (msg) => msg.content.toLowerCase().contains(lowerQuery),
       );
-    }).toList();
+    }).toList()
+      ..sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+    return results;
+  }
+
+  static Future<void> setPinned(String id, {required bool pinned}) async {
+    final conversation = box.get(id);
+    if (conversation != null) {
+      conversation.pinned = pinned;
+      if (pinned) {
+        conversation.archived = false;
+      }
+      await conversation.save();
+    }
+  }
+
+  static Future<void> setArchived(String id, {required bool archived}) async {
+    final conversation = box.get(id);
+    if (conversation != null) {
+      conversation.archived = archived;
+      if (archived) {
+        conversation.pinned = false;
+      }
+      await conversation.save();
+    }
   }
 
   // Clear all conversations

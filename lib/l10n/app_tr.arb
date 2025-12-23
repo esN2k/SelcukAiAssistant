@@ -110,6 +110,14 @@
       }
     }
   },
+  "pinnedLabel": "Sabitlenenler",
+  "archivedLabel": "Ar\u015fivlenenler",
+  "last7DaysLabel": "Son 7 g\u00fcn",
+  "olderLabel": "Daha eski",
+  "pinConversation": "Sabitle",
+  "unpinConversation": "Sabitlemeyi kald\u0131r",
+  "archiveConversation": "Ar\u015fivle",
+  "unarchiveConversation": "Ar\u015fivden \u00e7\u0131kar",
   "todayLabel": "BugÃ¼n",
   "yesterdayLabel": "DÃ¼n",
   "daysAgo": "{count, plural, =1{1 gÃ¼n Ã¶nce} other{{count} gÃ¼n Ã¶nce}}",

@@ -35,7 +35,15 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
 
   void _loadConversations() {
     setState(() {
-      _filteredConversations = ConversationService.getAllConversations();
+      final query = _searchController.text.trim();
+      if (query.isNotEmpty) {
+        _filteredConversations =
+            ConversationService.searchConversations(query);
+        _isSearching = true;
+      } else {
+        _filteredConversations = ConversationService.getAllConversations();
+        _isSearching = false;
+      }
     });
   }
 
@@ -45,7 +53,8 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
         _filteredConversations = ConversationService.getAllConversations();
         _isSearching = false;
       } else {
-        _filteredConversations = ConversationService.searchConversations(query);
+        _filteredConversations =
+            ConversationService.searchConversations(query);
         _isSearching = true;
       }
     });
@@ -123,6 +132,27 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
     }
   }
 
+  Future<void> _setPinned(Conversation conversation, bool pinned) async {
+    await ConversationService.setPinned(
+      conversation.id,
+      pinned: pinned,
+    );
+    _loadConversations();
+  }
+
+  Future<void> _setArchived(Conversation conversation, bool archived) async {
+    await ConversationService.setArchived(
+      conversation.id,
+      archived: archived,
+    );
+    _loadConversations();
+
+    if (archived && conversation.id == widget.currentConversationId) {
+      final newConversation = await ConversationService.createConversation();
+      widget.onConversationSelected(newConversation.id);
+    }
+  }
+
   String _formatDate(DateTime date, AppLocalizations l10n) {
     final now = DateTime.now();
     final difference = now.difference(date);
@@ -151,6 +181,294 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
       return l10n.newChat;
     }
     return title;
+  }
+
+  Widget _buildSectionHeader(AppLocalizations l10n, String title) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 6),
+      child: Text(
+        title,
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          color: Theme.of(context)
+              .textTheme
+              .bodySmall
+              ?.color
+              ?.withValues(alpha: 0.6),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildConversationTile(
+    AppLocalizations l10n,
+    Conversation conversation,
+  ) {
+    final isSelected = conversation.id == widget.currentConversationId;
+    final accentColor = Theme.of(context).primaryColor;
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: isSelected ? accentColor.withValues(alpha: 0.05) : null,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: ListTile(
+        selected: isSelected,
+        leading: Icon(
+          conversation.archived
+              ? Icons.archive_outlined
+              : Icons.chat_bubble_outline,
+          color: isSelected ? accentColor : null,
+        ),
+        title: Text(
+          _displayTitle(l10n, conversation.title),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontWeight: isSelected ? FontWeight.w600 : null,
+          ),
+        ),
+        subtitle: Text(
+          _formatDate(conversation.updatedAt, l10n),
+          style: TextStyle(
+            fontSize: 12,
+            color: Theme.of(context)
+                .textTheme
+                .bodySmall
+                ?.color
+                ?.withValues(alpha: 0.7),
+          ),
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (conversation.pinned)
+              Icon(
+                Icons.push_pin,
+                size: 16,
+                color: accentColor,
+              ),
+            if (conversation.archived)
+              Padding(
+                padding: const EdgeInsets.only(left: 6),
+                child: Icon(
+                  Icons.archive_outlined,
+                  size: 16,
+                  color: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.color
+                      ?.withValues(alpha: 0.6),
+                ),
+              ),
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.more_vert),
+              onSelected: (value) {
+                if (value == 'pin') {
+                  unawaited(_setPinned(conversation, true));
+                } else if (value == 'unpin') {
+                  unawaited(_setPinned(conversation, false));
+                } else if (value == 'archive') {
+                  unawaited(_setArchived(conversation, true));
+                } else if (value == 'unarchive') {
+                  unawaited(_setArchived(conversation, false));
+                } else if (value == 'rename') {
+                  unawaited(_renameConversation(conversation));
+                } else if (value == 'delete') {
+                  unawaited(_deleteConversation(conversation.id));
+                }
+              },
+              itemBuilder: (context) {
+                final items = <PopupMenuEntry<String>>[];
+                if (!conversation.archived) {
+                  items.add(
+                    PopupMenuItem(
+                      value: conversation.pinned ? 'unpin' : 'pin',
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.push_pin,
+                            size: 20,
+                            color: accentColor,
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            conversation.pinned
+                                ? l10n.unpinConversation
+                                : l10n.pinConversation,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+                items
+                  ..add(
+                    PopupMenuItem(
+                      value: conversation.archived ? 'unarchive' : 'archive',
+                      child: Row(
+                        children: [
+                          const Icon(Icons.archive_outlined, size: 20),
+                          const SizedBox(width: 12),
+                          Text(
+                            conversation.archived
+                                ? l10n.unarchiveConversation
+                                : l10n.archiveConversation,
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                  ..add(const PopupMenuDivider())
+                  ..add(
+                    PopupMenuItem(
+                      value: 'rename',
+                      child: Row(
+                        children: [
+                          const Icon(Icons.edit, size: 20),
+                          const SizedBox(width: 12),
+                          Text(l10n.rename),
+                        ],
+                      ),
+                    ),
+                  )
+                  ..add(
+                    PopupMenuItem(
+                      value: 'delete',
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.delete,
+                            size: 20,
+                            color: Colors.red,
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            l10n.delete,
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                return items;
+              },
+            ),
+          ],
+        ),
+        onTap: () {
+          widget.onConversationSelected(conversation.id);
+          Navigator.pop(context);
+        },
+      ),
+    );
+  }
+
+  List<Widget> _buildGroupedChildren(AppLocalizations l10n) {
+    final pinned = <Conversation>[];
+    final today = <Conversation>[];
+    final yesterday = <Conversation>[];
+    final last7Days = <Conversation>[];
+    final older = <Conversation>[];
+    final archived = <Conversation>[];
+    final now = DateTime.now();
+
+    for (final conversation in _filteredConversations) {
+      if (conversation.archived) {
+        archived.add(conversation);
+        continue;
+      }
+      if (conversation.pinned) {
+        pinned.add(conversation);
+        continue;
+      }
+
+      final days = now.difference(conversation.updatedAt).inDays;
+      if (days == 0) {
+        today.add(conversation);
+      } else if (days == 1) {
+        yesterday.add(conversation);
+      } else if (days < 7) {
+        last7Days.add(conversation);
+      } else {
+        older.add(conversation);
+      }
+    }
+
+    void sortByUpdated(List<Conversation> items) {
+      items.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+    }
+
+    sortByUpdated(pinned);
+    sortByUpdated(today);
+    sortByUpdated(yesterday);
+    sortByUpdated(last7Days);
+    sortByUpdated(older);
+    sortByUpdated(archived);
+
+    final children = <Widget>[];
+
+    void addSection(String title, List<Conversation> items) {
+      if (items.isEmpty) {
+        return;
+      }
+      children
+        ..add(_buildSectionHeader(l10n, title))
+        ..addAll(items.map((c) => _buildConversationTile(l10n, c)))
+        ..add(const SizedBox(height: 4));
+    }
+
+    addSection(l10n.pinnedLabel, pinned);
+    addSection(l10n.todayLabel, today);
+    addSection(l10n.yesterdayLabel, yesterday);
+    addSection(l10n.last7DaysLabel, last7Days);
+    addSection(l10n.olderLabel, older);
+
+    if (archived.isNotEmpty) {
+      children.add(
+        Theme(
+          data: Theme.of(context).copyWith(
+            dividerColor: Colors.transparent,
+          ),
+          child: ExpansionTile(
+            tilePadding: const EdgeInsets.symmetric(horizontal: 16),
+            childrenPadding: const EdgeInsets.only(bottom: 8),
+            title: Text(
+              '${l10n.archivedLabel} (${archived.length})',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.color
+                    ?.withValues(alpha: 0.6),
+              ),
+            ),
+            children: archived
+                .map(
+                  (conversation) =>
+                      _buildConversationTile(l10n, conversation),
+                )
+                .toList(),
+          ),
+        ),
+      );
+    }
+
+    return children;
+  }
+
+  Widget _buildSearchResults(AppLocalizations l10n) {
+    return ListView.builder(
+      itemCount: _filteredConversations.length,
+      itemBuilder: (context, index) {
+        final conversation = _filteredConversations[index];
+        return _buildConversationTile(l10n, conversation);
+      },
+    );
   }
 
   @override
@@ -262,104 +580,11 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
                         ],
                       ),
                     )
-                  : ListView.builder(
-                      itemCount: _filteredConversations.length,
-                      itemBuilder: (context, index) {
-                        final conversation = _filteredConversations[index];
-                        final isSelected =
-                            conversation.id == widget.currentConversationId;
-
-                        return Container(
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: isSelected
-                                ? Theme.of(context)
-                                    .primaryColor
-                                    .withValues(alpha: 0.05)
-                                : null,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: ListTile(
-                            selected: isSelected,
-                            leading: Icon(
-                              Icons.chat_bubble_outline,
-                              color: isSelected
-                                  ? Theme.of(context).primaryColor
-                                  : null,
-                            ),
-                            title: Text(
-                              _displayTitle(l10n, conversation.title),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontWeight: isSelected ? FontWeight.w600 : null,
-                              ),
-                            ),
-                            subtitle: Text(
-                              _formatDate(conversation.updatedAt, l10n),
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall
-                                    ?.color
-                                    ?.withValues(alpha: 0.7),
-                              ),
-                            ),
-                            trailing: PopupMenuButton<String>(
-                              icon: const Icon(Icons.more_vert),
-                              onSelected: (value) {
-                                if (value == 'rename') {
-                                  unawaited(_renameConversation(conversation));
-                                } else if (value == 'delete') {
-                                  unawaited(
-                                    _deleteConversation(conversation.id),
-                                  );
-                                }
-                              },
-                              itemBuilder: (context) => [
-                                PopupMenuItem(
-                                  value: 'rename',
-                                  child: Row(
-                                    children: [
-                                      const Icon(Icons.edit, size: 20),
-                                      const SizedBox(width: 12),
-                                      Text(l10n.rename),
-                                    ],
-                                  ),
-                                ),
-                                PopupMenuItem(
-                                  value: 'delete',
-                                  child: Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.delete,
-                                        size: 20,
-                                        color: Colors.red,
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Text(
-                                        l10n.delete,
-                                        style: const TextStyle(
-                                          color: Colors.red,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            onTap: () {
-                              widget.onConversationSelected(conversation.id);
-                              Navigator.pop(context);
-                            },
-                          ),
-                        );
-                      },
-                    ),
+                  : _isSearching
+                      ? _buildSearchResults(l10n)
+                      : ListView(
+                          children: _buildGroupedChildren(l10n),
+                        ),
             ),
 
             // Footer with stats or settings

@@ -128,6 +128,14 @@
       }
     }
   },
+  "pinnedLabel": "Pinned",
+  "archivedLabel": "Archived",
+  "last7DaysLabel": "Last 7 days",
+  "olderLabel": "Older",
+  "pinConversation": "Pin",
+  "unpinConversation": "Unpin",
+  "archiveConversation": "Archive",
+  "unarchiveConversation": "Unarchive",
   "todayLabel": "Today",
   "yesterdayLabel": "Yesterday",
   "daysAgo": "{count, plural, =1{1 day ago} other{{count} days ago}}",

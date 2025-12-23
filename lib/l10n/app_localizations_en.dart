@@ -328,6 +328,30 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get pinnedLabel => 'Pinned';
+
+  @override
+  String get archivedLabel => 'Archived';
+
+  @override
+  String get last7DaysLabel => 'Last 7 days';
+
+  @override
+  String get olderLabel => 'Older';
+
+  @override
+  String get pinConversation => 'Pin';
+
+  @override
+  String get unpinConversation => 'Unpin';
+
+  @override
+  String get archiveConversation => 'Archive';
+
+  @override
+  String get unarchiveConversation => 'Unarchive';
+
+  @override
   String get todayLabel => 'Today';
 
   @override

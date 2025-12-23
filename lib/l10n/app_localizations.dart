@@ -698,6 +698,54 @@ abstract class AppLocalizations {
   /// **'{count, plural, =0{0 conversations} =1{1 conversation} other{{count} conversations}}'**
   String conversationsCount(int count);
 
+  /// No description provided for @pinnedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Pinned'**
+  String get pinnedLabel;
+
+  /// No description provided for @archivedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived'**
+  String get archivedLabel;
+
+  /// No description provided for @last7DaysLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 7 days'**
+  String get last7DaysLabel;
+
+  /// No description provided for @olderLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Older'**
+  String get olderLabel;
+
+  /// No description provided for @pinConversation.
+  ///
+  /// In en, this message translates to:
+  /// **'Pin'**
+  String get pinConversation;
+
+  /// No description provided for @unpinConversation.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpin'**
+  String get unpinConversation;
+
+  /// No description provided for @archiveConversation.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get archiveConversation;
+
+  /// No description provided for @unarchiveConversation.
+  ///
+  /// In en, this message translates to:
+  /// **'Unarchive'**
+  String get unarchiveConversation;
+
   /// No description provided for @todayLabel.
   ///
   /// In en, this message translates to:
