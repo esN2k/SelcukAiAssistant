@@ -80,7 +80,7 @@ class HuggingFaceProvider(ModelProvider):
             kwargs["quantization_config"] = quant_config
         if device == "cuda":
             kwargs["device_map"] = "auto"
-            kwargs["max_memory"] = {"cuda:0": "5GiB"}  # adjust for your 6GB card
+            kwargs["max_memory"] = {0: "5GiB"}  # adjust for your 6GB card
         if Config.HF_ATTENTION_IMPL:
             kwargs["attn_implementation"] = Config.HF_ATTENTION_IMPL
 
