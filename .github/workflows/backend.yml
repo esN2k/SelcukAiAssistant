@@ -60,7 +60,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r backend/requirements.txt
 
-      - name: Start backend
+      - name: Run API smoke test (no-model safe)
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
@@ -73,33 +73,38 @@ jobs:
             -RedirectStandardError $stderrLog `
             -PassThru
 
-          $ready = $false
-          for ($i = 0; $i -lt 30; $i++) {
-            Start-Sleep -Seconds 2
-            if ($proc.HasExited) {
-              Write-Host "Uvicorn beklenmedik sekilde durdu."
+          try {
+            $ready = $false
+            for ($i = 0; $i -lt 30; $i++) {
+              Start-Sleep -Seconds 2
+              if ($proc.HasExited) {
+                Write-Host "Uvicorn beklenmedik sekilde durdu."
+                if (Test-Path $stdoutLog) { Get-Content $stdoutLog -Tail 200 }
+                if (Test-Path $stderrLog) { Get-Content $stderrLog -Tail 200 }
+                exit 1
+              }
+              try {
+                $health = Invoke-RestMethod -Uri "http://127.0.0.1:8000/health" -TimeoutSec 2
+                if ($health.status -eq "ok") {
+                  $ready = $true
+                  break
+                }
+              } catch {
+                continue
+              }
+            }
+
+            if (-not $ready) {
+              Write-Host "Backend belirtilen surede hazir olmadi."
               if (Test-Path $stdoutLog) { Get-Content $stdoutLog -Tail 200 }
               if (Test-Path $stderrLog) { Get-Content $stderrLog -Tail 200 }
               exit 1
             }
-            try {
-              $health = Invoke-RestMethod -Uri "http://127.0.0.1:8000/health" -TimeoutSec 2
-              if ($health.status -eq "ok") {
-                $ready = $true
-                break
-              }
-            } catch {
-              continue
+
+            .\tools\test_api.ps1 -BaseUrl "http://127.0.0.1:8000" -AllowNoModel
+          }
+          finally {
+            if ($proc -and -not $proc.HasExited) {
+              Stop-Process -Id $proc.Id -Force
             }
           }
-
-          if (-not $ready) {
-            Write-Host "Backend belirtilen surede hazir olmadi."
-            if (Test-Path $stdoutLog) { Get-Content $stdoutLog -Tail 200 }
-            if (Test-Path $stderrLog) { Get-Content $stderrLog -Tail 200 }
-            exit 1
-          }
-
-      - name: Run API smoke test (no-model safe)
-        run: |
-          .\tools\test_api.ps1 -BaseUrl "http://127.0.0.1:8000" -AllowNoModel
