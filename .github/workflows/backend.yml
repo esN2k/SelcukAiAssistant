@@ -61,12 +61,41 @@ jobs:
           pip install -r backend/requirements.txt
 
       - name: Start backend
+        shell: pwsh
         run: |
-          Start-Process -FilePath python `
-            -ArgumentList "-m", "uvicorn", "main:app", "--host", "127.0.0.1", "--port", "8000" `
+          $ErrorActionPreference = "Stop"
+          $log = Join-Path $env:RUNNER_TEMP "backend.log"
+          $proc = Start-Process -FilePath python `
+            -ArgumentList "-m", "uvicorn", "main:app", "--host", "127.0.0.1", "--port", "8000", "--log-level", "info" `
             -WorkingDirectory "backend" `
-            -NoNewWindow
-          Start-Sleep -Seconds 5
+            -RedirectStandardOutput $log `
+            -RedirectStandardError $log `
+            -PassThru
+
+          $ready = $false
+          for ($i = 0; $i -lt 30; $i++) {
+            Start-Sleep -Seconds 2
+            if ($proc.HasExited) {
+              Write-Host "Uvicorn beklenmedik sekilde durdu."
+              if (Test-Path $log) { Get-Content $log -Tail 200 }
+              exit 1
+            }
+            try {
+              $health = Invoke-RestMethod -Uri "http://127.0.0.1:8000/health" -TimeoutSec 2
+              if ($health.status -eq "ok") {
+                $ready = $true
+                break
+              }
+            } catch {
+              continue
+            }
+          }
+
+          if (-not $ready) {
+            Write-Host "Backend belirtilen surede hazir olmadi."
+            if (Test-Path $log) { Get-Content $log -Tail 200 }
+            exit 1
+          }
 
       - name: Run API smoke test (no-model safe)
         run: |
