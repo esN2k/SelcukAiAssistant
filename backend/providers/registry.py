@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-import importlib.util
 import os
 from pathlib import Path
 from typing import Optional
@@ -332,10 +331,12 @@ def _has_hf_dependencies() -> bool:
     Çıkış: bool.
     İşleyiş: Transformers ve torch bağımlılıklarını kontrol eder.
     """
-    return (
-        importlib.util.find_spec("transformers") is not None
-        and importlib.util.find_spec("torch") is not None
-    )
+    try:
+        import torch  # noqa: F401
+        import transformers  # noqa: F401
+    except Exception:
+        return False
+    return True
 
 
 def _hf_cache_roots() -> list[Path]:

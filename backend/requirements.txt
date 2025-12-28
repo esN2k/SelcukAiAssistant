@@ -4,7 +4,8 @@ requests==2.32.3
 pydantic==2.10.3
 python-dotenv==1.0.0
 httpx==0.28.1
-faiss-cpu==1.9.0.post1
+faiss-cpu==1.9.0.post1; python_version < "3.13"
+faiss-cpu==1.13.2; python_version >= "3.13"
 sentence-transformers==3.2.1
 pypdf==4.3.1
 beautifulsoup4==4.12.3

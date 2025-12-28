@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:selcukaiassistant/controller/enhanced_chat_controller.dart';
@@ -43,6 +44,11 @@ void main() {
     TestWidgetsFlutterBinding.ensureInitialized();
     Get.testMode = true;
 
+    dotenv.loadFromString(
+      envString: 'BACKEND_URL=http://localhost:8000\n'
+          'APPWRITE_ENDPOINT=\n'
+          'APPWRITE_PROJECT_ID=\n',
+    );
     tempDir = Directory.systemTemp.createTempSync();
     await StorageService.initializeForTesting(tempDir.path);
     await Pref.initialize();
@@ -66,7 +72,7 @@ void main() {
     );
 
     await tester.pumpWidget(_wrapWithApp(const SettingsScreen()));
-    await tester.pumpAndSettle();
+    await tester.pump();
 
     expect(find.text(l10n.settingsTitle), findsOneWidget);
   });
@@ -76,7 +82,7 @@ void main() {
     Get.put<EnhancedChatController>(FakeEnhancedChatController());
 
     await tester.pumpWidget(_wrapWithApp(const NewChatScreen()));
-    await tester.pumpAndSettle();
+    await tester.pump();
 
     expect(find.text(l10n.startConversationTitle), findsOneWidget);
   });
@@ -101,7 +107,17 @@ void main() {
   });
 
   tearDownAll(() async {
-    await StorageService.close();
-    await tempDir.delete(recursive: true);
+    await StorageService.close().timeout(
+      const Duration(seconds: 2),
+      onTimeout: () {},
+    );
+    try {
+      await tempDir.delete(recursive: true).timeout(
+        const Duration(seconds: 2),
+        onTimeout: () => tempDir,
+      );
+    } on FileSystemException {
+      // Ignore cleanup errors on Windows file locks.
+    }
   });
 }

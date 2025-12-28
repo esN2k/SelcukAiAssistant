@@ -5,11 +5,14 @@ gerekli adımları içerir. Backend (FastAPI) ve frontend (Flutter) birlikte
 çalıştırılır.
 
 ## 1) Önkoşullar
-- **Python 3.11+**
+- **Python 3.11+ (öneri: 3.12)**
 - **Flutter (Stable)**
 - **Git**
 - **Ollama** (yerel LLM için)
 - (Opsiyonel) **Docker** ve **Docker Compose**
+
+> Not: Backend bağımlılıklarında (pydantic-core, faiss-cpu, torch) Python 3.14 için
+> hazır wheel bulunmayabilir. Yerel geliştirme ve testler için Python 3.12 önerilir.
 
 ## 2) Depoyu klonlama
 ```bash
@@ -45,6 +48,9 @@ ollama pull llama3.1
 cd backend
 python -m venv .venv
 ```
+
+> Windows'ta birden fazla Python sürümü varsa 3.12 ile venv oluşturun:
+> `py -3.12 -m venv .venv`
 
 ### Windows
 ```bash

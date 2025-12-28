@@ -5,7 +5,7 @@ import logging
 import os
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import Callable, Optional
 
 
 def _configure_utf8_environment() -> None:
@@ -58,13 +58,16 @@ def _configure_utf8_environment() -> None:
 
 _configure_utf8_environment()
 
+load_dotenv: Optional[Callable[..., bool]]
 try:
-    from dotenv import load_dotenv
+    from dotenv import load_dotenv as _load_dotenv
 except ImportError:  # pragma: no cover - opsiyonel bağımlılık
     load_dotenv = None
     logging.warning(
         "python-dotenv kurulu değil; ortam değişkenlerini manuel ayarlayın."
     )
+else:
+    load_dotenv = _load_dotenv
 
 backend_dir = Path(__file__).resolve().parent
 env_path = backend_dir / ".env"
