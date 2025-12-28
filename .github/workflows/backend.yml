@@ -64,12 +64,13 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
-          $log = Join-Path $env:RUNNER_TEMP "backend.log"
+          $stdoutLog = Join-Path $env:RUNNER_TEMP "backend.log"
+          $stderrLog = Join-Path $env:RUNNER_TEMP "backend.err.log"
           $proc = Start-Process -FilePath python `
             -ArgumentList "-m", "uvicorn", "main:app", "--host", "127.0.0.1", "--port", "8000", "--log-level", "info" `
             -WorkingDirectory "backend" `
-            -RedirectStandardOutput $log `
-            -RedirectStandardError $log `
+            -RedirectStandardOutput $stdoutLog `
+            -RedirectStandardError $stderrLog `
             -PassThru
 
           $ready = $false
@@ -77,7 +78,8 @@ jobs:
             Start-Sleep -Seconds 2
             if ($proc.HasExited) {
               Write-Host "Uvicorn beklenmedik sekilde durdu."
-              if (Test-Path $log) { Get-Content $log -Tail 200 }
+              if (Test-Path $stdoutLog) { Get-Content $stdoutLog -Tail 200 }
+              if (Test-Path $stderrLog) { Get-Content $stderrLog -Tail 200 }
               exit 1
             }
             try {
@@ -93,7 +95,8 @@ jobs:
 
           if (-not $ready) {
             Write-Host "Backend belirtilen surede hazir olmadi."
-            if (Test-Path $log) { Get-Content $log -Tail 200 }
+            if (Test-Path $stdoutLog) { Get-Content $stdoutLog -Tail 200 }
+            if (Test-Path $stderrLog) { Get-Content $stderrLog -Tail 200 }
             exit 1
           }
 
