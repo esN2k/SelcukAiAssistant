@@ -234,7 +234,9 @@ Write-Result "GET /health" $healthOk (Truncate-Text $health.Output)
 
 $encodingOk = $false
 if (-not [string]::IsNullOrWhiteSpace($healthMessage)) {
-  $encodingOk = $healthMessage -match '[ÇĞİÖŞÜçğıöşü]'
+  $containsTurkish = $healthMessage -match '[çğıİöşüÇĞİÖŞÜ]'
+  $containsMojibake = $healthMessage -match '[\u00C3\u00C5\u00C4\u00C2\u00D0\u00DE\uFFFD]'
+  $encodingOk = $containsTurkish -and (-not $containsMojibake)
 }
 Write-Result "UTF-8/Türkçe karakter kontrolü" $encodingOk (Truncate-Text $healthMessage)
 
