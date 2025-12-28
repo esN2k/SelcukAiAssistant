@@ -14,7 +14,16 @@ altyapısına geçirilmiştir.
 - **Frontend:** Flutter + GetX (Material 3, çoklu platform)
 - **Backend:** Python + FastAPI
 - **Yerel LLM:** Ollama (Llama 3.1)
+- **Yerel LLM (opsiyonel):** HuggingFace (HF, açık model deposu)
 - **RAG:** LangChain (orchestrator), FAISS (vektör arama), ChromaDB (vektör DB)
+
+## Sunum Özeti (Jüri için)
+- **Gizlilik (Privacy):** Kullanıcı verisi yerel LLM’de işlenir; harici API bağımlılığı yoktur.
+- **Yerel çıkarım (Local inference):** İnternet kesilse bile çekirdek sohbet akışı çalışır.
+- **Kaynaklı yanıt (Citations):** RAG, yanıtı belge parçalarıyla ilişkilendirir.
+- **Hata toleransı (Fault tolerance):** Ollama/RAG hataları Türkçe ve anlaşılır döner.
+- **Kalite kapıları (Quality gates):** CI’da `pytest`, `ruff`, `mypy`, `flutter analyze/test`, encoding guard çalışır.
+- **Akademik doğruluk (Academic accuracy):** Yerel veri ve kaynak gösterimi ile doğrulanabilir çıktı üretir.
 
 ## Mimari Özet
 ```
@@ -41,6 +50,9 @@ flutter pub get
 copy .env.example .env
 flutter run
 ```
+
+> Not: HuggingFace (HF) yerel model akışı opsiyoneldir. Windows’ta `torch_python.dll`
+> hatası için `docs/SORUN_GIDERME.md` dosyasına bakın.
 
 ## RAG Kullanımı
 ```bash

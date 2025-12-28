@@ -6,7 +6,7 @@ Bu doküman, Flutter → FastAPI → Ollama/FAISS etkileşimini detaylandırır.
 ```
 Sunum Katmanı  : Flutter + GetX (UI/State)
 Uygulama Katmanı: FastAPI (yönlendirme, doğrulama)
-Zeka Katmanı   : Ollama (Llama 3.1)
+Zeka Katmanı   : Ollama (Llama 3.1) / HuggingFace (HF, opsiyonel)
 Bilgi Katmanı  : RAG (FAISS + ChromaDB)
 ```
 
@@ -18,6 +18,12 @@ Bilgi Katmanı  : RAG (FAISS + ChromaDB)
    - En ilgili parçalar sistem promptuna eklenir.
 4. **Model çağrısı** yapılır (Ollama/HF).
 5. **Yanıt** temizlenir ve istemciye dönülür.
+
+### 2.1) Model Yönlendirme (Routing)
+- Varsayılan sağlayıcı `MODEL_BACKEND` ile belirlenir.
+- `/models` listesi **uygunluk (availability)** durumunu döner.
+- HuggingFace modelleri yalnızca bağımlılıklar (torch/transformers) **import** edilebiliyorsa
+  ve model **önbellekte (cache)** ise uygun kabul edilir.
 
 ## 3) Streaming (SSE)
 ```

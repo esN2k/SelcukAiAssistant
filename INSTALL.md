@@ -68,6 +68,27 @@ cp .env.example .env
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
+### 4.1) HuggingFace (HF) opsiyonel kurulum
+> HuggingFace (HF), yerel modelleri indirmek için kullanılan açık model deposudur.
+
+```bash
+cd backend
+pip install -r requirements-hf.txt
+```
+
+**Windows DLL (Dinamik Bağlantı Kütüphanesi) notu:**
+- `WinError 126` veya `torch_python.dll` hatası alırsanız:
+  1. **Microsoft Visual C++ 2015–2022 Redistributable** kurulu olmalı (çalışma zamanı bağımlılığı).
+  2. CPU kullanacaksanız PyTorch CPU sürümünü kurun:
+     ```powershell
+     pip install torch --index-url https://download.pytorch.org/whl/cpu
+     ```
+  3. GPU kullanacaksanız PyTorch sürümünüz CUDA sürümüyle uyumlu olmalı.
+  4. Geçici çözüm olarak terminal oturumunda `torch\lib` dizinini PATH'e ekleyin:
+     ```powershell
+     $env:Path += ";$env:VIRTUAL_ENV\\Lib\\site-packages\\torch\\lib"
+     ```
+
 ## 5) Flutter kurulumu ve çalıştırma
 ```bash
 flutter pub get

@@ -5,7 +5,7 @@ Bu doküman, Selçuk AI Akademik Asistan’ın uçtan uca mimarisini ve veri ak�
 
 ## 1) Yüksek seviye bileşenler
 ```
-Flutter (UI) ──HTTP/SSE──> FastAPI ──> LLM (Ollama)
+Flutter (UI) ──HTTP/SSE──> FastAPI ──> LLM (Ollama / HuggingFace)
                          └──> RAG (FAISS + ChromaDB)
 ```
 
@@ -13,6 +13,7 @@ Flutter (UI) ──HTTP/SSE──> FastAPI ──> LLM (Ollama)
 - **Flutter (GetX)**: UI, model seçimi, ayarlar, sohbet akışı.
 - **FastAPI**: İstek doğrulama, model yönlendirme, RAG orkestrasyonu.
 - **Ollama**: Yerel LLM çalıştırma (Llama 3.1).
+- **HuggingFace (HF)**: Opsiyonel yerel model akışı (torch/transformers bağımlı).
 - **RAG Katmanı**: FAISS indeksinden kaynak parçaları çekme.
 - **ChromaDB**: Vektör veritabanı (persisted storage).
 
@@ -35,6 +36,7 @@ Flutter (UI) ──HTTP/SSE──> FastAPI ──> LLM (Ollama)
 ## 6) Konfigürasyon
 Tüm ayarlar `backend/.env` üzerinden yönetilir. Önemli alanlar:
 - `OLLAMA_BASE_URL`, `OLLAMA_MODEL`
+- `MODEL_BACKEND` (varsayılan sağlayıcı)
 - `RAG_ENABLED`, `RAG_VECTOR_DB_PATH`
 - `MAX_CONTEXT_TOKENS`, `MAX_OUTPUT_TOKENS`
 

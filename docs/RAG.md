@@ -34,6 +34,12 @@ RAG_EMBEDDING_MODEL=sentence-transformers/paraphrase-multilingual-mpnet-base-v2
 RAG_STRICT_DEFAULT=true
 ```
 
+## 3.1) Bağımlılıklar (Dependencies)
+- **Embedding (gömme)** üretimi için `sentence-transformers` ve `torch` gerekir.
+- Windows’ta `WinError 126 / torch_python.dll` görülürse:
+  - Microsoft Visual C++ 2015–2022 Redistributable kurulu olmalı.
+  - Gerekirse CPU PyTorch sürümünü kurun (bkz. `docs/SORUN_GIDERME.md`).
+
 ## 4) Strict Mod
 - RAG açıkken kaynak bulunamazsa backend: **“Bu bilgi kaynaklarda yok.”** döner.
 - İstek bazında `rag_strict` ile override edilebilir.
