@@ -15,7 +15,8 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - hf-cache:/root/.cache/huggingface
+      # HF cache'i harici diske taşımak için HF_CACHE_HOST_DIR ayarlayın (örn. E:/hf-cache).
+      - ${HF_CACHE_HOST_DIR:-./hf-cache}:/root/.cache/huggingface
 
   nginx:
     image: nginx:1.25-alpine
@@ -38,4 +39,3 @@ services:
 
 volumes:
   ollama-data:
-  hf-cache:
