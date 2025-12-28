@@ -58,6 +58,16 @@ class HuggingFaceProvider(ModelProvider):
             if getattr(torch.backends, "mps", None) and torch.backends.mps.is_available():
                 return "mps"
             return "cpu"
+        if preferred == "cuda":
+            if torch.cuda.is_available():
+                return "cuda"
+            logger.warning("HF_DEVICE=cuda ancak CUDA yok; cpu kullanılıyor.")
+            return "cpu"
+        if preferred == "mps":
+            if getattr(torch.backends, "mps", None) and torch.backends.mps.is_available():
+                return "mps"
+            logger.warning("HF_DEVICE=mps ancak MPS yok; cpu kullanılıyor.")
+            return "cpu"
         return preferred
 
     @staticmethod

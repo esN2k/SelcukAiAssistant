@@ -119,7 +119,7 @@ class Config:
     # Hugging Face configuration
     HF_MODEL_NAME: str = os.getenv("HF_MODEL_NAME", "Qwen/Qwen2.5-1.5B-Instruct")
     HF_LOAD_IN_4BIT: bool = os.getenv("HF_LOAD_IN_4BIT", "true").lower() == "true"
-    HF_DEVICE: str = os.getenv("HF_DEVICE", "cuda")
+    HF_DEVICE: str = os.getenv("HF_DEVICE", "auto")
     HF_DTYPE: str = os.getenv("HF_DTYPE", "bfloat16")
     HF_ATTENTION_IMPL: str = os.getenv("HF_ATTENTION_IMPL", "sdpa")
 
