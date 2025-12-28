@@ -21,6 +21,14 @@ docker run --rm -p 8000:8000 --env-file .env selcuk-ai-backend
 - Proxy gerekiyorsa `nginx/` altındaki örnekleri kullanın.
 > Not: HF modelleri konteyner içinde ek disk alanı ve (GPU varsa) CUDA runtime gerektirir.
 
+HF bağımlılıklarıyla build etmek için:
+```bash
+INSTALL_HF=true docker compose build
+INSTALL_HF=true docker compose up
+```
+
+HF önbelleğini kalıcı yapmak için compose volume `hf-cache` kullanılmaktadır.
+
 ## 4) Nginx /api (SSE Destekli)
 - `nginx.conf` ve `nginx/` altındaki konfigler SSE için uygun başlıkları ekler.
 - SSE için `X-Accel-Buffering: no` ve `Cache-Control: no-cache` tavsiye edilir.

@@ -2,6 +2,8 @@ services:
   backend:
     build:
       context: ./backend
+      args:
+        INSTALL_HF: ${INSTALL_HF:-false}
     env_file:
       - ./backend/.env
     environment:
@@ -12,6 +14,8 @@ services:
       ALLOWED_ORIGINS_STRICT: ${ALLOWED_ORIGINS_STRICT:-false}
     ports:
       - "8000:8000"
+    volumes:
+      - hf-cache:/root/.cache/huggingface
 
   nginx:
     image: nginx:1.25-alpine
@@ -33,3 +37,4 @@ services:
 
 volumes:
   ollama-data:
+  hf-cache:
