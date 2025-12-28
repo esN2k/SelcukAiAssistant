@@ -1,9 +1,4 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-name: Dart
+name: Flutter
 
 on:
   push:
@@ -18,21 +13,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Encoding guard (UTF-8/BOM/mojibake)
+        run: python tools/encoding_guard.py --root .
+
       - uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          channel: "stable"
           cache: true
 
-      - name: Check mojibake and validate ARB JSON
+      - name: Validate ARB JSON
         run: |
-          if rg -n "[ÃÄÂÐÞ]" -g "*.arb" -g "*.dart" -g "*.md" -g "*.py" -g "*.yml" -g "*.yaml" -g "*.json" -g "*.ps1" -g "*.sh"; then
-            echo "Mojibake pattern bulundu."
-            exit 1
-          fi
-          if rg -n "�" -g "*.arb" -g "*.dart" -g "*.md" -g "*.py" -g "*.yml" -g "*.yaml" -g "*.json" -g "*.ps1" -g "*.sh"; then
-            echo "Bozuk karakter (�) bulundu."
-            exit 1
-          fi
           python - <<'PY'
           import json
           from pathlib import Path
@@ -61,17 +56,9 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # Uncomment this step to verify the use of 'dart format' on each commit.
-      # - name: Verify formatting
-      #   run: dart format --output=none --set-exit-if-changed .
-
-      # Consider passing '--fatal-infos' for slightly stricter analysis.
       - name: Analyze project source
         run: flutter analyze
 
-      # Your project will need to have tests in test/ and a dependency on
-      # package:test for this step to succeed. Note that Flutter projects will
-      # want to change this to 'flutter test'.
       - name: Run tests
         run: flutter test
 

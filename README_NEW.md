@@ -1,3 +1,4 @@
-# README Notlari
+# README Notları
 
-Bu dosya gecici notlar icin tutulur. Guncel bilgiler icin `README.md` ve `docs/` altindaki dokumanlara bakin.
+Bu dosya geçici notlar için tutulur. Güncel bilgiler için `README.md` ve
+`docs/` altındaki dokümanlara bakın.

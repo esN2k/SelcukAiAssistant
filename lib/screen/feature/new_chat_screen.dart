@@ -1,4 +1,4 @@
-// Using deprecated withOpacity and other Material 2 APIs until migration
+// Geçici olarak Material 2 API'lerindeki withOpacity kullanımını sürdürüyoruz.
 // ignore_for_file: deprecated_member_use
 
 import 'dart:async';
@@ -31,10 +31,12 @@ class _NewChatScreenState extends State<NewChatScreen> {
   @override
   void initState() {
     super.initState();
-    _controller = Get.put(EnhancedChatController());
+    _controller = Get.put<EnhancedChatController>(
+      EnhancedChatController(),
+    );
     _isDarkMode.value = Get.isDarkMode;
 
-    // Initialize conversation service
+    // Sohbet verilerini hazırlamak için servis başlatılır.
     unawaited(ConversationService.init());
   }
 
@@ -57,8 +59,8 @@ class _NewChatScreenState extends State<NewChatScreen> {
       if (mounted) {
         unawaited(Get.offAll<void>(() => const LoginScreen()));
         Get.snackbar(
-          l10n?.logoutSuccessTitle ?? 'Success',
-          l10n?.logoutSuccessMessage ?? 'Logged out successfully',
+          l10n?.logoutSuccessTitle ?? 'Başarılı',
+          l10n?.logoutSuccessMessage ?? 'Oturum başarıyla kapatıldı',
           backgroundColor: Colors.green,
           colorText: Colors.white,
           snackPosition: SnackPosition.BOTTOM,
@@ -67,7 +69,7 @@ class _NewChatScreenState extends State<NewChatScreen> {
     } on Exception catch (e) {
       if (mounted) {
         Get.snackbar(
-          l10n?.logoutErrorTitle ?? 'Error',
+          l10n?.logoutErrorTitle ?? 'Hata',
           e.toString().replaceAll('Exception: ', ''),
           backgroundColor: Colors.red,
           colorText: Colors.white,
@@ -113,7 +115,7 @@ class _NewChatScreenState extends State<NewChatScreen> {
         centerTitle: true,
         elevation: 1,
         actions: [
-          // Dark mode toggle
+          // Koyu/açık tema geçişi
           IconButton(
             padding: const EdgeInsets.only(right: 10),
             onPressed: () {
@@ -132,7 +134,7 @@ class _NewChatScreenState extends State<NewChatScreen> {
               ),
             ),
           ),
-          // More options
+          // Ek seçenekler
           PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert),
             onSelected: (value) {
@@ -182,6 +184,7 @@ class _NewChatScreenState extends State<NewChatScreen> {
           ),
         ],
       ),
+      // Alt giriş alanı: sesli giriş, metin alanı ve gönder/durdur kontrolü.
       bottomNavigationBar: Container(
         padding: EdgeInsets.only(
           left: 16,
@@ -202,7 +205,7 @@ class _NewChatScreenState extends State<NewChatScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Listening indicator
+              // Dinleme durum göstergesi
               Obx(
                 () => _controller.isListening.value
                     ? Container(
@@ -235,7 +238,7 @@ class _NewChatScreenState extends State<NewChatScreen> {
                     : const SizedBox.shrink(),
               ),
 
-              // Input row
+              // Mesaj giriş satırı
               Row(
                 children: [
                   Obx(
@@ -284,7 +287,7 @@ class _NewChatScreenState extends State<NewChatScreen> {
                       ),
                       child: Row(
                         children: [
-                          // Image attachment button
+                          // Görsel ekleme düğmesi
                           IconButton(
                             icon: const Icon(Icons.image, size: 20),
                             onPressed: () async {
@@ -414,7 +417,8 @@ class _NewChatScreenState extends State<NewChatScreen> {
                             ),
                           ),
                           const SizedBox(height: 32),
-                          // Suggested prompts
+                          // Önerilen başlangıç soruları
+                          //(kullanıcıyı yönlendirmek için).
                           Wrap(
                             spacing: 8,
                             runSpacing: 8,
@@ -466,8 +470,7 @@ class _NewChatScreenState extends State<NewChatScreen> {
                         final lastAssistantIndex = _controller.messages
                             .lastIndexWhere((m) => !m.isUser);
                         final message = _controller.messages[index];
-                        final actionsEnabled =
-                            !_controller.isGenerating.value;
+                        final actionsEnabled = !_controller.isGenerating.value;
                         final canEdit = actionsEnabled &&
                             message.isUser &&
                             index == lastUserIndex;
@@ -478,11 +481,11 @@ class _NewChatScreenState extends State<NewChatScreen> {
                             !message.isUser &&
                             index == lastAssistantIndex &&
                             !message.hasError;
-                        final showTypingIndicator = _controller
-                                .isGenerating.value &&
-                            !message.isUser &&
-                            index == lastAssistantIndex &&
-                            message.content.trim().isEmpty;
+                        final showTypingIndicator =
+                            _controller.isGenerating.value &&
+                                !message.isUser &&
+                                index == lastAssistantIndex &&
+                                message.content.trim().isEmpty;
                         return EnhancedMessageCard(
                           message: message,
                           onEdit: canEdit

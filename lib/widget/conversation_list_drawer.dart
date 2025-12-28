@@ -176,7 +176,7 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
   }
 
   String _displayTitle(AppLocalizations l10n, String title) {
-    const defaults = {'New Chat', 'Yeni sohbet'};
+    const defaults = {'New Chat', 'Yeni Sohbet', 'Yeni sohbet'};
     if (defaults.contains(title)) {
       return l10n.newChat;
     }
@@ -478,7 +478,7 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
       child: SafeArea(
         child: Column(
           children: [
-            // Header with New Chat button
+            // Yeni sohbet düğmesiyle üst alan
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -516,7 +516,7 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
               ),
             ),
 
-            // Search bar
+            // Arama çubuğu
             Padding(
               padding: const EdgeInsets.all(12),
               child: TextField(
@@ -545,7 +545,7 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
               ),
             ),
 
-            // Conversations list
+            // Sohbet listesi
             Expanded(
               child: _filteredConversations.isEmpty
                   ? Center(
@@ -587,7 +587,7 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
                         ),
             ),
 
-            // Footer with stats or settings
+            // Alt kısım: istatistikler ve ayarlar
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(

@@ -2,6 +2,7 @@ root = true
 
 [*]
 charset = utf-8
+insert_final_newline = true
 
 [*.{arb,md,yml,yaml,json}]
 charset = utf-8

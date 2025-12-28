@@ -12,6 +12,45 @@ class SelcukColors {
 }
 
 class SelcukTheme {
+  static const String _bodyFont = 'SourceSans3';
+  static const String _displayFont = 'SourceSerif4';
+
+  static TextTheme _buildTextTheme(TextTheme base, ColorScheme scheme) {
+    final themed = base.apply(
+      fontFamily: _bodyFont,
+      bodyColor: scheme.onSurface,
+      displayColor: scheme.onSurface,
+    );
+    return themed.copyWith(
+      displayLarge: themed.displayLarge?.copyWith(
+        fontFamily: _displayFont,
+        fontWeight: FontWeight.w600,
+        letterSpacing: -0.2,
+      ),
+      displayMedium: themed.displayMedium?.copyWith(
+        fontFamily: _displayFont,
+        fontWeight: FontWeight.w600,
+        letterSpacing: -0.2,
+      ),
+      displaySmall: themed.displaySmall?.copyWith(
+        fontFamily: _displayFont,
+        fontWeight: FontWeight.w600,
+      ),
+      headlineLarge: themed.headlineLarge?.copyWith(
+        fontFamily: _displayFont,
+        fontWeight: FontWeight.w600,
+      ),
+      headlineMedium: themed.headlineMedium?.copyWith(
+        fontFamily: _displayFont,
+        fontWeight: FontWeight.w600,
+      ),
+      headlineSmall: themed.headlineSmall?.copyWith(
+        fontFamily: _displayFont,
+        fontWeight: FontWeight.w600,
+      ),
+    );
+  }
+
   static ThemeData light() {
     const colorScheme = ColorScheme.light(
       primary: SelcukColors.gold,
@@ -23,12 +62,18 @@ class SelcukTheme {
       outline: SelcukColors.mist,
     );
 
+    final textTheme = _buildTextTheme(
+      ThemeData.light().textTheme,
+      colorScheme,
+    );
+
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
       colorScheme: colorScheme,
       scaffoldBackgroundColor: SelcukColors.cloud,
-      fontFamily: 'Roboto',
+      fontFamily: _bodyFont,
+      textTheme: textTheme,
       fontFamilyFallback: const ['NotoSansSymbols', 'NotoSansSymbols2'],
       appBarTheme: const AppBarTheme(
         backgroundColor: SelcukColors.cloud,
@@ -104,12 +149,18 @@ class SelcukTheme {
       outline: SelcukColors.slate,
     );
 
+    final textTheme = _buildTextTheme(
+      ThemeData.dark().textTheme,
+      colorScheme,
+    );
+
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
       colorScheme: colorScheme,
       scaffoldBackgroundColor: SelcukColors.ink,
-      fontFamily: 'Roboto',
+      fontFamily: _bodyFont,
+      textTheme: textTheme,
       fontFamilyFallback: const ['NotoSansSymbols', 'NotoSansSymbols2'],
       appBarTheme: const AppBarTheme(
         backgroundColor: SelcukColors.ink,

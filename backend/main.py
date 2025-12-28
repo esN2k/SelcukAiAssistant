@@ -1,11 +1,11 @@
-"""FastAPI backend for SelcukAiAssistant with streaming and model routing."""
+"""Selçuk AI Asistanı FastAPI backend uygulaması."""
 from __future__ import annotations
 
 import asyncio
 import logging
 import time
 import uuid
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 import requests
 from fastapi import FastAPI, HTTPException, Request
@@ -31,7 +31,7 @@ from utils import (
 
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="SelcukAiAssistant Backend")
+app = FastAPI(title="Selçuk AI Asistanı Backend")
 
 default_dev_origins = [
     "http://localhost",
@@ -52,8 +52,8 @@ allowed_origins = [origin.strip() for origin in Config.ALLOWED_ORIGINS if origin
 if not allowed_origins:
     if Config.ALLOWED_ORIGINS_STRICT:
         logger.warning(
-            "ALLOWED_ORIGINS_STRICT enabled but ALLOWED_ORIGINS is empty; "
-            "CORS will block all origins."
+            "ALLOWED_ORIGINS_STRICT etkin, ancak ALLOWED_ORIGINS boş; "
+            "CORS tüm origin'leri engelleyecek."
         )
     else:
         allowed_origins = default_dev_origins
@@ -87,10 +87,15 @@ if Config.APPWRITE_ENDPOINT and Config.APPWRITE_PROJECT_ID and Config.APPWRITE_A
         }
     )
 else:
-    logger.info("Appwrite not configured; skipping chat logging")
+    logger.info("Appwrite yapılandırılmadı; sohbet kaydı atlandı.")
 
 
 def _usage_to_schema(usage: Optional[Usage]) -> Optional[UsageInfo]:
+    """Giriş: Usage nesnesi.
+
+    Çıkış: UsageInfo ya da None.
+    İşleyiş: Usage alanlarını UsageInfo'ya map eder.
+    """
     if not usage:
         return None
     return UsageInfo(
@@ -101,6 +106,11 @@ def _usage_to_schema(usage: Optional[Usage]) -> Optional[UsageInfo]:
 
 
 def _log_chat_to_appwrite(question: str, answer: str) -> None:
+    """Giriş: Soru ve yanıt metni.
+
+    Çıkış: yok.
+    İşleyiş: Appwrite aktifse HTTP POST ile sohbet kaydı ekler.
+    """
     if appwrite_client is None:
         return
     if not Config.APPWRITE_DATABASE_ID or not Config.APPWRITE_COLLECTION_ID:
@@ -133,30 +143,50 @@ def _log_chat_to_appwrite(question: str, answer: str) -> None:
         )
         response.raise_for_status()
     except requests.RequestException as exc:
-        logger.warning("Appwrite logging failed: %s", exc)
+        logger.warning("Appwrite kayıt hatası: %s", exc)
 
 
 @app.get("/")
-async def root() -> Dict[str, str]:
-    return {"status": "ok", "message": "SelcukAiAssistant Backend is running"}
+async def root() -> dict[str, str]:
+    """Giriş: yok.
+
+    Çıkış: Durum sözlüğü.
+    İşleyiş: Basit sağlık mesajı döndürür.
+    """
+    return {"status": "ok", "message": "Selçuk AI Asistanı backend çalışıyor"}
 
 
 @app.get("/health")
-async def health() -> Dict[str, str]:
-    return {"status": "ok", "message": "SelcukAiAssistant Backend is running"}
+async def health() -> dict[str, str]:
+    """Giriş: yok.
+
+    Çıkış: Durum sözlüğü.
+    İşleyiş: Sağlık kontrolü için kısa mesaj döndürür.
+    """
+    return {"status": "ok", "message": "Selçuk AI Asistanı backend çalışıyor"}
 
 
 @app.get("/health/ollama")
-async def ollama_health() -> Dict[str, Any]:
-    health = await ollama_provider.health_check(Config.OLLAMA_MODEL)
-    if health["status"] == "unhealthy":
-        raise HTTPException(status_code=503, detail=health)
-    return health
+async def ollama_health() -> dict[str, Any]:
+    """Giriş: yok.
+
+    Çıkış: Ollama sağlık bilgisi.
+    İşleyiş: Sağlık sorunlarında 503 döndürür.
+    """
+    health_status = await ollama_provider.health_check(Config.OLLAMA_MODEL)
+    if health_status["status"] == "unhealthy":
+        raise HTTPException(status_code=503, detail=health_status)
+    return health_status
 
 
 @app.get("/health/hf")
-async def hf_health() -> Dict[str, Any]:
-    info: Dict[str, Any] = {
+async def hf_health() -> dict[str, Any]:
+    """Giriş: yok.
+
+    Çıkış: HuggingFace bağımlılık ve GPU bilgisi.
+    İşleyiş: torch/transformers durumunu raporlar.
+    """
+    info: dict[str, Any] = {
         "status": "unavailable",
         "torch_version": None,
         "cuda_available": False,
@@ -196,20 +226,30 @@ async def hf_health() -> Dict[str, Any]:
 
 
 @app.get("/models")
-async def list_models() -> Dict[str, Any]:
+async def list_models() -> dict[str, Any]:
+    """Giriş: yok.
+
+    Çıkış: Model listesi.
+    İşleyiş: ModelRegistry üzerinden katalog döndürür.
+    """
     models = await model_registry.list_models()
     return {"models": [model.__dict__ for model in models]}
 
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest, http_request: Request) -> ChatResponse:
+    """Giriş: ChatRequest ve HTTP Request.
+
+    Çıkış: ChatResponse.
+    İşleyiş: RAG ve model çağrısını yürütür.
+    """
     request_id = uuid.uuid4().hex
     start_time = time.perf_counter()
     language = pick_language(http_request.headers.get("Accept-Language"))
     resolved = model_registry.resolve(request.model)
     provider = providers.get(resolved.provider)
     if not provider:
-        raise HTTPException(status_code=400, detail="Unknown model provider")
+        raise HTTPException(status_code=400, detail="Bilinmeyen model sağlayıcısı.")
 
     rag_enabled = request.rag_enabled and Config.RAG_ENABLED
     rag_strict = (
@@ -224,7 +264,10 @@ async def chat(request: ChatRequest, http_request: Request) -> ChatResponse:
 
     if rag_enabled:
         question = next((m.content for m in reversed(messages) if m.role == "user"), "")
-        context, citations = rag_service.get_context(question, top_k=rag_top_k)
+        try:
+            context, citations = rag_service.get_context(question, top_k=rag_top_k)
+        except RuntimeError as exc:
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
         if rag_strict and not context:
             answer = rag_no_source_message(language)
             return ChatResponse(
@@ -256,7 +299,9 @@ async def chat(request: ChatRequest, http_request: Request) -> ChatResponse:
                 request_id=request_id,
             )
     except TimeoutError as exc:
-        raise HTTPException(status_code=504, detail="Request timeout") from exc
+        raise HTTPException(
+            status_code=504, detail="İstek zaman aşımına uğradı."
+        ) from exc
     except RuntimeError as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
@@ -285,12 +330,17 @@ async def chat(request: ChatRequest, http_request: Request) -> ChatResponse:
 
 @app.post("/chat/stream")
 async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingResponse:
+    """Giriş: ChatRequest ve HTTP Request.
+
+    Çıkış: StreamingResponse.
+    İşleyiş: SSE tabanlı akış yanıtı üretir.
+    """
     request_id = uuid.uuid4().hex
     language = pick_language(http_request.headers.get("Accept-Language"))
     resolved = model_registry.resolve(request.model)
     provider = providers.get(resolved.provider)
     if not provider:
-        raise HTTPException(status_code=400, detail="Unknown model provider")
+        raise HTTPException(status_code=400, detail="Bilinmeyen model sağlayıcısı.")
 
     rag_enabled = request.rag_enabled and Config.RAG_ENABLED
     rag_strict = (
@@ -303,10 +353,14 @@ async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingR
     messages = normalize_messages(request.messages, language)
     citations: list[str] = []
     rag_context = ""
+    rag_error: Optional[str] = None
 
     if rag_enabled:
         question = next((m.content for m in reversed(messages) if m.role == "user"), "")
-        rag_context, citations = rag_service.get_context(question, top_k=rag_top_k)
+        try:
+            rag_context, citations = rag_service.get_context(question, top_k=rag_top_k)
+        except RuntimeError as exc:
+            rag_error = str(exc)
         if rag_context:
             messages[0].content = build_rag_system_prompt(
                 messages[0].content,
@@ -319,6 +373,20 @@ async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingR
     cancel_token = CancellationToken()
 
     async def event_generator() -> Any:
+        """Giriş: yok.
+
+        Çıkış: SSE veri akışı.
+        İşleyiş: Token ve kontrol mesajlarını sırayla üretir.
+        """
+        if rag_error:
+            yield sse_event(
+                {
+                    "type": "error",
+                    "message": rag_error,
+                    "request_id": request_id,
+                }
+            )
+            return
         if rag_enabled and rag_strict and not rag_context:
             no_source = rag_no_source_message(language)
             yield sse_event(
@@ -391,7 +459,17 @@ async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingR
             yield sse_event(
                 {
                     "type": "error",
-                    "message": "Request timeout",
+                    "message": "İstek zaman aşımına uğradı.",
+                    "request_id": request_id,
+                }
+            )
+        except HTTPException as exc:
+            cancel_token.cancel()
+            message = exc.detail if isinstance(exc.detail, str) else "Beklenmeyen hata."
+            yield sse_event(
+                {
+                    "type": "error",
+                    "message": message,
                     "request_id": request_id,
                 }
             )

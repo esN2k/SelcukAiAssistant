@@ -101,19 +101,19 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'Selcuk AI Assistant'**
+  /// **'Selçuk AI Assistant'**
   String get appTitle;
 
   /// No description provided for @appSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Selcuk AI Assistant'**
+  /// **'Privacy-focused academic assistant'**
   String get appSubtitle;
 
   /// No description provided for @splashSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Selcuk AI Assistant'**
+  /// **'Selçuk AI Assistant'**
   String get splashSubtitle;
 
   /// No description provided for @ok.
@@ -857,7 +857,7 @@ abstract class AppLocalizations {
   /// No description provided for @messageHint.
   ///
   /// In en, this message translates to:
-  /// **'Message Selcuk AI Assistant...'**
+  /// **'Message Selçuk AI Assistant...'**
   String get messageHint;
 
   /// No description provided for @imageSelectedTitle.
@@ -1399,7 +1399,7 @@ abstract class AppLocalizations {
   /// No description provided for @assistantTitle.
   ///
   /// In en, this message translates to:
-  /// **'AI assistant'**
+  /// **'AI Assistant'**
   String get assistantTitle;
 
   /// No description provided for @assistantHint.

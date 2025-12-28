@@ -1,18 +1,20 @@
-"""Shared utilities for request processing and streaming."""
+"""İstek işleme ve akışa yönelik yardımcı fonksiyonlar."""
 from __future__ import annotations
 
 import json
-import logging
 from dataclasses import dataclass
-from typing import Dict, Iterable, List, Optional
+from typing import Iterable, Optional
 
 from prompts import build_default_system_prompt
 from schemas import ChatMessage
 
-logger = logging.getLogger(__name__)
-
 
 def pick_language(accept_language: Optional[str]) -> str:
+    """Giriş: Accept-Language başlığı veya None.
+
+    Çıkış: "tr" ya da "en".
+    İşleyiş: Başlıktaki dil sırasına göre desteklenen ilk dili seçer.
+    """
     if not accept_language:
         return "tr"
     for part in accept_language.split(","):
@@ -25,42 +27,70 @@ def pick_language(accept_language: Optional[str]) -> str:
 
 
 def build_default_system_message(language: str) -> ChatMessage:
+    """Giriş: Dil kodu.
+
+    Çıkış: Sistem rolünde ChatMessage.
+    İşleyiş: Varsayılan sistem promptunu üretir.
+    """
     return ChatMessage(
         role="system",
         content=build_default_system_prompt(language).strip(),
     )
 
 
-def normalize_messages(messages: List[ChatMessage], language: str) -> List[ChatMessage]:
-    """Ensure a system message exists and strip empty content."""
+def normalize_messages(
+    messages: list[ChatMessage],
+    language: str,
+) -> list[ChatMessage]:
+    """Giriş: Mesaj listesi ve dil kodu.
+
+    Çıkış: Normalize edilmiş mesaj listesi.
+    İşleyiş: Sistem mesajı yoksa ekler, içerikleri kopyalar.
+    """
     normalized = [ChatMessage(role=m.role, content=m.content) for m in messages]
     if not any(m.role == "system" for m in normalized):
         normalized.insert(0, build_default_system_message(language))
     return normalized
 
 
-def messages_to_dict(messages: Iterable[ChatMessage]) -> List[Dict[str, str]]:
-    return [{"role": m.role, "content": m.content} for m in messages]
-
-
 def estimate_token_count(text: str) -> int:
-    """Rough token estimate without tokenizer (chars/4 heuristic)."""
+    """Giriş: Metin.
+
+    Çıkış: Yaklaşık token sayısı.
+    İşleyiş: Basit uzunluk bölme yaklaşımı uygular.
+    """
     if not text:
         return 0
     return max(1, len(text) // 4)
 
 
 def estimate_messages_tokens(messages: Iterable[ChatMessage]) -> int:
+    """Giriş: Mesaj listesi.
+
+    Çıkış: Toplam token tahmini.
+    İşleyiş: Her mesajın token tahminini toplar.
+    """
     return sum(estimate_token_count(m.content) for m in messages)
 
 
 def clamp_max_tokens(requested: int, max_allowed: int) -> int:
+    """Giriş: İstenen ve izin verilen üst sınır.
+
+    Çıkış: Sınırlandırılmış token sayısı.
+    İşleyiş: Değeri 1 ile üst sınır arasında tutar.
+    """
     return max(1, min(requested, max_allowed))
 
 
 def trim_messages_for_context(
-    messages: List[ChatMessage], max_tokens: int
-) -> List[ChatMessage]:
+    messages: list[ChatMessage],
+    max_tokens: int,
+) -> list[ChatMessage]:
+    """Giriş: Mesaj listesi ve bağlam limiti.
+
+    Çıkış: Budanmış mesaj listesi.
+    İşleyiş: Token limiti aşıldıkça en eski mesajları çıkarır.
+    """
     trimmed = list(messages)
     while estimate_messages_tokens(trimmed) > max_tokens and len(trimmed) > 1:
         if trimmed[0].role == "system" and len(trimmed) > 1:
@@ -70,20 +100,34 @@ def trim_messages_for_context(
     return trimmed
 
 
-def sse_event(payload: Dict[str, object]) -> str:
+def sse_event(payload: dict[str, object]) -> str:
+    """Giriş: JSON'a dönüştürülebilir sözlük.
+
+    Çıkış: SSE formatlı veri satırı.
+    İşleyiş: JSON'u `data:` satırı olarak paketler.
+    """
     return f"data: {json.dumps(payload, ensure_ascii=False)}\n\n"
 
 
 @dataclass
 class ReasoningFilter:
-    """Filters out <think> blocks from streaming text."""
+    """Giriş: Akış metni parçaları.
+
+    Çıkış: <think> blokları ayıklanmış metin.
+    İşleyiş: <think> ... </think> aralıklarını filtreler.
+    """
 
     inside_think: bool = False
     buffer: str = ""
 
     def feed(self, chunk: str) -> str:
+        """Giriş: Yeni metin parçası.
+
+        Çıkış: Ayıklanmış metin parçası.
+        İşleyiş: Tamponu günceller, <think> bloklarını çıkarır.
+        """
         self.buffer += chunk
-        output_parts: List[str] = []
+        output_parts: list[str] = []
 
         while self.buffer:
             if self.inside_think:

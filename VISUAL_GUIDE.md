@@ -1,3 +1,3 @@
-# Gorsel Rehber
+# Görsel Rehber
 
-Marka ve gorsel kurallar icin `docs/BRANDING.md` dosyasini inceleyin.
+Marka ve görsel kurallar için `docs/BRANDING.md` dosyasını inceleyin.

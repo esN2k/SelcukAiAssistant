@@ -1,3 +1,3 @@
-# Dagitim
+# Dağıtım
 
-Detayli dagitim rehberi icin `docs/DAGITIM.md` dosyasini inceleyin.
+Detaylı dağıtım rehberi için `docs/DAGITIM.md` dosyasını inceleyin.

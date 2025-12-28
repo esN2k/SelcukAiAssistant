@@ -4,6 +4,7 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:selcukaiassistant/helper/pref.dart';
 import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/model/conversation.dart';
 import 'package:selcukaiassistant/widget/markdown_message_view.dart';
@@ -123,6 +124,7 @@ class EnhancedMessageCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isUser = message.isUser;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final markdownEnabled = Pref.markdownEnabled;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -190,8 +192,13 @@ class EnhancedMessageCard extends StatelessWidget {
                             ),
                           ],
                         )
+                      else if (markdownEnabled)
+                        MarkdownMessageView(data: message.content)
                       else
-                        MarkdownMessageView(data: message.content),
+                        SelectableText(
+                          message.content,
+                          style: const TextStyle(fontSize: 15, height: 1.5),
+                        ),
                       if (!message.isUser && message.hasError)
                         Padding(
                           padding: const EdgeInsets.only(top: 8),

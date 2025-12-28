@@ -1,4 +1,4 @@
-# Hizli Baslangic
+# Hızlı Başlangıç
 
-Bu proje icin hizli baslangic adimlari `README.md` dosyasinda ozetlenmistir.
-Detaylar icin `docs/` klasorune bakin.
+Kısa kurulum adımları `README.md` dosyasında özetlenmiştir.
+Detaylar için `INSTALL.md` ve `docs/` klasörüne bakın.

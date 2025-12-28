@@ -1,16 +1,18 @@
-# API Kontrati
+# API Kontratı
 
-Bu dokuman backend API sozlesmesini ozetler.
+Bu doküman backend API sözleşmesini özetler.
 
 ## GET /health
 - Cevap: `{ "status": "ok", "message": "..." }`
 
 ## GET /models
 - Cevap: `{ "models": [ ... ] }`
-- Model nesnesi: `id`, `provider`, `model_id`, `display_name`, `local_or_remote`, `requires_api_key`, `available`, `reason_unavailable`, `tags`, `notes`.
+- Model nesnesi alanları: `id`, `provider`, `model_id`, `display_name`,
+  `local_or_remote`, `requires_api_key`, `available`, `reason_unavailable`,
+  `tags`, `notes`.
 
 ## POST /chat
-### Istek
+### İstek
 ```json
 {
   "model": "ollama:llama3.1",
@@ -37,7 +39,7 @@ Bu dokuman backend API sozlesmesini ozetler.
 ```
 
 ## POST /chat/stream
-- SSE ile parcali yanit doner.
+- SSE ile parçalı yanıt döner.
 - Etkinlik tipleri:
   - `token`: `{ "type": "token", "token": "...", "request_id": "..." }`
   - `end`: `{ "type": "end", "usage": { ... }, "citations": [ ... ], "request_id": "..." }`

@@ -39,14 +39,14 @@ class OnboardingScreen extends StatelessWidget {
 
           return Column(
             children: [
-              //lottie
+              // Animasyon
               Lottie.asset(
                 'assets/lottie/${list[ind].lottie}.json',
                 height: Global.mq.height * .6,
                 width: isLast ? Global.mq.width * .7 : null,
               ),
 
-              //title
+              // Başlık
               Text(
                 list[ind].title,
                 style: const TextStyle(
@@ -56,10 +56,10 @@ class OnboardingScreen extends StatelessWidget {
                 ),
               ),
 
-              //for adding some space
+              // Araya boşluk
               SizedBox(height: Global.mq.height * .015),
 
-              //subtitle
+              // Alt başlık
               SizedBox(
                 width: Global.mq.width * .7,
                 child: Text(
@@ -75,7 +75,7 @@ class OnboardingScreen extends StatelessWidget {
 
               const Spacer(),
 
-              //dots
+              // Sayfa göstergesi
 
               Wrap(
                 spacing: 10,
@@ -94,7 +94,7 @@ class OnboardingScreen extends StatelessWidget {
 
               const Spacer(),
 
-              //button
+              // Devam düğmesi
               CustomBtn(
                 onTap: () {
                   if (isLast) {

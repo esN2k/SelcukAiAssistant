@@ -37,12 +37,12 @@ class VoiceService {
       } else {
         log('Speech recognition failed, status: ${response.statusCode}');
         return l10n?.speechRecognitionFailed ??
-            'Speech recognition failed. Please try again.';
+            'Konuşma tanıma başarısız oldu. Lütfen tekrar deneyin.';
       }
     } on Exception catch (e) {
       log('Speech recognition error: $e');
       return l10n?.speechRecognitionError ??
-          'Speech recognition error. Please check your network.';
+          'Konuşma tanıma hatası. Lütfen ağ bağlantınızı kontrol edin.';
     }
   }
 

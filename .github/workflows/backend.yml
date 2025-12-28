@@ -3,74 +3,71 @@ name: Backend CI
 on:
   push:
     branches: [ "main" ]
-    paths:
-      - 'backend/**'
   pull_request:
     branches: [ "main" ]
-    paths:
-      - 'backend/**'
 
 jobs:
-  build-and-test:
+  backend:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Check mojibake and validate ARB JSON
-
-        run: |
-          if rg -n "[ÃÅÄÂÐÞ]" -g "*.arb" -g "*.dart" -g "*.md" -g "*.py" -g "*.yml" -g "*.yaml" -g "*.json" -g "*.ps1" -g "*.sh"; then
-            echo "Mojibake pattern bulundu."
-            exit 1
-          fi
-          if rg -n "�" -g "*.arb" -g "*.dart" -g "*.md" -g "*.py" -g "*.yml" -g "*.yaml" -g "*.json" -g "*.ps1" -g "*.sh"; then
-            echo "Bozuk karakter (�) bulundu."
-            exit 1
-          fi
-          python - <<'PY'
-          import json
-          from pathlib import Path
-
-          errors = []
-          for path in Path("lib/l10n").glob("*.arb"):
-            try:
-              json.loads(path.read_text(encoding="utf-8"))
-            except Exception as exc:
-              errors.append(f"{path}: {exc}")
-
-          if errors:
-            print("Geçersiz ARB JSON bulundu:")
-            print("\n".join(errors))
-            raise SystemExit(1)
-          PY
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-          cache: 'pip'
+          cache: "pip"
 
-      - name: Install dependencies
+      - name: Encoding guard (UTF-8/BOM/mojibake)
+        run: python tools/encoding_guard.py --root .
+
+      - name: Install backend dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -r requirements-dev.txt
+          pip install -r backend/requirements.txt
+          pip install -r backend/requirements-dev.txt
 
       - name: Lint with Ruff
+        working-directory: backend
         run: |
-          # Stop the build if there are Python syntax errors or undefined names
           ruff check . --select=E9,F63,F7,F82 --target-version=py311
-          # Default ruff check (warnings/style)
           ruff check .
 
-      - name: Type Check with Mypy
-        run: |
-          mypy .
+      - name: Type check with Mypy
+        working-directory: backend
+        run: mypy .
 
       - name: Test with Pytest
+        working-directory: backend
+        run: python -m pytest -q
+
+  api-smoke:
+    runs-on: windows-latest
+    needs: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install backend dependencies
         run: |
-          python -m pytest -q
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+
+      - name: Start backend
+        run: |
+          Start-Process -FilePath python `
+            -ArgumentList "-m", "uvicorn", "main:app", "--host", "127.0.0.1", "--port", "8000" `
+            -WorkingDirectory "backend" `
+            -NoNewWindow
+          Start-Sleep -Seconds 5
+
+      - name: Run API smoke test (no-model safe)
+        run: |
+          .\tools\test_api.ps1 -BaseUrl "http://127.0.0.1:8000" -AllowNoModel

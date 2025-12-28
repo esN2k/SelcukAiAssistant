@@ -6,11 +6,14 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class AppwriteService {
   AppwriteService() {
-    final endpoint = dotenv.env['APPWRITE_ENDPOINT'];
-    final projectId = dotenv.env['APPWRITE_PROJECT_ID'];
+    final endpoint = dotenv.env['APPWRITE_ENDPOINT']?.trim();
+    final projectId = dotenv.env['APPWRITE_PROJECT_ID']?.trim();
 
-    if (endpoint == null || projectId == null) {
-      log('Appwrite environment variables not found!');
+    if (endpoint == null ||
+        endpoint.isEmpty ||
+        projectId == null ||
+        projectId.isEmpty) {
+      log('Appwrite ortam değişkenleri bulunamadı!');
       // Don't initialize client if keys are missing
       return;
     }
@@ -32,7 +35,7 @@ class AppwriteService {
     String? name,
   }) async {
     if (account == null) {
-      throw Exception('Appwrite Service not initialized');
+      throw Exception('Appwrite servisi başlatılmadı');
     }
     try {
       return await account!.create(
@@ -48,7 +51,7 @@ class AppwriteService {
 
   Future<models.Session?> createSession(String email, String password) async {
     if (account == null) {
-      throw Exception('Appwrite Service not initialized');
+      throw Exception('Appwrite servisi başlatılmadı');
     }
     try {
       return await account!.createEmailPasswordSession(
@@ -62,7 +65,7 @@ class AppwriteService {
 
   Future<void> deleteCurrentSession() async {
     if (account == null) {
-      throw Exception('Appwrite Service not initialized');
+      throw Exception('Appwrite servisi başlatılmadı');
     }
     try {
       await account!.deleteSession(sessionId: 'current');
@@ -73,7 +76,7 @@ class AppwriteService {
 
   Future<models.User?> getCurrentUser() async {
     if (account == null) {
-      log('Appwrite client not initialized, returning null user');
+      log('Appwrite istemcisi başlatılmadı, kullanıcı boş döndürülüyor');
       return null;
     }
     try {

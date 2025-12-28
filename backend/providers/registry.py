@@ -1,11 +1,11 @@
-"""Model registry and routing."""
+"""Model kataloğu ve yönlendirme mantığı."""
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 import importlib.util
 import os
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Optional
 
 from config import Config
 from ollama_service import OllamaService
@@ -14,6 +14,12 @@ from providers.base import ModelInfo, ModelProvider
 
 @dataclass
 class ResolvedModel:
+    """Giriş: Alias ve sağlayıcı bilgisi.
+
+    Çıkış: Çözümlenmiş model bilgisi.
+    İşleyiş: UI ve yönlendirme için model çözümünü taşır.
+    """
+
     alias: str
     provider: str
     model_id: str
@@ -22,6 +28,12 @@ class ResolvedModel:
 
 @dataclass
 class CatalogEntry:
+    """Giriş: Katalog alanları.
+
+    Çıkış: Katalog girdisi nesnesi.
+    İşleyiş: Model meta bilgisini taşır.
+    """
+
     id: str
     provider: str
     model_id: str
@@ -42,19 +54,34 @@ _REMOTE_API_KEYS = {
 
 
 def _default_model_id(provider: str) -> str:
+    """Giriş: Sağlayıcı adı.
+
+    Çıkış: Varsayılan model kimliği.
+    İşleyiş: Sağlayıcıya göre Config değerini döndürür.
+    """
     if provider == "huggingface":
         return Config.HF_MODEL_NAME
     return Config.OLLAMA_MODEL
 
 
 def _display_name(alias: str, model_id: str) -> str:
+    """Giriş: Alias ve model kimliği.
+
+    Çıkış: Görünen ad.
+    İşleyiş: UI için okunabilir isim üretir.
+    """
     if alias:
         return alias.replace("_", " ").title()
     return model_id
 
 
-def parse_aliases(raw: str) -> Dict[str, ResolvedModel]:
-    aliases: Dict[str, ResolvedModel] = {}
+def parse_aliases(raw: str) -> dict[str, ResolvedModel]:
+    """Giriş: Ham alias tanımı.
+
+    Çıkış: Alias sözlüğü.
+    İşleyiş: `alias=provider:model` biçimini çözümler.
+    """
+    aliases: dict[str, ResolvedModel] = {}
     if not raw:
         return aliases
     for item in raw.split(","):
@@ -80,18 +107,23 @@ def parse_aliases(raw: str) -> Dict[str, ResolvedModel]:
 
 
 def _catalog_entries() -> list[CatalogEntry]:
+    """Giriş: yok.
+
+    Çıkış: Katalog girdileri.
+    İşleyiş: Model listesini sabit tablodan üretir.
+    """
     max_context = Config.MAX_CONTEXT_TOKENS
     return [
         CatalogEntry(
             id="selcuk_ai_assistant",
             provider="ollama",
             model_id="selcuk_ai_assistant",
-            display_name="Selcuk AI Assistant (Local)",
+            display_name="Selçuk AI Asistanı (Yerel)",
             local_or_remote="local",
             requires_api_key=False,
             context_length=max_context,
             tags=["turkish", "high_quality"],
-            notes="Local Ollama model tuned for Selcuk University.",
+            notes="Selçuk Üniversitesi odaklı yerel Ollama modeli.",
         ),
         CatalogEntry(
             id="llama3.1",
@@ -102,18 +134,18 @@ def _catalog_entries() -> list[CatalogEntry]:
             requires_api_key=False,
             context_length=max_context,
             tags=["high_quality", "reasoning"],
-            notes="Open weights via Ollama.",
+            notes="Ollama üzerinden açık ağırlıklı model.",
         ),
         CatalogEntry(
             id="selcuk-assistant",
             provider="ollama",
             model_id="selcuk-assistant",
-            display_name="Selcuk Assistant",
+            display_name="Selçuk Asistan",
             local_or_remote="local",
             requires_api_key=False,
             context_length=max_context,
             tags=["turkish"],
-            notes="Local Ollama variant.",
+            notes="Yerel Ollama varyantı.",
         ),
         CatalogEntry(
             id="mistral",
@@ -124,7 +156,7 @@ def _catalog_entries() -> list[CatalogEntry]:
             requires_api_key=False,
             context_length=max_context,
             tags=["fast"],
-            notes="Lightweight local model.",
+            notes="Hafif yerel model.",
         ),
         CatalogEntry(
             id="gemma2:2b",
@@ -135,7 +167,7 @@ def _catalog_entries() -> list[CatalogEntry]:
             requires_api_key=False,
             context_length=max_context,
             tags=["fast"],
-            notes="Small open-weights model.",
+            notes="Küçük boyutlu açık ağırlıklı model.",
         ),
         CatalogEntry(
             id="qwen2.5:7b",
@@ -146,7 +178,7 @@ def _catalog_entries() -> list[CatalogEntry]:
             requires_api_key=False,
             context_length=max_context,
             tags=["reasoning"],
-            notes="Verify exact Ollama tag before installing.",
+            notes="Kurulumdan önce Ollama etiketini doğrulayın.",
         ),
         CatalogEntry(
             id="llama3.2:3b",
@@ -157,7 +189,7 @@ def _catalog_entries() -> list[CatalogEntry]:
             requires_api_key=False,
             context_length=max_context,
             tags=["fast", "small"],
-            notes="Small Ollama model suited for 6GB GPUs.",
+            notes="6GB GPU'lar için uygun küçük Ollama modeli.",
         ),
         CatalogEntry(
             id="phi3:mini",
@@ -168,7 +200,7 @@ def _catalog_entries() -> list[CatalogEntry]:
             requires_api_key=False,
             context_length=max_context,
             tags=["fast", "microsoft"],
-            notes="Compact model with strong instruction tuning.",
+            notes="Kompakt ve iyi eğitilmiş talimat modeli.",
         ),
         CatalogEntry(
             id="deepseek-r1:8b",
@@ -179,7 +211,7 @@ def _catalog_entries() -> list[CatalogEntry]:
             requires_api_key=False,
             context_length=max_context,
             tags=["reasoning"],
-            notes="Heavier local model; consider 4-bit quantization.",
+            notes="Daha ağır model; 4-bit nicemleme önerilir.",
         ),
         CatalogEntry(
             id="aya:8b",
@@ -190,7 +222,7 @@ def _catalog_entries() -> list[CatalogEntry]:
             requires_api_key=False,
             context_length=max_context,
             tags=["multilingual", "turkish"],
-            notes="Multilingual model with strong Turkish coverage.",
+            notes="Türkçe kapsamı güçlü çok dilli model.",
         ),
         CatalogEntry(
             id="hf_qwen2_5_1_5b",
@@ -201,7 +233,7 @@ def _catalog_entries() -> list[CatalogEntry]:
             requires_api_key=False,
             context_length=max_context,
             tags=["fast"],
-            notes="Requires backend/requirements-hf.txt and cached weights.",
+            notes="backend/requirements-hf.txt ve önbellek ağırlıkları gerekir.",
         ),
         CatalogEntry(
             id="hf_phi3_mini",
@@ -212,7 +244,7 @@ def _catalog_entries() -> list[CatalogEntry]:
             requires_api_key=False,
             context_length=max_context,
             tags=["fast"],
-            notes="Requires backend/requirements-hf.txt and cached weights.",
+            notes="backend/requirements-hf.txt ve önbellek ağırlıkları gerekir.",
         ),
         CatalogEntry(
             id="hf_qwen2_5_3b",
@@ -223,7 +255,7 @@ def _catalog_entries() -> list[CatalogEntry]:
             requires_api_key=False,
             context_length=max_context,
             tags=["balanced", "multilingual"],
-            notes="4-bit recommended for 6GB GPUs.",
+            notes="6GB GPU'lar için 4-bit önerilir.",
         ),
         CatalogEntry(
             id="hf_tinyllama_1_1b",
@@ -234,7 +266,7 @@ def _catalog_entries() -> list[CatalogEntry]:
             requires_api_key=False,
             context_length=max_context,
             tags=["tiny", "fast"],
-            notes="Very small model for quick iterations.",
+            notes="Hızlı denemeler için çok küçük model.",
         ),
         CatalogEntry(
             id="gpt-4o",
@@ -245,7 +277,7 @@ def _catalog_entries() -> list[CatalogEntry]:
             requires_api_key=True,
             context_length=max_context,
             tags=["high_quality"],
-            notes="Remote API model. Verify model name for your OpenAI account.",
+            notes="Uzak API modeli. Model adını hesabınız için doğrulayın.",
         ),
         CatalogEntry(
             id="gpt-4o-mini",
@@ -256,7 +288,7 @@ def _catalog_entries() -> list[CatalogEntry]:
             requires_api_key=True,
             context_length=max_context,
             tags=["fast"],
-            notes="Remote API model. Verify model name for your OpenAI account.",
+            notes="Uzak API modeli. Model adını hesabınız için doğrulayın.",
         ),
         CatalogEntry(
             id="claude-3-5-sonnet",
@@ -267,7 +299,7 @@ def _catalog_entries() -> list[CatalogEntry]:
             requires_api_key=True,
             context_length=max_context,
             tags=["high_quality"],
-            notes="Remote API model. Verify model name for your Anthropic account.",
+            notes="Uzak API modeli. Model adını hesabınız için doğrulayın.",
         ),
         CatalogEntry(
             id="gemini-1.5-pro",
@@ -278,7 +310,7 @@ def _catalog_entries() -> list[CatalogEntry]:
             requires_api_key=True,
             context_length=max_context,
             tags=["high_quality"],
-            notes="Remote API model. Verify model name for your Google AI account.",
+            notes="Uzak API modeli. Model adını hesabınız için doğrulayın.",
         ),
         CatalogEntry(
             id="grok-2",
@@ -289,12 +321,17 @@ def _catalog_entries() -> list[CatalogEntry]:
             requires_api_key=True,
             context_length=max_context,
             tags=["high_quality"],
-            notes="Remote API model. Verify model name for your xAI account.",
+            notes="Uzak API modeli. Model adını hesabınız için doğrulayın.",
         ),
     ]
 
 
 def _has_hf_dependencies() -> bool:
+    """Giriş: yok.
+
+    Çıkış: bool.
+    İşleyiş: Transformers ve torch bağımlılıklarını kontrol eder.
+    """
     return (
         importlib.util.find_spec("transformers") is not None
         and importlib.util.find_spec("torch") is not None
@@ -302,6 +339,11 @@ def _has_hf_dependencies() -> bool:
 
 
 def _hf_cache_roots() -> list[Path]:
+    """Giriş: yok.
+
+    Çıkış: Önbellek kök dizinleri.
+    İşleyiş: Ortam değişkenleri ve varsayılan yolları toplar.
+    """
     roots: list[Path] = []
     for env_var in ("HUGGINGFACE_HUB_CACHE", "TRANSFORMERS_CACHE"):
         value = os.getenv(env_var)
@@ -315,6 +357,11 @@ def _hf_cache_roots() -> list[Path]:
 
 
 def _hf_model_cached(model_id: str) -> bool:
+    """Giriş: Model kimliği.
+
+    Çıkış: bool.
+    İşleyiş: Modelin önbellekte olup olmadığını kontrol eder.
+    """
     model_dir = model_id.replace("/", "--")
     for root in _hf_cache_roots():
         if (root / f"models--{model_dir}").exists():
@@ -323,6 +370,11 @@ def _hf_model_cached(model_id: str) -> bool:
 
 
 def _api_key_status(provider: str) -> tuple[bool, list[str]]:
+    """Giriş: Sağlayıcı adı.
+
+    Çıkış: (anahtar_var_mı, anahtar_listesi).
+    İşleyiş: Uzak sağlayıcılar için API anahtarını kontrol eder.
+    """
     keys = _REMOTE_API_KEYS.get(provider, [])
     if not keys:
         return False, []
@@ -331,7 +383,18 @@ def _api_key_status(provider: str) -> tuple[bool, list[str]]:
 
 
 class ModelRegistry:
-    def __init__(self, providers: Dict[str, ModelProvider]) -> None:
+    """Giriş: Sağlayıcı sözlüğü.
+
+    Çıkış: Model listesi ve çözümleme sonuçları.
+    İşleyiş: Katalog yönetimi ve varsayılan seçimi sağlar.
+    """
+
+    def __init__(self, providers: dict[str, ModelProvider]) -> None:
+        """Giriş: Sağlayıcı sözlükleri.
+
+        Çıkış: Nesne.
+        İşleyiş: Katalog ve alias bilgilerini hazırlar.
+        """
         self.providers = providers
         self.aliases = parse_aliases(Config.MODEL_ALIASES)
         self.default_provider = Config.MODEL_BACKEND
@@ -340,6 +403,11 @@ class ModelRegistry:
         self.catalog_by_id = {entry.id: entry for entry in self.catalog}
 
     def resolve(self, model_name: Optional[str]) -> ResolvedModel:
+        """Giriş: Model adı veya alias.
+
+        Çıkış: ResolvedModel.
+        İşleyiş: Katalog/alias/varsayılan sırasıyla çözümleme yapar.
+        """
         if model_name:
             entry = self.catalog_by_id.get(model_name)
             if entry:
@@ -397,6 +465,11 @@ class ModelRegistry:
         )
 
     async def list_models(self) -> list[ModelInfo]:
+        """Giriş: yok.
+
+        Çıkış: ModelInfo listesi.
+        İşleyiş: Katalogdaki modelleri hazır olma durumuyla listeler.
+        """
         ollama_models: list[str] = []
         if any(entry.provider == "ollama" for entry in self.catalog):
             ollama_models = await OllamaService().list_model_names()
@@ -415,25 +488,31 @@ class ModelRegistry:
                     ):
                         available = True
                     elif not ollama_models:
-                        reason = "Ollama not reachable or no models installed."
+                        reason = "Ollama erişilemiyor veya model bulunamadı."
                     else:
-                        reason = f"Not installed. Run: ollama pull {entry.model_id}"
+                        reason = (
+                            "Yüklü değil. Çalıştırın: ollama pull "
+                            f"{entry.model_id}"
+                        )
                 elif entry.provider == "huggingface":
                     if not hf_deps:
-                        reason = "HuggingFace deps missing. Install backend/requirements-hf.txt."
+                        reason = (
+                            "HuggingFace bağımlılıkları eksik. "
+                            "backend/requirements-hf.txt kurun."
+                        )
                     elif not _hf_model_cached(entry.model_id):
-                        reason = "Model not cached. Download from HuggingFace Hub."
+                        reason = "Model önbellekte yok. HuggingFace Hub'dan indirin."
                     else:
                         available = True
                 else:
-                    reason = "Provider not configured on server."
+                    reason = "Sağlayıcı sunucuda tanımlı değil."
             else:
                 key_present, keys = _api_key_status(entry.provider)
                 if not key_present:
                     key_list = ", ".join(keys) if keys else "API key"
-                    reason = f"Missing API key: {key_list}"
+                    reason = f"Eksik API anahtarı: {key_list}"
                 elif entry.provider not in self.providers:
-                    reason = "Provider not configured on server."
+                    reason = "Sağlayıcı sunucuda tanımlı değil."
                 else:
                     available = True
 

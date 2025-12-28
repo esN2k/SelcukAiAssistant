@@ -8,40 +8,40 @@ import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/widget/custom_loading.dart';
 
 class MyDialog {
-//info
+  // Bilgi mesajı
   static void info(String msg) {
     final l10n = L10n.current();
     Get.snackbar(
-      l10n?.infoTitle ?? 'Info',
+      l10n?.infoTitle ?? 'Bilgi',
       msg,
       backgroundColor: Colors.amber.withValues(alpha: 0.7),
       colorText: Colors.white,
     );
   }
 
-//success
+  // Başarı mesajı
   static void success(String msg) {
     final l10n = L10n.current();
     Get.snackbar(
-      l10n?.successTitle ?? 'Success',
+      l10n?.successTitle ?? 'Başarılı',
       msg,
       backgroundColor: Colors.green.withValues(alpha: 0.7),
       colorText: Colors.white,
     );
   }
 
-//error
+  // Hata mesajı
   static void error(String msg) {
     final l10n = L10n.current();
     Get.snackbar(
-      l10n?.errorTitle ?? 'Error',
+      l10n?.errorTitle ?? 'Hata',
       msg,
       backgroundColor: Colors.redAccent.withValues(alpha: 0.7),
       colorText: Colors.white,
     );
   }
 
-  //loading dialog
+  // Yükleme göstergesi
   static void showLoadingDialog() {
     unawaited(Get.dialog<void>(const Center(child: CustomLoading())));
   }

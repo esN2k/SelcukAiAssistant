@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/model/conversation.dart';
 import 'package:selcukaiassistant/services/storage/storage_service.dart';
 import 'package:uuid/uuid.dart';
@@ -6,6 +7,7 @@ import 'package:uuid/uuid.dart';
 class ConversationService {
   static Box<Conversation>? _box;
   static const _uuid = Uuid();
+  static const Set<String> _defaultTitles = {'New Chat', 'Yeni Sohbet'};
 
   static Future<void> init() async {
     if (_box != null) {
@@ -24,9 +26,10 @@ class ConversationService {
 
   // Create a new conversation
   static Future<Conversation> createConversation({String? title}) async {
+    final defaultTitle = L10n.current()?.newChat ?? 'Yeni Sohbet';
     final conversation = Conversation(
       id: _uuid.v4(),
-      title: title ?? 'New Chat',
+      title: title ?? defaultTitle,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
       messages: [],
@@ -76,7 +79,7 @@ class ConversationService {
         ..updatedAt = DateTime.now();
 
       // Auto-generate title from first user message if still default
-      if (conversation.title == 'New Chat' &&
+      if (_defaultTitles.contains(conversation.title) &&
           message.isUser &&
           conversation.messages.where((m) => m.isUser).length == 1) {
         conversation

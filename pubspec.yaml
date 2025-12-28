@@ -49,6 +49,12 @@ flutter:
   generate: true
 
   fonts:
+    - family: SourceSans3
+      fonts:
+        - asset: "assets/fonts/source_sans_3/SourceSans3[wght].ttf"
+    - family: SourceSerif4
+      fonts:
+        - asset: "assets/fonts/source_serif_4/SourceSerif4[opsz,wght].ttf"
     - family: Roboto
       fonts:
         - asset: assets/fonts/roboto/Roboto-Regular.ttf

@@ -24,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
     unawaited(SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge));
     Pref.showOnboarding = false;
 
-    // Check auth status and navigate
+    // Oturum durumunu kontrol edip yönlendir.
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _checkAuthAndNavigate();
     });

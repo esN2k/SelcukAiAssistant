@@ -9,13 +9,13 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Selcuk AI Assistant';
+  String get appTitle => 'Selçuk AI Assistant';
 
   @override
-  String get appSubtitle => 'Selcuk AI Assistant';
+  String get appSubtitle => 'Privacy-focused academic assistant';
 
   @override
-  String get splashSubtitle => 'Selcuk AI Assistant';
+  String get splashSubtitle => 'Selçuk AI Assistant';
 
   @override
   String get ok => 'OK';
@@ -443,7 +443,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listeningIndicator => 'Listening... (release to stop)';
 
   @override
-  String get messageHint => 'Message Selcuk AI Assistant...';
+  String get messageHint => 'Message Selçuk AI Assistant...';
 
   @override
   String get imageSelectedTitle => 'Image selected';
@@ -736,7 +736,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logoutTooltip => 'Logout';
 
   @override
-  String get assistantTitle => 'AI assistant';
+  String get assistantTitle => 'AI Assistant';
 
   @override
   String get assistantHint => 'Type a message or hold for voice input...';

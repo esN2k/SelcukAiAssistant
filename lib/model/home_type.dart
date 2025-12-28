@@ -9,7 +9,7 @@ extension MyHomeType on HomeType {
   //title
   String get title => switch (this) {
         HomeType.aiChatBot =>
-          L10n.current()?.assistantTitle ?? 'AI assistant',
+          L10n.current()?.assistantTitle ?? 'Yapay zeka asistanı',
       };
 
   //lottie

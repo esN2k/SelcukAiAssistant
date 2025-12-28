@@ -1,8 +1,8 @@
 # Kurulum Rehberi
 
-1) Backend bagimliliklari: `backend/requirements.txt`
-2) Flutter bagimliliklari: `flutter pub get`
-3) Ortam dosyalari: `.env.example` -> `.env`
+1) Backend bağımlılıkları: `backend/requirements.txt`
+2) Flutter bağımlılıkları: `flutter pub get`
+3) Ortam dosyaları: `.env.example` → `.env`
 4) Model kurulumu (opsiyonel): `backend/setup_deepseek.ps1`
 
-Detaylar icin `README.md` ve `docs/` klasorune bakiniz.
+Detaylar için `README.md`, `INSTALL.md` ve `docs/` klasörüne bakınız.

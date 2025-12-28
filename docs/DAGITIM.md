@@ -1,26 +1,26 @@
-# Dagitim
+# Dağıtım
 
-Bu dokuman Selcuk YZ Asistan icin yerel, self-host ve konteyner dagitimini ozetler.
+Bu doküman Selçuk AI Asistanı için yerel, self-host ve konteyner dağıtımını özetler.
 
-## Yerel calistirma
-- Backend: `backend/.env` ayarlarini yapin ve `uvicorn main:app --reload` ile baslatin.
-- Flutter: proje kokunde `.env` olusturun ve `flutter run` calistirin.
+## 1) Yerel Çalıştırma
+- Backend: `backend/.env` ayarlarını yapın ve `uvicorn main:app --reload` ile başlatın.
+- Flutter: proje kökünde `.env` oluşturun ve `flutter run` çalıştırın.
 
-## Docker (tek servis)
+## 2) Docker (Tek Servis)
 ```bash
 cd backend
 docker build -t selcuk-ai-backend .
 docker run --rm -p 8000:8000 --env-file .env selcuk-ai-backend
 ```
 
-## Docker Compose (backend + opsiyonel proxy)
-- `docker-compose.yml` dosyasi backend servisini ayaga kaldirir.
-- Proxy gerekiyorsa `nginx/` altindaki ornekleri kullanin.
+## 3) Docker Compose (Backend + Opsiyonel Proxy)
+- `docker-compose.yml` dosyası backend servisini ayağa kaldırır.
+- Proxy gerekiyorsa `nginx/` altındaki örnekleri kullanın.
 
-## Nginx /api (SSE destekli)
-- `nginx.conf` ve `nginx/` altindaki konfigler SSE icin uygun basliklari ekler.
-- SSE icin `X-Accel-Buffering: no` ve `Cache-Control: no-cache` tavsiye edilir.
+## 4) Nginx /api (SSE Destekli)
+- `nginx.conf` ve `nginx/` altındaki konfigler SSE için uygun başlıkları ekler.
+- SSE için `X-Accel-Buffering: no` ve `Cache-Control: no-cache` tavsiye edilir.
 
-## Ortam degiskenleri
-- Backend icin `backend/.env`, Flutter icin proje kokundeki `.env` kullanilir.
-- RAG acilacaksa `RAG_ENABLED=true` ve FAISS indeks yolu belirtilmelidir.
+## 5) Ortam Değişkenleri
+- Backend için `backend/.env`, Flutter için proje kökündeki `.env` kullanılır.
+- RAG açılacaksa `RAG_ENABLED=true` ve FAISS indeks yolu belirtilmelidir.

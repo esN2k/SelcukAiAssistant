@@ -1,20 +1,31 @@
-# RAG (Kaynak Destekli Yanitlar)
+# RAG (Kaynak Destekli Yanıtlar)
 
-## Genel bakis
-RAG, belgelerden alinmis parcalari modele baglam olarak vererek yanit kalitesini artirir.
+RAG (Retrieval-Augmented Generation), modelin yanıtlarını kaynak belgelerle
+desteklemesini sağlar. Bu sayede akademik doğruluk artar ve kaynak gösterimi
+kolaylaşır.
 
-## Ingestion (FAISS indeks)
-CLI araci: `backend/rag_ingest.py`
-
-Ornek:
-```bash
-cd backend
-python rag_ingest.py --input ./docs --output ./data/rag
+## 1) Genel Akış
+```
+Soru -> Embedding -> FAISS -> En yakın parçalar -> Prompt -> Yanıt + Kaynaklar
 ```
 
-PDF, TXT/MD ve HTML dosyalari desteklenir. Her parca icin kaynak (dosya adi) ve sayfa bilgisi saklanir.
+## 2) İndeksleme (Ingestion)
+CLI aracı: `backend/rag_ingest.py`
 
-## Backend ayarlari (.env)
+Örnek:
+```bash
+cd backend
+python rag_ingest.py --input ../docs --output ./data/rag
+```
+
+Desteklenen formatlar:
+- PDF
+- TXT / MD
+- HTML
+
+Her parça için kaynak (dosya adı) ve sayfa bilgisi saklanır.
+
+## 3) Backend Ayarları (.env)
 ```
 RAG_ENABLED=true
 RAG_VECTOR_DB_PATH=./data/rag
@@ -23,10 +34,10 @@ RAG_EMBEDDING_MODEL=sentence-transformers/paraphrase-multilingual-mpnet-base-v2
 RAG_STRICT_DEFAULT=true
 ```
 
-## Strict mod
-- RAG acikken kaynak bulunamazsa backend `Bu bilgi kaynaklarda yok.` cevabi dondurur.
-- Istek bazinda `rag_strict` ile override edilebilir.
+## 4) Strict Mod
+- RAG açıkken kaynak bulunamazsa backend: **“Bu bilgi kaynaklarda yok.”** döner.
+- İstek bazında `rag_strict` ile override edilebilir.
 
-## Citations
-- /chat cevabinda `citations` alani doner.
-- /chat/stream sonunda `citations` end event'inde iletilir.
+## 5) Citations
+- `/chat` cevabında `citations` alanı döner.
+- `/chat/stream` sonunda `end` event içinde `citations` taşınır.

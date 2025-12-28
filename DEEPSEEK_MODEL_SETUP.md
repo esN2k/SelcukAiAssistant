@@ -1,6 +1,6 @@
 # DeepSeek Model Kurulumu (Opsiyonel)
 
-Bu dokuman, yerel DeepSeek modelini Ollama uzerinden kurmak icin kisa bir ozet sunar.
+Bu doküman, yerel DeepSeek modelini Ollama üzerinden kurmak için kısa bir özet sunar.
 
 ## Otomatik kurulum (Windows)
 ```powershell
@@ -15,5 +15,5 @@ ollama pull deepseek-r1:8b
 ```
 
 ## Notlar
-- Model boyutu buyuktur; indirme suresi internete baglidir.
-- GPU kullanimi icin uygun suruculerin kurulu oldugundan emin olun.
+- Model boyutu büyüktür; indirme süresi internete bağlıdır.
+- GPU kullanımı için uygun sürücülerin kurulu olduğundan emin olun.

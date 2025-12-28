@@ -1,8 +1,8 @@
-# Ozellikler
+# Özellikler
 
-- ChatGPT benzeri sohbet arayuzu
-- Konusma listesi, pin/arsiv ve arama
-- Mesaj aksiyonlari: kopyala, duzenle->branch, yeniden uret, durdur
-- Streaming SSE ve Markdown destegi
-- Model secici (yerel/uzak, rozetler, kurulum ipuclari)
-- RAG (FAISS) ile kaynakli yanitlar
+- ChatGPT benzeri sohbet arayüzü
+- Konuşma listesi, pin/arsiv ve arama
+- Mesaj aksiyonları: kopyala, düzenle→branch, yeniden üret, durdur
+- Streaming SSE ve Markdown desteği
+- Model seçici (yerel/uzak, rozetler, kurulum ipuçları)
+- RAG (FAISS) ile kaynaklı yanıtlar

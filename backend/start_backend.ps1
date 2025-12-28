@@ -33,4 +33,3 @@ ollama list | Select-String "selcuk"
 Write-Host "`nBackend başlatılıyor..." -ForegroundColor Yellow
 Write-Host "Durdurmak için Ctrl+C`n" -ForegroundColor Gray
 python main.py
-

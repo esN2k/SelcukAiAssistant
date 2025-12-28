@@ -21,9 +21,9 @@ class ImagePickerService {
       return image;
     } on Exception catch (e) {
       Get.snackbar(
-        l10n?.imagePickerErrorTitle ?? 'Error',
+        l10n?.imagePickerErrorTitle ?? 'Hata',
         l10n?.imagePickerErrorMessage(e.toString()) ??
-            'Failed to pick image: $e',
+            'Görsel seçilemedi: $e',
         backgroundColor: Colors.red,
         colorText: Colors.white,
         snackPosition: SnackPosition.BOTTOM,
@@ -36,18 +36,18 @@ class ImagePickerService {
     final l10n = L10n.current();
     final source = await Get.dialog<ImageSource>(
       AlertDialog(
-        title: Text(l10n?.chooseImageSourceTitle ?? 'Choose image source'),
+        title: Text(l10n?.chooseImageSourceTitle ?? 'Görsel kaynağı seçin'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
               leading: const Icon(Icons.camera_alt),
-              title: Text(l10n?.cameraLabel ?? 'Camera'),
+              title: Text(l10n?.cameraLabel ?? 'Kamera'),
               onTap: () => Get.back(result: ImageSource.camera),
             ),
             ListTile(
               leading: const Icon(Icons.photo_library),
-              title: Text(l10n?.galleryLabel ?? 'Gallery'),
+              title: Text(l10n?.galleryLabel ?? 'Galeri'),
               onTap: () => Get.back(result: ImageSource.gallery),
             ),
           ],

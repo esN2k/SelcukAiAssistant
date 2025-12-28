@@ -3,13 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:selcukaiassistant/config/backend_config.dart';
-import 'package:selcukaiassistant/helper/pref.dart';
+import 'package:selcukaiassistant/controller/settings_controller.dart';
 import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/model/model_info.dart';
 import 'package:selcukaiassistant/screen/diagnostics_screen.dart';
 import 'package:selcukaiassistant/screen/model_picker_screen.dart';
 import 'package:selcukaiassistant/services/conversation_service.dart';
-import 'package:selcukaiassistant/services/model_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -19,57 +18,14 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  final RxBool _isDarkMode = Get.isDarkMode.obs;
-  final RxString _selectedModel = ''.obs;
-  final RxBool _speechEnabled = true.obs;
-  final RxBool _markdownEnabled = true.obs;
-  final RxBool _ragEnabled = Pref.ragEnabled.obs;
-  final RxBool _ragStrict = Pref.ragStrict.obs;
-  final RxString _selectedLanguage =
-      (Pref.localeCode ?? L10n.fallbackLocale.languageCode).obs;
-  List<ModelInfo> _models = [];
-  bool _isLoadingModels = false;
+  late final SettingsController _controller;
 
   @override
   void initState() {
     super.initState();
-    _isDarkMode.value = Get.isDarkMode;
-    _selectedModel.value = Pref.selectedModel ?? '';
-    unawaited(_loadModels());
-  }
-
-  Future<void> _loadModels() async {
-    setState(() => _isLoadingModels = true);
-    final models = await ModelService.fetchModels();
-    if (mounted) {
-      setState(() {
-        _models = models;
-        _isLoadingModels = false;
-      });
-      _ensureSelectedModel();
-    }
-  }
-
-  void _ensureSelectedModel() {
-    if (_models.isEmpty) return;
-
-    final stored = Pref.selectedModel;
-    if (stored != null && _models.any((m) => m.id == stored)) {
-      _selectedModel.value = stored;
-      return;
-    }
-
-    final availableModels = _models.where((m) => m.available).toList();
-    var defaultModel = _models.firstWhere(
-      (m) => m.isDefault,
-      orElse: () =>
-          availableModels.isNotEmpty ? availableModels.first : _models.first,
-    );
-    if (!defaultModel.available && availableModels.isNotEmpty) {
-      defaultModel = availableModels.first;
-    }
-    _selectedModel.value = defaultModel.id;
-    Pref.selectedModel = defaultModel.id;
+    _controller = Get.isRegistered<SettingsController>()
+        ? Get.find<SettingsController>()
+        : Get.put(SettingsController());
   }
 
   Future<void> _clearAllData() async {
@@ -111,7 +67,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _editBackendUrl() async {
     final l10n = context.l10n;
     final controller = TextEditingController(
-      text: Pref.backendUrlOverride ?? '',
+      text: _controller.backendUrlOverride.value,
     );
 
     final action = await Get.dialog<String>(
@@ -145,8 +101,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
 
     if (action == 'clear') {
-      Pref.backendUrlOverride = null;
-      setState(() {});
+      _controller.clearBackendUrlOverride();
       Get.snackbar(
         l10n.successTitle,
         l10n.backendUrlCleared,
@@ -155,8 +110,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       return;
     }
 
-    Pref.backendUrlOverride = controller.text;
-    setState(() {});
+    _controller.setBackendUrlOverride(controller.text);
     Get.snackbar(
       l10n.successTitle,
       l10n.backendUrlSaved,
@@ -165,24 +119,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   ModelInfo? _selectedModelInfo() {
-    final selected = _selectedModel.value;
-    if (selected.isEmpty) return null;
-    for (final model in _models) {
-      if (model.id == selected) {
-        return model;
-      }
-    }
-    return null;
+    return _controller.selectedModelInfo();
   }
 
   Future<void> _openModelPicker() async {
-    if (_models.isEmpty) return;
+    final models = _controller.models.toList();
+    if (models.isEmpty) return;
     final selected = await Get.to<String>(
-      () => ModelPickerScreen(initialModels: _models),
+      () => ModelPickerScreen(initialModels: models),
     );
     if (selected != null && selected.isNotEmpty) {
-      _selectedModel.value = selected;
-      setState(() {});
+      _controller.selectModel(selected);
     }
   }
 
@@ -225,7 +172,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       body: ListView(
         children: [
-          // Appearance Section
+          // Görünüm ayarları
           _buildSection(
             context,
             l10n.sectionAppearance,
@@ -234,23 +181,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 () => SwitchListTile(
                   title: Text(l10n.darkModeTitle),
                   subtitle: Text(l10n.darkModeSubtitle),
-                  value: _isDarkMode.value,
+                  value: _controller.isDarkMode.value,
                   activeThumbColor: Theme.of(context).colorScheme.primary,
-                  onChanged: (value) {
-                    final newMode = value ? ThemeMode.dark : ThemeMode.light;
-                    Get.changeThemeMode(newMode);
-                    _isDarkMode.value = value;
-                    Pref.isDarkMode = value;
-                  },
+                  onChanged: (value) => _controller.setDarkMode(value: value),
                   secondary: Icon(
-                    _isDarkMode.value ? Icons.dark_mode : Icons.light_mode,
+                    _controller.isDarkMode.value
+                        ? Icons.dark_mode
+                        : Icons.light_mode,
                   ),
                 ),
               ),
             ],
           ),
 
-          // Language Section
+          // Dil seçimi
           _buildSection(
             context,
             l10n.sectionLanguage,
@@ -262,7 +206,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   leading: const Icon(Icons.language),
                   trailing: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
-                      value: _selectedLanguage.value,
+                      value: _controller.selectedLanguage.value,
                       items: [
                         DropdownMenuItem(
                           value: 'tr',
@@ -275,9 +219,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ],
                       onChanged: (value) {
                         if (value == null) return;
-                        _selectedLanguage.value = value;
-                        Pref.localeCode = value;
-                        unawaited(Get.updateLocale(Locale(value)));
+                        _controller.setLanguage(value);
                       },
                     ),
                   ),
@@ -286,7 +228,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],
           ),
 
-          // AI Model Section
+          // Yapay zeka modeli seçimi
           _buildSection(
             context,
             l10n.sectionAiModel,
@@ -302,38 +244,45 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     title: Text(l10n.modelLabel),
                     subtitle: Text(subtitle),
                     leading: const Icon(Icons.psychology),
-                    trailing: _isLoadingModels
+                    trailing: _controller.isLoadingModels.value
                         ? const SizedBox(
                             width: 16,
                             height: 16,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
                         : const Icon(Icons.arrow_forward_ios, size: 16),
-                    onTap: _models.isEmpty ? null : _openModelPicker,
+                    onTap: _controller.models.isEmpty ? null : _openModelPicker,
                   );
                 },
               ),
             ],
           ),
 
-          // Server Section
+          // Sunucu ayarları
           _buildSection(
             context,
             l10n.sectionServer,
             [
-              ListTile(
-                title: Text(l10n.backendUrlTitle),
-                subtitle: Text(
-                  l10n.backendUrlSubtitle(_resolvedBackendUrl()),
-                ),
-                leading: const Icon(Icons.link),
-                trailing: const Icon(Icons.edit, size: 16),
-                onTap: _editBackendUrl,
+              Obx(
+                () {
+                  final backendUrlOverride =
+                      _controller.backendUrlOverride.value;
+                  return ListTile(
+                    key: ValueKey(backendUrlOverride),
+                    title: Text(l10n.backendUrlTitle),
+                    subtitle: Text(
+                      l10n.backendUrlSubtitle(_resolvedBackendUrl()),
+                    ),
+                    leading: const Icon(Icons.link),
+                    trailing: const Icon(Icons.edit, size: 16),
+                    onTap: _editBackendUrl,
+                  );
+                },
               ),
             ],
           ),
 
-          // Chat Settings Section
+          // Sohbet ayarları
           _buildSection(
             context,
             l10n.sectionChatSettings,
@@ -342,11 +291,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 () => SwitchListTile(
                   title: Text(l10n.voiceInputTitle),
                   subtitle: Text(l10n.voiceInputSubtitle),
-                  value: _speechEnabled.value,
+                  value: _controller.voiceInputEnabled.value,
                   activeThumbColor: Theme.of(context).colorScheme.primary,
-                  onChanged: (value) {
-                    _speechEnabled.value = value;
-                  },
+                  onChanged: (value) =>
+                      _controller.setVoiceInputEnabled(value: value),
                   secondary: const Icon(Icons.mic),
                 ),
               ),
@@ -355,11 +303,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 () => SwitchListTile(
                   title: Text(l10n.markdownSupportTitle),
                   subtitle: Text(l10n.markdownSupportSubtitle),
-                  value: _markdownEnabled.value,
+                  value: _controller.markdownEnabled.value,
                   activeThumbColor: Theme.of(context).colorScheme.primary,
-                  onChanged: (value) {
-                    _markdownEnabled.value = value;
-                  },
+                  onChanged: (value) =>
+                      _controller.setMarkdownEnabled(value: value),
                   secondary: const Icon(Icons.code),
                 ),
               ),
@@ -368,12 +315,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 () => SwitchListTile(
                   title: Text(l10n.ragEnabledTitle),
                   subtitle: Text(l10n.ragEnabledSubtitle),
-                  value: _ragEnabled.value,
+                  value: _controller.ragEnabled.value,
                   activeThumbColor: Theme.of(context).colorScheme.primary,
-                  onChanged: (value) {
-                    _ragEnabled.value = value;
-                    Pref.ragEnabled = value;
-                  },
+                  onChanged: (value) => _controller.setRagEnabled(value: value),
                   secondary: const Icon(Icons.menu_book_outlined),
                 ),
               ),
@@ -382,13 +326,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 () => SwitchListTile(
                   title: Text(l10n.ragStrictTitle),
                   subtitle: Text(l10n.ragStrictSubtitle),
-                  value: _ragStrict.value,
+                  value: _controller.ragStrict.value,
                   activeThumbColor: Theme.of(context).colorScheme.primary,
-                  onChanged: _ragEnabled.value
-                      ? (value) {
-                          _ragStrict.value = value;
-                          Pref.ragStrict = value;
-                        }
+                  onChanged: _controller.ragEnabled.value
+                      ? (value) => _controller.setRagStrict(value: value)
                       : null,
                   secondary: const Icon(Icons.verified_outlined),
                 ),
@@ -396,7 +337,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],
           ),
 
-          // Diagnostics Section
+          // Teşhis ekranı
           _buildSection(
             context,
             l10n.sectionDiagnostics,
@@ -413,7 +354,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],
           ),
 
-          // Statistics Section
+          // İstatistikler
           _buildSection(
             context,
             l10n.sectionStatistics,
@@ -444,7 +385,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],
           ),
 
-          // Data Management Section
+          // Veri yönetimi
           _buildSection(
             context,
             l10n.sectionDataManagement,
@@ -459,7 +400,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],
           ),
 
-          // About Section
+          // Hakkında
           _buildSection(
             context,
             l10n.sectionAbout,

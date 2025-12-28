@@ -55,10 +55,14 @@ class ResponseCleaner {
       r'^\s*(?:'
       // English meta headers
       r'(?:reasoning|analysis|thoughts?|chain of thought|let me think)\s*:?\s*$|'
-      // Turkish meta headers
-      // (NOTE: intentionally excludes "mantık" to avoid false positives)
+      // Turkish meta headers.
+      // NOTE:
+      // - We match common Turkish meta headers that appear in our prompts.
+      // - We intentionally exclude "mantık" to avoid false positives.
       r'(?:düşünce|akıl yürütme|gerekçe)\s*:?\s*$|'
       // "Final" wrappers
+      r'(?:final answer|final|answer)\s*:?\s*$|'
+      // Common preamble
       r'(?:final answer|final|answer)\s*:?\s*$|'
       // Common preamble
       r'okay[, ]+i need to respond.*$'

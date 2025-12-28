@@ -1,5 +1,5 @@
 # DeepSeek-R1 modeli için hızlı indirme
-# Doğrudan indirme bağlantısı kullanır - en hızlısı tarayıcı ile indirme
+# Doğrudan indirme bağlantısı kullanılır - en hızlısı tarayıcı ile indirme
 $utf8 = [System.Text.UTF8Encoding]::new($false)
 [Console]::InputEncoding  = $utf8
 [Console]::OutputEncoding = $utf8
@@ -17,7 +17,7 @@ Write-Host "Hedef: $downloadPath" -ForegroundColor Green
 Write-Host ""
 
 Write-Host "SEÇENEK 1: Tarayıcı ile indirme (EN HIZLI - ÖNERİLEN)" -ForegroundColor Yellow
-Write-Host "===================================================" -ForegroundColor Yellow
+Write-Host "====================================================" -ForegroundColor Yellow
 Write-Host ""
 Write-Host "İndirme bağlantısı tarayıcıda açılıyor..." -ForegroundColor Cyan
 Write-Host "İndirme otomatik başlayacak!" -ForegroundColor Green
@@ -47,4 +47,3 @@ Write-Host ""
 
 Write-Host "İndirme tamamlanınca bir tuşa basın..." -ForegroundColor Green
 $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-

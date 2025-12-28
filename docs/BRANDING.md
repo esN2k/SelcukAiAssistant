@@ -1,14 +1,14 @@
 # Markalama
 
-## Resmi isimler
-- TR: Selcuk YZ Asistan
-- EN: Selcuk AI Assistant
-- Kisa: Selcuk AI
+## Resmi İsimler
+- TR: Selçuk AI Asistanı
+- EN: Selçuk AI Assistant
+- Kısa: Selçuk AI
 
-## Dil varsayilani
-- Uygulama ici varsayilan dil Turkce.
-- Ingilizce, ayarlardan secilebilir.
+## Dil Varsayılanı
+- Uygulama içi varsayılan dil Türkçe.
+- İngilizce, ayarlardan seçilebilir.
 
-## Kullanim notlari
-- Marka adi tum platformlarda ayni yazimla kullanilir.
-- Dosya adlari ve dokumanlarda Turkce tercih edilir.
+## Kullanım Notları
+- Marka adı tüm platformlarda aynı yazımla kullanılır.
+- Dosya adları ve dokümanlarda Türkçe tercih edilir.

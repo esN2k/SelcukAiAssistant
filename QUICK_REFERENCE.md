@@ -1,7 +1,7 @@
-# Hizli Referans
+# Hızlı Referans
 
 ## Backend
-- Baslatma: `uvicorn main:app --reload`
+- Başlatma: `uvicorn main:app --reload`
 - Test: `python -m pytest -q`
 - Lint: `ruff check .`
 - Tip kontrol: `mypy .`

@@ -33,7 +33,7 @@ class ChatController extends GetxController {
     final l10n = L10n.current();
     list.assignAll([
       Message(
-        msg: l10n?.startChatHint ?? 'Start chatting with the AI assistant!',
+        msg: l10n?.startChatHint ?? 'Yapay zeka asistanıyla sohbete başlayın!',
         msgType: MessageType.bot,
       ),
     ]);
@@ -49,10 +49,10 @@ class ChatController extends GetxController {
 
   String _systemPrompt() {
     if (_languageCode() == 'en') {
-      return 'You are a helpful assistant for Selcuk University. '
+      return 'You are a helpful assistant for Selçuk University. '
           'Reply in English. Do not reveal reasoning or internal thoughts. '
           'If the user greets vaguely (e.g. "Hello"), ask what they need about '
-          'Selcuk University.';
+          'Selçuk University.';
     }
     return 'Sel\u00e7uk \u00dcniversitesi i\u00e7in yard\u0131mc\u0131 bir '
         'asistans\u0131n. Yan\u0131tlar\u0131n\u0131 T\u00fcrk\u00e7e ver. '
@@ -77,18 +77,25 @@ class ChatController extends GetxController {
 
   Future<void> startListening() async {
     final l10n = L10n.current();
+    if (!Pref.voiceInputEnabled) {
+      MyDialog.info(
+        l10n?.voiceInputSubtitle ??
+            'Sesli mesajlar için mikrofonu etkinleştirin.',
+      );
+      return;
+    }
     final status = await Permission.microphone.request();
     if (status != PermissionStatus.granted) {
       MyDialog.info(
         l10n?.microphonePermissionRequired ??
-            'Microphone permission is required for voice input',
+            'Sesli giriş için mikrofon izni gereklidir.',
       );
       return;
     }
 
     if (!speechEnabled.value) {
       MyDialog.info(
-        l10n?.speechNotAvailable ?? 'Speech recognition is not available',
+        l10n?.speechNotAvailable ?? 'Ses tanıma kullanılamıyor.',
       );
       return;
     }
@@ -153,7 +160,8 @@ class ChatController extends GetxController {
           ..removeLast()
           ..add(
             Message(
-              msg: l10n?.errorUnexpected ?? 'Error: Unexpected error.',
+              msg: l10n?.errorUnexpected ??
+                  'Hata: Beklenmeyen bir hata oluştu.',
               msgType: MessageType.bot,
             ),
           );
@@ -162,7 +170,7 @@ class ChatController extends GetxController {
     } else {
       MyDialog.info(
         l10n?.enterMessagePrompt ??
-            'Please enter a message or use voice input!',
+            'Lütfen bir mesaj yazın ya da sesli giriş kullanın!',
       );
     }
   }

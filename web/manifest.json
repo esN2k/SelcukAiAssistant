@@ -1,11 +1,11 @@
 {
-    "name": "Selçuk YZ Asistan",
+    "name": "Selçuk AI Asistanı",
     "short_name": "Selçuk AI",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "Selçuk YZ Asistan — Selçuk University AI assistant.",
+    "description": "Selçuk AI Asistanı — Selçuk University AI assistant.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

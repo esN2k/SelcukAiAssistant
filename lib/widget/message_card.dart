@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:selcukaiassistant/helper/global.dart';
+import 'package:selcukaiassistant/helper/pref.dart';
 import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/model/message.dart';
 import 'package:selcukaiassistant/widget/typing_indicator.dart';
@@ -15,6 +16,7 @@ class MessageCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const r = Radius.circular(15);
+    final markdownEnabled = Pref.markdownEnabled;
 
     return message.msgType == MessageType.bot
         ? Row(
@@ -65,46 +67,61 @@ class MessageCard extends StatelessWidget {
                             ),
                           ],
                         )
-                      : MarkdownBody(
-                          data: message.msg,
-                          selectable: true,
-                          styleSheet: MarkdownStyleSheet(
-                            p: TextStyle(
-                              fontSize: 16,
-                              color:
-                                  Theme.of(context).textTheme.bodyLarge?.color,
-                              height: 1.4,
-                            ),
-                            code: TextStyle(
-                              backgroundColor: Theme.of(context).brightness ==
-                                      Brightness.dark
-                                  ? Colors.grey[700]
-                                  : Colors.grey[200],
-                              fontFamily: 'monospace',
-                              fontSize: 14,
-                            ),
-                            codeblockDecoration: BoxDecoration(
-                              color: Theme.of(context).brightness ==
-                                      Brightness.dark
-                                  ? Colors.grey[700]
-                                  : Colors.grey[200],
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            blockquoteDecoration: BoxDecoration(
-                              color: Theme.of(context).brightness ==
-                                      Brightness.dark
-                                  ? Colors.amber.withOpacity(0.1)
-                                  : Colors.amber.withOpacity(0.05),
-                              borderRadius: BorderRadius.circular(4),
-                              border: const Border(
-                                left: BorderSide(
-                                  color: Colors.amber,
-                                  width: 4,
+                      : markdownEnabled
+                          ? MarkdownBody(
+                              data: message.msg,
+                              selectable: true,
+                              styleSheet: MarkdownStyleSheet(
+                                p: TextStyle(
+                                  fontSize: 16,
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge
+                                      ?.color,
+                                  height: 1.4,
+                                ),
+                                code: TextStyle(
+                                  backgroundColor:
+                                      Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Colors.grey[700]
+                                          : Colors.grey[200],
+                                  fontFamily: 'monospace',
+                                  fontSize: 14,
+                                ),
+                                codeblockDecoration: BoxDecoration(
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? Colors.grey[700]
+                                      : Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                blockquoteDecoration: BoxDecoration(
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? Colors.amber.withOpacity(0.1)
+                                      : Colors.amber.withOpacity(0.05),
+                                  borderRadius: BorderRadius.circular(4),
+                                  border: const Border(
+                                    left: BorderSide(
+                                      color: Colors.amber,
+                                      width: 4,
+                                    ),
+                                  ),
                                 ),
                               ),
+                            )
+                          : SelectableText(
+                              message.msg,
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    ?.color,
+                                height: 1.4,
+                              ),
                             ),
-                          ),
-                        ),
                 ),
               ),
             ],

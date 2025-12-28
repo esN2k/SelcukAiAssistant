@@ -1,7 +1,8 @@
 param(
   [string]$BaseUrl = "http://localhost:8000",
   [int]$TimeoutSec = 60,
-  [string]$ReportPath
+  [string]$ReportPath,
+  [switch]$AllowNoModel
 )
 
 $ErrorActionPreference = "Stop"
@@ -37,6 +38,24 @@ function Write-Result {
     Write-Host "PASS: $Name"
   } else {
     Write-Host "FAIL: $Name - $Detail"
+  }
+}
+
+function Write-Skipped {
+  param(
+    [string]$Name,
+    [string]$Detail = ""
+  )
+  $script:results += [PSCustomObject]@{
+    Name   = $Name
+    Status = "SKIP"
+    Detail = $Detail
+  }
+
+  if ([string]::IsNullOrWhiteSpace($Detail)) {
+    Write-Host "SKIP: $Name"
+  } else {
+    Write-Host "SKIP: $Name - $Detail"
   }
 }
 
@@ -174,7 +193,7 @@ function Write-Report {
   }
 
   $lines = @(
-    "# Selçuk YZ Asistan Smoke Testi Raporu",
+    "# Selçuk AI Asistanı Smoke Testi Raporu",
     "",
     "Zaman: $(Get-Date -Format o)",
     "Taban URL: $BaseUrl",
@@ -194,22 +213,30 @@ function Write-Report {
   Write-Utf8NoBom -Path $Path -Content ($lines -join "`n")
 }
 
-Write-Host "== Selçuk YZ Asistan smoke testi =="
+Write-Host "== Selçuk AI Asistanı smoke testi =="
 Write-Host "Taban URL: $BaseUrl"
 
 Write-Result "Ortam" $true "OS: $([System.Environment]::OSVersion)"
 
 $health = Invoke-Curl @("-sS", "--max-time", "$TimeoutSec", "$BaseUrl/health")
 $healthOk = $false
+$healthMessage = ""
 if ($health.ExitCode -eq 0) {
   try {
     $healthJson = $health.Output | ConvertFrom-Json
     $healthOk = $healthJson.status -eq "ok"
+    $healthMessage = $healthJson.message
   } catch {
     $healthOk = $false
   }
 }
 Write-Result "GET /health" $healthOk (Truncate-Text $health.Output)
+
+$encodingOk = $false
+if (-not [string]::IsNullOrWhiteSpace($healthMessage)) {
+  $encodingOk = $healthMessage -match '[ÇĞİÖŞÜçğıöşü]'
+}
+Write-Result "UTF-8/Türkçe karakter kontrolü" $encodingOk (Truncate-Text $healthMessage)
 
 $ollama = Invoke-Curl @("-sS", "--max-time", "$TimeoutSec", "$BaseUrl/health/ollama")
 $ollamaOk = $false
@@ -221,7 +248,11 @@ if ($ollama.ExitCode -eq 0) {
     $ollamaOk = $false
   }
 }
-Write-Result "GET /health/ollama" $ollamaOk (Truncate-Text $ollama.Output)
+if (-not $ollamaOk -and $AllowNoModel) {
+  Write-Skipped "GET /health/ollama" "Ollama erişilemedi veya model yok"
+} else {
+  Write-Result "GET /health/ollama" $ollamaOk (Truncate-Text $ollama.Output)
+}
 
 $hf = Invoke-Curl @("-sS", "--max-time", "$TimeoutSec", "$BaseUrl/health/hf")
 $hfOk = $false
@@ -277,6 +308,15 @@ if (Test-Path $invalidBodyOut) {
 Write-Result "POST /chat (geçersiz payload)" $invalidOk "HTTP $invalidCode $(Truncate-Text $invalidBody)"
 
 if (-not $modelsOk) {
+  if ($AllowNoModel) {
+    Write-Skipped "POST /chat (ollama)" "Atlandı: uygun model yok"
+    Write-Skipped "POST /chat/stream (ollama)" "Atlandı: uygun model yok"
+    Write-Skipped "POST /chat (hf)" "Atlandı: uygun model yok"
+    Write-Skipped "POST /chat/stream (hf)" "Atlandı: uygun model yok"
+    Write-Report -Path $ReportPath
+    Write-Host "Rapor kaydedildi: $ReportPath"
+    exit 0
+  }
   Write-Result "POST /chat (ollama)" $false "Atlandı: uygun model yok"
   Write-Result "POST /chat/stream (ollama)" $false "Atlandı: uygun model yok"
   Write-Result "POST /chat (hf)" $false "Atlandı: uygun model yok"
@@ -347,7 +387,13 @@ if ($ollamaModel) {
   $streamOk = ($hasToken -or $hasEnd) -and (-not $hasError)
   Write-Result "POST /chat/stream (ollama: $($ollamaModel.id))" $streamOk (Truncate-Text $streamText)
 } else {
-  Write-Result "Ollama modeli seçimi" $false "/models içinde uygun ollama modeli yok"
+  if ($AllowNoModel) {
+    Write-Skipped "Ollama modeli seçimi" "/models içinde uygun ollama modeli yok"
+    Write-Skipped "POST /chat (ollama)" "Uygun model yok"
+    Write-Skipped "POST /chat/stream (ollama)" "Uygun model yok"
+  } else {
+    Write-Result "Ollama modeli seçimi" $false "/models içinde uygun ollama modeli yok"
+  }
 }
 
 if ($hfModel) {
@@ -397,7 +443,13 @@ if ($hfModel) {
   $streamOk = ($hasToken -or $hasEnd) -and (-not $hasError)
   Write-Result "POST /chat/stream (hf: $($hfModel.id))" $streamOk (Truncate-Text $streamText)
 } else {
-  Write-Result "HuggingFace modeli seçimi" $false "/models içinde uygun huggingface modeli yok"
+  if ($AllowNoModel) {
+    Write-Skipped "HuggingFace modeli seçimi" "/models içinde uygun huggingface modeli yok"
+    Write-Skipped "POST /chat (hf)" "Uygun model yok"
+    Write-Skipped "POST /chat/stream (hf)" "Uygun model yok"
+  } else {
+    Write-Result "HuggingFace modeli seçimi" $false "/models içinde uygun huggingface modeli yok"
+  }
 }
 
 Write-Report -Path $ReportPath

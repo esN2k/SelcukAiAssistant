@@ -406,7 +406,7 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
       setState(() {
         _streamSample = sample.isEmpty
             ? (L10n.current()?.diagnosticsNoStreamSample ??
-                'No stream events captured.')
+                'Akış örneği alınamadı.')
             : sample;
       });
       _appendLog('POST /chat/stream -> captured $lines events');
@@ -571,6 +571,7 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
       body: ListView(
         padding: const EdgeInsets.only(bottom: 24),
         children: [
+          // Bağlantı ve sağlık kontrolleri.
           _buildSection(
             context,
             l10n.diagnosticsConnectionSection,
@@ -676,6 +677,7 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
               ),
             ],
           ),
+          // Son hata özeti ve ayrıntılar.
           _buildSection(
             context,
             l10n.diagnosticsLastErrorTitle,
@@ -697,6 +699,7 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
                 ),
             ],
           ),
+          // Akış örneği ve log çıktıları.
           _buildSection(
             context,
             l10n.diagnosticsStreamSampleTitle,

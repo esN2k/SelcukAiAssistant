@@ -1,4 +1,4 @@
-// Using deprecated withOpacity and other Material 2 APIs until migration
+// Geçici olarak Material 2 API'lerindeki withOpacity kullanımını sürdürüyoruz.
 // ignore_for_file: deprecated_member_use
 
 import 'dart:async';
@@ -103,13 +103,14 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
         elevation: 1,
         actions: [
           // Appwrite ping button
+          // Appwrite bağlantı testi
           IconButton(
             padding: const EdgeInsets.only(right: 10),
             onPressed: _sendPing,
             icon: const Icon(Icons.wifi_rounded, size: 24),
             tooltip: l10n.sendPingTooltip,
           ),
-          // Dark mode toggle
+          // Koyu/açık tema geçişi
           IconButton(
             padding: const EdgeInsets.only(right: 10),
             onPressed: () {
@@ -128,7 +129,7 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
               ),
             ),
           ),
-          // Logout button
+          // Çıkış işlemi
           IconButton(
             padding: const EdgeInsets.only(right: 10),
             onPressed: _logout,

@@ -1,7 +1,7 @@
-# Selcuk AI Assistant Model Configuration
+# Selçuk AI Asistanı Model Konfigürasyonu
 FROM qwen2:7b
 
-# System prompt for Selcuk University AI Assistant
+# Selçuk Üniversitesi AI Asistanı için sistem istemi
 SYSTEM """Sen Selçuk Üniversitesi'nin resmi yapay zeka asistanısın. Adın "Selçuk AI Asistanı" ve görevin öğrencilere, akademik ve idari personele yardımcı olmak.
 
 **Temel Görevlerin:**
@@ -39,4 +39,3 @@ PARAMETER repeat_penalty 1.1
 PARAMETER stop "<|im_end|>"
 PARAMETER stop "<|im_start|>"
 PARAMETER num_ctx 4096
-

@@ -1,8 +1,9 @@
-"""CLI tool for ingesting documents into the FAISS RAG index."""
+"""FAISS RAG indeksi için belge alma (ingest) aracı."""
 from __future__ import annotations
 
 import argparse
 import logging
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable, Sequence
@@ -16,18 +17,51 @@ from rag_service import Document, RagIndex, SentenceTransformerBackend, chunk_te
 logger = logging.getLogger(__name__)
 
 
+def _configure_utf8_output() -> None:
+    """Giriş: yok.
+
+    Çıkış: yok.
+    İşleyiş: stdout/stderr akışlarını UTF-8 olarak yapılandırır.
+    """
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            try:
+                stream.reconfigure(encoding="utf-8")
+            except (AttributeError, ValueError):
+                continue
+
+
+_configure_utf8_output()
+
+
 @dataclass
 class SourceChunk:
+    """Giriş: İçerik ve sayfa bilgisi.
+
+    Çıkış: Veri kapsülü.
+    İşleyiş: Kaynak parçasını taşır.
+    """
+
     content: str
     source: str
     page: int | None = None
 
 
 def _read_text_file(path: Path) -> str:
+    """Giriş: Dosya yolu.
+
+    Çıkış: Metin.
+    İşleyiş: UTF-8 okuyup temel temizlik uygular.
+    """
     return path.read_text(encoding="utf-8", errors="ignore")
 
 
 def _read_pdf(path: Path) -> list[SourceChunk]:
+    """Giriş: PDF yolu.
+
+    Çıkış: Sayfa parçaları.
+    İşleyiş: Sayfa metinlerini ayrıştırır.
+    """
     reader = PdfReader(str(path))
     chunks: list[SourceChunk] = []
     for page_index, page in enumerate(reader.pages, start=1):
@@ -39,6 +73,11 @@ def _read_pdf(path: Path) -> list[SourceChunk]:
 
 
 def _read_html(path: Path) -> str:
+    """Giriş: HTML yolu.
+
+    Çıkış: Metin.
+    İşleyiş: Görünür metni süzer.
+    """
     html = path.read_text(encoding="utf-8", errors="ignore")
     soup = BeautifulSoup(html, "html.parser")
     for tag in soup(["script", "style", "noscript"]):
@@ -48,6 +87,11 @@ def _read_html(path: Path) -> str:
 
 
 def _load_chunks(path: Path) -> list[SourceChunk]:
+    """Giriş: Dosya yolu.
+
+    Çıkış: Kaynak parçaları.
+    İşleyiş: Uzantıya göre içerik okur.
+    """
     suffix = path.suffix.lower()
     if suffix == ".pdf":
         return _read_pdf(path)
@@ -59,8 +103,15 @@ def _load_chunks(path: Path) -> list[SourceChunk]:
 
 
 def _chunk_source(
-    source: SourceChunk, chunk_size: int, chunk_overlap: int
+    source: SourceChunk,
+    chunk_size: int,
+    chunk_overlap: int,
 ) -> list[Document]:
+    """Giriş: Kaynak ve parça ayarları.
+
+    Çıkış: Document listesi.
+    İşleyiş: chunk_text ile parçalara böler.
+    """
     docs: list[Document] = []
     for idx, chunk in enumerate(chunk_text(source.content, chunk_size, chunk_overlap)):
         docs.append(
@@ -77,6 +128,11 @@ def _chunk_source(
 
 
 def iter_input_files(input_path: Path, extensions: Sequence[str]) -> Iterable[Path]:
+    """Giriş: Dizin ve uzantılar.
+
+    Çıkış: Dosya yolu akışı.
+    İşleyiş: rglob ile dosyaları tarar.
+    """
     if input_path.is_file():
         yield input_path
         return
@@ -90,6 +146,11 @@ def build_documents(
     chunk_size: int,
     chunk_overlap: int,
 ) -> list[Document]:
+    """Giriş: Girdi yolu ve chunk ayarları.
+
+    Çıkış: Document listesi.
+    İşleyiş: Kaynakları yükler ve parçalara böler.
+    """
     documents: list[Document] = []
     for path in iter_input_files(input_path, extensions):
         if not path.exists():
@@ -108,14 +169,20 @@ def ingest(
     chunk_overlap: int,
     extensions: Sequence[str],
     reset: bool,
+    batch_size: int,
 ) -> int:
+    """Giriş: Dosyalar ve ayarlar.
+
+    Çıkış: Eklenen parça sayısı.
+    İşleyiş: FAISS indeksini oluşturur ve kaydeder.
+    """
     if reset and output_path.exists():
         for child in output_path.glob("*"):
             if child.is_file():
                 child.unlink()
 
-    embedder = SentenceTransformerBackend(embedding_model)
-    index = RagIndex(output_path, embedder)
+    embedder = SentenceTransformerBackend(embedding_model, batch_size=batch_size)
+    index = RagIndex(output_path, embedder, batch_size=batch_size)
     docs = build_documents(input_path, extensions, chunk_size, chunk_overlap)
     added = index.add_documents(docs)
     index.save(
@@ -131,50 +198,66 @@ def ingest(
 
 
 def parse_args() -> argparse.Namespace:
+    """Giriş: CLI parametreleri.
+
+    Çıkış: argparse Namespace.
+    İşleyiş: Komut satırı argümanlarını tanımlar.
+    """
     parser = argparse.ArgumentParser(
-        description="SelcukAiAssistant RAG ingestion CLI (FAISS)",
+        description="Selçuk AI Asistanı RAG ingestion CLI (FAISS)",
     )
     parser.add_argument(
         "--input",
         required=True,
-        help="Input file or directory (pdf/txt/md/html).",
+        help="Girdi dosya veya klasörü (pdf/txt/md/html).",
     )
     parser.add_argument(
         "--output",
         default=Config.RAG_VECTOR_DB_PATH or "./data/rag",
-        help="Output directory for FAISS index and metadata.",
+        help="FAISS indeks ve metadata çıkış dizini.",
     )
     parser.add_argument(
         "--embedding-model",
         default=Config.RAG_EMBEDDING_MODEL,
-        help="SentenceTransformer model name.",
+        help="SentenceTransformer model adı.",
     )
     parser.add_argument(
         "--chunk-size",
         type=int,
         default=Config.RAG_CHUNK_SIZE,
-        help="Chunk size in characters.",
+        help="Karakter bazında parça boyu.",
     )
     parser.add_argument(
         "--chunk-overlap",
         type=int,
         default=Config.RAG_CHUNK_OVERLAP,
-        help="Chunk overlap in characters.",
+        help="Karakter bazında parça bindirmesi.",
+    )
+    parser.add_argument(
+        "--batch-size",
+        type=int,
+        default=Config.RAG_EMBEDDING_BATCH_SIZE,
+        help="Gömleme üretimi için batch boyu.",
     )
     parser.add_argument(
         "--extensions",
         default=".pdf,.txt,.md,.html,.htm",
-        help="Comma-separated file extensions for directories.",
+        help="Klasör için virgül ayrımlı uzantı listesi.",
     )
     parser.add_argument(
         "--reset",
         action="store_true",
-        help="Delete existing index files before ingesting.",
+        help="Ingest öncesi mevcut indeks dosyalarını sil.",
     )
     return parser.parse_args()
 
 
 def main() -> None:
+    """Giriş: CLI.
+
+    Çıkış: yok.
+    İşleyiş: Ingest sürecini çalıştırır.
+    """
     args = parse_args()
     input_path = Path(args.input)
     output_path = Path(args.output)
@@ -188,8 +271,9 @@ def main() -> None:
         chunk_overlap=args.chunk_overlap,
         extensions=extensions,
         reset=args.reset,
+        batch_size=args.batch_size,
     )
-    print(f"Ingestion completed. Chunks added: {added}")
+    logger.info("Ingest tamamlandı. Eklenen parça sayısı: %s", added)
 
 
 if __name__ == "__main__":

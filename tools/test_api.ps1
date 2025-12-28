@@ -1,6 +1,7 @@
 param(
   [string]$BaseUrl = "http://localhost:8000",
-  [int]$TimeoutSec = 60
+  [int]$TimeoutSec = 60,
+  [switch]$AllowNoModel
 )
 
 $ErrorActionPreference = "Stop"
@@ -27,6 +28,18 @@ function Write-Result {
     Write-Host "FAIL: $Name"
   } else {
     Write-Host "FAIL: $Name - $Detail"
+  }
+}
+
+function Write-Skipped {
+  param(
+    [string]$Name,
+    [string]$Detail = ""
+  )
+  if ([string]::IsNullOrWhiteSpace($Detail)) {
+    Write-Host "SKIP: $Name"
+  } else {
+    Write-Host "SKIP: $Name - $Detail"
   }
 }
 
@@ -155,20 +168,28 @@ function Build-Payload {
   return ($payload | ConvertTo-Json -Depth 6)
 }
 
-Write-Host "== Selçuk YZ Asistan API smoke testi =="
+Write-Host "== Selçuk AI Asistanı API smoke testi =="
 Write-Host "Taban URL: $BaseUrl"
 
 $health = Invoke-Curl @("-sS", "--max-time", "$TimeoutSec", "$BaseUrl/health")
 $healthOk = $false
+$healthMessage = ""
 if ($health.ExitCode -eq 0) {
   try {
     $healthJson = $health.Output | ConvertFrom-Json
     $healthOk = $healthJson.status -eq "ok"
+    $healthMessage = $healthJson.message
   } catch {
     $healthOk = $false
   }
 }
 Write-Result "GET /health" $healthOk (Limit-Text $health.Output)
+
+$encodingOk = $false
+if (-not [string]::IsNullOrWhiteSpace($healthMessage)) {
+  $encodingOk = $healthMessage -match '[ÇĞİÖŞÜçğıöşü]'
+}
+Write-Result "UTF-8/Türkçe karakter kontrolü" $encodingOk (Limit-Text $healthMessage)
 
 $models = Invoke-Curl @("-sS", "--max-time", "$TimeoutSec", "$BaseUrl/models")
 $modelsOk = $false
@@ -186,7 +207,9 @@ Write-Result "GET /models" $modelsOk (Limit-Text $models.Output)
 
 if (-not $modelsOk) {
   Write-Host "/chat ve /chat/stream atlandı (uygun model yok)."
-  exit 1
+  if (-not $AllowNoModel) {
+    exit 1
+  }
 }
 
 $availableModels = @($modelsJson.models)
@@ -204,10 +227,18 @@ $hfModel = Get-Model -Models $availableModels -Provider "huggingface" -Preferred
 )
 
 if (-not $ollamaModel) {
-  Write-Result "Ollama modeli seçimi" $false "/models içinde uygun ollama modeli yok"
+  if ($AllowNoModel) {
+    Write-Skipped "Ollama modeli seçimi" "/models içinde uygun ollama modeli yok"
+  } else {
+    Write-Result "Ollama modeli seçimi" $false "/models içinde uygun ollama modeli yok"
+  }
 }
 if (-not $hfModel) {
-  Write-Result "HuggingFace modeli seçimi" $false "/models içinde uygun huggingface modeli yok"
+  if ($AllowNoModel) {
+    Write-Skipped "HuggingFace modeli seçimi" "/models içinde uygun huggingface modeli yok"
+  } else {
+    Write-Result "HuggingFace modeli seçimi" $false "/models içinde uygun huggingface modeli yok"
+  }
 }
 
 $tmpDir = Join-Path $PSScriptRoot ".tmp"
@@ -261,6 +292,9 @@ if ($ollamaModel) {
   Write-Result "POST /chat/stream (ollama: $($ollamaModel.id))" $streamOk (Limit-Text $streamText)
   Write-Host "SSE örnek (ollama):"
   ($streamText -split "`r?`n" | Where-Object { $_ -ne "" } | Select-Object -First 20) | ForEach-Object { Write-Host $_ }
+} elseif ($AllowNoModel) {
+  Write-Skipped "POST /chat (ollama)" "Uygun model yok"
+  Write-Skipped "POST /chat/stream (ollama)" "Uygun model yok"
 }
 
 if ($hfModel) {
@@ -311,6 +345,9 @@ if ($hfModel) {
   Write-Result "POST /chat/stream (hf: $($hfModel.id))" $streamOk (Limit-Text $streamText)
   Write-Host "SSE örnek (hf):"
   ($streamText -split "`r?`n" | Where-Object { $_ -ne "" } | Select-Object -First 20) | ForEach-Object { Write-Host $_ }
+} elseif ($AllowNoModel) {
+  Write-Skipped "POST /chat (hf)" "Uygun model yok"
+  Write-Skipped "POST /chat/stream (hf)" "Uygun model yok"
 }
 
 if ($script:failures -gt 0) {

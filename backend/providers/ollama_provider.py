@@ -1,8 +1,8 @@
-"""Ollama provider implementation."""
+"""Ollama sağlayıcı uyarlaması."""
 from __future__ import annotations
 
 import logging
-from typing import AsyncIterator, Dict, List
+from typing import AsyncIterator
 
 from config import Config
 from ollama_service import OllamaService
@@ -13,9 +13,20 @@ logger = logging.getLogger(__name__)
 
 
 class OllamaProvider(ModelProvider):
+    """Giriş: Ollama servis ayarları.
+
+    Çıkış: Model sağlayıcı nesnesi.
+    İşleyiş: OllamaService ile üretim ve akış sağlar.
+    """
+
     name = "ollama"
 
     def __init__(self) -> None:
+        """Giriş: yok.
+
+        Çıkış: Nesne.
+        İşleyiş: Yapılandırma değerleriyle Ollama istemcisini oluşturur.
+        """
         self._client = OllamaService(
             base_url=Config.OLLAMA_BASE_URL,
             timeout=Config.OLLAMA_TIMEOUT,
@@ -25,14 +36,21 @@ class OllamaProvider(ModelProvider):
 
     async def generate(
         self,
-        messages: List[Dict[str, str]],
+        messages: list[dict[str, str]],
         model_id: str,
         temperature: float,
         top_p: float,
         max_tokens: int,
         request_id: str,
     ) -> ChatResult:
-        logger.info("request_id=%s provider=ollama generate model=%s", request_id, model_id)
+        """Giriş: Mesajlar ve üretim parametreleri.
+
+        Çıkış: ChatResult.
+        İşleyiş: Ollama API üzerinden tek seferlik yanıt üretir.
+        """
+        logger.info(
+            "request_id=%s provider=ollama generate model=%s", request_id, model_id
+        )
         result = await self._client.generate(
             messages=messages,
             model=model_id,
@@ -51,7 +69,7 @@ class OllamaProvider(ModelProvider):
 
     async def stream(
         self,
-        messages: List[Dict[str, str]],
+        messages: list[dict[str, str]],
         model_id: str,
         temperature: float,
         top_p: float,
@@ -59,7 +77,14 @@ class OllamaProvider(ModelProvider):
         request_id: str,
         cancel_token: CancellationToken,
     ) -> AsyncIterator[StreamChunk]:
-        logger.info("request_id=%s provider=ollama stream model=%s", request_id, model_id)
+        """Giriş: Mesajlar ve üretim parametreleri.
+
+        Çıkış: StreamChunk akışı.
+        İşleyiş: Ollama stream akışını iletir ve iptal sinyalini izler.
+        """
+        logger.info(
+            "request_id=%s provider=ollama stream model=%s", request_id, model_id
+        )
         reasoning_filter = ReasoningFilter()
         async for chunk in self._client.generate_stream(
             messages=messages,
@@ -90,10 +115,25 @@ class OllamaProvider(ModelProvider):
                 break
 
     def list_models(self) -> list:
+        """Giriş: yok.
+
+        Çıkış: Boş liste.
+        İşleyiş: Ollama katalogları burada kullanılmaz.
+        """
         return []
 
-    async def list_model_names(self) -> List[str]:
+    async def list_model_names(self) -> list[str]:
+        """Giriş: yok.
+
+        Çıkış: Ollama model adları.
+        İşleyiş: OllamaService üzerinden model listesini alır.
+        """
         return await self._client.list_model_names()
 
-    async def health_check(self, model_id: str) -> Dict[str, object]:
+    async def health_check(self, model_id: str) -> dict[str, object]:
+        """Giriş: Model kimliği.
+
+        Çıkış: Sağlık bilgisi.
+        İşleyiş: OllamaService sağlık kontrolünü döndürür.
+        """
         return await self._client.health_check(model_id)

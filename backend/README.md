@@ -1,8 +1,8 @@
 # Backend (FastAPI)
 
-Bu klasor Selcuk YZ Asistan backend servisidir.
+Bu klasör Selçuk AI Asistanı backend servisidir.
 
-## Calistirma
+## Çalıştırma
 ```bash
 cd backend
 python -m venv .venv
@@ -12,14 +12,14 @@ copy .env.example .env
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-## Uc noktalar
+## Uç noktalar
 - `GET /health`
 - `GET /models`
 - `POST /chat`
 - `POST /chat/stream`
 
 ## RAG
-- FAISS indeksleri icin `rag_ingest.py` kullanilir.
+- FAISS indeksleri için `rag_ingest.py` kullanılır.
 - Ayarlar: `RAG_ENABLED`, `RAG_VECTOR_DB_PATH`, `RAG_TOP_K`.
 
 ## Testler

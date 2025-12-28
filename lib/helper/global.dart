@@ -3,7 +3,7 @@ import 'package:selcukaiassistant/config/backend_config.dart';
 
 class Global {
   // App constants
-  static const String appName = 'Sel\u00e7uk YZ Asistan';
+  static const String appName = 'Sel\u00e7uk AI Asistan\u0131';
 
   // Media query size (should be initialized in app)
   static Size mq = Size.zero;

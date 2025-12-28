@@ -52,10 +52,10 @@ class EnhancedChatController extends GetxController {
 
   String _systemPrompt() {
     if (_languageCode() == 'en') {
-      return 'You are a helpful assistant for Selcuk University. '
+      return 'You are a helpful assistant for Selçuk University. '
           'Reply in English. Do not reveal reasoning or internal thoughts. '
           'If the user greets vaguely (e.g. "Hello"), ask what they need about '
-          'Selcuk University.';
+          'Selçuk University.';
     }
     return 'Sel\u00e7uk \u00dcniversitesi i\u00e7in yard\u0131mc\u0131 bir '
         'asistans\u0131n. Yan\u0131tlar\u0131n\u0131 T\u00fcrk\u00e7e ver. '
@@ -105,18 +105,25 @@ class EnhancedChatController extends GetxController {
 
   Future<void> startListening() async {
     final l10n = L10n.current();
+    if (!Pref.voiceInputEnabled) {
+      MyDialog.info(
+        l10n?.voiceInputSubtitle ??
+            'Sesli mesajlar için mikrofonu etkinleştirin.',
+      );
+      return;
+    }
     final status = await Permission.microphone.request();
     if (status != PermissionStatus.granted) {
       MyDialog.info(
         l10n?.microphonePermissionRequired ??
-            'Microphone permission is required for voice input',
+            'Sesli giriş için mikrofon izni gereklidir.',
       );
       return;
     }
 
     if (!speechEnabled.value) {
       MyDialog.info(
-        l10n?.speechNotAvailable ?? 'Speech recognition is not available',
+        l10n?.speechNotAvailable ?? 'Ses tanıma kullanılamıyor.',
       );
       return;
     }
@@ -161,7 +168,7 @@ class EnhancedChatController extends GetxController {
     if (messageText.isEmpty) {
       MyDialog.info(
         l10n?.enterMessagePrompt ??
-            'Please enter a message or use voice input!',
+            'Lütfen bir mesaj yazın ya da sesli giriş kullanın!',
       );
       return;
     }
@@ -242,7 +249,7 @@ class EnhancedChatController extends GetxController {
           ..citations = fallback.citations;
       } else {
         aiMessage.content +=
-            "\n\n${l10n?.streamInterruptedTag ?? '[Stream interrupted]'}";
+            "\n\n${l10n?.streamInterruptedTag ?? '[Akış kesildi]'}";
       }
       messages.refresh();
       await ConversationService.addMessage(
@@ -250,7 +257,7 @@ class EnhancedChatController extends GetxController {
         aiMessage,
       );
       Get.snackbar(
-        l10n?.streamErrorTitle ?? 'Stream error',
+        l10n?.streamErrorTitle ?? 'Akış hatası',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
@@ -338,13 +345,13 @@ class EnhancedChatController extends GetxController {
 
     final updated = await Get.dialog<String>(
       AlertDialog(
-        title: Text(l10n?.editMessageTitle ?? 'Edit message'),
+        title: Text(l10n?.editMessageTitle ?? 'Mesajı düzenle'),
         content: TextField(
           controller: controller,
           autofocus: true,
           maxLines: null,
           decoration: InputDecoration(
-            hintText: l10n?.editMessageHint ?? 'Update your message',
+            hintText: l10n?.editMessageHint ?? 'Mesajınızı güncelleyin',
             border: const OutlineInputBorder(),
           ),
           onSubmitted: (value) => Get.back(result: value),
@@ -352,11 +359,11 @@ class EnhancedChatController extends GetxController {
         actions: [
           TextButton(
             onPressed: () => Get.back<String>(),
-            child: Text(l10n?.cancel ?? 'Cancel'),
+            child: Text(l10n?.cancel ?? 'İptal'),
           ),
           TextButton(
             onPressed: () => Get.back<String>(result: controller.text),
-            child: Text(l10n?.editMessageAction ?? 'Resend'),
+            child: Text(l10n?.editMessageAction ?? 'Yeniden gönder'),
           ),
         ],
       ),
@@ -445,7 +452,7 @@ class EnhancedChatController extends GetxController {
           ..errorCode = errorCode;
         messages.refresh();
         Get.snackbar(
-          l10n?.streamErrorTitle ?? 'Stream error',
+          l10n?.streamErrorTitle ?? 'Akış hatası',
           e.toString(),
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
@@ -507,7 +514,7 @@ class EnhancedChatController extends GetxController {
           }
         } else if (event.type == 'error') {
           if (!completer.isCompleted) {
-            completer.completeError(event.message ?? 'Stream error');
+            completer.completeError(event.message ?? 'Akış hatası');
           }
         }
       },
@@ -548,21 +555,21 @@ class EnhancedChatController extends GetxController {
     final l10n = L10n.current();
     final confirmed = await Get.dialog<bool>(
       AlertDialog(
-        title: Text(l10n?.clearConversationTitle ?? 'Clear conversation'),
+        title: Text(l10n?.clearConversationTitle ?? 'Sohbeti temizle'),
         content: Text(
           l10n?.clearConversationMessage ??
-              'Are you sure you want to clear this conversation? '
-                  'This action cannot be undone.',
+              'Bu sohbeti temizlemek istediğinize emin misiniz? '
+                  'Bu işlem geri alınamaz.',
         ),
         actions: [
           TextButton(
             onPressed: () => Get.back(result: false),
-            child: Text(l10n?.cancel ?? 'Cancel'),
+            child: Text(l10n?.cancel ?? 'İptal'),
           ),
           TextButton(
             onPressed: () => Get.back(result: true),
             child: Text(
-              l10n?.clear ?? 'Clear',
+              l10n?.clear ?? 'Temizle',
               style: const TextStyle(color: Colors.red),
             ),
           ),
@@ -583,8 +590,8 @@ class EnhancedChatController extends GetxController {
       final conversation = currentConversation.value;
       if (conversation == null || conversation.messages.isEmpty) {
         Get.snackbar(
-          l10n?.exportFailedTitle ?? 'Export failed',
-          l10n?.noMessagesToExport ?? 'No messages to export',
+          l10n?.exportFailedTitle ?? 'Dışa aktarma başarısız',
+          l10n?.noMessagesToExport ?? 'Dışa aktarılacak mesaj yok',
           snackPosition: SnackPosition.BOTTOM,
         );
         return;
@@ -600,19 +607,19 @@ class EnhancedChatController extends GetxController {
 
       final successMessage = result.path != null
           ? l10n?.exportSuccessMessage(result.path!) ??
-              'Saved to ${result.path}\nAlso copied to clipboard'
+              'Dosyaya kaydedildi: ${result.path}\nAyrıca panoya kopyalandı'
           : l10n?.exportSuccessWebMessage ??
-              'Downloaded file and copied to clipboard';
+              'Dosya indirildi ve panoya kopyalandı';
 
       Get.snackbar(
-        l10n?.exportSuccessTitle ?? 'Export successful',
+        l10n?.exportSuccessTitle ?? 'Dışa aktarma başarılı',
         successMessage,
         snackPosition: SnackPosition.BOTTOM,
         duration: const Duration(seconds: 4),
       );
     } on Exception catch (e) {
       Get.snackbar(
-        l10n?.exportFailedTitle ?? 'Export failed',
+        l10n?.exportFailedTitle ?? 'Dışa aktarma başarısız',
         '$e',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,

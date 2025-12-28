@@ -9,13 +9,13 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
-  String get appTitle => 'Selçuk YZ Asistan';
+  String get appTitle => 'Selçuk AI Asistanı';
 
   @override
-  String get appSubtitle => 'Selçuk YZ Asistan';
+  String get appSubtitle => 'Gizliliğe odaklı akademik asistan';
 
   @override
-  String get splashSubtitle => 'Selçuk YZ Asistan';
+  String get splashSubtitle => 'Selçuk AI Asistanı';
 
   @override
   String get ok => 'Tamam';
@@ -444,7 +444,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get listeningIndicator => 'Dinleniyor... (bırakınca durur)';
 
   @override
-  String get messageHint => 'Selçuk YZ Asistan\'a yazın...';
+  String get messageHint => 'Selçuk AI Asistanı\'na yazın...';
 
   @override
   String get imageSelectedTitle => 'Görsel seçildi';
@@ -737,7 +737,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get logoutTooltip => 'Çıkış';
 
   @override
-  String get assistantTitle => 'Yapay zeka asistanı';
+  String get assistantTitle => 'Yapay Zeka Asistanı';
 
   @override
   String get assistantHint =>
@@ -747,7 +747,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get listeningStatus => 'Ses girişi dinleniyor...';
 
   @override
-  String get startChatHint => 'Yapay zeka asistanıyla konuşmaya başlayın!';
+  String get startChatHint => 'Yapay Zeka Asistanı ile konuşmaya başlayın!';
 
   @override
   String get errorInvalidRequest => 'Hata: Geçersiz istek';

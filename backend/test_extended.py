@@ -1,15 +1,13 @@
-"""
-Extended unit tests for new features in the FastAPI backend.
+"""FastAPI backend için genişletilmiş birim testleri.
 
-Tests cover:
-- Input validation and sanitization
-- Health check model matching with tags
-- Retry logic
-- RAG service structure
+Giriş: TestClient ve mock nesneler.
+Çıkış: HTTP yanıtları ve fonksiyon sonuçları doğrulanır.
+İşleyiş: Doğrulama, retry ve RAG akışları test edilir.
 """
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import httpx
+import numpy as np
 import pytest
 from fastapi.testclient import TestClient
 
@@ -18,14 +16,17 @@ from main import app
 from ollama_service import OllamaService
 from providers.base import ChatResult
 from providers.ollama_provider import OllamaProvider
-import numpy as np
-
-from rag_service import RAGService, Document, RagIndex, chunk_text
+from rag_service import Document, RAGService, RagIndex, chunk_text
 
 client = TestClient(app)
 
 
-def _chat_payload(content: str):
+def _chat_payload(content: str) -> dict[str, list[dict[str, str]]]:
+    """Giriş: Kullanıcı mesajı.
+
+    Çıkış: Chat payload sözlüğü.
+    İşleyiş: /chat şemasına uygun JSON üretir.
+    """
     return {"messages": [{"role": "user", "content": content}]}
 
 
@@ -35,22 +36,42 @@ def _chat_payload(content: str):
 
 
 def test_chat_empty_question():
+    """Giriş: Boş mesaj.
+
+    Çıkış: 422.
+    İşleyiş: İçerik doğrulamasını kontrol eder.
+    """
     response = client.post("/chat", json=_chat_payload(""))
     assert response.status_code == 422
 
 
 def test_chat_whitespace_only_question():
+    """Giriş: Sadece boşluk.
+
+    Çıkış: 422.
+    İşleyiş: İçerik doğrulamasını kontrol eder.
+    """
     response = client.post("/chat", json=_chat_payload("   "))
     assert response.status_code == 422
 
 
 def test_chat_too_long_question():
+    """Giriş: Aşırı uzun içerik.
+
+    Çıkış: 422.
+    İşleyiş: Uzunluk kontrolünü doğrular.
+    """
     long_question = "a" * 11000
     response = client.post("/chat", json=_chat_payload(long_question))
     assert response.status_code == 422
 
 
 def test_chat_xss_prevention():
+    """Giriş: Zararlı içerik.
+
+    Çıkış: 422.
+    İşleyiş: XSS filtre kontrolünü doğrular.
+    """
     dangerous_inputs = [
         "<script>alert('xss')</script>",
         "test javascript:alert(1)",
@@ -64,6 +85,11 @@ def test_chat_xss_prevention():
 
 @patch.object(OllamaProvider, "generate", new_callable=AsyncMock)
 def test_chat_valid_input_with_sanitization(mock_generate):
+    """Giriş: Geçerli içerik.
+
+    Çıkış: 200.
+    İşleyiş: Sanitize sonrası başarılı yanıt bekler.
+    """
     mock_generate.return_value = ChatResult(text="Test response")
     response = client.post("/chat", json=_chat_payload("  Test question  "))
     assert response.status_code == 200
@@ -77,6 +103,11 @@ def test_chat_valid_input_with_sanitization(mock_generate):
 @pytest.mark.asyncio
 @patch("ollama_service.httpx.AsyncClient.get")
 async def test_health_check_exact_match(mock_get):
+    """Giriş: Tam model adı.
+
+    Çıkış: healthy.
+    İşleyiş: /api/tags eşleşmesini doğrular.
+    """
     mock_response = MagicMock()
     mock_response.status_code = 200
     mock_response.json.return_value = {
@@ -93,6 +124,11 @@ async def test_health_check_exact_match(mock_get):
 @pytest.mark.asyncio
 @patch("ollama_service.httpx.AsyncClient.get")
 async def test_health_check_with_latest_tag(mock_get):
+    """Giriş: latest tag.
+
+    Çıkış: healthy.
+    İşleyiş: Tag eşleşmesini doğrular.
+    """
     mock_response = MagicMock()
     mock_response.status_code = 200
     mock_response.json.return_value = {
@@ -109,6 +145,11 @@ async def test_health_check_with_latest_tag(mock_get):
 @pytest.mark.asyncio
 @patch("ollama_service.httpx.AsyncClient.get")
 async def test_health_check_reverse_tag_match(mock_get):
+    """Giriş: Base model.
+
+    Çıkış: available.
+    İşleyiş: Ters tag eşleşmesini doğrular.
+    """
     mock_response = MagicMock()
     mock_response.status_code = 200
     mock_response.json.return_value = {
@@ -122,6 +163,11 @@ async def test_health_check_reverse_tag_match(mock_get):
 
 
 def test_is_model_available_helper():
+    """Giriş: Model listeleri.
+
+    Çıkış: bool.
+    İşleyiş: Yardımcı fonksiyonun eşleşmesini doğrular.
+    """
     assert OllamaService._is_model_available("llama3.1", ["llama3.1", "mistral"])
     assert OllamaService._is_model_available("llama3.1", ["llama3.1:latest"])
     assert OllamaService._is_model_available("llama3.1:latest", ["llama3.1"])
@@ -139,6 +185,11 @@ def test_is_model_available_helper():
 @patch("ollama_service.httpx.AsyncClient.post")
 @patch("ollama_service.asyncio.sleep")
 async def test_retry_on_connection_error(_mock_sleep, mock_post):
+    """Giriş: Bağlantı hatası.
+
+    Çıkış: Retry sonrası yanıt.
+    İşleyiş: Tekrar deneme akışını doğrular.
+    """
     mock_post.side_effect = [
         httpx.RequestError("Connection refused"),
         httpx.RequestError("Connection refused"),
@@ -166,6 +217,11 @@ async def test_retry_on_connection_error(_mock_sleep, mock_post):
 @patch("ollama_service.httpx.AsyncClient.post")
 @patch("ollama_service.asyncio.sleep")
 async def test_retry_on_timeout(_mock_sleep, mock_post):
+    """Giriş: Timeout.
+
+    Çıkış: Retry sonrası yanıt.
+    İşleyiş: Zaman aşımı tekrarlarını doğrular.
+    """
     mock_post.side_effect = [
         httpx.ReadTimeout("Timeout"),
         MagicMock(
@@ -191,6 +247,11 @@ async def test_retry_on_timeout(_mock_sleep, mock_post):
 @patch("ollama_service.httpx.AsyncClient.post")
 @patch("ollama_service.asyncio.sleep")
 async def test_retry_exhaustion(_mock_sleep, mock_post):
+    """Giriş: Sürekli hata.
+
+    Çıkış: HTTPException 503.
+    İşleyiş: Retry tükenmesi senaryosunu doğrular.
+    """
     from fastapi import HTTPException
 
     mock_post.side_effect = httpx.RequestError("Connection refused")
@@ -212,6 +273,11 @@ async def test_retry_exhaustion(_mock_sleep, mock_post):
 @pytest.mark.asyncio
 @patch("ollama_service.httpx.AsyncClient.post")
 async def test_no_retry_on_http_error(mock_post):
+    """Giriş: HTTP 404.
+
+    Çıkış: Tek deneme.
+    İşleyiş: HTTP hatasında retry yapılmadığını doğrular.
+    """
     from fastapi import HTTPException
 
     mock_response = MagicMock()
@@ -239,6 +305,11 @@ async def test_no_retry_on_http_error(mock_post):
 
 
 def test_rag_service_initialization_disabled():
+    """Giriş: RAG disabled.
+
+    Çıkış: Boş bağlam.
+    İşleyiş: Devre dışı kontrolünü doğrular.
+    """
     service = RAGService(enabled=False)
     assert service.enabled is False
     context, citations = service.get_context("test query")
@@ -247,14 +318,35 @@ def test_rag_service_initialization_disabled():
 
 
 class DummyEmbeddingBackend:
+    """Giriş: Test amaçlı gömme üretici.
+
+    Çıkış: Sabit boyutlu vektörler.
+    İşleyiş: Metin uzunluğu tabanlı vektör üretir.
+    """
+
     def __init__(self) -> None:
+        """Giriş: yok.
+
+        Çıkış: Nesne.
+        İşleyiş: Boyutu sabitler.
+        """
         self._dimension = 3
 
     @property
     def dimension(self) -> int:
+        """Giriş: yok.
+
+        Çıkış: Boyut.
+        İşleyiş: Sabit değer döndürür.
+        """
         return self._dimension
 
-    def embed(self, texts):
+    def embed(self, texts: list[str]) -> np.ndarray:
+        """Giriş: Metin listesi.
+
+        Çıkış: Normalize vektörler.
+        İşleyiş: Uzunluk tabanlı vektör üretir.
+        """
         vectors = []
         for text in texts:
             vectors.append(
@@ -269,6 +361,11 @@ class DummyEmbeddingBackend:
 
 
 def test_rag_service_initialization_enabled(tmp_path):
+    """Giriş: Geçerli ayarlar.
+
+    Çıkış: Aktif RAG.
+    İşleyiş: İndeks kurulumunu doğrular.
+    """
     service = RAGService(
         enabled=True,
         vector_db_path=str(tmp_path),
@@ -285,18 +382,33 @@ def test_rag_service_initialization_enabled(tmp_path):
 
 
 def test_rag_service_search_when_disabled():
+    """Giriş: RAG disabled.
+
+    Çıkış: Boş sonuç.
+    İşleyiş: Arama bypass kontrolü.
+    """
     service = RAGService(enabled=False)
     results = service.search("test query")
     assert results == []
 
 
 def test_rag_service_ingest_when_disabled():
+    """Giriş: RAG disabled.
+
+    Çıkış: RuntimeError.
+    İşleyiş: Korumalı ekleme doğrulanır.
+    """
     service = RAGService(enabled=False)
-    with pytest.raises(RuntimeError, match="RAG service is not enabled"):
+    with pytest.raises(RuntimeError, match="RAG servisi etkin değil"):
         service.add_documents([Document(content="test content")])
 
 
 def test_document_creation():
+    """Giriş: Document.
+
+    Çıkış: Alan doğrulama.
+    İşleyiş: Dataclass davranışını kontrol eder.
+    """
     doc = Document(
         content="Test content",
         metadata={"source": "test.txt", "date": "2024-01-01"},
@@ -309,6 +421,11 @@ def test_document_creation():
 
 
 def test_rag_chunk_document():
+    """Giriş: Uzun metin.
+
+    Çıkış: Parçalara bölme.
+    İşleyiş: chunk_text fonksiyonunu doğrular.
+    """
     content = "0123456789abcdefghij"
     chunks = chunk_text(content, chunk_size=10, chunk_overlap=3)
     assert all(len(chunk) <= 10 for chunk in chunks)
@@ -316,6 +433,11 @@ def test_rag_chunk_document():
 
 
 def test_rag_index_add_and_search(tmp_path):
+    """Giriş: İki doc.
+
+    Çıkış: Arama sonucu.
+    İşleyiş: İndeks ekleme/arama akışını doğrular.
+    """
     embedder = DummyEmbeddingBackend()
     index = RagIndex(tmp_path, embedder)
     docs = [

@@ -30,7 +30,7 @@ $blobsDir = "$ollamaDir\blobs"
 Write-Host "Model: DeepSeek-R1-Distill-Qwen-7B" -ForegroundColor Green
 Write-Host "Nicemleme: $quantLevel (4-bit)" -ForegroundColor Green
 Write-Host "Boyut: ~4.4 GB" -ForegroundColor Green
-Write-Host "Yetenekler: Sınırsız, Gelişmiş muhakeme" -ForegroundColor Green
+Write-Host "Yetenekler: Sınırsız, gelişmiş muhakeme" -ForegroundColor Green
 Write-Host ""
 
 # Dizinler yoksa oluştur

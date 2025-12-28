@@ -62,7 +62,8 @@ class APIs {
   }) async {
     final l10n = L10n.current();
     final timeoutMessage =
-        l10n?.requestTimeoutMessage ?? 'Request timed out. Please try again.';
+        l10n?.requestTimeoutMessage ??
+        'İstek zaman aşımına uğradı. Lütfen tekrar deneyin.';
     try {
       log('Backend API: ${BackendConfig.chatEndpoint}');
 
@@ -87,7 +88,7 @@ class APIs {
         final responseData = jsonDecode(utf8.decode(response.bodyBytes))
             as Map<String, dynamic>;
         final answer = (responseData['answer'] as String?) ??
-            (l10n?.noResponseGenerated ?? 'Sorry, no response generated.');
+            (l10n?.noResponseGenerated ?? 'Üzgünüm, bir yanıt üretilemedi.');
         final citations = (responseData['citations'] as List<dynamic>?)
                 ?.map((item) => item.toString())
                 .toList() ??
@@ -107,28 +108,28 @@ class APIs {
           final errorMessage =
               errorData['detail'] as String? ?? l10n?.errorInvalidRequest;
           return ChatApiResponse(
-            answer: errorMessage ?? 'Error: Invalid request',
+            answer: errorMessage ?? 'Hata: Geçersiz istek.',
           );
         } on FormatException {
           return ChatApiResponse(
             answer: l10n?.errorInvalidRequestFormat ??
-                'Error: Invalid request format.',
+                'Hata: İstek formatı geçersiz.',
           );
         }
       } else if (response.statusCode == 503) {
         return ChatApiResponse(
           answer: l10n?.errorServiceUnavailable ??
-              'Error: AI service is unavailable.',
+              'Hata: Yapay zeka servisine ulaşılamıyor.',
         );
       } else if (response.statusCode == 504) {
         return ChatApiResponse(
-          answer: l10n?.errorTimeout ?? 'Error: AI response timeout.',
+          answer: l10n?.errorTimeout ?? 'Hata: Yanıt zaman aşımına uğradı.',
         );
       }
 
       return ChatApiResponse(
         answer: l10n?.errorBackendUnavailable ??
-            'Error: Backend service unavailable.',
+            'Hata: Backend servisi kullanılamıyor.',
       );
     } on TimeoutException catch (e) {
       log('Backend timeout: $e');
@@ -136,18 +137,19 @@ class APIs {
     } on http.ClientException catch (e) {
       log('Network error: $e');
       return ChatApiResponse(
-        answer: l10n?.errorNoInternet ?? 'Error: No internet connection.',
+        answer: l10n?.errorNoInternet ?? 'Hata: İnternet bağlantısı yok.',
       );
     } on FormatException catch (e) {
       log('Parse error: $e');
       return ChatApiResponse(
         answer: l10n?.errorInvalidServerResponse ??
-            'Error: Invalid server response.',
+            'Hata: Sunucu yanıtı geçersiz.',
       );
     } on Exception catch (e) {
       log('Backend error: $e');
       return ChatApiResponse(
-        answer: l10n?.errorUnexpected ?? 'Error: Unexpected error.',
+        answer: l10n?.errorUnexpected ??
+            'Hata: Beklenmeyen bir hata oluştu.',
       );
     }
   }

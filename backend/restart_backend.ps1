@@ -19,4 +19,3 @@ if ($pythonProcesses)
 Write-Host "Backend (geliştirilmiş bellek temizliğiyle) başlatılıyor..." -ForegroundColor Green
 cd D:\Projects\SelcukAiAssistant\backend
 python main.py
-

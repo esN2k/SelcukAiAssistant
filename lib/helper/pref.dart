@@ -120,6 +120,18 @@ class Pref {
 
   static set ragStrict(bool value) => box.put('ragStrict', value);
 
+  static bool get voiceInputEnabled =>
+      (box.get('voiceInputEnabled') as bool?) ?? true;
+
+  static set voiceInputEnabled(bool value) =>
+      box.put('voiceInputEnabled', value);
+
+  static bool get markdownEnabled =>
+      (box.get('markdownEnabled') as bool?) ?? true;
+
+  static set markdownEnabled(bool value) =>
+      box.put('markdownEnabled', value);
+
   static int get ragTopK => (box.get('ragTopK') as int?) ?? 4;
 
   static set ragTopK(int value) => box.put('ragTopK', value);

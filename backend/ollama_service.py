@@ -1,8 +1,10 @@
-"""Ollama service client for SelcukAiAssistant Backend (Async)."""
+"""Selçuk AI Asistanı için asenkron Ollama servis istemcisi."""
+from __future__ import annotations
+
 import asyncio
 import json
 import logging
-from typing import Any, AsyncIterator, Dict, List, Optional
+from typing import Any, AsyncIterator, Optional
 
 import httpx
 from fastapi import HTTPException
@@ -13,7 +15,11 @@ logger = logging.getLogger(__name__)
 
 
 class OllamaService:
-    """Service class for interacting with Ollama API asynchronously."""
+    """Giriş: Yapılandırma değerleri.
+
+    Çıkış: Metin/usage üreten servis çağrıları.
+    İşleyiş: Ollama HTTP uç noktalarıyla konuşur.
+    """
 
     def __init__(
         self,
@@ -22,6 +28,11 @@ class OllamaService:
         max_retries: int = 3,
         retry_delay: float = 1.0,
     ) -> None:
+        """Giriş: URL, timeout ve retry ayarları.
+
+        Çıkış: Nesne.
+        İşleyiş: İstemciyi yapılandırır.
+        """
         self.base_url = base_url or Config.OLLAMA_BASE_URL
         self.timeout = timeout or Config.OLLAMA_TIMEOUT
         self.max_retries = max_retries
@@ -36,16 +47,26 @@ class OllamaService:
         )
 
     @staticmethod
-    def _validate_messages(messages: List[Dict[str, str]]) -> None:
+    def _validate_messages(messages: list[dict[str, str]]) -> None:
+        """Giriş: Mesaj listesi.
+
+        Çıkış: Hata veya None.
+        İşleyiş: Boş listeyi engeller.
+        """
         if not messages:
-            raise HTTPException(status_code=400, detail="messages cannot be empty")
+            raise HTTPException(status_code=400, detail="Mesaj listesi boş olamaz.")
 
     @staticmethod
     def _clean_reasoning_artifacts(text: str) -> str:
+        """Giriş: Ham metin.
+
+        Çıkış: Temiz metin.
+        İşleyiş: Düşünce izlerini ayıklar.
+        """
         import re
 
         if not text or not text.strip():
-            return "Merhaba! Ben Selcuk AI Asistani. Size nasil yardimci olabilirim?"
+            return "Merhaba! Ben Selçuk AI Asistanı. Size nasıl yardımcı olabilirim?"
 
         original_text = text
 
@@ -55,7 +76,8 @@ class OllamaService:
 
         reasoning_patterns = [
             r"^[^.!?\n]*\b(okay|alright|let me|let me think|hmm|wait)\b[^.!?\n]*[\n.]",
-            r"^[^.!?\n]*\b(tamam|peki|dusunelim|bakalim|bir dakika)\b[^.!?\n]*[\n.]",
+            r"^[^.!?\n]*\b(tamam|peki|düşünelim|dusunelim|"
+            r"bakalım|bakalim|bir dakika)\b[^.!?\n]*[\n.]",
         ]
         for pattern in reasoning_patterns:
             text = re.sub(pattern, "", text, flags=re.IGNORECASE | re.MULTILINE)
@@ -73,18 +95,23 @@ class OllamaService:
         if len(text) < 15:
             if len(original_text.strip()) > 20 and "<think>" not in original_text.lower():
                 return original_text.strip()
-            return "Merhaba! Ben Selcuk AI Asistani. Size nasil yardimci olabilirim?"
+            return "Merhaba! Ben Selçuk AI Asistanı. Size nasıl yardımcı olabilirim?"
 
         return text
 
     async def generate(
         self,
-        messages: List[Dict[str, str]],
+        messages: list[dict[str, str]],
         model: str,
         temperature: float,
         top_p: float,
         max_tokens: int,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
+        """Giriş: Mesajlar ve üretim parametreleri.
+
+        Çıkış: Metin/usage sözlüğü.
+        İşleyiş: `/api/chat` çağrısı yapar.
+        """
         self._validate_messages(messages)
 
         async with httpx.AsyncClient(timeout=self.timeout) as client:
@@ -114,7 +141,7 @@ class OllamaService:
                         error_detail = self._parse_error_response(response)
                         raise HTTPException(
                             status_code=response.status_code,
-                            detail=f"Ollama API error: {error_detail}",
+                            detail=f"Ollama API hatası: {error_detail}",
                         )
 
                     data = response.json()
@@ -122,7 +149,7 @@ class OllamaService:
                     answer = message.get("content", "")
                     if not answer:
                         return {
-                            "text": "Uzgunnm, bir yanit olusturulamadi.",
+                            "text": "Üzgünüm, bir yanıt oluşturulamadı.",
                             "usage": None,
                         }
 
@@ -139,7 +166,7 @@ class OllamaService:
                         continue
                     raise HTTPException(
                         status_code=504,
-                        detail="Ollama request timed out.",
+                        detail="Ollama isteği zaman aşımına uğradı.",
                     )
                 except httpx.RequestError as exc:
                     if attempt < self.max_retries - 1:
@@ -147,19 +174,24 @@ class OllamaService:
                         continue
                     raise HTTPException(
                         status_code=503,
-                        detail=f"Cannot connect to Ollama: {exc}",
+                        detail=f"Ollama servisine bağlanılamadı: {exc}",
                     )
 
-        raise HTTPException(status_code=500, detail="Ollama error")
+        raise HTTPException(status_code=500, detail="Ollama hatası")
 
     async def generate_stream(
         self,
-        messages: List[Dict[str, str]],
+        messages: list[dict[str, str]],
         model: str,
         temperature: float,
         top_p: float,
         max_tokens: int,
-    ) -> AsyncIterator[Dict[str, Any]]:
+    ) -> AsyncIterator[dict[str, Any]]:
+        """Giriş: Mesajlar ve üretim parametreleri.
+
+        Çıkış: Token akışı.
+        İşleyiş: Stream çağrısı yapar.
+        """
         self._validate_messages(messages)
 
         payload = {
@@ -175,39 +207,55 @@ class OllamaService:
             },
         }
 
-        async with httpx.AsyncClient(timeout=self.timeout) as client:
-            async with client.stream(
-                "POST",
-                self.api_url,
-                json=payload,
-                headers={"Content-Type": "application/json; charset=utf-8"},
-            ) as response:
-                if response.status_code != 200:
-                    raise HTTPException(
-                        status_code=response.status_code,
-                        detail=f"Ollama API error: HTTP {response.status_code}",
-                    )
+        try:
+            async with httpx.AsyncClient(timeout=self.timeout) as client:
+                async with client.stream(
+                    "POST",
+                    self.api_url,
+                    json=payload,
+                    headers={"Content-Type": "application/json; charset=utf-8"},
+                ) as response:
+                    if response.status_code != 200:
+                        raise HTTPException(
+                            status_code=response.status_code,
+                            detail=f"Ollama API hatası: HTTP {response.status_code}",
+                        )
 
-                async for line in response.aiter_lines():
-                    if not line:
-                        continue
-                    try:
-                        data = json.loads(line)
-                    except json.JSONDecodeError:
-                        continue
+                    async for line in response.aiter_lines():
+                        if not line:
+                            continue
+                        try:
+                            data = json.loads(line)
+                        except json.JSONDecodeError:
+                            continue
 
-                    message = data.get("message") or {}
-                    token = message.get("content", "")
-                    done = bool(data.get("done", False))
-                    usage = None
-                    if done:
-                        usage = {
-                            "prompt_tokens": data.get("prompt_eval_count"),
-                            "completion_tokens": data.get("eval_count"),
-                        }
-                    yield {"token": token, "done": done, "usage": usage}
+                        message = data.get("message") or {}
+                        token = message.get("content", "")
+                        done = bool(data.get("done", False))
+                        usage = None
+                        if done:
+                            usage = {
+                                "prompt_tokens": data.get("prompt_eval_count"),
+                                "completion_tokens": data.get("eval_count"),
+                            }
+                        yield {"token": token, "done": done, "usage": usage}
+        except httpx.ReadTimeout as exc:
+            raise HTTPException(
+                status_code=504,
+                detail="Ollama isteği zaman aşımına uğradı.",
+            ) from exc
+        except httpx.RequestError as exc:
+            raise HTTPException(
+                status_code=503,
+                detail=f"Ollama servisine bağlanılamadı: {exc}",
+            ) from exc
 
-    async def health_check(self, model: Optional[str] = None) -> Dict[str, Any]:
+    async def health_check(self, model: Optional[str] = None) -> dict[str, Any]:
+        """Giriş: Model adı (opsiyonel).
+
+        Çıkış: Sağlık bilgisi.
+        İşleyiş: `/api/tags` ile model listesini kontrol eder.
+        """
         model = model or Config.OLLAMA_MODEL
         try:
             async with httpx.AsyncClient(timeout=5.0) as client:
@@ -235,10 +283,15 @@ class OllamaService:
                 "status": "unhealthy",
                 "ollama_url": self.base_url,
                 "model": model,
-                "error": "Connection failed",
+                "error": "Bağlantı başarısız",
             }
 
-    async def list_model_names(self) -> List[str]:
+    async def list_model_names(self) -> list[str]:
+        """Giriş: yok.
+
+        Çıkış: Model adları listesi.
+        İşleyiş: `/api/tags` listesini döndürür.
+        """
         try:
             async with httpx.AsyncClient(timeout=5.0) as client:
                 response = await client.get(f"{self.base_url}/api/tags")
@@ -250,7 +303,12 @@ class OllamaService:
             return []
 
     @staticmethod
-    def _is_model_available(target_model: str, available_models: List[str]) -> bool:
+    def _is_model_available(target_model: str, available_models: list[str]) -> bool:
+        """Giriş: Hedef model ve mevcut modeller.
+
+        Çıkış: bool.
+        İşleyiş: Model adında temel eşleşme yapar.
+        """
         if not target_model or not available_models:
             return False
         if target_model in available_models:
@@ -263,6 +321,11 @@ class OllamaService:
 
     @staticmethod
     def _parse_error_response(response: httpx.Response) -> str:
+        """Giriş: HTTP yanıtı.
+
+        Çıkış: Hata metni.
+        İşleyiş: JSON error alanını okur.
+        """
         try:
             error_data = response.json()
             return error_data.get("error", response.text)

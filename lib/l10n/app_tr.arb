@@ -1,383 +1,383 @@
 {
-    "@@locale":  "tr",
-    "appTitle":  "Selçuk YZ Asistan",
-    "appSubtitle":  "Selçuk YZ Asistan",
-    "splashSubtitle":  "Selçuk YZ Asistan",
-    "ok":  "Tamam",
-    "cancel":  "İptal",
-    "delete":  "Sil",
-    "clear":  "Temizle",
-    "rename":  "Yeniden adlandır",
-    "newChat":  "Yeni sohbet",
-    "loginTitle":  "Hoş geldiniz",
-    "loginSubtitle":  "Devam etmek için giriş yapın",
-    "loginButton":  "Giriş yap",
-    "loginNoAccount":  "Hesabınız yok mu?",
-    "loginCreateAccount":  "Kayıt olun",
-    "loginSuccessTitle":  "Başarılı",
-    "loginSuccessMessage":  "Giriş yapıldı!",
-    "loginErrorTitle":  "Hata",
-    "registerTitle":  "Hesap oluştur",
-    "registerSubtitle":  "Asistanı kullanmaya başlayın",
-    "registerButton":  "Kayıt ol",
-    "registerHaveAccount":  "Zaten hesabınız var mı?",
-    "registerSignIn":  "Giriş yap",
-    "registerSuccessTitle":  "Başarılı",
-    "registerSuccessMessage":  "Kayıt tamamlandı. Hoş geldiniz!",
-    "registerErrorTitle":  "Hata",
-    "nameLabel":  "Ad soyad",
-    "emailLabel":  "E-posta",
-    "passwordLabel":  "Şifre",
-    "confirmPasswordLabel":  "Şifre tekrar",
-    "nameRequired":  "Ad soyad gerekli",
-    "emailRequired":  "E-posta gerekli",
-    "invalidEmail":  "Geçerli bir e-posta girin",
-    "passwordRequired":  "Şifre gerekli",
-    "passwordMinLength":  "Şifre en az 8 karakter olmalı",
-    "confirmPasswordRequired":  "Şifre tekrarını girin",
-    "passwordsDoNotMatch":  "Şifreler eşleşmiyor",
-    "onboardingTitle1":  "Bana bir şey sor",
-    "onboardingSubtitle1":  "En iyi yol arkadaşın olabilirim. Bana her şeyi sor, yardımcı olayım!",
-    "onboardingTitle2":  "Hayalden gerçeğe",
-    "onboardingSubtitle2":  "Sadece hayal et ve söyle. Senin için harika bir şey yaratayım!",
-    "onboardingNext":  "Sıradaki",
-    "onboardingDone":  "Bitti",
-    "settingsTitle":  "Ayarlar",
-    "sectionAppearance":  "GÖRÜNÜM",
-    "sectionLanguage":  "DİL",
-    "sectionAiModel":  "YAPAY ZEKA MODELİ",
-    "sectionChatSettings":  "SOHBET AYARLARI",
-    "sectionServer":  "SUNUCU",
-    "sectionDiagnostics":  "TANILAMA",
-    "sectionStatistics":  "İSTATİSTİKLER",
-    "sectionDataManagement":  "VERİ YÖNETİMİ",
-    "sectionAbout":  "HAKKINDA",
-    "darkModeTitle":  "Karanlık mod",
-    "darkModeSubtitle":  "Aydınlık ve karanlık tema arasında geçiş yapın",
-    "languageTitle":  "Uygulama dili",
-    "languageSubtitle":  "Tercih ettiğiniz dili seçin",
-    "languageTurkish":  "Türkçe",
-    "languageEnglish":  "İngilizce",
-    "modelLabel":  "Model",
-    "modelNotSelected":  "Seçilmedi",
-    "modelAvailable":  "Uygun",
-    "modelUnavailable":  "Kullanılamaz",
-    "modelLocalSection":  "Yerel modeller",
-    "modelRemoteSection":  "Uzak / API modelleri",
-    "modelInstallCommand":  "Kurulum: {command}",
-    "@modelInstallCommand":  {
-                                 "placeholders":  {
-                                                      "command":  {
-                                                                      "type":  "String"
-                                                                  }
-                                                  }
-                             },
-    "modelUnavailableReason":  "Neden: {reason}",
-    "@modelUnavailableReason":  {
-                                    "placeholders":  {
-                                                         "reason":  {
-                                                                        "type":  "String"
-                                                                    }
-                                                     }
-                                },
-    "modelSearchHint":  "Model ara...",
-    "modelNoResults":  "Model bulunamadı",
-    "modelApiKeyRequired":  "API anahtarı gerekli",
-    "modelNotInstalled":  "Yüklü değil",
-    "modelContextLength":  "Bağlam: {count} belirteç",
-    "@modelContextLength":  {
-                                "placeholders":  {
-                                                     "count":  {
-                                                                   "type":  "int"
-                                                               }
-                                                 }
-                            },
-    "backendUrlTitle":  "Sunucu URL\u0027si",
-    "backendUrlSubtitle":  "Geçerli: {current}",
-    "@backendUrlSubtitle":  {
-                                "placeholders":  {
-                                                     "current":  {
-                                                                     "type":  "String"
-                                                                 }
-                                                 }
-                            },
-    "backendUrlHint":  "https://example.com:8000 veya /api",
-    "backendUrlSave":  "Kaydet",
-    "backendUrlClear":  "Özel ayarı temizle",
-    "backendUrlSaved":  "Sunucu URL\u0027si kaydedildi",
-    "backendUrlCleared":  "Sunucu URL\u0027si özelleştirmesi temizlendi",
-    "diagnosticsTitle":  "Tanılama",
-    "diagnosticsSubtitle":  "Backend bağlantısı ve streaming testi",
-    "selectModelTitle":  "Model seç",
-    "voiceInputTitle":  "Sesli giriş",
-    "voiceInputSubtitle":  "Sesli mesajlar için mikrofonu etkinleştirin",
-    "markdownSupportTitle":  "Markdown desteği",
-    "markdownSupportSubtitle":  "Biçimlendirilmiş metin ve kodu göster",
-    "ragEnabledTitle":  "Kaynaklı yanıtlar (RAG)",
-    "ragEnabledSubtitle":  "Uygunsa dizinlenen belgelerden yanıt üretir",
-    "ragStrictTitle":  "Sıkı kaynak modu",
-    "ragStrictSubtitle":  "Kaynak yoksa sabit uyarı verir",
-    "totalConversations":  "Toplam konuşma",
-    "totalMessages":  "Toplam mesaj",
-    "clearAllConversationsTitle":  "Tüm konuşmaları temizle",
-    "clearAllConversationsSubtitle":  "Tüm sohbet geçmişini silin",
-    "clearAllDataTitle":  "Tüm verileri temizle",
-    "clearAllDataMessage":  "Tüm konuşmaları silmek istediğinize emin misiniz? Bu işlem geri alınamaz.",
-    "deleteAll":  "Tümünü sil",
-    "clearAllSuccessTitle":  "Başarılı",
-    "clearAllSuccessMessage":  "Tüm konuşmalar silindi",
-    "versionLabel":  "Sürüm",
-    "developerLabel":  "Geliştirici",
-    "developerValue":  "Selçuk AI",
-    "deleteConversationTitle":  "Konuşmayı sil",
-    "deleteConversationMessage":  "Bu konuşmayı silmek istediğinize emin misiniz? Bu işlem geri alınamaz.",
-    "renameConversationTitle":  "Konuşmayı yeniden adlandır",
-    "renameConversationHint":  "Yeni başlık girin",
-    "searchConversationsHint":  "Konuşmaları ara...",
-    "noConversationsFound":  "Konuşma bulunamadı",
-    "noConversationsYet":  "Henüz konuşma yok",
-    "conversationsCount":  "{count, plural, =0{0 konuşma} =1{1 konuşma} other{{count} konuşma}}",
-    "@conversationsCount":  {
-                                "placeholders":  {
-                                                     "count":  {
-                                                                   "type":  "int"
-                                                               }
-                                                 }
-                            },
-    "pinnedLabel":  "Sabitlenenler",
-    "archivedLabel":  "Arşivlenenler",
-    "last7DaysLabel":  "Son 7 gün",
-    "olderLabel":  "Daha eski",
-    "pinConversation":  "Sabitle",
-    "unpinConversation":  "Sabitlemeyi kaldır",
-    "archiveConversation":  "Arşivle",
-    "unarchiveConversation":  "Arşivden çıkar",
-    "todayLabel":  "Bugün",
-    "yesterdayLabel":  "Dün",
-    "daysAgo":  "{count, plural, =1{1 gün önce} other{{count} gün önce}}",
-    "@daysAgo":  {
-                     "placeholders":  {
-                                          "count":  {
-                                                        "type":  "int"
-                                                    }
-                                      }
-                 },
-    "weeksAgo":  "{count, plural, =1{1 hafta önce} other{{count} hafta önce}}",
-    "@weeksAgo":  {
-                      "placeholders":  {
-                                           "count":  {
-                                                         "type":  "int"
-                                                     }
-                                       }
-                  },
-    "monthsAgo":  "{count, plural, =1{1 ay önce} other{{count} ay önce}}",
-    "@monthsAgo":  {
-                       "placeholders":  {
-                                            "count":  {
-                                                          "type":  "int"
-                                                      }
-                                        }
-                   },
-    "yearsAgo":  "{count, plural, =1{1 yıl önce} other{{count} yıl önce}}",
-    "@yearsAgo":  {
-                      "placeholders":  {
-                                           "count":  {
-                                                         "type":  "int"
-                                                     }
-                                       }
-                  },
-    "clearConversationTitle":  "Konuşmayı temizle",
-    "clearConversationMessage":  "Bu konuşmayı temizlemek istediğinize emin misiniz? Bu işlem geri alınamaz.",
-    "listeningIndicator":  "Dinleniyor... (bırakınca durur)",
-    "messageHint":  "Selçuk YZ Asistan\u0027a yazın...",
-    "imageSelectedTitle":  "Görsel seçildi",
-    "imageSelectedMessage":  "Görsel: {fileName}",
-    "@imageSelectedMessage":  {
-                                  "placeholders":  {
-                                                       "fileName":  {
-                                                                        "type":  "String"
-                                                                    }
-                                                   }
-                              },
-    "startConversationTitle":  "Bir sohbet başlatın",
-    "startConversationSubtitle":  "Bana istediğinizi sorun!",
-    "suggestedPrompt1":  "Kuantum hesaplamayı açıkla",
-    "suggestedPrompt2":  "Bir şiir yaz",
-    "suggestedPrompt3":  "Kod konusunda yardım",
-    "streamErrorTitle":  "Akış hatası",
-    "streamErrorMessage":  "{error}",
-    "@streamErrorMessage":  {
-                                "placeholders":  {
-                                                     "error":  {
-                                                                   "type":  "String"
-                                                               }
-                                                 }
-                            },
-    "streamInterruptedTag":  "[Akış kesildi]",
-    "copyAction":  "Kopyala",
-    "editMessageTitle":  "Mesajı düzenle",
-    "editMessageHint":  "Mesajınızı güncelleyin",
-    "editMessageAction":  "Yeniden gönder",
-    "regenerateAction":  "Yeniden üret",
-    "retryAction":  "Tekrar dene",
-    "sourcesTitle":  "Kaynaklar",
-    "diagnosticsConnectionSection":  "BAĞLANTI",
-    "diagnosticsBaseUrlLabel":  "Temel URL",
-    "diagnosticsBaseUrlSource":  "Kaynak: {source}",
-    "@diagnosticsBaseUrlSource":  {
-                                      "placeholders":  {
-                                                           "source":  {
-                                                                          "type":  "String"
-                                                                      }
-                                                       }
-                                  },
-    "diagnosticsPlatformLabel":  "Platform",
-    "diagnosticsLatencyLabel":  "Gecikme",
-    "diagnosticsLatencyUnavailable":  "Henüz gecikme ölçülmedi.",
-    "diagnosticsModelLabel":  "Seçili model",
-    "diagnosticsModelAvailable":  "Uygun",
-    "diagnosticsModelUnavailable":  "Kullanılamıyor",
-    "diagnosticsOllamaLabel":  "Ollama sağlığı",
-    "diagnosticsOllamaReady":  "Hazır",
-    "diagnosticsOllamaUnavailable":  "Uygun değil",
-    "diagnosticsOllamaButton":  "/health/ollama test et",
-    "diagnosticsOllamaDetail":  "Durum: {status} | Model: {model} | {availability} | Modeller: {count}",
-    "@diagnosticsOllamaDetail":  {
-                                     "placeholders":  {
-                                                          "status":  {
-                                                                         "type":  "String"
-                                                                     },
-                                                          "model":  {
-                                                                        "type":  "String"
-                                                                    },
-                                                          "availability":  {
-                                                                               "type":  "String"
-                                                                           },
-                                                          "count":  {
-                                                                        "type":  "String"
-                                                                    }
-                                                      }
-                                 },
-    "diagnosticsHfLabel":  "HF GPU Hazır",
-    "diagnosticsHfReady":  "Hazır",
-    "diagnosticsHfUnavailable":  "Uygun değil",
-    "diagnosticsHfButton":  "/health/hf test et",
-    "diagnosticsHfDetail":  "GPU: {gpu} | Torch: {torch} | CUDA: {cuda} | Transformers: {transformers} | bitsandbytes: {bnb}",
-    "@diagnosticsHfDetail":  {
-                                 "placeholders":  {
-                                                      "gpu":  {
-                                                                  "type":  "String"
-                                                              },
-                                                      "torch":  {
-                                                                    "type":  "String"
-                                                                },
-                                                      "cuda":  {
-                                                                   "type":  "String"
-                                                               },
-                                                      "transformers":  {
-                                                                           "type":  "String"
-                                                                       },
-                                                      "bnb":  {
-                                                                  "type":  "String"
-                                                              }
-                                                  }
-                             },
-    "diagnosticsHealthButton":  "/health test et",
-    "diagnosticsModelsButton":  "/models test et",
-    "diagnosticsSourceOverride":  "Kullanıcı özelleştirmesi",
-    "diagnosticsSourceDartDefine":  "Dart tanımı",
-    "diagnosticsSourceDotenv":  "Dotenv",
-    "diagnosticsSourceWebRelease":  "Web sürümü (/api)",
-    "diagnosticsSourceWebDev":  "Web geliştirme (localhost)",
-    "diagnosticsSourceAndroidEmulator":  "Android emülatörü (10.0.2.2)",
-    "diagnosticsSourceDesktop":  "Masaüstü (localhost)",
-    "diagnosticsChatButton":  "/chat test et",
-    "diagnosticsStreamButton":  "/chat/stream test et",
-    "diagnosticsStreamRunning":  "Akış sürüyor...",
-    "diagnosticsLastErrorTitle":  "Son hata",
-    "diagnosticsErrorStatusLabel":  "Durum",
-    "diagnosticsErrorBodyLabel":  "İçerik",
-    "diagnosticsErrorHeadersLabel":  "Üstbilgiler",
-    "diagnosticsNoErrors":  "Henüz hata yok.",
-    "diagnosticsStreamSampleTitle":  "SSE örneği",
-    "diagnosticsNoStreamSample":  "Akış olayı yakalanmadı.",
-    "diagnosticsLogsTitle":  "Tanılama günlüğü",
-    "diagnosticsCopyLog":  "Günlüğü kopyala",
-    "diagnosticsNoLogs":  "Henüz tanılama yapılmadı.",
-    "diagnosticsTestMessage":  "Merhaba",
-    "microphonePermissionRequired":  "Sesli giriş için mikrofon izni gerekli",
-    "speechNotAvailable":  "Ses tanıma kullanılamıyor",
-    "enterMessagePrompt":  "Lütfen bir mesaj yazın veya sesli giriş kullanın!",
-    "exportFailedTitle":  "Dışa aktarma başarısız",
-    "noMessagesToExport":  "Dışa aktarılacak mesaj yok",
-    "exportSuccessTitle":  "Dışa aktarma başarılı",
-    "exportSuccessMessage":  "Şuraya kaydedildi: {path}\\nAyrıca panoya kopyalandı",
-    "@exportSuccessMessage":  {
-                                  "placeholders":  {
-                                                       "path":  {
-                                                                    "type":  "String"
-                                                                }
-                                                   }
-                              },
-    "exportSuccessWebMessage":  "Dosya indirildi ve panoya kopyalandı",
-    "logout":  "Çıkış",
-    "clearChat":  "Sohbeti temizle",
-    "exportChat":  "Sohbeti dışa aktar",
-    "logoutSuccessTitle":  "Başarılı",
-    "logoutSuccessMessage":  "Çıkış yapıldı",
-    "logoutErrorTitle":  "Hata",
-    "copiedToClipboard":  "Panoya kopyalandı",
-    "yesterdayAt":  "Dün {time}",
-    "@yesterdayAt":  {
-                         "placeholders":  {
-                                              "time":  {
-                                                           "type":  "String"
-                                                       }
-                                          }
-                     },
-    "aiThinking":  "Yapay zeka düşünüyor...",
-    "infoTitle":  "Bilgi",
-    "successTitle":  "Başarılı",
-    "errorTitle":  "Hata",
-    "imagePickerErrorTitle":  "Hata",
-    "imagePickerErrorMessage":  "Görsel seçilemedi: {error}",
-    "@imagePickerErrorMessage":  {
-                                     "placeholders":  {
-                                                          "error":  {
-                                                                        "type":  "String"
-                                                                    }
-                                                      }
-                                 },
-    "chooseImageSourceTitle":  "Görsel kaynağını seçin",
-    "cameraLabel":  "Kamera",
-    "galleryLabel":  "Galeri",
-    "appwritePingSuccess":  "Appwrite bağlantısı başarılı!",
-    "appwritePingNoSession":  "Appwrite bağlantısı var ama oturum açık değil.",
-    "appwritePingError":  "Appwrite ping hatası: {error}",
-    "@appwritePingError":  {
-                               "placeholders":  {
-                                                    "error":  {
-                                                                  "type":  "String"
-                                                              }
-                                                }
-                           },
-    "sendPingTooltip":  "Ping gönder",
-    "logoutTooltip":  "Çıkış",
-    "assistantTitle":  "Yapay zeka asistanı",
-    "assistantHint":  "Bir mesaj yazın veya sesli giriş için basılı tutun...",
-    "listeningStatus":  "Ses girişi dinleniyor...",
-    "startChatHint":  "Yapay zeka asistanıyla konuşmaya başlayın!",
-    "errorInvalidRequest":  "Hata: Geçersiz istek",
-    "errorInvalidRequestFormat":  "Hata: Geçersiz istek formatı.",
-    "errorServiceUnavailable":  "Hata: Yapay zeka hizmeti kullanılamıyor.",
-    "errorTimeout":  "Hata: Yanıt zaman aşımına uğradı.",
-    "errorBackendUnavailable":  "Hata: Sunucu hizmeti kullanılamıyor.",
-    "errorNoInternet":  "Hata: İnternet bağlantısı yok.",
-    "errorInvalidServerResponse":  "Hata: Geçersiz sunucu yanıtı.",
-    "errorUnexpected":  "Hata: Beklenmeyen hata.",
-    "noResponseGenerated":  "Üzgünüm, yanıt üretilemedi.",
-    "requestTimeoutMessage":  "İstek zaman aşımına uğradı. Lütfen tekrar deneyin.",
-    "speechRecognitionFailed":  "Ses tanıma başarısız oldu. Lütfen tekrar deneyin.",
-    "speechRecognitionError":  "Ses tanıma hatası. Lütfen ağ bağlantınızı kontrol edin.",
-    "serverConnectionFailed":  "Sunucu bağlantısı başarısız."
+  "@@locale": "tr",
+  "appTitle": "Selçuk AI Asistanı",
+  "appSubtitle": "Gizliliğe odaklı akademik asistan",
+  "splashSubtitle": "Gizliliğe odaklı Selçuk AI akademik asistan",
+  "ok": "Tamam",
+  "cancel": "İptal",
+  "delete": "Sil",
+  "clear": "Temizle",
+  "rename": "Yeniden adlandır",
+  "newChat": "Yeni sohbet",
+  "loginTitle": "Hoş geldiniz",
+  "loginSubtitle": "Devam etmek için giriş yapın",
+  "loginButton": "Giriş yap",
+  "loginNoAccount": "Hesabınız yok mu?",
+  "loginCreateAccount": "Kayıt olun",
+  "loginSuccessTitle": "Başarılı",
+  "loginSuccessMessage": "Giriş yapıldı!",
+  "loginErrorTitle": "Hata",
+  "registerTitle": "Hesap oluştur",
+  "registerSubtitle": "Asistanı kullanmaya başlayın",
+  "registerButton": "Kayıt ol",
+  "registerHaveAccount": "Zaten hesabınız var mı?",
+  "registerSignIn": "Giriş yap",
+  "registerSuccessTitle": "Başarılı",
+  "registerSuccessMessage": "Kayıt tamamlandı. Hoş geldiniz!",
+  "registerErrorTitle": "Hata",
+  "nameLabel": "Ad soyad",
+  "emailLabel": "E-posta",
+  "passwordLabel": "Şifre",
+  "confirmPasswordLabel": "Şifre tekrar",
+  "nameRequired": "Ad soyad gerekli",
+  "emailRequired": "E-posta gerekli",
+  "invalidEmail": "Geçerli bir e-posta girin",
+  "passwordRequired": "Şifre gerekli",
+  "passwordMinLength": "Şifre en az 8 karakter olmalı",
+  "confirmPasswordRequired": "Şifre tekrarını girin",
+  "passwordsDoNotMatch": "Şifreler eşleşmiyor",
+  "onboardingTitle1": "Bana bir şey sor",
+  "onboardingSubtitle1": "En iyi yol arkadaşın olabilirim. Bana her şeyi sor, yardımcı olayım!",
+  "onboardingTitle2": "Hayalden gerçeğe",
+  "onboardingSubtitle2": "Sadece hayal et ve söyle. Senin için harika bir şey yaratayım!",
+  "onboardingNext": "Sıradaki",
+  "onboardingDone": "Bitti",
+  "settingsTitle": "Ayarlar",
+  "sectionAppearance": "GÖRÜNÜM",
+  "sectionLanguage": "DİL",
+  "sectionAiModel": "YAPAY ZEKA MODELİ",
+  "sectionChatSettings": "SOHBET AYARLARI",
+  "sectionServer": "SUNUCU",
+  "sectionDiagnostics": "TANILAMA",
+  "sectionStatistics": "İSTATİSTİKLER",
+  "sectionDataManagement": "VERİ YÖNETİMİ",
+  "sectionAbout": "HAKKINDA",
+  "darkModeTitle": "Karanlık mod",
+  "darkModeSubtitle": "Aydınlık ve karanlık tema arasında geçiş yapın",
+  "languageTitle": "Uygulama dili",
+  "languageSubtitle": "Tercih ettiğiniz dili seçin",
+  "languageTurkish": "Türkçe",
+  "languageEnglish": "İngilizce",
+  "modelLabel": "Model",
+  "modelNotSelected": "Seçilmedi",
+  "modelAvailable": "Uygun",
+  "modelUnavailable": "Kullanılamaz",
+  "modelLocalSection": "Yerel modeller",
+  "modelRemoteSection": "Uzak / API modelleri",
+  "modelInstallCommand": "Kurulum: {command}",
+  "@modelInstallCommand": {
+    "placeholders": {
+      "command": {
+        "type": "String"
+      }
+    }
+  },
+  "modelUnavailableReason": "Neden: {reason}",
+  "@modelUnavailableReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "modelSearchHint": "Model ara...",
+  "modelNoResults": "Model bulunamadı",
+  "modelApiKeyRequired": "API anahtarı gerekli",
+  "modelNotInstalled": "Yüklü değil",
+  "modelContextLength": "Bağlam: {count} belirteç",
+  "@modelContextLength": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backendUrlTitle": "Sunucu URL'si",
+  "backendUrlSubtitle": "Geçerli: {current}",
+  "@backendUrlSubtitle": {
+    "placeholders": {
+      "current": {
+        "type": "String"
+      }
+    }
+  },
+  "backendUrlHint": "https://example.com:8000 veya /api",
+  "backendUrlSave": "Kaydet",
+  "backendUrlClear": "Özel ayarı temizle",
+  "backendUrlSaved": "Sunucu URL'si kaydedildi",
+  "backendUrlCleared": "Sunucu URL'si özelleştirmesi temizlendi",
+  "diagnosticsTitle": "Tanılama",
+  "diagnosticsSubtitle": "Backend bağlantısı ve streaming testi",
+  "selectModelTitle": "Model seç",
+  "voiceInputTitle": "Sesli giriş",
+  "voiceInputSubtitle": "Sesli mesajlar için mikrofonu etkinleştirin",
+  "markdownSupportTitle": "Markdown desteği",
+  "markdownSupportSubtitle": "Biçimlendirilmiş metin ve kodu göster",
+  "ragEnabledTitle": "Kaynaklı yanıtlar (RAG)",
+  "ragEnabledSubtitle": "Uygunsa dizinlenen belgelerden yanıt üretir",
+  "ragStrictTitle": "Sıkı kaynak modu",
+  "ragStrictSubtitle": "Kaynak yoksa sabit uyarı verir",
+  "totalConversations": "Toplam konuşma",
+  "totalMessages": "Toplam mesaj",
+  "clearAllConversationsTitle": "Tüm konuşmaları temizle",
+  "clearAllConversationsSubtitle": "Tüm sohbet geçmişini silin",
+  "clearAllDataTitle": "Tüm verileri temizle",
+  "clearAllDataMessage": "Tüm konuşmaları silmek istediğinize emin misiniz? Bu işlem geri alınamaz.",
+  "deleteAll": "Tümünü sil",
+  "clearAllSuccessTitle": "Başarılı",
+  "clearAllSuccessMessage": "Tüm konuşmalar silindi",
+  "versionLabel": "Sürüm",
+  "developerLabel": "Geliştirici",
+  "developerValue": "Selçuk AI",
+  "deleteConversationTitle": "Konuşmayı sil",
+  "deleteConversationMessage": "Bu konuşmayı silmek istediğinize emin misiniz? Bu işlem geri alınamaz.",
+  "renameConversationTitle": "Konuşmayı yeniden adlandır",
+  "renameConversationHint": "Yeni başlık girin",
+  "searchConversationsHint": "Konuşmaları ara...",
+  "noConversationsFound": "Konuşma bulunamadı",
+  "noConversationsYet": "Henüz konuşma yok",
+  "conversationsCount": "{count, plural, =0{0 konuşma} =1{1 konuşma} other{{count} konuşma}}",
+  "@conversationsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pinnedLabel": "Sabitlenenler",
+  "archivedLabel": "Arşivlenenler",
+  "last7DaysLabel": "Son 7 gün",
+  "olderLabel": "Daha eski",
+  "pinConversation": "Sabitle",
+  "unpinConversation": "Sabitlemeyi kaldır",
+  "archiveConversation": "Arşivle",
+  "unarchiveConversation": "Arşivden çıkar",
+  "todayLabel": "Bugün",
+  "yesterdayLabel": "Dün",
+  "daysAgo": "{count, plural, =1{1 gün önce} other{{count} gün önce}}",
+  "@daysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "weeksAgo": "{count, plural, =1{1 hafta önce} other{{count} hafta önce}}",
+  "@weeksAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "monthsAgo": "{count, plural, =1{1 ay önce} other{{count} ay önce}}",
+  "@monthsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "yearsAgo": "{count, plural, =1{1 yıl önce} other{{count} yıl önce}}",
+  "@yearsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "clearConversationTitle": "Konuşmayı temizle",
+  "clearConversationMessage": "Bu konuşmayı temizlemek istediğinize emin misiniz? Bu işlem geri alınamaz.",
+  "listeningIndicator": "Dinleniyor... (bırakınca durur)",
+  "messageHint": "Selçuk AI Asistanı'na yazın...",
+  "imageSelectedTitle": "Görsel seçildi",
+  "imageSelectedMessage": "Görsel: {fileName}",
+  "@imageSelectedMessage": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "startConversationTitle": "Bir sohbet başlatın",
+  "startConversationSubtitle": "Bana istediğinizi sorun!",
+  "suggestedPrompt1": "Kuantum hesaplamayı açıkla",
+  "suggestedPrompt2": "Bir şiir yaz",
+  "suggestedPrompt3": "Kod konusunda yardım",
+  "streamErrorTitle": "Akış hatası",
+  "streamErrorMessage": "{error}",
+  "@streamErrorMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "streamInterruptedTag": "[Akış kesildi]",
+  "copyAction": "Kopyala",
+  "editMessageTitle": "Mesajı düzenle",
+  "editMessageHint": "Mesajınızı güncelleyin",
+  "editMessageAction": "Yeniden gönder",
+  "regenerateAction": "Yeniden üret",
+  "retryAction": "Tekrar dene",
+  "sourcesTitle": "Kaynaklar",
+  "diagnosticsConnectionSection": "BAĞLANTI",
+  "diagnosticsBaseUrlLabel": "Temel URL",
+  "diagnosticsBaseUrlSource": "Kaynak: {source}",
+  "@diagnosticsBaseUrlSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "diagnosticsPlatformLabel": "Platform",
+  "diagnosticsLatencyLabel": "Gecikme",
+  "diagnosticsLatencyUnavailable": "Henüz gecikme ölçülmedi.",
+  "diagnosticsModelLabel": "Seçili model",
+  "diagnosticsModelAvailable": "Uygun",
+  "diagnosticsModelUnavailable": "Kullanılamıyor",
+  "diagnosticsOllamaLabel": "Ollama sağlığı",
+  "diagnosticsOllamaReady": "Hazır",
+  "diagnosticsOllamaUnavailable": "Uygun değil",
+  "diagnosticsOllamaButton": "/health/ollama test et",
+  "diagnosticsOllamaDetail": "Durum: {status} | Model: {model} | {availability} | Modeller: {count}",
+  "@diagnosticsOllamaDetail": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      },
+      "model": {
+        "type": "String"
+      },
+      "availability": {
+        "type": "String"
+      },
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "diagnosticsHfLabel": "HF GPU Hazır",
+  "diagnosticsHfReady": "Hazır",
+  "diagnosticsHfUnavailable": "Uygun değil",
+  "diagnosticsHfButton": "/health/hf test et",
+  "diagnosticsHfDetail": "GPU: {gpu} | Torch: {torch} | CUDA: {cuda} | Transformers: {transformers} | bitsandbytes: {bnb}",
+  "@diagnosticsHfDetail": {
+    "placeholders": {
+      "gpu": {
+        "type": "String"
+      },
+      "torch": {
+        "type": "String"
+      },
+      "cuda": {
+        "type": "String"
+      },
+      "transformers": {
+        "type": "String"
+      },
+      "bnb": {
+        "type": "String"
+      }
+    }
+  },
+  "diagnosticsHealthButton": "/health test et",
+  "diagnosticsModelsButton": "/models test et",
+  "diagnosticsSourceOverride": "Kullanıcı özelleştirmesi",
+  "diagnosticsSourceDartDefine": "Dart tanımı",
+  "diagnosticsSourceDotenv": "Dotenv",
+  "diagnosticsSourceWebRelease": "Web sürümü (/api)",
+  "diagnosticsSourceWebDev": "Web geliştirme (localhost)",
+  "diagnosticsSourceAndroidEmulator": "Android emülatörü (10.0.2.2)",
+  "diagnosticsSourceDesktop": "Masaüstü (localhost)",
+  "diagnosticsChatButton": "/chat test et",
+  "diagnosticsStreamButton": "/chat/stream test et",
+  "diagnosticsStreamRunning": "Akış sürüyor...",
+  "diagnosticsLastErrorTitle": "Son hata",
+  "diagnosticsErrorStatusLabel": "Durum",
+  "diagnosticsErrorBodyLabel": "İçerik",
+  "diagnosticsErrorHeadersLabel": "Üstbilgiler",
+  "diagnosticsNoErrors": "Henüz hata yok.",
+  "diagnosticsStreamSampleTitle": "SSE örneği",
+  "diagnosticsNoStreamSample": "Akış olayı yakalanmadı.",
+  "diagnosticsLogsTitle": "Tanılama günlüğü",
+  "diagnosticsCopyLog": "Günlüğü kopyala",
+  "diagnosticsNoLogs": "Henüz tanılama yapılmadı.",
+  "diagnosticsTestMessage": "Merhaba",
+  "microphonePermissionRequired": "Sesli giriş için mikrofon izni gerekli",
+  "speechNotAvailable": "Ses tanıma kullanılamıyor",
+  "enterMessagePrompt": "Lütfen bir mesaj yazın veya sesli giriş kullanın!",
+  "exportFailedTitle": "Dışa aktarma başarısız",
+  "noMessagesToExport": "Dışa aktarılacak mesaj yok",
+  "exportSuccessTitle": "Dışa aktarma başarılı",
+  "exportSuccessMessage": "Şuraya kaydedildi: {path}\\nAyrıca panoya kopyalandı",
+  "@exportSuccessMessage": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "exportSuccessWebMessage": "Dosya indirildi ve panoya kopyalandı",
+  "logout": "Çıkış",
+  "clearChat": "Sohbeti temizle",
+  "exportChat": "Sohbeti dışa aktar",
+  "logoutSuccessTitle": "Başarılı",
+  "logoutSuccessMessage": "Çıkış yapıldı",
+  "logoutErrorTitle": "Hata",
+  "copiedToClipboard": "Panoya kopyalandı",
+  "yesterdayAt": "Dün {time}",
+  "@yesterdayAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "aiThinking": "Yapay zeka düşünüyor...",
+  "infoTitle": "Bilgi",
+  "successTitle": "Başarılı",
+  "errorTitle": "Hata",
+  "imagePickerErrorTitle": "Hata",
+  "imagePickerErrorMessage": "Görsel seçilemedi: {error}",
+  "@imagePickerErrorMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chooseImageSourceTitle": "Görsel kaynağını seçin",
+  "cameraLabel": "Kamera",
+  "galleryLabel": "Galeri",
+  "appwritePingSuccess": "Appwrite bağlantısı başarılı!",
+  "appwritePingNoSession": "Appwrite bağlantısı var ama oturum açık değil.",
+  "appwritePingError": "Appwrite ping hatası: {error}",
+  "@appwritePingError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sendPingTooltip": "Ping gönder",
+  "logoutTooltip": "Çıkış",
+  "assistantTitle": "Yapay Zeka Asistanı",
+  "assistantHint": "Bir mesaj yazın veya sesli giriş için basılı tutun...",
+  "listeningStatus": "Ses girişi dinleniyor...",
+  "startChatHint": "Yapay Zeka Asistanı ile konuşmaya başlayın!",
+  "errorInvalidRequest": "Hata: Geçersiz istek",
+  "errorInvalidRequestFormat": "Hata: Geçersiz istek formatı.",
+  "errorServiceUnavailable": "Hata: Yapay zeka hizmeti kullanılamıyor.",
+  "errorTimeout": "Hata: Yanıt zaman aşımına uğradı.",
+  "errorBackendUnavailable": "Hata: Sunucu hizmeti kullanılamıyor.",
+  "errorNoInternet": "Hata: İnternet bağlantısı yok.",
+  "errorInvalidServerResponse": "Hata: Geçersiz sunucu yanıtı.",
+  "errorUnexpected": "Hata: Beklenmeyen hata.",
+  "noResponseGenerated": "Üzgünüm, yanıt üretilemedi.",
+  "requestTimeoutMessage": "İstek zaman aşımına uğradı. Lütfen tekrar deneyin.",
+  "speechRecognitionFailed": "Ses tanıma başarısız oldu. Lütfen tekrar deneyin.",
+  "speechRecognitionError": "Ses tanıma hatası. Lütfen ağ bağlantınızı kontrol edin.",
+  "serverConnectionFailed": "Sunucu bağlantısı başarısız."
 }

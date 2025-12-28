@@ -1,3 +1,4 @@
-# Ozet
+# Özet
 
-Selcuk YZ Asistan; Flutter tabanli istemci ve FastAPI backend ile calisan, yerel/uzak LLM destekli ve RAG ozellikli bir sohbet uygulamasidir.
+Selçuk AI Asistanı; Flutter tabanlı istemci ve FastAPI backend ile çalışan,
+yerel/uzak LLM destekli ve RAG özellikli bir sohbet uygulamasıdır.

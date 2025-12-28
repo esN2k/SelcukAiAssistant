@@ -1,4 +1,4 @@
-"""Server-side response cleaning for chat outputs."""
+"""Sunucu tarafında sohbet çıktılarının temizlenmesi için yardımcılar."""
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -23,8 +23,8 @@ _META_PREFIX = re.compile(
     r"first|here'?s my|my plan|the user|they just|they said|they mentioned|"
     r"they'?re|they are|"
     r"they probably|they might|they want|user is|"
-    r"i am going to|i'?m going to|i want to|tamam|peki|oncelikle|"
-    r"ilk olarak|kullanici|dusunuyorum"
+    r"i am going to|i'?m going to|i want to|tamam|peki|öncelikle|oncelikle|"
+    r"ilk olarak|kullanıcı|kullanici|düşünüyorum|dusunuyorum"
     r")\b",
     re.IGNORECASE,
 )
@@ -35,15 +35,16 @@ _META_SENTENCE = re.compile(
     r"first|here'?s my|my plan|the user|they just|they said|they mentioned|"
     r"they'?re|they are|"
     r"they probably|they might|they want|user is|"
-    r"i am going to|i'?m going to|i want to|tamam|peki|oncelikle|"
-    r"ilk olarak|kullanici|dusunuyorum"
+    r"i am going to|i'?m going to|i want to|tamam|peki|öncelikle|oncelikle|"
+    r"ilk olarak|kullanıcı|kullanici|düşünüyorum|dusunuyorum"
     r")[^.!?\n]*[.!?]\s*",
     re.IGNORECASE,
 )
 
 _META_PREFIX_FRAGMENT = re.compile(
     r"^[\s\"']*(?:"
-    r"so|well|then|next|since|maybe|okay|alright|sure|let|i|they|tamam|peki|oncelikle|ilk"
+    r"so|well|then|next|since|maybe|okay|alright|sure|let|i|they|tamam|"
+    r"peki|öncelikle|oncelikle|ilk"
     r")\b",
     re.IGNORECASE,
 )
@@ -67,6 +68,11 @@ _META_CONTEXT = re.compile(
 
 
 def _split_by_fences(text: str) -> List[Tuple[str, bool]]:
+    """Giriş: Metin.
+
+    Çıkış: (parça, kod_mu) listesi.
+    İşleyiş: ``` ayraçlarıyla metni parçalar.
+    """
     out: List[Tuple[str, bool]] = []
     fence = "```"
     idx = 0
@@ -85,6 +91,11 @@ def _split_by_fences(text: str) -> List[Tuple[str, bool]]:
 
 
 def _strip_leading_meta_lines(text: str) -> str:
+    """Giriş: Metin.
+
+    Çıkış: Meta satırları temizlenmiş metin.
+    İşleyiş: Baştaki meta satırlarını siler.
+    """
     lines = text.replace("\r\n", "\n").split("\n")
     idx = 0
     removed = 0
@@ -105,6 +116,11 @@ def _strip_leading_meta_lines(text: str) -> str:
 
 
 def _strip_leading_meta_sentences(text: str) -> str:
+    """Giriş: Metin.
+
+    Çıkış: Meta cümleleri temizlenmiş metin.
+    İşleyiş: İlk meta cümlelerini ayıklar.
+    """
     cleaned = text
     for _ in range(6):
         match = _META_SENTENCE.match(cleaned)
@@ -115,12 +131,22 @@ def _strip_leading_meta_sentences(text: str) -> str:
 
 
 def _fallback_message(language: str) -> str:
+    """Giriş: Dil kodu.
+
+    Çıkış: Varsayılan mesaj.
+    İşleyiş: Dil seçimine göre metin döndürür.
+    """
     if language.lower().startswith("en"):
-        return "Hello! How can I help you with Selcuk University?"
-    return "Merhaba! Selcuk Universitesi ile ilgili nasil yardimci olabilirim?"
+        return "Hello! How can I help you with Selçuk University?"
+    return "Merhaba! Selçuk Üniversitesi ile ilgili nasıl yardımcı olabilirim?"
 
 
 def clean_text(text: str, language: str = "tr") -> str:
+    """Giriş: Ham metin ve dil.
+
+    Çıkış: Temizlenmiş metin.
+    İşleyiş: Think/meta içeriklerini ayıklar.
+    """
     if not text or not text.strip():
         return _fallback_message(language)
 
@@ -147,6 +173,11 @@ def clean_text(text: str, language: str = "tr") -> str:
 
 
 def _strip_meta_sentence_from_buffer(buffer: str) -> tuple[str, bool]:
+    """Giriş: Buffer metni.
+
+    Çıkış: (yeni buffer, silindi_mi).
+    İşleyiş: Meta cümlelerini çıkarır.
+    """
     match = _META_SENTENCE.match(buffer)
     if match:
         return buffer[match.end() :].lstrip(), True
@@ -165,6 +196,11 @@ def _strip_meta_sentence_from_buffer(buffer: str) -> tuple[str, bool]:
 
 
 def _should_delay_emit(buffer: str) -> bool:
+    """Giriş: Buffer metni.
+
+    Çıkış: bool.
+    İşleyiş: Kısa meta prefix'leri bekletir.
+    """
     if len(buffer) < 32 and _META_PREFIX_FRAGMENT.match(buffer):
         if not re.search(r"[.!?]", buffer):
             return True
@@ -172,6 +208,11 @@ def _should_delay_emit(buffer: str) -> bool:
 
 
 def _looks_meta(text: str) -> bool:
+    """Giriş: Metin.
+
+    Çıkış: bool.
+    İşleyiş: Meta kalıpları tarar.
+    """
     sample = text[:200]
     if _META_CONTEXT.search(sample):
         return True
@@ -184,12 +225,23 @@ def _looks_meta(text: str) -> bool:
 
 @dataclass
 class StreamingResponseCleaner:
+    """Giriş: Dil kodu.
+
+    Çıkış: Temizlenmiş akış metni.
+    İşleyiş: Meta ve <think> içeriklerini ayıklar.
+    """
+
     language: str = "tr"
     _think_filter: ReasoningFilter = field(default_factory=ReasoningFilter)
     _pending: str = ""
     _emitting: bool = False
 
     def feed(self, chunk: str) -> str:
+        """Giriş: Token parçası.
+
+        Çıkış: Temiz metin.
+        İşleyiş: Tamponlayıp filtre uygular.
+        """
         filtered = self._think_filter.feed(chunk)
         if not filtered:
             return ""
@@ -197,6 +249,11 @@ class StreamingResponseCleaner:
         return self._flush_pending()
 
     def finalize(self) -> str:
+        """Giriş: yok.
+
+        Çıkış: Kalan metin.
+        İşleyiş: Son temizleme adımını uygular.
+        """
         if not self._pending:
             return ""
         if self._emitting:
@@ -207,6 +264,11 @@ class StreamingResponseCleaner:
         return output
 
     def _flush_pending(self) -> str:
+        """Giriş: yok.
+
+        Çıkış: Yayımlanacak metin.
+        İşleyiş: Meta koşullarına göre tamponu boşaltır.
+        """
         if self._emitting:
             output = self._pending
             self._pending = ""
