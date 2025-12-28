@@ -10,6 +10,27 @@
 - Ollama için `ollama pull <model>` çalıştırın.
 - HuggingFace için `backend/requirements-hf.txt` kurulu olmalı.
 
+## HF offline kullanımda model bulunamıyor
+**Belirti:** `/models` listesinde HF model “uygun değil” görünüyor.  
+**Neden:** Model önbellekte (cache) yok veya offline bayrakları erken açılmış.
+
+**Çözüm:**
+1. İnternet açıkken modeli önceden indirin:
+   ```bash
+   python - <<'PY'
+   from huggingface_hub import snapshot_download
+   snapshot_download("Qwen/Qwen2.5-1.5B-Instruct")
+   PY
+   ```
+2. Cache dizinlerini tanımlayın: `HF_HOME`, `TRANSFORMERS_CACHE`, `HUGGINGFACE_HUB_CACHE`.
+3. Cache dizinini doğrulayın:
+   ```powershell
+   dir $env:HF_HOME
+   ```
+4. Offline mod için:
+   - `HF_HUB_OFFLINE=1`
+   - `TRANSFORMERS_OFFLINE=1`
+
 ## Windows: `torch_python.dll` / WinError 126
 **Belirti:** HuggingFace modeli çağrılırken `WinError 126` ve `torch_python.dll` hatası.  
 **Anlamı:** Torch çalışma zamanı (runtime) bağımlılıkları veya DLL (Dinamik Bağlantı Kütüphanesi) eksik.

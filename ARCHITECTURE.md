@@ -16,6 +16,7 @@ Flutter (UI) ──HTTP/SSE──> FastAPI ──> LLM (Ollama / HuggingFace)
 - **HuggingFace (HF)**: Opsiyonel yerel model akışı (torch/transformers bağımlı).
 - **RAG Katmanı**: FAISS indeksinden kaynak parçaları çekme.
 - **ChromaDB**: Vektör veritabanı (persisted storage).
+- **Provider Pattern**: `backend/providers/` ile çoklu sağlayıcı (multi‑provider) yönlendirme.
 
 ## 3) Veri akışı (chat)
 1. Kullanıcı mesajı Flutter’dan **/chat** veya **/chat/stream** ile backend’e gider.

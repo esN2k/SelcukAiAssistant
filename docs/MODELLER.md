@@ -34,3 +34,31 @@ Model ağırlıkları ilk çalışmada indirilecektir.
     ```powershell
     pip install torch --index-url https://download.pytorch.org/whl/cpu
     ```
+
+## 4) HF Offline ve Önbellek (Cache)
+**Amaç:** Model dosyaları önceden indirilerek çevrimdışı (offline) kullanım sağlanır.
+
+Ortam değişkenleri:
+- `HF_HOME` (cache kökü)
+- `TRANSFORMERS_CACHE` (transformers önbelleği)
+- `HUGGINGFACE_HUB_CACHE` (hub önbelleği)
+- `HF_HUB_OFFLINE=1`, `TRANSFORMERS_OFFLINE=1`
+
+Örnek (Windows):
+```powershell
+$env:HF_HOME="D:\hf_cache"
+$env:TRANSFORMERS_CACHE="$env:HF_HOME\transformers"
+$env:HUGGINGFACE_HUB_CACHE="$env:HF_HOME\hub"
+$env:HF_HUB_OFFLINE=1
+$env:TRANSFORMERS_OFFLINE=1
+```
+
+Disk planlama: küçük/orta modeller için 5–10 GB aralığı önerilir.
+
+Modeli önceden indirme (internet açıkken):
+```bash
+python - <<'PY'
+from huggingface_hub import snapshot_download
+snapshot_download("Qwen/Qwen2.5-1.5B-Instruct")
+PY
+```

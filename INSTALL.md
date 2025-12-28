@@ -76,6 +76,48 @@ cd backend
 pip install -r requirements-hf.txt
 ```
 
+### 4.2) HF Offline / Önbellek (Cache) Ayarları
+**Amaç:** Model dosyaları önceden indirilerek çevrimdışı (offline) kullanım sağlanır.
+
+Önerilen ortam değişkenleri:
+- `HF_HOME`: HuggingFace ana dizini (cache kökü)
+- `TRANSFORMERS_CACHE`: Transformers cache dizini
+- `HUGGINGFACE_HUB_CACHE`: Hub cache dizini
+- `HF_HUB_OFFLINE=1`, `TRANSFORMERS_OFFLINE=1`: çevrimdışı mod
+
+**Windows (PowerShell):**
+```powershell
+$env:HF_HOME="D:\hf_cache"
+$env:TRANSFORMERS_CACHE="$env:HF_HOME\transformers"
+$env:HUGGINGFACE_HUB_CACHE="$env:HF_HOME\hub"
+$env:HF_HUB_OFFLINE=1
+$env:TRANSFORMERS_OFFLINE=1
+```
+
+**Linux/macOS:**
+```bash
+export HF_HOME="$HOME/.cache/huggingface"
+export TRANSFORMERS_CACHE="$HF_HOME/transformers"
+export HUGGINGFACE_HUB_CACHE="$HF_HOME/hub"
+export HF_HUB_OFFLINE=1
+export TRANSFORMERS_OFFLINE=1
+```
+
+**Model önceden indirme (internet açıkken):**
+```bash
+python - <<'PY'
+from huggingface_hub import snapshot_download
+snapshot_download("Qwen/Qwen2.5-1.5B-Instruct")
+PY
+```
+
+**Disk planlama:** 5–10 GB aralığı küçük/orta modeller için önerilir.
+
+**Doğrulama adımı (cache kontrolü):**
+```powershell
+dir $env:HF_HOME
+```
+
 **Windows DLL (Dinamik Bağlantı Kütüphanesi) notu:**
 - `WinError 126` veya `torch_python.dll` hatası alırsanız:
   1. **Microsoft Visual C++ 2015–2022 Redistributable** kurulu olmalı (çalışma zamanı bağımlılığı).
