@@ -27,6 +27,16 @@ Yerel Ollama modellerinin Türkçe görevlerde hız/tepki metriklerinin karşıl
 | ollama:selcuk_ai_assistant | 10186.69 | 3.49 | 34.0 | 15.138 |
 | ollama:turkcell-llm-7b | 10126.57 | 4.1 | 33.3 | 14.166 |
 
+## Ek Ölçüm (benchmark/run.py, 12 örnek)
+- max_new_tokens: 96
+- temperature: 0.2
+- max_samples: 12
+- Koşum: 2025-12-29 (llama3.2:3b)
+
+| Model | Avg TTFT (ms) | Avg tok/s | Avg out tokens | Avg total time (s) |
+| --- | --- | --- | --- | --- |
+| ollama:llama3.2:3b | 5180.24 | 5.41 | 34.7 | 8.643 |
+
 ## Hızlı Ölçüm (benchmark/ollama_quick.py)
 - max_new_tokens: 48
 - temperature: 0.2
@@ -45,11 +55,13 @@ Yerel Ollama modellerinin Türkçe görevlerde hız/tepki metriklerinin karşıl
 
 ## Kısa Yorum
 - llama3.2:3b hız odaklı mod için güçlü bir adaydır (düşük TTFT ve yüksek tok/s).
+- 12 örnek koşumda llama3.2:3b için avg TTFT 5.18 sn ve 5.41 tok/s görüldü.
 - selcuk_ai_assistant ve turkcell-llm-7b benzer hız profiline sahiptir; kalite testleri ile birlikte seçilmelidir.
 - qwen2.5:7b ve deepseek-r1:8b daha ağırdır; kalite odaklı senaryolarda değerlendirilmelidir.
 - gemma2:2b ve phi3:mini düşük kaynak modları için uygundur.
 
 ## Sonuç Dosyaları
 - benchmark/outputs/bench_ollama_*/summary.csv
+- benchmark/outputs/20251229_204933/summary.csv
 - benchmark/outputs/selcuk_tr_ollama_quick6/summary.csv
 - benchmark/outputs/selcuk_tr_qwen_deepseek/summary.csv
