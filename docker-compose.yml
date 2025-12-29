@@ -33,9 +33,13 @@ services:
     image: ollama/ollama:latest
     profiles: ["ollama"]
     ports:
-      - "11434:11434"
+      - "11435:11434"
     volumes:
-      - ollama-data:/root/.ollama
+      # Ollama model deposunu harici diske taşımak için OLLAMA_MODELS_HOST_DIR ayarlayın (örn. E:/ollama).
+      - ${OLLAMA_MODELS_HOST_DIR:-./ollama-data}:/root/.ollama
+    environment:
+      OLLAMA_HOST: 0.0.0.0
+    restart: unless-stopped
 
 volumes:
   ollama-data:
