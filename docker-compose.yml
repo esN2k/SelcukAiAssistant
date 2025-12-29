@@ -17,6 +17,7 @@ services:
     volumes:
       # HF cache'i harici diske taşımak için HF_CACHE_HOST_DIR ayarlayın (örn. E:/hf-cache).
       - ${HF_CACHE_HOST_DIR:-./hf-cache}:/root/.cache/huggingface
+      - ./data:/app/data
 
   nginx:
     image: nginx:1.25-alpine

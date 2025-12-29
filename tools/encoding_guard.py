@@ -49,6 +49,8 @@ EXCLUDE_DIRS = {
     "windows",
     "web",
     "benchmark",
+    "hf-cache",
+    "ollama-data",
 }
 
 EXCLUDE_PATHS = {

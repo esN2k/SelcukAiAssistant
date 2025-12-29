@@ -29,6 +29,8 @@ Bu rapor, Selçuk AI Akademik Asistan projesinin test ve sürekli entegrasyon (C
 - `tools/encoding_guard.py`: UTF-8/BOM/mojibake taraması
 - `tools/test_api.ps1`: API smoke (model yoksa SKIP)
 - `tools/smoke_test.ps1`: geniş kapsamlı smoke raporu
+- `benchmark/ollama_quick.py`: Ollama hızlı performans ölçümü
+- `benchmark/run.py`: Ayrıntılı model benchmark (Ollama + HF)
 
 ## Sonuç Tablosu
 | Komut | Amaç | Durum | Not |

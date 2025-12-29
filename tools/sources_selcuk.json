@@ -1,0 +1,17 @@
+{
+  "allowed_domains": [
+    "selcuk.edu.tr"
+  ],
+  "seeds": [
+    "https://www.selcuk.edu.tr/",
+    "https://www.selcuk.edu.tr/ogrenci",
+    "https://www.selcuk.edu.tr/akademik",
+    "https://www.selcuk.edu.tr/idari",
+    "https://www.selcuk.edu.tr/duyurular",
+    "https://www.selcuk.edu.tr/dokumanlar",
+    "https://www.selcuk.edu.tr/haberler"
+  ],
+  "sitemaps": [
+    "https://www.selcuk.edu.tr/sitemap.xml"
+  ]
+}

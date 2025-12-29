@@ -87,6 +87,9 @@ RAG_VECTOR_DB_PATH=./data/rag
 | --- | --- | --- |
 | Sunum Notları | Jüri odaklı sunum akışı ve Soru‑Cevap hazırlığı | `docs/SUNUM_NOTLARI.md` |
 | Test Raporu | CI/test çıktılarının akademik özeti | `docs/TEST_RAPORU.md` |
+| Benchmark Raporu | Ollama hızlı ölçüm sonuçları | `docs/BENCHMARK_RAPORU.md` |
+| LoRA Planı | İnce ayar stratejisi ve veri hazırlama | `docs/LORA_PLANI.md` |
+| Veri Kaynakları | RAG veri toplama özeti | `docs/VERI_KAYNAKLARI.md` |
 | Kurulum Rehberi | Platform bazlı kurulum adımları | `INSTALL.md` |
 | Mimari (Özet) | Yüksek seviye mimari | `ARCHITECTURE.md` |
 | Mimari (Detay) | RAG ve provider akışları | `docs/ARCHITECTURE.md` |

@@ -30,7 +30,7 @@ Her parça için kaynak (dosya adı) ve sayfa bilgisi saklanır.
 RAG_ENABLED=true
 RAG_VECTOR_DB_PATH=./data/rag
 RAG_TOP_K=4
-RAG_EMBEDDING_MODEL=sentence-transformers/paraphrase-multilingual-mpnet-base-v2
+RAG_EMBEDDING_MODEL=sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
 RAG_STRICT_DEFAULT=true
 ```
 

@@ -57,9 +57,15 @@ backend/.env
 
 # AI Models
 *.gguf
+hf-cache/
+ollama-data/
 
 # Benchmarks
+benchmark/data/selcuk_tr.jsonl
 benchmark/outputs/
 
 # Tooling temp
 tools/.tmp/
+
+# RAG data
+/data/

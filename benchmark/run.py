@@ -1,9 +1,10 @@
 #!/usr/bin/env python
+from __future__ import annotations
+
 import argparse
 import csv
 import json
 import os
-import platform
 import random
 import sys
 import time
@@ -21,34 +22,74 @@ except ImportError as exc:  # pragma: no cover - optional dependency guard
     raise SystemExit("psutil is required. Install from benchmark/requirements.txt") from exc
 
 try:
-    import torch
-except ImportError as exc:  # pragma: no cover - optional dependency guard
-    raise SystemExit("torch is required. Install from https://pytorch.org") from exc
-
-try:
-    from huggingface_hub import HfApi, login, snapshot_download
-    from huggingface_hub.errors import GatedRepoError, HfHubHTTPError
-except ImportError as exc:  # pragma: no cover - optional dependency guard
-    raise SystemExit(
-        "huggingface_hub is required. Install from benchmark/requirements.txt"
-    ) from exc
-
-try:
-    from transformers import (
-        AutoModelForCausalLM,
-        AutoTokenizer,
-        BitsAndBytesConfig,
-        TextIteratorStreamer,
-    )
-except ImportError as exc:  # pragma: no cover - optional dependency guard
-    raise SystemExit(
-        "transformers is required. Install from benchmark/requirements.txt"
-    ) from exc
-
-try:
     import pynvml  # type: ignore
 except ImportError:  # pragma: no cover - optional dependency guard
     pynvml = None
+
+
+torch = None
+HfApi = None
+login = None
+snapshot_download = None
+GatedRepoError = None
+HfHubHTTPError = None
+AutoModelForCausalLM = None
+AutoTokenizer = None
+BitsAndBytesConfig = None
+TextIteratorStreamer = None
+
+
+def require_torch():
+    global torch
+    if torch is None:
+        try:
+            import torch as torch_module
+        except ImportError as exc:  # pragma: no cover - optional dependency guard
+            raise SystemExit(
+                "torch is required. Install from https://pytorch.org"
+            ) from exc
+        torch = torch_module
+    return torch
+
+
+def require_hf_hub():
+    global HfApi, login, snapshot_download, GatedRepoError, HfHubHTTPError
+    if HfApi is None:
+        try:
+            from huggingface_hub import HfApi as HfApiClass
+            from huggingface_hub import login as hf_login
+            from huggingface_hub import snapshot_download as hf_snapshot_download
+            from huggingface_hub.errors import GatedRepoError as HfGatedRepoError
+            from huggingface_hub.errors import HfHubHTTPError as HfHubHttpError
+        except ImportError as exc:  # pragma: no cover - optional dependency guard
+            raise SystemExit(
+                "huggingface_hub is required. Install from benchmark/requirements.txt"
+            ) from exc
+        HfApi = HfApiClass
+        login = hf_login
+        snapshot_download = hf_snapshot_download
+        GatedRepoError = HfGatedRepoError
+        HfHubHTTPError = HfHubHttpError
+    return HfApi, login, snapshot_download
+
+
+def require_transformers():
+    global AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, TextIteratorStreamer
+    if AutoTokenizer is None:
+        try:
+            from transformers import AutoModelForCausalLM as AutoModelForCausalLMClass
+            from transformers import AutoTokenizer as AutoTokenizerClass
+            from transformers import BitsAndBytesConfig as BitsAndBytesConfigClass
+            from transformers import TextIteratorStreamer as TextIteratorStreamerClass
+        except ImportError as exc:  # pragma: no cover - optional dependency guard
+            raise SystemExit(
+                "transformers is required. Install from benchmark/requirements.txt"
+            ) from exc
+        AutoModelForCausalLM = AutoModelForCausalLMClass
+        AutoTokenizer = AutoTokenizerClass
+        BitsAndBytesConfig = BitsAndBytesConfigClass
+        TextIteratorStreamer = TextIteratorStreamerClass
+    return AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, TextIteratorStreamer
 
 
 @dataclass
@@ -170,27 +211,29 @@ def load_dataset(path: str, max_samples: Optional[int] = None) -> List[Sample]:
 
 
 def pick_device(device_arg: str) -> str:
+    torch_module = require_torch()
     if device_arg != "auto":
         return device_arg
-    if torch.cuda.is_available():
+    if torch_module.cuda.is_available():
         return "cuda"
-    if getattr(torch.backends, "mps", None) and torch.backends.mps.is_available():
+    if getattr(torch_module.backends, "mps", None) and torch_module.backends.mps.is_available():
         return "mps"
     return "cpu"
 
 
 def pick_dtype(dtype_arg: str, device: str) -> torch.dtype:
+    torch_module = require_torch()
     if dtype_arg == "float16":
-        return torch.float16
+        return torch_module.float16
     if dtype_arg == "bfloat16":
-        return torch.bfloat16
+        return torch_module.bfloat16
     if dtype_arg == "float32":
-        return torch.float32
+        return torch_module.float32
     if device == "cuda":
-        if torch.cuda.is_bf16_supported():
-            return torch.bfloat16
-        return torch.float16
-    return torch.float32
+        if torch_module.cuda.is_bf16_supported():
+            return torch_module.bfloat16
+        return torch_module.float16
+    return torch_module.float32
 
 
 def resolve_quant(quant_arg: str, device: str) -> str:
@@ -200,14 +243,15 @@ def resolve_quant(quant_arg: str, device: str) -> str:
 
 
 def resolve_dtype(dtype_arg: str, device: str, quant: str) -> torch.dtype:
+    torch_module = require_torch()
     if dtype_arg != "auto":
         return pick_dtype(dtype_arg, device)
     if quant == "fp16":
-        return torch.float16
+        return torch_module.float16
     if quant == "bf16":
-        return torch.bfloat16
+        return torch_module.bfloat16
     if quant == "fp32":
-        return torch.float32
+        return torch_module.float32
     return pick_dtype("auto", device)
 
 
@@ -247,25 +291,31 @@ def get_context_length(model: Any) -> Optional[int]:
     return None
 
 
-def system_info() -> Dict[str, Any]:
+def system_info(with_torch: bool) -> Dict[str, Any]:
     info: Dict[str, Any] = {
         "python": sys.version.split()[0],
-        "platform": platform.platform(),
-        "cpu": platform.processor(),
-        "torch": torch.__version__,
-        "cuda_available": torch.cuda.is_available(),
+        "platform": sys.platform,
+        "cpu": os.environ.get("PROCESSOR_IDENTIFIER") or os.environ.get("PROCESSOR_ARCHITECTURE") or "unknown",
+        "torch": None,
+        "cuda_available": False,
     }
-    try:
-        import transformers  # local import for version
+    if with_torch:
+        torch_module = require_torch()
+        info["torch"] = torch_module.__version__
+        info["cuda_available"] = torch_module.cuda.is_available()
+        try:
+            import transformers  # local import for version
 
-        info["transformers"] = transformers.__version__
-    except ImportError:
+            info["transformers"] = transformers.__version__
+        except ImportError:
+            info["transformers"] = None
+        if torch_module.cuda.is_available():
+            info["gpu"] = torch_module.cuda.get_device_name(0)
+            info["gpu_total_vram_mb"] = int(
+                torch_module.cuda.get_device_properties(0).total_memory / (1024 * 1024)
+            )
+    else:
         info["transformers"] = None
-    if torch.cuda.is_available():
-        info["gpu"] = torch.cuda.get_device_name(0)
-        info["gpu_total_vram_mb"] = int(
-            torch.cuda.get_device_properties(0).total_memory / (1024 * 1024)
-        )
     return info
 
 
@@ -592,21 +642,31 @@ def write_markdown(
 def main() -> int:
     args = parse_args()
     random.seed(args.seed)
-    torch.manual_seed(args.seed)
-
-    device = pick_device(args.device)
-    quant = resolve_quant(args.quant, device)
-    if device != "cuda" and quant in ("4bit", "8bit"):
-        print(
-            f"[warn] Quant {quant} requested on {device}; falling back to fp32."
-        )
-        quant = "fp32"
-    dtype = resolve_dtype(args.dtype, device, quant)
-    dtype_label = str(dtype).replace("torch.", "")
     use_chat_template = not args.no_chat_template
+    has_hf_models = any(not model.startswith("ollama:") for model in args.models)
     hf_token = args.hf_token or os.getenv("HF_TOKEN")
-    maybe_login_hf(hf_token)
-    hf_api = HfApi(token=hf_token)
+    hf_api = None
+
+    if has_hf_models:
+        torch_module = require_torch()
+        torch_module.manual_seed(args.seed)
+        device = pick_device(args.device)
+        quant = resolve_quant(args.quant, device)
+        if device != "cuda" and quant in ("4bit", "8bit"):
+            print(
+                f"[warn] Quant {quant} requested on {device}; falling back to fp32."
+            )
+            quant = "fp32"
+        dtype = resolve_dtype(args.dtype, device, quant)
+        dtype_label = str(dtype).replace("torch.", "")
+        require_hf_hub()
+        require_transformers()
+        maybe_login_hf(hf_token)
+        hf_api = HfApi(token=hf_token)
+    else:
+        device = "ollama"
+        quant = "n/a"
+        dtype_label = "n/a"
 
     samples = load_dataset(args.dataset, args.max_samples)
     if not samples:
@@ -649,7 +709,7 @@ def main() -> int:
     )
 
     system_path = output_dir / "system.json"
-    system_path.write_text(json.dumps(system_info(), indent=2), encoding="utf-8")
+    system_path.write_text(json.dumps(system_info(has_hf_models), indent=2), encoding="utf-8")
 
     results: List[Dict[str, Any]] = []
     summary_rows: List[Dict[str, Any]] = []
@@ -760,7 +820,11 @@ def main() -> int:
             total_time_values: List[float] = []
             errors = 0
 
-            for sample in samples:
+            total_samples = len(samples)
+            print(f"[ollama] starting {ollama_model} ({total_samples} ornek)", flush=True)
+
+            for idx, sample in enumerate(samples, start=1):
+                print(f"[ollama] {ollama_model} ornek {idx}/{total_samples}", flush=True)
                 prompt = build_prompt_text(sample)
                 prompt_tokens = estimate_tokens(prompt)
                 prompt_token_values.append(prompt_tokens)

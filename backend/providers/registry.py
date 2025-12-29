@@ -125,6 +125,17 @@ def _catalog_entries() -> list[CatalogEntry]:
             notes="Selçuk Üniversitesi odaklı yerel Ollama modeli.",
         ),
         CatalogEntry(
+            id="turkcell-llm-7b",
+            provider="ollama",
+            model_id="turkcell-llm-7b",
+            display_name="Turkcell LLM 7B",
+            local_or_remote="local",
+            requires_api_key=False,
+            context_length=max_context,
+            tags=["turkish", "high_quality"],
+            notes="Türkçe odaklı açık ağırlıklı Ollama modeli.",
+        ),
+        CatalogEntry(
             id="llama3.1",
             provider="ollama",
             model_id="llama3.1",

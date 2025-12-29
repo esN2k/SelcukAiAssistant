@@ -136,11 +136,11 @@ class Config:
     RAG_CHUNK_OVERLAP: int = int(os.getenv("RAG_CHUNK_OVERLAP", "50"))
     RAG_TOP_K: int = int(os.getenv("RAG_TOP_K", "4"))
     RAG_EMBEDDING_BATCH_SIZE: int = int(
-        os.getenv("RAG_EMBEDDING_BATCH_SIZE", "32")
+        os.getenv("RAG_EMBEDDING_BATCH_SIZE", "8")
     )
     RAG_EMBEDDING_MODEL: str = os.getenv(
         "RAG_EMBEDDING_MODEL",
-        "sentence-transformers/paraphrase-multilingual-mpnet-base-v2",
+        "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
     )
     RAG_STRICT_DEFAULT: bool = (
         os.getenv("RAG_STRICT_DEFAULT", "true").lower() == "true"
