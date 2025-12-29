@@ -8,9 +8,17 @@ import json
 import re
 import textwrap
 from pathlib import Path
-from typing import Iterable, List, Optional, Tuple
+from typing import Iterable, List, Optional, Sequence, Tuple
 
 import requests
+
+ENCODING_FALLBACKS: Sequence[str] = (
+    "utf-8",
+    "utf-8-sig",
+    "cp1254",
+    "iso-8859-9",
+    "cp1252",
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -56,6 +64,21 @@ def extract_source(text: str) -> Tuple[Optional[str], str]:
         lines = lines[1:]
     cleaned = "\n".join(line.strip() for line in lines if line.strip())
     return source_url, cleaned
+
+
+def read_text_with_fallbacks(
+    path: Path,
+    encodings: Sequence[str] = ENCODING_FALLBACKS,
+) -> Tuple[str, str]:
+    last_exc: Optional[UnicodeDecodeError] = None
+    for encoding in encodings:
+        try:
+            return path.read_text(encoding=encoding), encoding
+        except UnicodeDecodeError as exc:
+            last_exc = exc
+    if last_exc:
+        print(f"[warn] Encoding fallback for {path.name}: {last_exc}")
+    return path.read_text(encoding="utf-8", errors="replace"), "utf-8-replace"
 
 
 def normalize_text(text: str) -> str:
@@ -147,7 +170,11 @@ def main() -> int:
     instruction = build_instruction()
 
     for doc_path in doc_paths:
-        raw = doc_path.read_text(encoding="utf-8", errors="ignore")
+        raw, encoding_used = read_text_with_fallbacks(doc_path)
+        if encoding_used not in ("utf-8", "utf-8-sig"):
+            print(
+                f"[warn] Non-UTF8 encoding for {doc_path.name}: {encoding_used}"
+            )
         source_url, text = extract_source(raw)
         text = normalize_text(text)
         if len(text) < args.min_chars:

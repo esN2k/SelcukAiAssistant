@@ -9,6 +9,8 @@ Bu doküman, sistemde kullanılan model tiplerini ve seçim mantığını özetl
 
 ## 2) Model Seçici Notları
 - Uygulama, seçilen modeli cihazda saklar.
+- Varsayılan (Ollama): `llama3.2:3b` (hız odaklı).
+- Kalite odaklı alternatif: `turkcell-llm-7b` (Türkçe dengeli, LoRA planındaki birincil aday).
 - Uygunluk rozetleri:
   - `Uygun`
   - `API anahtarı gerekli`
