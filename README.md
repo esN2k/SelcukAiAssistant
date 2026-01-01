@@ -9,7 +9,7 @@ gizliliğe odaklı bir **yerel yapay zeka akademik asistan** projesidir. Sistem,
 Google Gemini API kullanımından tamamen vazgeçmiş ve **yerel Ollama (Llama 3.1)**
 altyapısına geçirilmiştir.
 
-> 🎓 **Jüri Sunumuna Hazırmısınız?** [JURI_HAZIRLIK_OZET.md](JURI_HAZIRLIK_OZET.md) dosyasını inceleyin! ✅ Proje değerlendirmesi: **92.9/100 - MÜKEMMEl**
+> 🎓 **Jüri Sunumuna Hazırlık:** [JURI_HAZIRLIK_OZET.md](JURI_HAZIRLIK_OZET.md) dosyasında sunum kontrol listesi ve demo senaryoları bulunmaktadır.
 
 ## Amaç
 - Öğrenci, akademisyen ve idari personel için güvenilir akademik bilgi desteği sağlamak.

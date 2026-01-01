@@ -57,63 +57,102 @@ curl http://localhost:8000/health
 **Beklenen Çıktı:**
 ```json
 {
-  "status": "healthy",
-  "ollama": "connected",
-  "rag": "available"
+  "status": "ok",
+  "message": "Selçuk AI Asistanı backend çalışıyor"
 }
 ```
+
+**Not**: `/health/ollama` ve `/health/hf` endpoint'leri daha detaylı sağlık kontrolü sağlamaktadır.
 
 #### 2. Model Listesi (30 saniye)
 ```bash
 curl http://localhost:8000/models
 ```
-**Beklenen Çıktı:**
+**Beklenen Çıktı (örnek):**
 ```json
 {
   "models": [
     {
-      "id": "llama3.2:3b",
+      "id": "ollama:llama3.2:3b",
       "provider": "ollama",
+      "model_id": "llama3.2:3b",
       "display_name": "Llama 3.2 3B",
-      "available": true
+      "local_or_remote": "local",
+      "requires_api_key": false,
+      "available": true,
+      "reason_unavailable": "",
+      "context_length": 4096,
+      "tags": [],
+      "notes": "",
+      "is_default": true
     }
   ]
 }
 ```
 
+**Not**: Gerçek çıktı, sistemde kurulu olan modellere göre değişiklik gösterecektir.
+
 #### 3. Basit Sohbet (1 dakika)
 ```bash
 curl -X POST http://localhost:8000/chat \
   -H "Content-Type: application/json" \
-  -d '{"message":"Selçuk Üniversitesi hakkında bilgi ver","model":"llama3.2:3b"}'
+  -d '{
+    "messages": [
+      {"role": "user", "content": "Selçuk Üniversitesi hakkında bilgi ver"}
+    ],
+    "model": "ollama:llama3.2:3b"
+  }'
 ```
-**Beklenen Çıktı:**
+**Beklenen Çıktı (örnek):**
 ```json
 {
-  "response": "Selçuk Üniversitesi, Konya'da bulunan...",
+  "answer": "Selçuk Üniversitesi, Konya'da bulunan...",
+  "request_id": "abc123...",
+  "provider": "ollama",
   "model": "llama3.2:3b",
-  "usage": {"prompt_tokens": 25, "completion_tokens": 150}
+  "usage": {
+    "prompt_tokens": 25,
+    "completion_tokens": 150,
+    "total_tokens": 175
+  },
+  "citations": null
 }
 ```
+
+**Not**: ChatRequest şeması "messages" dizisi kabul etmektedir (role + content), "message" alanı değil.
 
 #### 4. RAG Demo - Kaynaklı Yanıt (2 dakika)
 ```bash
 curl -X POST http://localhost:8000/chat \
   -H "Content-Type: application/json" \
-  -d '{"message":"RAG belgelerine göre proje mimarisi nasıl?","model":"llama3.2:3b","rag_enabled":true}'
+  -d '{
+    "messages": [
+      {"role": "user", "content": "RAG belgelerine göre proje mimarisi nasıl?"}
+    ],
+    "model": "ollama:llama3.2:3b",
+    "rag_enabled": true
+  }'
 ```
-**Beklenen Çıktı:**
+**Beklenen Çıktı (örnek, RAG etkin ve kaynak mevcutsa):**
 ```json
 {
-  "response": "Proje mimarisinde Flutter UI, FastAPI backend ve Ollama LLM kullanılmaktadır...",
+  "answer": "Proje mimarisinde Flutter UI, FastAPI backend ve Ollama LLM kullanılmaktadır...",
+  "request_id": "def456...",
+  "provider": "ollama",
   "model": "llama3.2:3b",
+  "usage": {
+    "prompt_tokens": 450,
+    "completion_tokens": 200,
+    "total_tokens": 650
+  },
   "citations": [
-    "docs/ARCHITECTURE.md (lines 10-25)",
-    "README.md (lines 40-45)"
-  ],
-  "usage": {"prompt_tokens": 450, "completion_tokens": 200}
+    "docs/ARCHITECTURE.md (chunk 0)",
+    "README.md (chunk 2)"
+  ]
 }
 ```
+
+**Not**: citations formatı RAG servisinin döndürdüğü kaynak etiketlerine göre değişebilir. Gerçek uygulamada chunk numarası ve dosya yolu birlikte döner.
 
 #### 5. Hata Senaryosu (1 dakika)
 **Senaryo:** Ollama servisi kapalıyken istek gönder
