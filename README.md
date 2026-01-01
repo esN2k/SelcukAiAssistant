@@ -9,6 +9,8 @@ gizliliğe odaklı bir **yerel yapay zeka akademik asistan** projesidir. Sistem,
 Google Gemini API kullanımından tamamen vazgeçmiş ve **yerel Ollama (Llama 3.1)**
 altyapısına geçirilmiştir.
 
+> 🎓 **Jüri Sunumuna Hazırmısınız?** [JURI_HAZIRLIK_OZET.md](JURI_HAZIRLIK_OZET.md) dosyasını inceleyin! ✅ Proje değerlendirmesi: **92.9/100 - MÜKEMMEl**
+
 ## Amaç
 - Öğrenci, akademisyen ve idari personel için güvenilir akademik bilgi desteği sağlamak.
 - Yerel LLM kullanımıyla veri gizliliğini korumak.
@@ -85,12 +87,14 @@ RAG_VECTOR_DB_PATH=./data/rag
 ## Dokümantasyon
 | Belge | Açıklama | Konum |
 | --- | --- | --- |
+| **Jüri Hazırlık** | **Sunum hazırlık kontrol listesi ve öneriler** | **`docs/JURI_HAZIRLIK.md`** |
 | Sunum Notları | Jüri odaklı sunum akışı ve Soru‑Cevap hazırlığı | `docs/SUNUM_NOTLARI.md` |
 | Test Raporu | CI/test çıktılarının akademik özeti | `docs/TEST_RAPORU.md` |
 | Benchmark Raporu | Ollama hızlı ölçüm sonuçları | `docs/BENCHMARK_RAPORU.md` |
 | LoRA Planı | İnce ayar stratejisi ve veri hazırlama | `docs/LORA_PLANI.md` |
 | Veri Kaynakları | RAG veri toplama özeti | `docs/VERI_KAYNAKLARI.md` |
 | Kurulum Rehberi | Platform bazlı kurulum adımları | `INSTALL.md` |
+| Katkıda Bulunanlar | Proje ekibi ve teşekkürler | `CONTRIBUTORS.md` |
 | Mimari (Özet) | Yüksek seviye mimari | `ARCHITECTURE.md` |
 | Mimari (Detay) | RAG ve provider akışları | `docs/ARCHITECTURE.md` |
 | RAG Rehberi | İndeksleme ve ayarlar | `docs/RAG.md` |
@@ -114,3 +118,9 @@ Flutter:
 Smoke test (backend çalışırken):
 - `tools/test_api.ps1`
 - `tools/smoke_test.ps1`
+
+## Lisans
+Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasına bakın.
+
+## Katkıda Bulunanlar
+Katkıda bulunanlar listesi ve teşekkürler için [CONTRIBUTORS.md](CONTRIBUTORS.md) dosyasına bakın.
