@@ -48,12 +48,104 @@ Bu doküman, projenin diploma sunumuna hazır olup olmadığını kontrol etmek 
 6. **Gelecek Çalışmalar (1 dk)**: LoRA, Appwrite entegrasyonu
 7. **Sonuç (0.5 dk)**: Proje özeti ve kapanış
 
-### Demo Senaryosu
-1. **Sağlık Kontrolü**: `/health` endpoint'ini göster
-2. **Model Listesi**: `/models` endpoint'inden uygun modelleri göster
-3. **Basit Sohbet**: Ollama ile yerel LLM kullanımı
-4. **RAG Demo**: Kaynaklı yanıt üretimi ve citations gösterimi
-5. **Hata Senaryosu**: Ollama kapalıyken Türkçe hata mesajı
+### Demo Senaryosu (Toplam: ~5 dakika)
+
+#### 1. Sağlık Kontrolü (30 saniye)
+```bash
+curl http://localhost:8000/health
+```
+**Beklenen Çıktı:**
+```json
+{
+  "status": "healthy",
+  "ollama": "connected",
+  "rag": "available"
+}
+```
+
+#### 2. Model Listesi (30 saniye)
+```bash
+curl http://localhost:8000/models
+```
+**Beklenen Çıktı:**
+```json
+{
+  "models": [
+    {
+      "id": "llama3.2:3b",
+      "provider": "ollama",
+      "display_name": "Llama 3.2 3B",
+      "available": true
+    }
+  ]
+}
+```
+
+#### 3. Basit Sohbet (1 dakika)
+```bash
+curl -X POST http://localhost:8000/chat \
+  -H "Content-Type: application/json" \
+  -d '{"message":"Selçuk Üniversitesi hakkında bilgi ver","model":"llama3.2:3b"}'
+```
+**Beklenen Çıktı:**
+```json
+{
+  "response": "Selçuk Üniversitesi, Konya'da bulunan...",
+  "model": "llama3.2:3b",
+  "usage": {"prompt_tokens": 25, "completion_tokens": 150}
+}
+```
+
+#### 4. RAG Demo - Kaynaklı Yanıt (2 dakika)
+```bash
+curl -X POST http://localhost:8000/chat \
+  -H "Content-Type: application/json" \
+  -d '{"message":"RAG belgelerine göre proje mimarisi nasıl?","model":"llama3.2:3b","rag_enabled":true}'
+```
+**Beklenen Çıktı:**
+```json
+{
+  "response": "Proje mimarisinde Flutter UI, FastAPI backend ve Ollama LLM kullanılmaktadır...",
+  "model": "llama3.2:3b",
+  "citations": [
+    "docs/ARCHITECTURE.md (lines 10-25)",
+    "README.md (lines 40-45)"
+  ],
+  "usage": {"prompt_tokens": 450, "completion_tokens": 200}
+}
+```
+
+#### 5. Hata Senaryosu (1 dakika)
+**Senaryo:** Ollama servisi kapalıyken istek gönder
+```bash
+# Önce Ollama'yı durdur (demo için)
+# Sonra aynı isteği tekrarla
+curl -X POST http://localhost:8000/chat \
+  -H "Content-Type: application/json" \
+  -d '{"message":"Test","model":"llama3.2:3b"}'
+```
+**Beklenen Çıktı:**
+```json
+{
+  "error": "Ollama servisi ile bağlantı kurulamadı. Lütfen Ollama'nın çalıştığından emin olun.",
+  "detail": "Connection refused: http://localhost:11434",
+  "fallback": "HuggingFace sağlayıcısını deneyebilirsiniz."
+}
+```
+
+### 📸 Yedek Ekran Görüntüleri (Demo Başarısızlığı Durumunda)
+
+Demo sırasında teknik bir sorun olursa kullanmak üzere aşağıdaki ekran görüntülerini hazırlayın:
+
+- [ ] **Health endpoint yanıtı** (Postman veya curl çıktısı)
+- [ ] **Model listesi ekranı** (Frontend UI veya API yanıtı)
+- [ ] **Basit sohbet örneği** (Frontend chat ekranı)
+- [ ] **RAG ile kaynaklı yanıt** (Citations bölümü vurgulanmış)
+- [ ] **Türkçe hata mesajı** (Ollama bağlantı hatası)
+- [ ] **Frontend model seçici ekranı** (Settings > Model Selection)
+- [ ] **CI/CD pipeline başarılı çalışma** (GitHub Actions)
+
+**Not:** Ekran görüntülerini `docs/screenshots/` klasörüne kaydedin ve sunum öncesi kontrol edin.
 
 ### Olası Jüri Soruları ve Yanıtlar
 
@@ -87,6 +179,7 @@ Y: Evet, Ollama yerel olarak çalıştığı için internet olmadan da temel soh
 - [ ] CI/CD pipeline'ının başarılı olduğunu kontrol et
 - [ ] Sunum notlarını gözden geçir
 - [ ] Olası sorulara hazırlan
+- [ ] **Yedek ekran görüntülerini hazırla** (docs/screenshots/)
 
 ### Sunum Günü
 - [ ] Laptop'u tam şarj et
@@ -94,7 +187,7 @@ Y: Evet, Ollama yerel olarak çalıştığı için internet olmadan da temel soh
 - [ ] Internet bağlantısını kontrol et (gerekirse hotspot hazırla)
 - [ ] Demo için gerekli servisleri başlat (Ollama, Backend)
 - [ ] Ekran paylaşımını test et
-- [ ] Yedek plan hazırla (slides, screenshots)
+- [ ] Yedek plan hazırla (screenshots klasörünü aç, sunum modu)
 
 ## 📊 Proje İstatistikleri
 

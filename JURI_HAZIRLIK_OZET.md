@@ -115,6 +115,18 @@
 6. **Gelecek Çalışmalar (1 dk)**: LoRA, Appwrite
 7. **Sonuç (0.5 dk)**: Özet ve kapanış
 
+### 🎬 Demo Senaryosu (~5 dakika)
+
+**Detaylı demo adımları ve beklenen çıktılar için**: [docs/JURI_HAZIRLIK.md](docs/JURI_HAZIRLIK.md)
+
+1. **Sağlık Kontrolü** (30 sn) - `/health` endpoint
+2. **Model Listesi** (30 sn) - `/models` endpoint  
+3. **Basit Sohbet** (1 dk) - Ollama ile LLM
+4. **RAG Demo** (2 dk) - Kaynaklı yanıt ve citations
+5. **Hata Senaryosu** (1 dk) - Türkçe hata mesajı
+
+**💡 Yedek Plan**: Ekran görüntüleri hazırlayın - [docs/screenshots/README.md](docs/screenshots/README.md)
+
 ---
 
 ## 🎤 Olası Jüri Soruları ve Yanıtlar
