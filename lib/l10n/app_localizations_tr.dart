@@ -15,7 +15,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get appSubtitle => 'Gizliliğe odaklı akademik asistan';
 
   @override
-  String get splashSubtitle => 'Selçuk AI Asistanı';
+  String get splashSubtitle => 'Gizliliğe odaklı Selçuk AI akademik asistan';
 
   @override
   String get ok => 'Tamam';
