@@ -32,6 +32,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _checkAuthAndNavigate() async {
     try {
+      // Appwrite servisi kontrolü - yapılandırılmamışsa login'e yönlendir
+      if (_appwriteService.account == null) {
+        if (mounted) {
+          // Appwrite yoksa login ekranına git
+          unawaited(Get.off<void>(() => const LoginScreen()));
+        }
+        return;
+      }
+
       final user = await _appwriteService.getCurrentUser();
 
       if (mounted) {

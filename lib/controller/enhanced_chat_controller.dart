@@ -207,7 +207,13 @@ class EnhancedChatController extends GetxController {
       ..errorCode = null;
 
     final payloadMessages = _buildPayloadMessages();
-    final selectedModel = Pref.selectedModel;
+    // Model seçimi - geçersiz model varsa null gönder (backend varsayılanı kullanır)
+    String? selectedModel = Pref.selectedModel;
+    if (selectedModel == 'selcuk_ai_assistant') {
+      // Eski model ismi - backend'de artık yok, null gönder
+      selectedModel = null;
+      Pref.selectedModel = null; // Tercih temizle
+    }
 
     try {
       await _streamResponse(
@@ -275,12 +281,10 @@ class EnhancedChatController extends GetxController {
   }) {
     final limitIndex =
         lastMessageIndex ?? (messages.isEmpty ? -1 : messages.length - 1);
-    final slice = limitIndex >= 0
-        ? messages.sublist(0, limitIndex + 1)
-        : <ChatMessage>[];
-    final history = slice
-        .where((msg) => msg.content.trim().isNotEmpty)
-        .toList();
+    final slice =
+        limitIndex >= 0 ? messages.sublist(0, limitIndex + 1) : <ChatMessage>[];
+    final history =
+        slice.where((msg) => msg.content.trim().isNotEmpty).toList();
 
     const maxHistory = 20;
     final recent = history.length > maxHistory
@@ -379,8 +383,7 @@ class EnhancedChatController extends GetxController {
     }
 
     final newConversation = await ConversationService.createConversation();
-    final history =
-        messages.take(messageIndex).map(_cloneMessage).toList();
+    final history = messages.take(messageIndex).map(_cloneMessage).toList();
 
     await ConversationService.setMessages(newConversation.id, history);
     newConversation
@@ -404,8 +407,7 @@ class EnhancedChatController extends GetxController {
       return;
     }
 
-    final lastAssistantIndex =
-        messages.lastIndexWhere((msg) => !msg.isUser);
+    final lastAssistantIndex = messages.lastIndexWhere((msg) => !msg.isUser);
     final messageIndex = messages.indexOf(message);
     if (messageIndex == -1 || messageIndex != lastAssistantIndex) {
       return;
@@ -428,8 +430,7 @@ class EnhancedChatController extends GetxController {
     isGenerating.value = true;
     _stopRequested = false;
 
-    final payloadMessages =
-        _buildPayloadMessages(lastMessageIndex: userIndex);
+    final payloadMessages = _buildPayloadMessages(lastMessageIndex: userIndex);
     final selectedModel = Pref.selectedModel;
 
     String? errorMessage;

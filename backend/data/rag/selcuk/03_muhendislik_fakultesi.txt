@@ -1,0 +1,12 @@
+# Selçuk Üniversitesi Mühendislik Fakültesi
+
+**Konum:** Alaeddin Keykubat Kampüsü
+
+**Bölümler:**
+- Bilgisayar Mühendisliği
+- Elektrik-Elektronik Mühendisliği
+- Makine Mühendisliği
+- İnşaat Mühendisliği
+- Endüstri Mühendisliği
+- Harita Mühendisliği
+- Jeoloji Mühendisliği

@@ -407,6 +407,7 @@ async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingR
             return
 
         cleaner = StreamingResponseCleaner(language=language)
+        accumulated_response = ""
         try:
             async with asyncio.timeout(Config.REQUEST_TIMEOUT):
                 async for chunk in provider.stream(
@@ -425,6 +426,7 @@ async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingR
                     if chunk.token:
                         cleaned = cleaner.feed(chunk.token)
                         if cleaned:
+                            accumulated_response += cleaned
                             yield sse_event(
                                 {
                                     "type": "token",
@@ -435,6 +437,7 @@ async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingR
                     if chunk.done:
                         final_chunk = cleaner.finalize()
                         if final_chunk:
+                            accumulated_response += final_chunk
                             yield sse_event(
                                 {
                                     "type": "token",
@@ -442,6 +445,11 @@ async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingR
                                     "request_id": request_id,
                                 }
                             )
+                        
+                        # Appwrite'a kaydet
+                        question = next((m.content for m in reversed(messages) if m.role == "user"), "")
+                        _log_chat_to_appwrite(question=question, answer=accumulated_response)
+                        
                         usage_schema = _usage_to_schema(chunk.usage)
                         yield sse_event(
                             {

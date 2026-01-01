@@ -15,6 +15,14 @@ import 'package:selcukaiassistant/theme/selcuk_theme.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Catch global errors
+  FlutterError.onError = (details) {
+    if (kDebugMode) {
+      print('Flutter Error: ${details.exception}');
+      print(details.stack);
+    }
+  };
+
   // Initialize storage before app bootstraps.
   await StorageService.initialize();
 

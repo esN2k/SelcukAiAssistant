@@ -1,0 +1,15 @@
+# Selçuk Üniversitesi Bilgisayar Mühendisliği Bölümü
+
+**Program Türleri:** Lisans, Yüksek Lisans, Doktora
+**Web Sitesi:** https://bilgisayar.selcuk.edu.tr
+**Akreditasyon:** MÜDEK akreditasyonu
+
+**Araştırma Alanları:**
+- Yapay Zeka
+- Makine Öğrenmesi
+- Bilgisayar Görüsü
+- Doğal Dil İşleme
+- Veri Bilimi
+- Siber Güvenlik
+- Yazılım Mühendisliği
+- Bulut Bilişim

@@ -1,0 +1,16 @@
+FROM E:\SelcukAiAssistant\hf-cache\hub\models--QuantFactory--Turkcell-LLM-7b-v1-GGUF\snapshots\d88c25e53381359b53eeb1f40912f00c1e134606\Turkcell-LLM-7b-v1.Q4_K_M.gguf
+
+TEMPLATE """{{ if .System }}<|im_start|>system
+{{ .System }}<|im_end|>
+{{ end }}{{ if .Prompt }}<|im_start|>user
+{{ .Prompt }}<|im_end|>
+{{ end }}<|im_start|>assistant
+{{ .Response }}<|im_end|>
+"""
+
+PARAMETER stop "<|im_start|>"
+PARAMETER stop "<|im_end|>"
+PARAMETER temperature 0.7
+PARAMETER top_p 0.9
+
+SYSTEM """Selçuk Üniversitesi için yardımcı bir asistansın. Yanıtlarını Türkçe ver. Akıl yürütme veya iç konuşma paylaşma. Kullanıcı genel bir selam verirse (ör. "Merhaba"), Selçuk Üniversitesi ile ilgili neye ihtiyaç duyduğunu sor."""
