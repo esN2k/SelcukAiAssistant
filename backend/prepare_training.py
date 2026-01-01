@@ -55,12 +55,21 @@ def create_rag_documents(output_dir: str = "data/rag/selcuk"):
     with open(output_path / "02_bilgisayar_muhendisligi.txt", 'w', encoding='utf-8') as f:
         f.write("# Selçuk Üniversitesi Bilgisayar Mühendisliği Bölümü\n\n")
         bm = SELCUK_UNI_FACTS["bilgisayar_muhendisligi"]
+        f.write(f"**Fakülte:** {bm['fakulte']}\n")
+        f.write(f"**Yerleşke:** {bm['yerleske']}\n")
         f.write(f"**Program Türleri:** {', '.join(bm['program_turu'])}\n")
         f.write(f"**Web Sitesi:** {bm['web']}\n")
-        f.write(f"**Akreditasyon:** {bm['akredite']}\n\n")
-        f.write("**Araştırma Alanları:**\n")
+        f.write(f"**E-posta:** {bm['email']}\n")
+        f.write(f"**Adres:** {bm['adres']}\n\n")
+        f.write("**Özellikler:**\n")
+        for ozellik in bm['ozellikler']:
+            f.write(f"- {ozellik}\n")
+        f.write("\n**Araştırma Alanları:**\n")
         for alan in bm['arastirma_alanlari']:
             f.write(f"- {alan}\n")
+        f.write("\n**Laboratuvarlar:**\n")
+        for lab in bm['laboratuvarlar']:
+            f.write(f"- {lab}\n")
     
     # Mühendislik Fakültesi
     with open(output_path / "03_muhendislik_fakultesi.txt", 'w', encoding='utf-8') as f:
@@ -88,33 +97,47 @@ def create_modelfile(model_name: str = "turkcell_llm_7b_selcuk"):
     """Özelleştirilmiş Modelfile oluştur."""
     modelfile_content = f"""FROM turkcell_llm_7b
 
-# Selçuk Üniversitesi özel sistem promptu
-SYSTEM \"\"\"Sen Selçuk Üniversitesi için özel olarak eğitilmiş bir yapay zeka asistanısın.
+# Selçuk Üniversitesi özel sistem promptu - FEW-SHOT LEARNING
+SYSTEM \"\"\"SEN SELÇUK ÜNİVERSİTESİ AI ASİSTANISIN!
 
-ÖNEMLİ BİLGİLER:
-- Selçuk Üniversitesi KONYA'dadır (İzmir değil!)
-- 1975 yılında kurulmuştur
-- İki ana kampüsü vardır: Alaeddin Keykubat ve Ardıçlı
-- Bilgisayar Mühendisliği, Mühendislik Fakültesi'nde Alaeddin Keykubat Kampüsü'ndedir
+BU BİLGİLERİ EZBERLEMİŞ OLMALISIN:
+Selçuk Üniversitesi = KONYA (1975)
+Bilgisayar Mühendisliği = Teknoloji Fakültesi, Alaeddin Keykubat, KONYA
+Kampüsler = Alaeddin Keykubat (Selçuklu/KONYA), Ardıçlı (Karatay/KONYA)
+MÜDEK = Akreditasyon (Evet var)
+HPC = High Performance Computing Lab
 
-GÖREVİN:
-- Selçuk Üniversitesi hakkında doğru ve güncel bilgiler ver
-- Bilgisayar Mühendisliği bölümü hakkında detaylı bilgi sun
-- Akademik programlar, araştırma alanları konusunda yardımcı ol
-- Her zaman Türkçe ve öğrenci dostu yanıtlar ver
+CEVAP ÖRNEKLERİ (BU ŞEKİLDE CEVAP VER):
 
-KURALLARIN:
-1. Bilmediğin konularda varsayımda bulunma
-2. Selçuk Üniversitesi hakkında yanlış bilgi verme
-3. Yanıtlarını kısa ve net tut
-4. Öğrencilere ve ziyaretçilere yardımcı ve samimi ol
+Soru: Selçuk Üniversitesi nerede?
+Cevap: Selçuk Üniversitesi Konya'dadır.
+
+Soru: Ne zaman kuruldu?
+Cevap: 1975 yılında kurulmuştur.
+
+Soru: Kampüsler hangileri?
+Cevap: Alaeddin Keykubat Yerleşkesi ve Ardıçlı Yerleşkesi olmak üzere iki ana kampüs bulunmaktadır.
+
+Soru: Bilgisayar Mühendisliği hangi fakültede?
+Cevap: Teknoloji Fakültesi bünyesindedir.
+
+Soru: Akredite mi?
+Cevap: Evet, MÜDEK akreditasyonuna sahiptir.
+
+Soru: HPC nedir?
+Cevap: High Performance Computing (Yüksek Başarımlı Hesaplama) laboratuvarıdır.
+
+Soru: Erasmus var mı?
+Cevap: Evet, Erasmus+ değişim programı mevcuttur.
+
+ÖNEMLİ: Kısa sorularda da bağlamı anla. "Kampüsler?" sorusu Selçuk Üniversitesi kampüslerini soruyor demektir.
 \"\"\"
 
-# Parametreler
-PARAMETER temperature 0.3
-PARAMETER top_p 0.9
-PARAMETER top_k 40
-PARAMETER repeat_penalty 1.1
+# Parametreler - Daha deterministik cevaplar için
+PARAMETER temperature 0.1
+PARAMETER top_p 0.5
+PARAMETER top_k 10
+PARAMETER repeat_penalty 1.15
 
 # Stop tokens
 PARAMETER stop "<|im_start|>"

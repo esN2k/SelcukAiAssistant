@@ -42,6 +42,8 @@ SELCUK_UNI_FACTS = {
     },
     
     "bilgisayar_muhendisligi": {
+        "fakulte": "Teknoloji Fakültesi",
+        "yerleske": "Alaeddin Keykubat Yerleşkesi",
         "bolum_baskani": "Bilgisayar Mühendisliği Bölüm Başkanı",  # Güncellenebilir
         "program_turu": ["Lisans", "Yüksek Lisans", "Doktora"],
         "kontenjan": "120 (yaklaşık)",
@@ -54,9 +56,27 @@ SELCUK_UNI_FACTS = {
             "Siber Güvenlik",
             "Yazılım Mühendisliği",
             "Bulut Bilişim",
+            "High Performance Computing (HPC)",
         ],
-        "akredite": "MÜDEK akreditasyonu",
-        "web": "https://bilgisayar.selcuk.edu.tr",
+        "laboratuvarlar": [
+            "Bilgisayar Laboratuvarı",
+            "Yazılım Geliştirme Laboratuvarı",
+            "Ağ ve Güvenlik Laboratuvarı",
+            "HPC Laboratuvarı",
+        ],
+        "ozellikler": [
+            "MÜDEK Akreditasyonu",
+            "Bologna Süreci Uyumlu",
+            "Çift Anadal Programı",
+            "Erasmus+ Değişim Programı",
+            "Girişimcilik Saati",
+            "Kariyer Planlama ve Takibi Ofisi",
+            "ArGe İşbirlikleri",
+            "Konya Teknokent İşbirliği",
+        ],
+        "web": "https://www.selcuk.edu.tr/Birim/Bolum/teknoloji-bilgisayar_muhendisligi/15620",
+        "email": "tfdekanlik@selcuk.edu.tr",
+        "adres": "Selçuk Üniversitesi Alaeddin Keykubat Yerleşkesi Teknoloji Fakültesi PK:42075 Selçuklu / KONYA",
     },
     
     "iletisim": {
@@ -70,6 +90,7 @@ SELCUK_UNI_FACTS = {
 
 # Sık sorulan sorular ve cevaplar
 QA_PAIRS = [
+    # Konum soruları
     {
         "question": "Selçuk Üniversitesi nerede?",
         "answer": "Selçuk Üniversitesi, Konya ilinde bulunmaktadır. Alaeddin Keykubat ve Ardıçlı olmak üzere iki ana kampüsü vardır.",
@@ -81,6 +102,12 @@ QA_PAIRS = [
         "category": "genel",
     },
     {
+        "question": "Selçuk Üniversitesi hangi ilde?",
+        "answer": "Konya ilinde.",
+        "category": "genel",
+    },
+    # Kuruluş soruları
+    {
         "question": "Selçuk Üniversitesi ne zaman kuruldu?",
         "answer": "Selçuk Üniversitesi 1975 yılında Konya'da kurulmuştur.",
         "category": "genel",
@@ -91,10 +118,59 @@ QA_PAIRS = [
         "category": "genel",
     },
     {
+        "question": "Kuruluş yılı nedir?",
+        "answer": "1975",
+        "category": "genel",
+    },
+    # Kampüs soruları
+    {
+        "question": "Kampüsler hangileri?",
+        "answer": "Selçuk Üniversitesi'nde iki ana kampüs bulunmaktadır: Alaeddin Keykubat Yerleşkesi ve Ardıçlı Yerleşkesi.",
+        "category": "genel",
+    },
+    {
+        "question": "Alaeddin Keykubat Yerleşkesi nerede?",
+        "answer": "Alaeddin Keykubat Yerleşkesi Selçuklu/Konya'da bulunmaktadır. Mühendislik, Fen, Edebiyat ve Teknoloji fakülteleri bu kampüstedir.",
+        "category": "genel",
+    },
+    {
+        "question": "Ardıçlı Yerleşkesi nerede?",
+        "answer": "Ardıçlı Yerleşkesi Karatay/Konya'da bulunmaktadır. Tıp, Sağlık Bilimleri ve Diş Hekimliği fakülteleri bu kampüstedir.",
+        "category": "genel",
+    },
+    # Bilgisayar Mühendisliği - Temel Bilgiler
+    {
         "question": "Bilgisayar Mühendisliği bölümü hangi kampusta?",
-        "answer": "Bilgisayar Mühendisliği bölümü, Mühendislik Fakültesi bünyesinde Alaeddin Keykubat Kampüsü'nde bulunmaktadır.",
+        "answer": "Bilgisayar Mühendisliği bölümü, Teknoloji Fakültesi bünyesinde Alaeddin Keykubat Yerleşkesi'nde bulunmaktadır. Adres: Selçuk Üniversitesi Alaeddin Keykubat Yerleşkesi Teknoloji Fakültesi PK:42075 Selçuklu / KONYA",
         "category": "bilgisayar",
     },
+    {
+        "question": "Bilgisayar Mühendisliği hangi fakültede?",
+        "answer": "Bilgisayar Mühendisliği, Teknoloji Fakültesi bünyesindedir.",
+        "category": "bilgisayar",
+    },
+    {
+        "question": "Bilgisayar Mühendisliği nerede?",
+        "answer": "Teknoloji Fakültesi, Alaeddin Keykubat Yerleşkesi, Konya.",
+        "category": "bilgisayar",
+    },
+    # Bilgisayar Mühendisliği - İletişim
+    {
+        "question": "Bilgisayar Mühendisliği email adresi nedir?",
+        "answer": "Teknoloji Fakültesi Dekanlık e-posta: tfdekanlik@selcuk.edu.tr",
+        "category": "bilgisayar",
+    },
+    {
+        "question": "Bilgisayar Mühendisliği telefon numarası?",
+        "answer": "Dekanlık: 0(332) 223 33 68, Öğrenci İşleri: 0(332) 223 33 73",
+        "category": "bilgisayar",
+    },
+    {
+        "question": "Bilgisayar Mühendisliği web sitesi?",
+        "answer": "https://www.selcuk.edu.tr/Birim/Bolum/teknoloji-bilgisayar_muhendisligi/15620",
+        "category": "bilgisayar",
+    },
+    # Bilgisayar Mühendisliği - Akademik
     {
         "question": "Bilgisayar Mühendisliği hangi araştırma alanları var?",
         "answer": """Bilgisayar Mühendisliği bölümünde şu araştırma alanları bulunmaktadır:
@@ -104,7 +180,8 @@ QA_PAIRS = [
 - Veri Bilimi ve Büyük Veri
 - Siber Güvenlik
 - Yazılım Mühendisliği
-- Bulut Bilişim ve Dağıtık Sistemler""",
+- Bulut Bilişim ve Dağıtık Sistemler
+- High Performance Computing (HPC)""",
         "category": "bilgisayar",
     },
     {
@@ -113,25 +190,86 @@ QA_PAIRS = [
         "category": "bilgisayar",
     },
     {
-        "question": "Selçuk Üniversitesi web sitesi nedir?",
-        "answer": "Selçuk Üniversitesi ana web sitesi: https://www.selcuk.edu.tr\nBilgisayar Mühendisliği: https://bilgisayar.selcuk.edu.tr",
-        "category": "genel",
+        "question": "HPC nedir?",
+        "answer": "HPC (High Performance Computing - Yüksek Başarımlı Hesaplama) laboratuvarı, Bilgisayar Mühendisliği bölümünde bulunan özel bir araştırma altyapısıdır.",
+        "category": "bilgisayar",
+    },
+    # Bilgisayar Mühendisliği - Akreditasyon ve Olanaklar
+    {
+        "question": "Bilgisayar Mühendisliği akredite mi?",
+        "answer": "Evet, Bilgisayar Mühendisliği bölümü MÜDEK (Mühendislik Eğitim Programları Değerlendirme ve Akreditasyon Derneği) akreditasyonuna sahiptir.",
+        "category": "bilgisayar",
     },
     {
-        "question": "Selçuk Üniversitesi Mühendislik Fakültesi hangi bölümler var?",
-        "answer": """Mühendislik Fakültesi'nde şu bölümler bulunmaktadır:
-- Bilgisayar Mühendisliği
-- Elektrik-Elektronik Mühendisliği
-- Makine Mühendisliği
-- İnşaat Mühendisliği
-- Endüstri Mühendisliği
-- Harita Mühendisliği
-- Jeoloji Mühendisliği""",
-        "category": "muhendislik",
+        "question": "MÜDEK nedir?",
+        "answer": "MÜDEK (Mühendislik Eğitim Programları Değerlendirme ve Akreditasyon Derneği), mühendislik programlarının kalite güvencesini sağlayan akreditasyon kuruluşudur. Bilgisayar Mühendisliği bölümü MÜDEK akreditasyonuna sahiptir.",
+        "category": "bilgisayar",
     },
+    {
+        "question": "Erasmus programı var mı?",
+        "answer": "Evet, Bilgisayar Mühendisliği bölümünde Erasmus+ değişim programı mevcuttur.",
+        "category": "bilgisayar",
+    },
+    {
+        "question": "Çift anadal programı var mı?",
+        "answer": "Evet, Bilgisayar Mühendisliği bölümünde çift anadal programı bulunmaktadır.",
+        "category": "bilgisayar",
+    },
+    {
+        "question": "Kariyer ofisi var mı?",
+        "answer": "Evet, Kariyer Planlama ve Takibi Ofisi mevcuttur.",
+        "category": "bilgisayar",
+    },
+    {
+        "question": "Bilgisayar Mühendisliği hangi olanaklar sunuyor?",
+        "answer": """Bilgisayar Mühendisliği bölümü şu olanakları sunar:
+- MÜDEK Akreditasyonu
+- Bologna Süreci Uyumlu Eğitim
+- Çift Anadal Programı
+- Erasmus+ Değişim Programı
+- Girişimcilik Saati
+- Kariyer Planlama ve Takibi Ofisi
+- ArGe İşbirlikleri
+- Konya Teknokent İşbirliği
+- High Performance Computing (HPC) Laboratuvarı""",
+        "category": "bilgisayar",
+    },
+    # Teknoloji Fakültesi
+    {
+        "question": "Teknoloji Fakültesi nerede?",
+        "answer": "Teknoloji Fakültesi, Alaeddin Keykubat Yerleşkesi'nde, Konya'dadır.",
+        "category": "teknoloji",
+    },
+    {
+        "question": "Teknoloji Fakültesi dekanlık telefonu?",
+        "answer": "Dekanlık: 0(332) 223 33 68",
+        "category": "teknoloji",
+    },
+    # Genel İstatistikler
     {
         "question": "Selçuk Üniversitesi kaç öğrencisi var?",
         "answer": "Selçuk Üniversitesi'nde yaklaşık 100.000'den fazla öğrenci bulunmaktadır.",
         "category": "genel",
+    },
+    {
+        "question": "Kaç akademisyen var?",
+        "answer": "Yaklaşık 4.000'den fazla akademisyen bulunmaktadır.",
+        "category": "genel",
+    },
+    # İşbirliği ve Sanayi
+    {
+        "question": "Konya Teknokent ile işbirliği var mı?",
+        "answer": "Evet, Bilgisayar Mühendisliği bölümü Konya Teknokent ile işbirliği içindedir.",
+        "category": "bilgisayar",
+    },
+    {
+        "question": "ArGe işbirlikleri var mı?",
+        "answer": "Evet, Bilgisayar Mühendisliği bölümünde çeşitli ArGe işbirlikleri ve projeler bulunmaktadır.",
+        "category": "bilgisayar",
+    },
+    {
+        "question": "Girişimcilik desteği var mı?",
+        "answer": "Evet, Girişimcilik Saati programı mevcuttur.",
+        "category": "bilgisayar",
     },
 ]

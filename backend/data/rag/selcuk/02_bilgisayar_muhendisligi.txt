@@ -1,8 +1,21 @@
 # Selçuk Üniversitesi Bilgisayar Mühendisliği Bölümü
 
+**Fakülte:** Teknoloji Fakültesi
+**Yerleşke:** Alaeddin Keykubat Yerleşkesi
 **Program Türleri:** Lisans, Yüksek Lisans, Doktora
-**Web Sitesi:** https://bilgisayar.selcuk.edu.tr
-**Akreditasyon:** MÜDEK akreditasyonu
+**Web Sitesi:** https://www.selcuk.edu.tr/Birim/Bolum/teknoloji-bilgisayar_muhendisligi/15620
+**E-posta:** tfdekanlik@selcuk.edu.tr
+**Adres:** Selçuk Üniversitesi Alaeddin Keykubat Yerleşkesi Teknoloji Fakültesi PK:42075 Selçuklu / KONYA
+
+**Özellikler:**
+- MÜDEK Akreditasyonu
+- Bologna Süreci Uyumlu
+- Çift Anadal Programı
+- Erasmus+ Değişim Programı
+- Girişimcilik Saati
+- Kariyer Planlama ve Takibi Ofisi
+- ArGe İşbirlikleri
+- Konya Teknokent İşbirliği
 
 **Araştırma Alanları:**
 - Yapay Zeka
@@ -13,3 +26,10 @@
 - Siber Güvenlik
 - Yazılım Mühendisliği
 - Bulut Bilişim
+- High Performance Computing (HPC)
+
+**Laboratuvarlar:**
+- Bilgisayar Laboratuvarı
+- Yazılım Geliştirme Laboratuvarı
+- Ağ ve Güvenlik Laboratuvarı
+- HPC Laboratuvarı
