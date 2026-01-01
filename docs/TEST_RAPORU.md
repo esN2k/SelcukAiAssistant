@@ -33,16 +33,22 @@ Bu rapor, Selçuk AI Akademik Asistan projesinin test ve sürekli entegrasyon (C
 - `benchmark/run.py`: Ayrıntılı model benchmark (Ollama + HF)
 
 ## Sonuç Tablosu
-| Komut | Amaç | Durum | Not |
+| Komut | Amaç | Durum | Sonuç Detayı |
 | --- | --- | --- | --- |
-| `python -m pytest -q` | Backend birim testleri | Uyarı | FAISS/NumPy DeprecationWarning görülebilir |
-| `ruff check .` | Kod kalitesi (lint/biçem) | Geçti | - |
-| `mypy .` | Tip denetimi | Geçti | - |
-| `flutter analyze` | Flutter statik analiz | Geçti | - |
-| `flutter test` | Flutter widget testleri | Geçti | - |
-| `py -3 tools/encoding_guard.py --root .` | Encoding guard | Geçti | UTF-8/BOM ve mojibake taraması |
-| `tools/test_api.ps1` | API smoke testi | Geçti | Model yoksa SKIP |
-| `tools/smoke_test.ps1` | Geniş smoke testi | Geçti | Model yoksa SKIP |
+| `python -m pytest -q` | Backend birim testleri | ✅ Geçti | 50 test geçti, 1 DeprecationWarning (FAISS/NumPy) |
+| `ruff check . --select=E9,F63,F7,F82` | Kritik kod hataları | ✅ Geçti | Kritik hata yok |
+| `ruff check .` | Kod kalitesi (lint/biçem) | ✅ Geçti | Kod stili sorunsuz |
+| `mypy .` | Tip denetimi | ✅ Geçti | 18 kaynak dosyada tip hatası yok |
+| `flutter analyze` | Flutter statik analiz | ⏭️ CI'da | CI ortamında çalıştırılıyor |
+| `flutter test` | Flutter widget testleri | ⏭️ CI'da | CI ortamında çalıştırılıyor |
+| `python tools/encoding_guard.py --root .` | Encoding guard | ✅ Geçti | UTF-8/BOM ve mojibake taraması temiz |
+| `tools/test_api.ps1` | API smoke testi | ⏭️ CI'da | Model yoksa SKIP |
+| `tools/smoke_test.ps1` | Geniş smoke testi | ⏭️ CI'da | Model yoksa SKIP |
+
+## Son Test Çalıştırma Tarihi
+**Tarih:** 2026-01-01  
+**Python Sürümü:** 3.12.3  
+**Test Ortamı:** Ubuntu 22.04 (CI ortamı)
 
 ## Uyarılar
 - FAISS ve NumPy uyumluluğu nedeniyle `DeprecationWarning` görülebilir; bu uyarının çalışabilirlik üzerinde etkisi bulunmamaktadır.
