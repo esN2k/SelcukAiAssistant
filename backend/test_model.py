@@ -32,7 +32,7 @@ TEST_QUESTIONS = [
     "Konya Teknokent ile işbirliği var mı?",
 ]
 
-def test_model(question: str, model: str = "turkcell_llm_7b_selcuk") -> dict:
+def run_model_test(question: str, model: str = "turkcell_llm_7b_selcuk") -> dict:
     """Modele soru sor ve cevabı al."""
     try:
         result = subprocess.run(
@@ -61,7 +61,7 @@ def main():
     results = []
     for i, question in enumerate(TEST_QUESTIONS, 1):
         print(f"\n[{i}/{len(TEST_QUESTIONS)}] ❓ {question}")
-        result = test_model(question)
+        result = run_model_test(question)
         results.append(result)
         
         if result['success']:
