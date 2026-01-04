@@ -22,7 +22,7 @@ SELCUK_UNI_FACTS = {
             "alan": "Geniş kampus alanı",
             "fakulteler": ["Mühendislik", "Fen", "Edebiyat", "İletişim"],
         },
-        "ard��çlı": {
+        "ardıçlı": {
             "konum": "Karatay/Konya", 
             "fakulteler": ["Tıp", "Sağlık Bilimleri", "Diş Hekimliği"],
         }
