@@ -69,6 +69,3 @@ tools/.tmp/
 
 # RAG data
 /data/
-
-# Archived docs
-docs/_archive/
