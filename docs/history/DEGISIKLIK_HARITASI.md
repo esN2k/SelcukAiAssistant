@@ -18,14 +18,11 @@
 Aşağıdaki dosyalar eklenmiş veya güncellenmiştir:
 - `LICENSE` (yeni)
 - `CONTRIBUTORS.md` (yeni)
-- `JURI_HAZIRLIK_OZET.md` (yeni, düzeltildi)
-- `docs/JURI_HAZIRLIK.md` (yeni, düzeltildi)
-- `docs/FINAL_DEGERLENDIRME.md` (yeni, düzeltildi)
-- `docs/GUVENLIK_OZETI.md` (yeni)
-- `docs/screenshots/README.md` (yeni)
-- `docs/TEST_RAPORU.md` (güncellendi)
+- `docs/presentation/JURI_HAZIRLIK.md` (yeni, düzeltildi)
+- `docs/reports/GUVENLIK_OZETI.md` (yeni)
+- `docs/reports/TEST_RAPORU.md` (güncellendi)
 - `README.md` (güncellendi, düzeltildi)
-- `DOGRULAMA_RAPORU.md` (bu süreçte eklendi)
+- `docs/reports/DOGRULAMA_RAPORU.md` (bu süreçte eklendi)
 
 ---
 
@@ -35,8 +32,6 @@ Aşağıdaki dosyalar eklenmiş veya güncellenmiştir:
 
 #### Subjektif Puanlama (DÜZELTİLDİ)
 **Sorun**: Metodolojisi olmayan sayısal skorlar kullanılmıştır.
-- JURI_HAZIRLIK_OZET.md: "92.9/100"
-- FINAL_DEGERLENDIRME.md: Kategorilere "95/100", "98/100" gibi puanlar
 
 **Düzeltme**: Tüm sayısal skorlar kaldırılmış, kanıta dayalı ifadeler kullanılmıştır.
 
@@ -122,15 +117,13 @@ Sonuç: Hardcoded secret bulunmadı
 ## 4. Dokümantasyon Konsolidasyonu
 
 ### Analiz Edilen Belgeler
-1. **docs/SUNUM_NOTLARI.md** (42 satır) - Akademik sunum akışı
-2. **docs/JURI_HAZIRLIK.md** (267 satır) - Detaylı teknik hazırlık
-3. **JURI_HAZIRLIK_OZET.md** (123 satır) - Hızlı durum kontrolü
+1. **docs/presentation/final_raporu/SPEAKER_NOTES.md** (42 satır) - Akademik sunum akışı
+2. **docs/presentation/JURI_HAZIRLIK.md** (267 satır) - Detaylı teknik hazırlık
 
 ### Örtüşme Değerlendirmesi
 Her belge farklı amaçlara hizmet etmektedir:
-- **SUNUM_NOTLARI**: Akademik üslupla hazırlanmış sunum akışı ve jüri soruları
+- **SPEAKER_NOTES**: Akademik üslupla hazırlanmış sunum akışı ve jüri soruları
 - **JURI_HAZIRLIK**: Demo senaryoları, API örnekleri, teknik kontrol listesi
-- **JURI_HAZIRLIK_OZET**: Hızlı başlangıç ve diğer belgelere yönlendirme
 
 ### Konsolidasyon Önerisi
 **Mevcut yapı korunmalıdır**. Belgeler arasında minimum tekrar bulunmakta ve her biri farklı kullanım senaryolarına hizmet etmektedir. Konsolidasyon gerekmemektedir.
@@ -142,15 +135,12 @@ Her belge farklı amaçlara hizmet etmektedir:
 ### Onaylanan Belgeler (Kalsın)
 - ✓ `LICENSE` - MIT lisansı, gerekli
 - ✓ `CONTRIBUTORS.md` - Katkıda bulunanlar listesi
-- ✓ `JURI_HAZIRLIK_OZET.md` - Akademik üslup uygulandı
-- ✓ `docs/JURI_HAZIRLIK.md` - API şemaları düzeltildi
-- ✓ `docs/FINAL_DEGERLENDIRME.md` - Skorlar kaldırıldı
-- ✓ `docs/GUVENLIK_OZETI.md` - Uygun içerik
-- ✓ `docs/screenshots/README.md` - Yedek plan rehberi
-- ✓ `docs/TEST_RAPORU.md` - Güncel test sonuçları
-- ✓ `docs/SUNUM_NOTLARI.md` - Akademik sunum notları
+- ✓ `docs/presentation/JURI_HAZIRLIK.md` - API şemaları düzeltildi
+- ✓ `docs/reports/GUVENLIK_OZETI.md` - Uygun içerik
+- ✓ `docs/reports/TEST_RAPORU.md` - Güncel test sonuçları
+- ✓ `docs/presentation/final_raporu/SPEAKER_NOTES.md` - Akademik sunum notları
 - ✓ `README.md` - Problematik referans kaldırıldı
-- ✓ `DOGRULAMA_RAPORU.md` - Bu süreçte eklenen detaylı rapor
+- ✓ `docs/reports/DOGRULAMA_RAPORU.md` - Bu süreçte eklenen detaylı rapor
 
 ### Çıkarılması Gerekenler
 Yok. Tüm belgeler incelendikten ve gerekli düzeltmeler yapıldıktan sonra uygun bulunmuştur.
@@ -160,20 +150,16 @@ Yok. Tüm belgeler incelendikten ve gerekli düzeltmeler yapıldıktan sonra uyg
 ## 6. Patch Yaklaşımı Özeti
 
 ### Tamamen Yeniden Yazılan Bölümler
-1. **JURI_HAZIRLIK_OZET.md**: İlk 50 satır (başlık, kalite kontrolleri, temel özellikler)
-2. **JURI_HAZIRLIK_OZET.md**: Son bölüm (jüri soruları ve özet)
-3. **FINAL_DEGERLENDIRME.md**: Genel değerlendirme, diploma kriterleri, özet
 
 ### Düzeltilen Bölümler (Patch)
-1. **docs/JURI_HAZIRLIK.md**: /health, /models, /chat demo örnekleri
+1. **docs/presentation/JURI_HAZIRLIK.md**: /health, /models, /chat demo örnekleri
 2. **README.md**: Problematik skor referansı
 
 ### Değiştirilmeyen Belgeler
 1. **LICENSE**: Uygun
 2. **CONTRIBUTORS.md**: Uygun
-3. **docs/GUVENLIK_OZETI.md**: Uygun
-4. **docs/screenshots/README.md**: Uygun
-5. **docs/TEST_RAPORU.md**: Güncel
+3. **docs/reports/GUVENLIK_OZETI.md**: Uygun
+5. **docs/reports/TEST_RAPORU.md**: Güncel
 
 ---
 
@@ -213,11 +199,11 @@ curl http://localhost:8000/models
 - ✓ Tüm hassas bilgiler ortam değişkenlerinde
 
 ### Cloudflare Tunnel Notları
-- `docs/GUVENLIK_OZETI.md` dosyasında Quick Tunnel'ın kalıcılık garantisi olmadığı belirtilmiştir
+- `docs/reports/GUVENLIK_OZETI.md` dosyasında Quick Tunnel'ın kalıcılık garantisi olmadığı belirtilmiştir
 - Remote demo için güvenli kullanım notları kısaca eklenmiştir
 
 ### Güvenlik Özeti Durumu
-`docs/GUVENLIK_OZETI.md` dosyası akademik üslupla hazırlanmış, aşağıdaki konuları kapsamaktadır:
+`docs/reports/GUVENLIK_OZETI.md` dosyası akademik üslupla hazırlanmış, aşağıdaki konuları kapsamaktadır:
 - Kimlik bilgisi yönetimi
 - Veri gizliliği (yerel LLM)
 - API güvenliği (CORS, input validation)
@@ -239,8 +225,7 @@ curl http://localhost:8000/models
 5. **Dokümantasyon**: Akademik üslup uygulandı, emoji ve övgü kaldırıldı
 
 #### Yapılan Değişiklikler
-- 4 dosya düzeltildi (JURI_HAZIRLIK_OZET.md, docs/JURI_HAZIRLIK.md, docs/FINAL_DEGERLENDIRME.md, README.md)
-- 1 dosya eklendi (DOGRULAMA_RAPORU.md)
+- 1 dosya eklendi (docs/reports/DOGRULAMA_RAPORU.md)
 - 7 dosya onaylandı (değişiklik gerekmedi)
 
 #### Kullanıcı Aksiyonları
@@ -258,9 +243,9 @@ Kullanıcının ek düzeltme yapması gerekmemektedir. Dokümantasyon jüri sunu
 - `backend/rag_service.py`: RAG citations implementasyonu
 
 ### İlgili Belgeler
-- `DOGRULAMA_RAPORU.md`: Detaylı doğrulama raporu
-- `docs/TEST_RAPORU.md`: Test sonuçları
-- `docs/GUVENLIK_OZETI.md`: Güvenlik değerlendirmesi
+- `docs/reports/DOGRULAMA_RAPORU.md`: Detaylı doğrulama raporu
+- `docs/reports/TEST_RAPORU.md`: Test sonuçları
+- `docs/reports/GUVENLIK_OZETI.md`: Güvenlik değerlendirmesi
 
 ---
 

@@ -14,15 +14,15 @@ Bu doküman, projenin diploma sunumuna hazır olup olmadığını kontrol etmek 
 ### Dokümantasyon
 - ✅ **README.md**: Güncel ve kapsamlı
 - ✅ **INSTALL.md**: Platform bazlı kurulum adımları mevcut
-- ✅ **ARCHITECTURE.md**: Mimari açıklaması eksiksiz
-- ✅ **FEATURES.md**: Özellikler listelendi
-- ✅ **docs/SUNUM_NOTLARI.md**: Jüri sunumu için detaylı notlar
-- ✅ **docs/TEST_RAPORU.md**: Test sonuçları güncellendi
-- ✅ **docs/SORUN_GIDERME.md**: Yaygın sorunlar ve çözümleri
-- ✅ **docs/API_CONTRACT.md**: API dokümantasyonu
-- ✅ **docs/RAG.md**: RAG kullanım kılavuzu
-- ✅ **docs/MODELLER.md**: Model açıklamaları
-- ✅ **docs/LORA_PLANI.md**: Gelecek geliştirmeler
+- ✅ **docs/technical/ARCHITECTURE_OVERVIEW.md**: Mimari açıklaması eksiksiz
+- ✅ **docs/guides/FEATURES.md**: Özellikler listelendi
+- ✅ **docs/presentation/final_raporu/SPEAKER_NOTES.md**: Jüri sunumu için detaylı notlar
+- ✅ **docs/reports/TEST_RAPORU.md**: Test sonuçları güncellendi
+- ✅ **docs/ops/SORUN_GIDERME.md**: Yaygın sorunlar ve çözümleri
+- ✅ **docs/technical/API_CONTRACT.md**: API dokümantasyonu
+- ✅ **docs/technical/RAG.md**: RAG kullanım kılavuzu
+- ✅ **docs/technical/MODELLER.md**: Model açıklamaları
+- ✅ **docs/reports/FINE_TUNING_REPORT.md**: Gelecek geliştirmeler
 - ✅ **LICENSE**: MIT lisansı eklendi
 - ✅ **CONTRIBUTORS.md**: Katkıda bulunanlar listesi
 
@@ -33,9 +33,8 @@ Bu doküman, projenin diploma sunumuna hazır olup olmadığını kontrol etmek 
 - ✅ **ARB JSON Validation**: Türkçe/İngilizce dil dosyaları geçerli
 
 ### Görsel Materyaller
-- ✅ **Logo dosyaları**: docs/logo/ altında mevcut
+- ✅ **Logo dosyaları**: docs/presentation/final_raporu/ altında mevcut
 - ✅ **Web/Android icons**: Mevcut
-- ✅ **Vize Raporu**: PDF ve DOCX formatında hazır
 
 ## 📋 Jüri Sunumu İçin Öneriler
 
@@ -146,7 +145,7 @@ curl -X POST http://localhost:8000/chat \
     "total_tokens": 650
   },
   "citations": [
-    "docs/ARCHITECTURE.md (chunk 0)",
+    "docs/technical/ARCHITECTURE.md (chunk 0)",
     "README.md (chunk 2)"
   ]
 }
@@ -184,7 +183,7 @@ Demo sırasında teknik bir sorun olursa kullanmak üzere aşağıdaki ekran gö
 - [ ] **Frontend model seçici ekranı** (Settings > Model Selection)
 - [ ] **CI/CD pipeline başarılı çalışma** (GitHub Actions)
 
-**Not:** Ekran görüntülerini `docs/screenshots/` klasörüne kaydedin ve sunum öncesi kontrol edin.
+**Not:** Ekran görüntülerini `docs/presentation/final_raporu/screenshots/` klasörüne kaydedin ve sunum öncesi kontrol edin.
 
 ### Olası Jüri Soruları ve Yanıtlar
 
@@ -195,7 +194,7 @@ Y: Veri gizliliği ve yerel çalışma gereksinimleri. Akademik ortamda hassas v
 Y: FAISS ile semantik arama yapılıyor, en alakalı kaynak parçaları çekiliyor ve citations ile kaynak gösterimi sağlanıyor. Strict mode'da kaynak yoksa yanıt verilmiyor.
 
 **S: Performans sorunları var mı?**  
-Y: Embedding batch size ve top_k parametreleri ayarlanabilir. SSE streaming ile kullanıcı deneyimi iyileştirildi. Benchmark sonuçları docs/BENCHMARK_RAPORU.md'de.
+Y: Embedding batch size ve top_k parametreleri ayarlanabilir. SSE streaming ile kullanıcı deneyimi iyileştirildi. Benchmark sonuçları docs/reports/BENCHMARK_RAPORU.md'de.
 
 **S: Çoklu sağlayıcı (Ollama/HF) desteği nasıl çalışıyor?**  
 Y: Provider Pattern ile backend/providers/ altında soyutlama yapıldı. MODEL_BACKEND ayarıyla sağlayıcı seçilebiliyor, /models endpoint'i uygunluğu raporluyor.
@@ -204,7 +203,7 @@ Y: Provider Pattern ile backend/providers/ altında soyutlama yapıldı. MODEL_B
 Y: 50 pytest testi (API, RAG, retry, health), ruff/mypy statik analizleri, Flutter analyze/test, encoding guard ve CI/CD pipeline ile sürekli kontrol.
 
 **S: Proje sonrası geliştirme planları neler?**  
-Y: LoRA ile Türkçe ince ayar, Appwrite ile sohbet geçmişi saklama, iOS/Android packaging. Detaylar docs/LORA_PLANI.md ve docs/YOL_HARITASI.md'de.
+Y: LoRA ile Türkçe ince ayar, Appwrite ile sohbet geçmişi saklama, iOS/Android packaging. Detaylar docs/reports/FINE_TUNING_REPORT.md dosyasında.
 
 **S: Offline çalışabiliyor mu?**  
 Y: Evet, Ollama yerel olarak çalıştığı için internet olmadan da temel sohbet akışı sürdürülebilir. HF modelleri önceden indirilirse tamamen offline kullanılabilir.
@@ -218,7 +217,7 @@ Y: Evet, Ollama yerel olarak çalıştığı için internet olmadan da temel soh
 - [ ] CI/CD pipeline'ının başarılı olduğunu kontrol et
 - [ ] Sunum notlarını gözden geçir
 - [ ] Olası sorulara hazırlan
-- [ ] **Yedek ekran görüntülerini hazırla** (docs/screenshots/)
+- [ ] **Yedek ekran görüntülerini hazırla** (docs/presentation/final_raporu/screenshots/)
 
 ### Sunum Günü
 - [ ] Laptop'u tam şarj et
@@ -226,7 +225,7 @@ Y: Evet, Ollama yerel olarak çalıştığı için internet olmadan da temel soh
 - [ ] Internet bağlantısını kontrol et (gerekirse hotspot hazırla)
 - [ ] Demo için gerekli servisleri başlat (Ollama, Backend)
 - [ ] Ekran paylaşımını test et
-- [ ] Yedek plan hazırla (screenshots klasörünü aç, sunum modu)
+- [ ] Yedek plan hazırla (docs/presentation/final_raporu/screenshots klasörünü aç, sunum modu)
 
 ## 📊 Proje İstatistikleri
 

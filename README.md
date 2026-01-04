@@ -9,7 +9,7 @@ gizliliğe odaklı bir **yerel yapay zeka akademik asistan** projesidir. Sistem,
 Google Gemini API kullanımından tamamen vazgeçmiş ve **yerel Ollama (Llama 3.1)**
 altyapısına geçirilmiştir.
 
-> 🎓 **Jüri Sunumuna Hazırlık:** [JURI_HAZIRLIK_OZET.md](JURI_HAZIRLIK_OZET.md) dosyasında sunum kontrol listesi ve demo senaryoları bulunmaktadır.
+> 🎓 **Jüri Sunumuna Hazırlık:** [docs/presentation/JURI_HAZIRLIK.md](docs/presentation/JURI_HAZIRLIK.md) dosyasında sunum kontrol listesi ve demo senaryoları bulunmaktadır.
 
 ## Amaç
 - Öğrenci, akademisyen ve idari personel için güvenilir akademik bilgi desteği sağlamak.
@@ -70,8 +70,8 @@ flutter run
 ```
 
 > Not: HuggingFace (HF) yerel model akışı opsiyoneldir. Windows’ta `torch_python.dll`
-> hatası için `docs/SORUN_GIDERME.md` dosyasına bakın. HF offline/önbellek ayarları
-> için `docs/MODELLER.md` ve `INSTALL.md` dosyalarını inceleyin.
+> hatası için `docs/ops/SORUN_GIDERME.md` dosyasına bakın. HF offline/önbellek ayarları
+> için `docs/technical/MODELLER.md` ve `INSTALL.md` dosyalarını inceleyin.
 
 ## RAG Kullanımı
 ```bash
@@ -87,23 +87,21 @@ RAG_VECTOR_DB_PATH=./data/rag
 ## Dokümantasyon
 | Belge | Açıklama | Konum |
 | --- | --- | --- |
-| **Jüri Hazırlık** | **Sunum hazırlık kontrol listesi ve öneriler** | **`docs/JURI_HAZIRLIK.md`** |
-| Sunum Notları | Jüri odaklı sunum akışı ve Soru‑Cevap hazırlığı | `docs/SUNUM_NOTLARI.md` |
-| Test Raporu | CI/test çıktılarının akademik özeti | `docs/TEST_RAPORU.md` |
-| Benchmark Raporu | Ollama hızlı ölçüm sonuçları | `docs/BENCHMARK_RAPORU.md` |
-| LoRA Planı | İnce ayar stratejisi ve veri hazırlama | `docs/LORA_PLANI.md` |
-| Veri Kaynakları | RAG veri toplama özeti | `docs/VERI_KAYNAKLARI.md` |
+| **Jüri Hazırlık** | **Sunum hazırlık kontrol listesi ve öneriler** | **`docs/presentation/JURI_HAZIRLIK.md`** |
+| Sunum Notları | Jüri odaklı sunum akışı ve Soru‑Cevap hazırlığı | `docs/presentation/final_raporu/SPEAKER_NOTES.md` |
+| Test Raporu | CI/test çıktılarının akademik özeti | `docs/reports/TEST_RAPORU.md` |
+| Benchmark Raporu | Ollama hızlı ölçüm sonuçları | `docs/reports/BENCHMARK_RAPORU.md` |
+| ˜nce Ayar Raporu | Fine-tuning ve veri hazrlama ”zeti | `docs/reports/FINE_TUNING_REPORT.md` |
+| Veri Kaynakları | RAG veri toplama özeti | `docs/reports/VERI_KAYNAKLARI.md` |
 | Kurulum Rehberi | Platform bazlı kurulum adımları | `INSTALL.md` |
 | Katkıda Bulunanlar | Proje ekibi ve teşekkürler | `CONTRIBUTORS.md` |
-| Mimari (Özet) | Yüksek seviye mimari | `ARCHITECTURE.md` |
-| Mimari (Detay) | RAG ve provider akışları | `docs/ARCHITECTURE.md` |
-| RAG Rehberi | İndeksleme ve ayarlar | `docs/RAG.md` |
-| Modeller | Ollama/HF/API model notları | `docs/MODELLER.md` |
-| Dağıtım | Yerel/Docker dağıtım | `docs/DAGITIM.md` |
-| Sorun Giderme | Yaygın hata ve çözümler | `docs/SORUN_GIDERME.md` |
-| API Sözleşmesi | Endpoint ve şema detayları | `docs/API_CONTRACT.md` |
-| Yol Haritası | Gelişim planı | `docs/YOL_HARITASI.md` |
-| Sürüm Kontrol Listesi | Kalite kapıları | `docs/SURUM_KONTROL_LISTESI.md` |
+| Mimari (Özet) | Yüksek seviye mimari | `docs/technical/ARCHITECTURE_OVERVIEW.md` |
+| Mimari (Detay) | RAG ve provider akışları | `docs/technical/ARCHITECTURE.md` |
+| RAG Rehberi | İndeksleme ve ayarlar | `docs/technical/RAG.md` |
+| Modeller | Ollama/HF/API model notları | `docs/technical/MODELLER.md` |
+| Dağıtım | Yerel/Docker dağıtım | `docs/ops/DAGITIM.md` |
+| Sorun Giderme | Yaygın hata ve çözümler | `docs/ops/SORUN_GIDERME.md` |
+| API Sözleşmesi | Endpoint ve şema detayları | `docs/technical/API_CONTRACT.md` |
 
 ## Test / Kalite Kapıları
 Backend:

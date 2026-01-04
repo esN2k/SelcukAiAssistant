@@ -64,6 +64,10 @@ ollama-data/
 benchmark/data/selcuk_tr.jsonl
 benchmark/outputs/
 
+# Presentation assets
+docs/presentation/final_raporu/screenshots/
+!docs/presentation/final_raporu/screenshots/.gitkeep
+
 # Tooling temp
 tools/.tmp/
 

@@ -197,7 +197,7 @@ Kullanıcı Deneyimi:
 - Açık/Koyu tema
 - Mobil, web ve desktop uyumluluğu
 Görsel Önerisi: Chat ekranı + ayarlar ekranı yan yana.
-Konuşmacı Notu (özet): Temel UI özellikleri FEATURES.md ve Flutter kodu ile uyumlu.
+Konuşmacı Notu (özet): Temel UI özellikleri docs/guides/FEATURES.md ve Flutter kodu ile uyumlu.
 
 ## SLAYT 14: EKRAN GÖRÜNTÜLERİ - ANA SAYFA
 Önerilen Görseller:
@@ -238,7 +238,7 @@ Görsel Önerisi: Test tablosu + kısa log alıntısı.
 Konuşmacı Notu (özet): Test raporu ve doğrulama scriptleri referans gösterilir.
 
 ## SLAYT 18: PERFORMANS METRİKLERİ
-Benchmark Özeti (docs/BENCHMARK_RAPORU.md):
+Benchmark Özeti (docs/reports/BENCHMARK_RAPORU.md):
 - llama3.2:3b (12 örnek): Avg TTFT 5180 ms, 5.41 tok/s, Avg total 8.643 s
 - turkcell-llm-7b (6 örnek): Avg TTFT 10126 ms, 4.10 tok/s
 - selcuk_ai_assistant (6 örnek): Avg TTFT 10186 ms, 3.49 tok/s
@@ -300,7 +300,7 @@ Kısa Vadeli:
 - KB doğrulama ve güncelleme otomasyonu
 
 Orta Vadeli:
-- LoRA/QLoRA ince ayar (docs/LORA_PLANI.md)
+- LoRA/QLoRA ince ayar (docs/reports/FINE_TUNING_REPORT.md)
 - Appwrite entegrasyonunun genişletilmesi
 
 Uzun Vadeli:

@@ -16,15 +16,16 @@ Copilot tarafından eklenen jüri hazırlık belgeleri incelenmiş, akademik üs
 ### Yeni Eklenen Dosyalar
 - `LICENSE` (MIT lisansı)
 - `CONTRIBUTORS.md` (katkıda bulunanlar listesi)
-- `JURI_HAZIRLIK_OZET.md` (özet kontrol listesi)
-- `docs/JURI_HAZIRLIK.md` (detaylı hazırlık rehberi)
-- `docs/FINAL_DEGERLENDIRME.md` (proje değerlendirmesi)
-- `docs/GUVENLIK_OZETI.md` (güvenlik raporu)
-- `docs/screenshots/README.md` (yedek plan rehberi)
+- `docs/presentation/JURI_HAZIRLIK.md` (detaylı hazırlık rehberi)
+- `docs/presentation/final_raporu/SUNUM.md` (sunum içeriği)
+- `docs/presentation/final_raporu/SPEAKER_NOTES.md` (konuşmacı notları)
+- `docs/presentation/final_raporu/DEMO_SCRIPT.md` (demo akışı)
+- `docs/presentation/final_raporu/QA_PREP.md` (soru-cevap hazırlığı)
+- `docs/reports/GUVENLIK_OZETI.md` (güvenlik raporu)
 
 ### Güncellenen Dosyalar
 - `README.md` (problematik skor referansı kaldırıldı)
-- `docs/TEST_RAPORU.md` (2026-01-01 tarihli)
+- `docs/reports/TEST_RAPORU.md` (2026-01-01 tarihli)
 
 ---
 
@@ -34,8 +35,7 @@ Copilot tarafından eklenen jüri hazırlık belgeleri incelenmiş, akademik üs
 
 #### Sorun: Subjektif Puanlama
 **Tespit Edilen:**
-- JURI_HAZIRLIK_OZET.md: "92.9/100 - MÜKEMMEl"
-- FINAL_DEGERLENDIRME.md: "92.6/100", "95/100", "98/100" gibi kategorik skorlar
+- Metodolojisi olmayan sayısal skorlar
 
 **Düzeltme:**
 - Tüm sayısal skorlar kaldırıldı
@@ -176,7 +176,7 @@ Copilot tarafından eklenen jüri hazırlık belgeleri incelenmiş, akademik üs
 **Yanlış (hayali format):**
 ```json
 "citations": [
-  "docs/ARCHITECTURE.md (lines 10-25)",
+  "docs/technical/ARCHITECTURE.md (lines 10-25)",
   "README.md (lines 40-45)"
 ]
 ```
@@ -184,7 +184,7 @@ Copilot tarafından eklenen jüri hazırlık belgeleri incelenmiş, akademik üs
 **Doğru (gerçek implementasyon):**
 ```json
 "citations": [
-  "docs/ARCHITECTURE.md (chunk 0)",
+  "docs/technical/ARCHITECTURE.md (chunk 0)",
   "README.md (chunk 2)"
 ]
 ```
@@ -231,55 +231,37 @@ grep -r "API_KEY\|SECRET\|PASSWORD" backend/ | grep -v ".example"
 
 ---
 
-## 4. Dokümantasyon Konsolidasyonu Değerlendirmesi
+## 4. Dokümasyon Konsolidasyonu Değerlendirmesi
 
 ### Mevcut Jüri Hazırlık Belgeleri
-1. **docs/SUNUM_NOTLARI.md** (42 satır)
-   - Akademik üslup
-   - Kısa ve öz sunum akışı
-   - Olası jüri soruları
-
-2. **docs/JURI_HAZIRLIK.md** (267 satır)
-   - Detaylı kontrol listesi
-   - Demo senaryoları ve beklenen çıktılar
-   - Kapsamlı hazırlık rehberi
-
-3. **JURI_HAZIRLIK_OZET.md** (123 satır)
-   - Hızlı başlangıç kılavuzu
-   - Kalite kontrolleri durumu
-   - Önemli belgelere bağlantılar
+1. **docs/presentation/final_raporu/SUNUM.md** (slayt içeriği)
+2. **docs/presentation/final_raporu/SPEAKER_NOTES.md** (konuşmacı notları)
+3. **docs/presentation/JURI_HAZIRLIK.md** (detaylı kontrol listesi ve demo akışı)
 
 ### Örtüşme Analizi
-- **SUNUM_NOTLARI.md ↔ JURI_HAZIRLIK.md**: Minimum örtüşme
-  - SUNUM_NOTLARI: Akademik sunum akışı
-  - JURI_HAZIRLIK: Teknik demo ve kontrol listesi
-  - **Öneri**: Her iki belge de tutulmalı, farklı amaçlara hizmet etmektedir
-
-- **JURI_HAZIRLIK_OZET.md ↔ JURI_HAZIRLIK.md**: Özet-Detay ilişkisi
-  - Özet: Hızlı erişim ve durum kontrolü
-  - Detay: Kapsamlı hazırlık ve demo adımları
-  - **Öneri**: İkisi de tutulmalı, biri diğerine yönlendirmektedir
+- **SUNUM.md ↔ SPEAKER_NOTES.md**: İçerik-not ayrımı ile birbirini tamamlar.
+- **SPEAKER_NOTES.md ↔ JURI_HAZIRLIK.md**: Sunum anlatımı ile teknik kontrol listesi farklı ihtiyaçları kapsar.
 
 ### Konsolidasyon Önerisi
 **Mevcut yapı uygun görülmektedir**. Her belge farklı bir kullanım senaryosuna hizmet etmektedir:
-- JURI_HAZIRLIK_OZET.md → Hızlı durum kontrolü
-- docs/JURI_HAZIRLIK.md → Detaylı teknik hazırlık
-- docs/SUNUM_NOTLARI.md → Akademik sunum akışı
+- docs/presentation/final_raporu/SUNUM.md → Slayt içeriği
+- docs/presentation/final_raporu/SPEAKER_NOTES.md → Konuşmacı notları
+- docs/presentation/JURI_HAZIRLIK.md → Demo ve kontrol listesi
 
 ---
 
 ## 5. Kalsın/Çıksın Listesi
 
 ### Kalsın (Onaylanan Belgeler)
-- ✅ `LICENSE` - Gerekli
-- ✅ `CONTRIBUTORS.md` - Uygun
-- ✅ `JURI_HAZIRLIK_OZET.md` - Düzeltildi, akademik üslup uygulandı
-- ✅ `docs/JURI_HAZIRLIK.md` - Düzeltildi, API şemaları doğrulandı
-- ✅ `docs/FINAL_DEGERLENDIRME.md` - Düzeltildi, skorlar kaldırıldı
-- ✅ `docs/GUVENLIK_OZETI.md` - Uygun, kabul edilebilir
-- ✅ `docs/screenshots/README.md` - Yedek plan rehberi, uygun
-- ✅ `docs/TEST_RAPORU.md` - Güncel test sonuçları
-- ✅ `docs/SUNUM_NOTLARI.md` - Akademik sunum notları
+- ? `LICENSE` - Gerekli
+- ? `CONTRIBUTORS.md` - Uygun
+- ? `docs/presentation/JURI_HAZIRLIK.md` - Düzeltildi, API şemaları doğrulandı
+- ? `docs/presentation/final_raporu/SUNUM.md` - Sunum içeriği
+- ? `docs/presentation/final_raporu/SPEAKER_NOTES.md` - Konuşmacı notları
+- ? `docs/presentation/final_raporu/DEMO_SCRIPT.md` - Demo akışı
+- ? `docs/presentation/final_raporu/QA_PREP.md` - Soru-cevap hazırlığı
+- ? `docs/reports/GUVENLIK_OZETI.md` - Uygun, kabul edilebilir
+- ? `docs/reports/TEST_RAPORU.md` - Güncel test sonuçları
 
 ### Çıkarılması Gerekenler
 Yok. Tüm belgeler düzeltildikten sonra uygun bulunmuştur.

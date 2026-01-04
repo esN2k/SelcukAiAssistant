@@ -24,7 +24,7 @@
 
 ## SLAYT 5: AMAÇ VE HEDEFLER
 - Yerel LLM ile veri gizliliği (README.md).
-- RAG ile kaynaklı yanıt ve strict mod (docs/RAG.md).
+- RAG ile kaynaklı yanıt ve strict mod (docs/technical/RAG.md).
 - TR/EN dil desteği (l10n dosyaları).
 - Provider Pattern ile esneklik (backend/providers/).
 - SSE streaming ile hızlı algılanan yanıt.
@@ -92,11 +92,11 @@
 
 ## SLAYT 17: TEST SENARYOLARI
 - validate_knowledge.py kritik bilgi doğrulaması sağlar.
-- docs/TEST_RAPORU.md: pytest 50 test, ruff/mypy, flutter analyze/test.
+- docs/reports/TEST_RAPORU.md: pytest 50 test, ruff/mypy, flutter analyze/test.
 - Test tablosu, doğrulama kurallarına dayanır.
 
 ## SLAYT 18: PERFORMANS METRİKLERİ
-- docs/BENCHMARK_RAPORU.md metrikleri sunulur.
+- docs/reports/BENCHMARK_RAPORU.md metrikleri sunulur.
 - llama3.2:3b (12 örnek) TTFT 5.18 sn, 5.41 tok/s.
 - SSE streaming ile algılanan gecikme düşer.
 
@@ -123,8 +123,7 @@
 - Tehdit: model sürüm değişimleri.
 
 ## SLAYT 23: GELECEK ÇALIŞMALAR
-- docs/LORA_PLANI.md: LoRA/QLoRA ince ayar planı.
-- docs/YOL_HARITASI.md: P2 RAG + yayın hazırlığı.
+- docs/reports/FINE_TUNING_REPORT.md: LoRA/QLoRA ince ayar planı.
 - Appwrite entegrasyonunun genişletilmesi.
 
 ## SLAYT 24: DEMO

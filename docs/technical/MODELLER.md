@@ -66,7 +66,7 @@ PY
 ```
 
 ## 5) LoRA / QLoRA
-- LoRA planı: `docs/LORA_PLANI.md`
+- LoRA planı: `docs/reports/FINE_TUNING_REPORT.md`
 - Veri hazırlama: `tools/prepare_lora_dataset.py`
 - Örnek çıktı: `data/finetune/selcuk_lora.jsonl`
 - Daha kaliteli çıktı için `--use-ollama` parametresi kullanılabilir.

@@ -55,9 +55,7 @@ EXCLUDE_DIRS = {
 
 EXCLUDE_PATHS = {
     Path("backend") / "data" / "rag",
-    Path("docs") / "logo",
-    Path("docs") / "vize_raporu",
-    Path("docs") / "final_raporu",
+    Path("docs") / "presentation" / "final_raporu",
     Path("tools") / ".tmp",
 }
 

@@ -30,7 +30,7 @@ INSTALL_HF=true docker compose up
 HF önbelleğini kalıcı yapmak için compose volume `hf-cache` kullanılmaktadır.
 
 ## 4) Nginx /api (SSE Destekli)
-- `nginx.conf` ve `nginx/` altındaki konfigler SSE için uygun başlıkları ekler.
+- `nginx/nginx.conf` ve `nginx/` altındaki konfigler SSE için uygun başlıkları ekler.
 - SSE için `X-Accel-Buffering: no` ve `Cache-Control: no-cache` tavsiye edilir.
 
 ## 5) Ortam Değişkenleri

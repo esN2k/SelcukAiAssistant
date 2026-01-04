@@ -41,4 +41,4 @@ Tüm ayarlar `backend/.env` üzerinden yönetilir. Önemli alanlar:
 - `RAG_ENABLED`, `RAG_VECTOR_DB_PATH`
 - `MAX_CONTEXT_TOKENS`, `MAX_OUTPUT_TOKENS`
 
-Detaylar için `docs/ARCHITECTURE.md` dosyasına bakın.
+Detaylar için `docs/technical/ARCHITECTURE.md` dosyasına bakın.

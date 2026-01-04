@@ -2,21 +2,21 @@
 
 ## 1) Neden bulut (Gemini/OpenAI) yerine yerel LLM?
 - Gizlilik ve KVKK uyumu için verinin kurum dışına çıkmaması hedeflendi.
-- README.md ve SUNUM_NOTLARI.md’de yerel LLM (Ollama) tercihi vurgulanıyor.
+- README.md ve docs/presentation/final_raporu/SUNUM.md’de yerel LLM (Ollama) tercihi vurgulanıyor.
 
 ## 2) Hallucination nasıl azaltılıyor?
 - RAG ile kaynaklı yanıt üretiliyor.
 - Strict mod açıkken kaynak yoksa “Bu bilgi kaynaklarda yok.” mesajı dönüyor (prompts.py).
 
 ## 3) RAG teknik olarak nasıl çalışıyor?
-- Soru → embedding (SentenceTransformer) → FAISS top_k → prompta kaynak ekleme → yanıt + citations (docs/RAG.md).
+- Soru → embedding (SentenceTransformer) → FAISS top_k → prompta kaynak ekleme → yanıt + citations (docs/technical/RAG.md).
 
 ## 4) Neden FAISS? ChromaDB nerede kullanılıyor?
 - Uygulama kodu FAISS index + metadata ile çalışıyor (rag_service.py, rag_ingest.py).
 - ChromaDB dokümanlarda opsiyonel katman olarak geçiyor; aktif implementasyon FAISS.
 
 ## 5) Performans nasıl?
-- docs/BENCHMARK_RAPORU.md’de TTFT ve tok/s ölçümleri var.
+- docs/reports/BENCHMARK_RAPORU.md’de TTFT ve tok/s ölçümleri var.
 - Örnek: llama3.2:3b için Avg TTFT 5.18 sn, 5.41 tok/s (12 örnek koşum).
 
 ## 6) Çoklu sağlayıcı (provider pattern) ne işe yarıyor?
@@ -44,10 +44,10 @@
 - Bulut API bağımlılığı yok.
 
 ## 11) Test kapsamı yeterli mi?
-- docs/TEST_RAPORU.md: 50 pytest testi + ruff/mypy + flutter analyze/test.
+- docs/reports/TEST_RAPORU.md: 50 pytest testi + ruff/mypy + flutter analyze/test.
 - Encoding guard ve smoke test scriptleri mevcut.
 
 ## 12) Gelecek geliştirme planı?
-- LoRA/QLoRA ince ayar (docs/LORA_PLANI.md).
+- LoRA/QLoRA ince ayar (docs/reports/FINE_TUNING_REPORT.md).
 - RAG kaynaklarının genişletilmesi.
 - Resmi sistem entegrasyonları.
