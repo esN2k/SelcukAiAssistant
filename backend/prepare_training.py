@@ -2,6 +2,7 @@
 import json
 from pathlib import Path
 from datetime import datetime
+from typing import Any, cast
 
 from selcuk_data import QA_PAIRS, SELCUK_UNI_FACTS
 
@@ -41,7 +42,7 @@ def create_rag_documents(output_dir: str = "data/rag/selcuk"):
     # Genel bilgiler
     with open(output_path / "01_genel_bilgiler.txt", 'w', encoding='utf-8') as f:
         f.write("# Selçuk Üniversitesi Genel Bilgiler\n\n")
-        info = SELCUK_UNI_FACTS["genel_bilgiler"]
+        info = cast(dict[str, Any], SELCUK_UNI_FACTS["genel_bilgiler"])
         f.write(f"**Ad:** {info['ad']}\n")
         f.write(f"**Şehir:** {info['sehir']}\n")
         f.write(f"**Kuruluş Yılı:** {info['kurulus_yili']}\n")
@@ -53,7 +54,7 @@ def create_rag_documents(output_dir: str = "data/rag/selcuk"):
     # Bilgisayar Mühendisliği
     with open(output_path / "02_bilgisayar_muhendisligi.txt", 'w', encoding='utf-8') as f:
         f.write("# Selçuk Üniversitesi Bilgisayar Mühendisliği Bölümü\n\n")
-        bm = SELCUK_UNI_FACTS["bilgisayar_muhendisligi"]
+        bm = cast(dict[str, Any], SELCUK_UNI_FACTS["bilgisayar_muhendisligi"])
         f.write(f"**Fakülte:** {bm['fakulte']}\n")
         f.write(f"**Yerleşke:** {bm['yerleske']}\n")
         f.write(f"**Program Türleri:** {', '.join(bm['program_turu'])}\n")
@@ -73,7 +74,7 @@ def create_rag_documents(output_dir: str = "data/rag/selcuk"):
     # Mühendislik Fakültesi
     with open(output_path / "03_muhendislik_fakultesi.txt", 'w', encoding='utf-8') as f:
         f.write("# Selçuk Üniversitesi Mühendislik Fakültesi\n\n")
-        muh = SELCUK_UNI_FACTS["muhendislik_fakultesi"]
+        muh = cast(dict[str, Any], SELCUK_UNI_FACTS["muhendislik_fakultesi"])
         f.write(f"**Konum:** {muh['konum']}\n\n")
         f.write("**Bölümler:**\n")
         for bolum in muh['bolumler']:
