@@ -1,14 +1,14 @@
 """RAG index'i manuel olarak oluştur (torch olmadan)."""
 import json
 from pathlib import Path
-import sys
+from typing import Any
 
 # Basit metin index oluştur
 data_dir = Path("data/rag/selcuk")
 output_dir = Path("data/rag")
 output_dir.mkdir(parents=True, exist_ok=True)
 
-documents = []
+documents: list[dict[str, Any]] = []
 for txt_file in data_dir.glob("*.txt"):
     content = txt_file.read_text(encoding='utf-8')
     

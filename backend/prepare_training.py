@@ -1,8 +1,8 @@
 """Q&A dataset oluşturma ve modeli eğitme hazırlığı."""
 import json
 from pathlib import Path
-from typing import List, Dict
 from datetime import datetime
+from typing import Any, cast
 
 from selcuk_data import QA_PAIRS, SELCUK_UNI_FACTS
 
@@ -42,7 +42,7 @@ def create_rag_documents(output_dir: str = "data/rag/selcuk"):
     # Genel bilgiler
     with open(output_path / "01_genel_bilgiler.txt", 'w', encoding='utf-8') as f:
         f.write("# Selçuk Üniversitesi Genel Bilgiler\n\n")
-        info = SELCUK_UNI_FACTS["genel_bilgiler"]
+        info = cast(dict[str, Any], SELCUK_UNI_FACTS["genel_bilgiler"])
         f.write(f"**Ad:** {info['ad']}\n")
         f.write(f"**Şehir:** {info['sehir']}\n")
         f.write(f"**Kuruluş Yılı:** {info['kurulus_yili']}\n")
@@ -54,7 +54,7 @@ def create_rag_documents(output_dir: str = "data/rag/selcuk"):
     # Bilgisayar Mühendisliği
     with open(output_path / "02_bilgisayar_muhendisligi.txt", 'w', encoding='utf-8') as f:
         f.write("# Selçuk Üniversitesi Bilgisayar Mühendisliği Bölümü\n\n")
-        bm = SELCUK_UNI_FACTS["bilgisayar_muhendisligi"]
+        bm = cast(dict[str, Any], SELCUK_UNI_FACTS["bilgisayar_muhendisligi"])
         f.write(f"**Fakülte:** {bm['fakulte']}\n")
         f.write(f"**Yerleşke:** {bm['yerleske']}\n")
         f.write(f"**Program Türleri:** {', '.join(bm['program_turu'])}\n")
@@ -74,7 +74,7 @@ def create_rag_documents(output_dir: str = "data/rag/selcuk"):
     # Mühendislik Fakültesi
     with open(output_path / "03_muhendislik_fakultesi.txt", 'w', encoding='utf-8') as f:
         f.write("# Selçuk Üniversitesi Mühendislik Fakültesi\n\n")
-        muh = SELCUK_UNI_FACTS["muhendislik_fakultesi"]
+        muh = cast(dict[str, Any], SELCUK_UNI_FACTS["muhendislik_fakultesi"])
         f.write(f"**Konum:** {muh['konum']}\n\n")
         f.write("**Bölümler:**\n")
         for bolum in muh['bolumler']:
@@ -89,13 +89,13 @@ def create_rag_documents(output_dir: str = "data/rag/selcuk"):
             f.write("---\n\n")
     
     print(f"✅ RAG dokümanları oluşturuldu: {output_path}")
-    print(f"📁 4 doküman dosyası")
+    print("📁 4 doküman dosyası")
     return output_path
 
 
 def create_modelfile(model_name: str = "turkcell_llm_7b_selcuk"):
     """Özelleştirilmiş Modelfile oluştur."""
-    modelfile_content = f"""FROM turkcell_llm_7b
+    modelfile_content = """FROM turkcell_llm_7b
 
 # Selçuk Üniversitesi özel sistem promptu - FEW-SHOT LEARNING
 SYSTEM \"\"\"SEN SELÇUK ÜNİVERSİTESİ AI ASİSTANISIN!
@@ -149,7 +149,7 @@ PARAMETER stop "<|im_end|>"
         f.write(modelfile_content)
     
     print(f"✅ Modelfile oluşturuldu: {modelfile_path}")
-    print(f"\n🔨 Modeli oluşturmak için:")
+    print("\n🔨 Modeli oluşturmak için:")
     print(f"   ollama create {model_name} -f Modelfile.{model_name}")
     return modelfile_path
 
