@@ -207,8 +207,8 @@ class EnhancedChatController extends GetxController {
       ..errorCode = null;
 
     final payloadMessages = _buildPayloadMessages();
-    // Model seçimi - geçersiz model varsa null gönder (backend varsayılanı kullanır)
-    String? selectedModel = Pref.selectedModel;
+    // Model seçimi - geçersiz model varsa null gönder (backend varsayılanı)
+    var selectedModel = Pref.selectedModel;
     if (selectedModel == 'selcuk_ai_assistant') {
       // Eski model ismi - backend'de artık yok, null gönder
       selectedModel = null;
