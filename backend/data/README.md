@@ -1,8 +1,8 @@
-# Selçuk Üniversitesi Bilgi Tabanı (Knowledge Base)
+# Selçuk Üniversitesi Bilgi Tabanı
 
 ## 📚 Genel Bakış
 
-Bu dizin, Selçuk Üniversitesi AI Asistanı için doğrulanmış bilgi kaynaklarını içerir.
+Bu dizin, Selçuk Üniversitesi Yapay Zeka Asistanı için doğrulanmış bilgi kaynaklarını içerir.
 
 ## 📁 Dosya Yapısı
 
@@ -10,9 +10,9 @@ Bu dizin, Selçuk Üniversitesi AI Asistanı için doğrulanmış bilgi kaynakla
 data/
 ├── selcuk_knowledge_base.json  # Ana bilgi tabanı (JSON format)
 ├── selcuk_qa_dataset.jsonl     # Soru-cevap eğitim veri seti
-└── rag/                        # RAG (Retrieval-Augmented Generation) dokümanları
-    ├── index.faiss             # FAISS vektör indexi
-    ├── metadata.json           # Doküman metadata
+└── rag/                        # RAG (Geri Getirim Destekli Üretim) dokümanları
+    ├── index.faiss             # FAISS vektör indeksi
+    ├── metadata.json           # Doküman üstverisi
     └── selcuk/                 # Kaynak dokümanlar
         ├── 01_genel_bilgiler.txt
         ├── 02_bilgisayar_muhendisligi.txt
@@ -46,7 +46,7 @@ with open('data/selcuk_knowledge_base.json', 'r', encoding='utf-8') as f:
     kb = json.load(f)
 
 # Konum bilgisine eriş
-print(kb['universite_bilgileri']['şehir'])  # Output: Konya
+print(kb['universite_bilgileri']['şehir'])  # Çıktı: Konya
 
 # SSS'lere eriş
 for qa in kb['sık_sorulan_sorular']:
@@ -56,7 +56,7 @@ for qa in kb['sık_sorulan_sorular']:
 
 ## 📝 selcuk_qa_dataset.jsonl
 
-Model fine-tuning için hazırlanmış soru-cevap çiftleri.
+Model ince ayar için hazırlanmış soru-cevap çiftleri.
 
 ### Format:
 ```jsonl
@@ -75,7 +75,7 @@ with open('data/selcuk_qa_dataset.jsonl', 'r', encoding='utf-8') as f:
 
 ## 🔍 RAG Dokümanları
 
-AI asistanın kaynak gösterimli yanıtlar üretmesi için kullanılan doküman seti.
+Yapay zeka asistanın kaynak gösterimli yanıtlar üretmesi için kullanılan doküman seti.
 
 ### Güncelleme:
 
@@ -84,10 +84,10 @@ AI asistanın kaynak gösterimli yanıtlar üretmesi için kullanılan doküman 
 cd backend
 python prepare_training.py
 
-# 2. FAISS indexini yeniden oluştur
+# 2. FAISS indeksini yeniden oluştur
 python rag_ingest.py --input data/rag/selcuk --output data/rag
 
-# 3. Backend'i yeniden başlat
+# 3. Arka ucu yeniden başlat
 uvicorn main:app --reload
 ```
 
@@ -100,7 +100,7 @@ cd backend
 python validate_knowledge.py
 ```
 
-Bu script şunları kontrol eder:
+Bu betik şunları kontrol eder:
 - ✅ Konum bilgisi (KONYA olmalı, İzmir DEĞİL!)
 - ✅ Kuruluş yılı (1975)
 - ✅ Bilgisayar Mühendisliği fakültesi (Teknoloji Fakültesi)
@@ -127,9 +127,9 @@ Bu script şunları kontrol eder:
 1. **Bilgi Toplama**: Resmi kaynaklardan (selcuk.edu.tr) güncel bilgi topla
 2. **Doğrulama**: Bilgileri çapraz kontrol et
 3. **JSON Güncelleme**: `selcuk_knowledge_base.json` dosyasını güncelle
-4. **Validasyon**: `python validate_knowledge.py` çalıştır
-5. **RAG Güncelleme**: RAG dokümanlarını ve indexini yeniden oluştur
-6. **Test**: AI asistana kritik soruları sor, yanıtları kontrol et
+4. **Doğrulama**: `python validate_knowledge.py` çalıştır
+5. **RAG Güncelleme**: RAG dokümanlarını ve indeksini yeniden oluştur
+6. **Test**: Yapay zeka asistana kritik soruları sor, yanıtları kontrol et
 
 ## 📊 İstatistikler
 
@@ -155,4 +155,4 @@ Bu bilgi tabanı düzenli olarak güncellenmeli:
 ---
 
 **Son Güncelleme**: 2026-01-04
-**Sorumlu**: AI Asistan Geliştirme Ekibi
+**Sorumlu**: Yapay Zeka Asistan Geliştirme Ekibi

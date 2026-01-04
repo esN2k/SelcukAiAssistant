@@ -22,8 +22,8 @@ Bu proje, Selçuk Üniversitesi "Bilgisayar Mühendisliği Uygulamaları" dersi 
 
 Bu bir eğitim projesidir, ancak önerileriniz ve geri bildirimleriniz her zaman değerlidir.
 
-1. Issue açarak hata bildirin veya özellik önerin
-2. Pull Request göndererek kod katkısı yapın
+1. Hata kaydı açarak hata bildirin veya özellik önerin
+2. Çekme isteği göndererek kod katkısı yapın
 3. Dokümantasyonu geliştirin
 4. Proje hakkında geri bildirim verin
 

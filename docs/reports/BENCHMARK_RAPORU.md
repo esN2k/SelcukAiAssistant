@@ -1,4 +1,4 @@
-# Benchmark Raporu (Ollama)
+# Kıyaslama Raporu (Ollama)
 
 ## Amaç
 Yerel Ollama modellerinin Türkçe görevlerde hız/tepki metriklerinin karşılaştırılması yapılmıştır.
@@ -14,7 +14,7 @@ Yerel Ollama modellerinin Türkçe görevlerde hız/tepki metriklerinin karşıl
 - max_samples: 6
 - Not: Her model için aynı örnek sayısı kullanıldı.
 
-| Model | Avg TTFT (ms) | Avg tok/s | Avg out tokens | Avg total time (s) |
+| Model | Ort. TTFT (ms) | Ort. belirteç/sn | Ort. çıktı belirteci | Ort. toplam süre (sn) |
 | --- | --- | --- | --- | --- |
 | ollama:aya:8b | 13392.93 | 3.33 | 36.8 | 18.786 |
 | ollama:deepseek-r1:8b | 22835.77 | 4.68 | 96.0 | 22.836 |
@@ -33,7 +33,7 @@ Yerel Ollama modellerinin Türkçe görevlerde hız/tepki metriklerinin karşıl
 - max_samples: 12
 - Koşum: 2025-12-29 (llama3.2:3b)
 
-| Model | Avg TTFT (ms) | Avg tok/s | Avg out tokens | Avg total time (s) |
+| Model | Ort. TTFT (ms) | Ort. belirteç/sn | Ort. çıktı belirteci | Ort. toplam süre (sn) |
 | --- | --- | --- | --- | --- |
 | ollama:llama3.2:3b | 5180.24 | 5.41 | 34.7 | 8.643 |
 
@@ -42,7 +42,7 @@ Yerel Ollama modellerinin Türkçe görevlerde hız/tepki metriklerinin karşıl
 - temperature: 0.2
 - max_samples: 3
 
-| Model | Koşum | Avg TTFT (ms) | Avg tok/s | Avg out tokens | Avg total time (s) |
+| Model | Koşum | Ort. TTFT (ms) | Ort. belirteç/sn | Ort. çıktı belirteci | Ort. toplam süre (sn) |
 | --- | --- | --- | --- | --- | --- |
 | aya:8b | selcuk_tr_ollama_quick6 | 5137.96 | 3.12 | 34.7 | 10.814 |
 | deepseek-r1:8b | selcuk_tr_qwen_deepseek | 20609.53 | 2.84 | 48.0 | 20.61 |
@@ -54,8 +54,8 @@ Yerel Ollama modellerinin Türkçe görevlerde hız/tepki metriklerinin karşıl
 | turkcell-llm-7b | selcuk_tr_ollama_quick6 | 4523.9 | 3.68 | 42.3 | 11.516 |
 
 ## Kısa Yorum
-- llama3.2:3b hız odaklı mod için güçlü bir adaydır (düşük TTFT ve yüksek tok/s).
-- 12 örnek koşumda llama3.2:3b için avg TTFT 5.18 sn ve 5.41 tok/s görüldü.
+- llama3.2:3b hız odaklı mod için güçlü bir adaydır (düşük TTFT ve yüksek belirteç/sn).
+- 12 örnek koşumda llama3.2:3b için ort. TTFT 5.18 sn ve 5.41 belirteç/sn görüldü.
 - selcuk_ai_assistant ve turkcell-llm-7b benzer hız profiline sahiptir; kalite testleri ile birlikte seçilmelidir.
 - qwen2.5:7b ve deepseek-r1:8b daha ağırdır; kalite odaklı senaryolarda değerlendirilmelidir.
 - gemma2:2b ve phi3:mini düşük kaynak modları için uygundur.

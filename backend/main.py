@@ -153,7 +153,7 @@ async def root() -> dict[str, str]:
     Çıkış: Durum sözlüğü.
     İşleyiş: Basit sağlık mesajı döndürür.
     """
-    return {"status": "ok", "message": "Selçuk AI Asistanı backend çalışıyor"}
+    return {"status": "ok", "message": "Selçuk AI Asistanı arka uç çalışıyor"}
 
 
 @app.get("/health")
@@ -163,7 +163,7 @@ async def health() -> dict[str, str]:
     Çıkış: Durum sözlüğü.
     İşleyiş: Sağlık kontrolü için kısa mesaj döndürür.
     """
-    return {"status": "ok", "message": "Selçuk AI Asistanı backend çalışıyor"}
+    return {"status": "ok", "message": "Selçuk AI Asistanı arka uç çalışıyor"}
 
 
 @app.get("/health/ollama")

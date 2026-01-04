@@ -4,46 +4,46 @@ Bu rapor, Selçuk AI Akademik Asistan projesinin test ve sürekli entegrasyon (C
 
 ## Test Ortamı
 - CI (GitHub Actions):
-  - Backend: ubuntu-latest
-  - API smoke: windows-latest
+  - Arka uç: ubuntu-latest
+  - API duman testi: windows-latest
   - Flutter: ubuntu-latest
 - Yerel geliştirme (örnek): Windows 10/11, Python 3.12 (önerilen), Flutter Stable
 - Sanal ortam: `backend/.venv` veya `.venv`
 
-## Backend Kalitesi
+## Arka Uç Kalitesi
 - Testler `pytest -q` ile çalıştırılmıştır.
 - Kod kalitesi denetimi `ruff check .` ile yapılmıştır.
 - Tip denetimi `mypy .` ile gerçekleştirilmiştir.
 - Kritik test dosyaları:
   - `backend/test_main.py` (API kontrat testleri)
-  - `backend/test_extended.py` (RAG, retry ve sağlık senaryoları)
+  - `backend/test_extended.py` (RAG, yeniden deneme ve sağlık senaryoları)
   - `backend/test_response_cleaner.py` (metin temizleme)
   - `backend/test_reasoning_cleanup.py` (düşünce blokları temizliği)
 
-## Frontend Kalitesi
+## Ön Uç Kalitesi
 - Statik analiz: `flutter analyze`
 - Widget testleri: `flutter test`
 - Kritik test dosyası: `test/widget_test.dart`
 
-## Araçlar ve Script'ler
+## Araçlar ve Betikler
 - `tools/encoding_guard.py`: UTF-8/BOM/mojibake taraması
-- `tools/test_api.ps1`: API smoke (model yoksa SKIP)
-- `tools/smoke_test.ps1`: geniş kapsamlı smoke raporu
+- `tools/test_api.ps1`: API duman testi (model yoksa SKIP)
+- `tools/smoke_test.ps1`: geniş kapsamlı duman raporu
 - `benchmark/ollama_quick.py`: Ollama hızlı performans ölçümü
-- `benchmark/run.py`: Ayrıntılı model benchmark (Ollama + HF)
+- `benchmark/run.py`: Ayrıntılı model kıyaslaması (Ollama + HF)
 
 ## Sonuç Tablosu
 | Komut | Amaç | Durum | Sonuç Detayı |
 | --- | --- | --- | --- |
-| `python -m pytest -q` | Backend birim testleri | ✅ Geçti | 50 test geçti, 1 DeprecationWarning (FAISS/NumPy) |
+| `python -m pytest -q` | Arka uç birim testleri | ✅ Geçti | 50 test geçti, 1 DeprecationWarning (FAISS/NumPy) |
 | `ruff check . --select=E9,F63,F7,F82` | Kritik kod hataları | ✅ Geçti | Kritik hata yok |
-| `ruff check .` | Kod kalitesi (lint/biçem) | ✅ Geçti | Kod stili sorunsuz |
+| `ruff check .` | Kod kalitesi (biçem denetimi) | ✅ Geçti | Kod stili sorunsuz |
 | `mypy .` | Tip denetimi | ✅ Geçti | 18 kaynak dosyada tip hatası yok |
 | `flutter analyze` | Flutter statik analiz | ⏭️ CI'da | CI ortamında çalıştırılıyor |
 | `flutter test` | Flutter widget testleri | ⏭️ CI'da | CI ortamında çalıştırılıyor |
-| `python tools/encoding_guard.py --root .` | Encoding guard | ✅ Geçti | UTF-8/BOM ve mojibake taraması temiz |
-| `tools/test_api.ps1` | API smoke testi | ⏭️ CI'da | Model yoksa SKIP |
-| `tools/smoke_test.ps1` | Geniş smoke testi | ⏭️ CI'da | Model yoksa SKIP |
+| `python tools/encoding_guard.py --root .` | Kodlama denetimi | ✅ Geçti | UTF-8/BOM ve mojibake taraması temiz |
+| `tools/test_api.ps1` | API duman testi | ⏭️ CI'da | Model yoksa SKIP |
+| `tools/smoke_test.ps1` | Geniş duman testi | ⏭️ CI'da | Model yoksa SKIP |
 
 ## Son Test Çalıştırma Tarihi
 **Tarih:** 2026-01-01  

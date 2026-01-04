@@ -1,9 +1,9 @@
-# API Smoke Testleri (Windows PowerShell)
+# API Duman Testleri (Windows PowerShell)
 
-Bu repo, UTF-8 (BOM'suz) JSON yazan ve `curl.exe --data-binary` kullanan Windows uyumlu smoke test betikleri içerir.
+Bu depo, UTF-8 (BOM'suz) JSON yazan ve `curl.exe --data-binary` kullanan Windows uyumlu duman testi betikleri içerir.
 
 ## Önkoşullar
-- Backend hedef URL'de çalışmalı (varsayılan: `http://localhost:8000`)
+- Arka uç hedef URL'de çalışmalı (varsayılan: `http://localhost:8000`)
 - `curl.exe` PATH içinde olmalıdır
 
 ## Çalıştırma
@@ -21,7 +21,7 @@ Yerel model yoksa testleri atlamak için:
 powershell -ExecutionPolicy Bypass -File tools\test_api.ps1 -AllowNoModel
 ```
 
-Raporlu smoke testi:
+Raporlu duman testi:
 ```powershell
 powershell -ExecutionPolicy Bypass -File tools\smoke_test.ps1 -AllowNoModel
 ```
@@ -29,7 +29,7 @@ powershell -ExecutionPolicy Bypass -File tools\smoke_test.ps1 -AllowNoModel
 ## Kapsam
 - `GET /health`
 - `GET /models`
-- `POST /chat` (ollama + huggingface, uygunsa)
-- `POST /chat/stream` (ollama + huggingface, uygunsa)
+- `POST /chat` (Ollama + HuggingFace, uygunsa)
+- `POST /chat/stream` (Ollama + HuggingFace, uygunsa)
 
-Betik payload'ları `tools\.tmp\` altına UTF-8 (BOM'suz) olarak yazar.
+Betik istek yüklerini `tools\.tmp\` altına UTF-8 (BOM'suz) olarak yazar.

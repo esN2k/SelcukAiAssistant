@@ -7,7 +7,7 @@
 
 ## Yönetici Özeti
 
-Copilot tarafından eklenen jüri hazırlık belgeleri incelenmiş, akademik üsluba uygun olmayan içerikler düzeltilmiş ve API demo örnekleri gerçek şema ile uyumlu hale getirilmiştir.
+Copilot tarafından eklenen jüri hazırlık belgeleri incelenmiş, akademik üsluba uygun olmayan içerikler düzeltilmiş ve API gösterim örnekleri gerçek şema ile uyumlu hale getirilmiştir.
 
 ---
 
@@ -19,7 +19,7 @@ Copilot tarafından eklenen jüri hazırlık belgeleri incelenmiş, akademik üs
 - `docs/presentation/JURI_HAZIRLIK.md` (detaylı hazırlık rehberi)
 - `docs/presentation/final_raporu/SUNUM.md` (sunum içeriği)
 - `docs/presentation/final_raporu/SPEAKER_NOTES.md` (konuşmacı notları)
-- `docs/presentation/final_raporu/DEMO_SCRIPT.md` (demo akışı)
+- `docs/presentation/final_raporu/DEMO_SCRIPT.md` (gösterim akışı)
 - `docs/presentation/final_raporu/QA_PREP.md` (soru-cevap hazırlığı)
 - `docs/reports/GUVENLIK_OZETI.md` (güvenlik raporu)
 
@@ -64,7 +64,7 @@ Copilot tarafından eklenen jüri hazırlık belgeleri incelenmiş, akademik üs
 
 ### 2.2 API Şema Hataları (DÜZELTİLDİ)
 
-#### Sorun: /health Endpoint Yanıtı
+#### Sorun: /health Uç Nokta Yanıtı
 **Yanlış (iddiaedilen):**
 ```json
 {
@@ -74,17 +74,17 @@ Copilot tarafından eklenen jüri hazırlık belgeleri incelenmiş, akademik üs
 }
 ```
 
-**Doğru (gerçek implementasyon):**
+**Doğru (gerçek uygulama):**
 ```json
 {
   "status": "ok",
-  "message": "Selçuk AI Asistanı backend çalışıyor"
+  "message": "Selçuk AI Asistanı arka uç çalışıyor"
 }
 ```
 
 **Kaynak**: `backend/main.py`, satır 159-166
 
-#### Sorun: /models Endpoint Yanıtı
+#### Sorun: /models Uç Nokta Yanıtı
 **Yanlış (eksik şema):**
 ```json
 {
@@ -121,9 +121,9 @@ Copilot tarafından eklenen jüri hazırlık belgeleri incelenmiş, akademik üs
 }
 ```
 
-**Kaynak**: `backend/providers/base.py`, ModelInfo dataclass
+**Kaynak**: `backend/providers/base.py`, ModelInfo veri sınıfı (dataclass)
 
-#### Sorun: /chat Endpoint İstek Formatı
+#### Sorun: /chat Uç Nokta İstek Formatı
 **Yanlış:**
 ```json
 {
@@ -144,7 +144,7 @@ Copilot tarafından eklenen jüri hazırlık belgeleri incelenmiş, akademik üs
 
 **Kaynak**: `backend/schemas.py`, satır 51-93
 
-#### Sorun: /chat Endpoint Yanıt Formatı
+#### Sorun: /chat Uç Nokta Yanıt Formatı
 **Yanlış (alan adları):**
 ```json
 {
@@ -172,7 +172,7 @@ Copilot tarafından eklenen jüri hazırlık belgeleri incelenmiş, akademik üs
 
 **Kaynak**: `backend/schemas.py`, satır 108-121
 
-#### Sorun: RAG Citations Formatı
+#### Sorun: RAG Atıf Formatı
 **Yanlış (hayali format):**
 ```json
 "citations": [
@@ -181,7 +181,7 @@ Copilot tarafından eklenen jüri hazırlık belgeleri incelenmiş, akademik üs
 ]
 ```
 
-**Doğru (gerçek implementasyon):**
+**Doğru (gerçek uygulama):**
 ```json
 "citations": [
   "docs/technical/ARCHITECTURE.md (chunk 0)",
@@ -191,23 +191,23 @@ Copilot tarafından eklenen jüri hazırlık belgeleri incelenmiş, akademik üs
 
 **Not**: RAG servisi chunk numarası ve dosya yolunu birlikte döndürmektedir. Satır numarası değil, parça indeksi kullanılmaktadır.
 
-**Kaynak**: `backend/rag_service.py` implementasyonu
+**Kaynak**: `backend/rag_service.py` uygulaması
 
 ---
 
 ## 3. Kalite Kontrolleri (Kanıtlanmış)
 
-### 3.1 Encoding ve Karakter Seti
+### 3.1 Kodlama ve Karakter Seti
 ```bash
 python3 tools/encoding_guard.py --root .
 ```
-**Sonuç**: Encoding kontrolü: sorun bulunmadı.
+**Sonuç**: Kodlama kontrolü: sorun bulunmadı.
 
-### 3.2 Backend Testleri
+### 3.2 Arka Uç Testleri
 ```bash
 cd backend && python3 -m pytest -q
 ```
-**Sonuç**: 50 passed, 1 warning in 1.13s
+**Sonuç**: 50 geçti, 1 uyarı, 1.13 sn
 - **Uyarı**: FAISS/NumPy DeprecationWarning (işlevselliği etkilememektedir)
 
 ### 3.3 Kod Kalitesi (Ruff)
@@ -215,28 +215,28 @@ cd backend && python3 -m pytest -q
 cd backend && python3 -m ruff check . --select=E9,F63,F7,F82
 python3 -m ruff check .
 ```
-**Sonuç**: All checks passed!
+**Sonuç**: Tüm kontroller başarılı!
 
 ### 3.4 Tip Güvenliği (Mypy)
 ```bash
 cd backend && python3 -m mypy .
 ```
-**Sonuç**: Success: no issues found in 18 source files
+**Sonuç**: Başarılı: 18 kaynak dosyada sorun bulunmadı
 
 ### 3.5 Güvenlik Taraması
 ```bash
 grep -r "API_KEY\|SECRET\|PASSWORD" backend/ | grep -v ".example"
 ```
-**Sonuç**: Hardcoded secret tespit edilmedi. Tüm hassas bilgiler ortam değişkenlerinde.
+**Sonuç**: Kod içine gömülü gizli bilgi tespit edilmedi. Tüm hassas bilgiler ortam değişkenlerinde.
 
 ---
 
-## 4. Dokümasyon Konsolidasyonu Değerlendirmesi
+## 4. Dokümantasyon Konsolidasyonu Değerlendirmesi
 
 ### Mevcut Jüri Hazırlık Belgeleri
 1. **docs/presentation/final_raporu/SUNUM.md** (slayt içeriği)
 2. **docs/presentation/final_raporu/SPEAKER_NOTES.md** (konuşmacı notları)
-3. **docs/presentation/JURI_HAZIRLIK.md** (detaylı kontrol listesi ve demo akışı)
+3. **docs/presentation/JURI_HAZIRLIK.md** (detaylı kontrol listesi ve gösterim akışı)
 
 ### Örtüşme Analizi
 - **SUNUM.md ↔ SPEAKER_NOTES.md**: İçerik-not ayrımı ile birbirini tamamlar.
@@ -246,7 +246,7 @@ grep -r "API_KEY\|SECRET\|PASSWORD" backend/ | grep -v ".example"
 **Mevcut yapı uygun görülmektedir**. Her belge farklı bir kullanım senaryosuna hizmet etmektedir:
 - docs/presentation/final_raporu/SUNUM.md → Slayt içeriği
 - docs/presentation/final_raporu/SPEAKER_NOTES.md → Konuşmacı notları
-- docs/presentation/JURI_HAZIRLIK.md → Demo ve kontrol listesi
+- docs/presentation/JURI_HAZIRLIK.md → Gösterim ve kontrol listesi
 
 ---
 
@@ -258,7 +258,7 @@ grep -r "API_KEY\|SECRET\|PASSWORD" backend/ | grep -v ".example"
 - ? `docs/presentation/JURI_HAZIRLIK.md` - Düzeltildi, API şemaları doğrulandı
 - ? `docs/presentation/final_raporu/SUNUM.md` - Sunum içeriği
 - ? `docs/presentation/final_raporu/SPEAKER_NOTES.md` - Konuşmacı notları
-- ? `docs/presentation/final_raporu/DEMO_SCRIPT.md` - Demo akışı
+- ? `docs/presentation/final_raporu/DEMO_SCRIPT.md` - Gösterim akışı
 - ? `docs/presentation/final_raporu/QA_PREP.md` - Soru-cevap hazırlığı
 - ? `docs/reports/GUVENLIK_OZETI.md` - Uygun, kabul edilebilir
 - ? `docs/reports/TEST_RAPORU.md` - Güncel test sonuçları
@@ -273,10 +273,10 @@ Yok. Tüm belgeler düzeltildikten sonra uygun bulunmuştur.
 Kullanıcının kendi ortamında doğrulama yapması için:
 
 ```bash
-# 1. Encoding kontrolü
+# 1. Kodlama kontrolü
 python3 tools/encoding_guard.py --root .
 
-# 2. Backend testleri
+# 2. Arka uç testleri
 cd backend
 python3 -m pytest -q
 
@@ -291,7 +291,7 @@ cd ..
 git status
 git log --oneline -5
 
-# 6. API şema doğrulama (backend çalışırken)
+# 6. API şema doğrulama (arka uç çalışırken)
 curl http://localhost:8000/health
 curl http://localhost:8000/models
 ```
@@ -303,13 +303,13 @@ curl http://localhost:8000/models
 ### Yapılan İşlemler
 1. ✅ Tüm jüri hazırlık belgeleri incelendi
 2. ✅ Akademik üslup ihlalleri düzeltildi (skor, emoji, övgü)
-3. ✅ API demo örnekleri gerçek şema ile uyumlu hale getirildi
+3. ✅ API gösterim örnekleri gerçek şema ile uyumlu hale getirildi
 4. ✅ Kalite kontrolleri çalıştırıldı ve sonuçlar doğrulandı
 5. ✅ Güvenlik taraması yapıldı
 6. ✅ Dokümantasyon konsolidasyonu değerlendirildi
 
 ### Sonuç
-Proje dokümantasyonu akademik standartlara uygun hale getirilmiştir. Tüm demo örnekleri gerçek API implementasyonuna göre doğrulanmıştır. Kalite kontrolleri başarıyla geçmektedir.
+Proje dokümantasyonu akademik standartlara uygun hale getirilmiştir. Tüm gösterim örnekleri gerçek API uygulamasına göre doğrulanmıştır. Kalite kontrolleri başarıyla geçmektedir.
 
 ### Kullanıcı Aksiyonları
 Kullanıcının herhangi bir ek düzeltme yapması gerekmemektedir. Dokümantasyon jüri sunumu için hazırdır.

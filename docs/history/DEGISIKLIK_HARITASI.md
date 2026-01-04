@@ -11,7 +11,7 @@
 ### Git Durumu
 - **Mevcut Branch**: copilot/fix-ollama-http-errors
 - **Son Commit**: e84c220 - "Akademik üslup düzenlemeleri: skor ve övgü ifadeleri kaldırıldı, API şemaları düzeltildi"
-- **Ana Commit**: 0667b2d - Merge pull request #17 (check-project-for-presentation)
+- **Ana Commit**: 0667b2d - Birleştirme çekme isteği #17 (check-project-for-presentation)
 - **İddia Edilen Commit (52c37d1)**: Bulunamadı; ancak iddia edilen dosyaların tümü mevcut
 
 ### Dosya Değişiklikleri
@@ -52,23 +52,23 @@ Aşağıdaki dosyalar eklenmiş veya güncellenmiştir:
 
 ### 2.2 API Şema Hataları (DÜZELTİLDİ)
 
-#### /health Endpoint
+#### /health Uç Nokta
 **Sorun**: Hayali alanlar ("ollama", "rag")
-**Düzeltme**: Gerçek implementasyon (`{"status": "ok", "message": "..."}`)
+**Düzeltme**: Gerçek uygulama (`{"status": "ok", "message": "..."}`)
 
-#### /models Endpoint
+#### /models Uç Nokta
 **Sorun**: Eksik ModelInfo alanları
-**Düzeltme**: Tam şema (provider, model_id, local_or_remote, requires_api_key, vb.)
+**Düzeltme**: Tam şema (`provider`, `model_id`, `local_or_remote`, `requires_api_key`, vb.)
 
-#### /chat Endpoint İsteği
-**Sorun**: "message" string yerine "messages" array
+#### /chat Uç Nokta İsteği
+**Sorun**: "message" metni yerine "messages" dizisi
 **Düzeltme**: ChatRequest şemasına göre düzeltildi (role + content)
 
-#### /chat Endpoint Yanıtı
+#### /chat Uç Nokta Yanıtı
 **Sorun**: "response" yerine "answer", eksik alanlar
-**Düzeltme**: ChatResponse şemasına göre tam alanlar (answer, request_id, provider, model, usage, citations)
+**Düzeltme**: ChatResponse şemasına göre tam alanlar (`answer`, `request_id`, `provider`, `model`, `usage`, `citations`)
 
-#### RAG Citations
+#### RAG Atıfları
 **Sorun**: Hayali satır numaraları ("lines 10-25")
 **Düzeltme**: Gerçek format açıklandı ("chunk 0", "chunk 2")
 
@@ -76,16 +76,16 @@ Aşağıdaki dosyalar eklenmiş veya güncellenmiştir:
 
 ## 3. Kalite Kontrolleri (Kanıtlanmış)
 
-### Encoding ve Karakter Seti
+### Kodlama ve Karakter Seti
 ```
 Komut: python3 tools/encoding_guard.py --root .
-Sonuç: Encoding kontrolü: sorun bulunmadı.
+Sonuç: Kodlama kontrolü: sorun bulunmadı.
 ```
 
-### Backend Testleri
+### Arka Uç Testleri
 ```
 Komut: cd backend && python3 -m pytest -q
-Sonuç: 50 passed, 1 warning in 1.13s
+Sonuç: 50 geçti, 1 uyarı, 1.13 sn
 Uyarı: FAISS/NumPy DeprecationWarning (kritik değil)
 ```
 
@@ -93,24 +93,24 @@ Uyarı: FAISS/NumPy DeprecationWarning (kritik değil)
 ```
 Komut: python3 -m ruff check . --select=E9,F63,F7,F82
        python3 -m ruff check .
-Sonuç: All checks passed!
+Sonuç: Tüm kontroller başarılı!
 ```
 
 ### Tip Güvenliği (Mypy)
 ```
 Komut: python3 -m mypy .
-Sonuç: Success: no issues found in 18 source files
+Sonuç: Başarılı: 18 kaynak dosyada sorun bulunmadı
 ```
 
 ### Güvenlik Taraması
 ```
 Komut: grep -r "API_KEY\|SECRET\|PASSWORD" backend/ | grep -v ".example"
-Sonuç: Hardcoded secret bulunmadı
+Sonuç: Kod içine gömülü gizli bilgi bulunmadı
 ```
 
 ### Flutter (CI Ortamı)
 - Flutter yerel ortamda mevcut değil
-- CI pipeline'da flutter analyze ve flutter test çalıştırılmaktadır
+- CI iş akışında flutter analyze ve flutter test çalıştırılmaktadır
 
 ---
 
@@ -123,7 +123,7 @@ Sonuç: Hardcoded secret bulunmadı
 ### Örtüşme Değerlendirmesi
 Her belge farklı amaçlara hizmet etmektedir:
 - **SPEAKER_NOTES**: Akademik üslupla hazırlanmış sunum akışı ve jüri soruları
-- **JURI_HAZIRLIK**: Demo senaryoları, API örnekleri, teknik kontrol listesi
+- **JURI_HAZIRLIK**: Gösterim senaryoları, API örnekleri, teknik kontrol listesi
 
 ### Konsolidasyon Önerisi
 **Mevcut yapı korunmalıdır**. Belgeler arasında minimum tekrar bulunmakta ve her biri farklı kullanım senaryolarına hizmet etmektedir. Konsolidasyon gerekmemektedir.
@@ -147,12 +147,12 @@ Yok. Tüm belgeler incelendikten ve gerekli düzeltmeler yapıldıktan sonra uyg
 
 ---
 
-## 6. Patch Yaklaşımı Özeti
+## 6. Yama Yaklaşımı Özeti
 
 ### Tamamen Yeniden Yazılan Bölümler
 
-### Düzeltilen Bölümler (Patch)
-1. **docs/presentation/JURI_HAZIRLIK.md**: /health, /models, /chat demo örnekleri
+### Düzeltilen Bölümler (Yama)
+1. **docs/presentation/JURI_HAZIRLIK.md**: /health, /models, /chat gösterim örnekleri
 2. **README.md**: Problematik skor referansı
 
 ### Değiştirilmeyen Belgeler
@@ -168,10 +168,10 @@ Yok. Tüm belgeler incelendikten ve gerekli düzeltmeler yapıldıktan sonra uyg
 Kullanıcının tekrar çalıştırması önerilen komutlar:
 
 ```bash
-# Encoding kontrolü
+# Kodlama kontrolü
 python3 tools/encoding_guard.py --root .
 
-# Backend testleri
+# Arka Uç testleri
 cd backend
 python3 -m pytest -q
 python3 -m ruff check .
@@ -183,7 +183,7 @@ git status
 git log --oneline -5
 git diff HEAD~1
 
-# API doğrulama (backend çalışırken)
+# API doğrulama (arka uç çalışırken)
 curl http://localhost:8000/health
 curl http://localhost:8000/models
 ```
@@ -193,20 +193,20 @@ curl http://localhost:8000/models
 ## 8. Güvenlik ve Gizlilik Kontrolü
 
 ### Yapılan Kontroller
-- ✓ Hardcoded secret taraması (grep ile)
+- ✓ Kod içine gömülü gizli bilgi taraması (grep ile)
 - ✓ .env.example dosyaları incelendi
 - ✓ Gerçek API anahtarı veya şifre bulunamadı
 - ✓ Tüm hassas bilgiler ortam değişkenlerinde
 
 ### Cloudflare Tunnel Notları
-- `docs/reports/GUVENLIK_OZETI.md` dosyasında Quick Tunnel'ın kalıcılık garantisi olmadığı belirtilmiştir
-- Remote demo için güvenli kullanım notları kısaca eklenmiştir
+- `docs/reports/GUVENLIK_OZETI.md` dosyasında Quick Tunnel'ın (hızlı tünel) kalıcılık garantisi olmadığı belirtilmiştir
+- Uzak gösterim için güvenli kullanım notları kısaca eklenmiştir
 
 ### Güvenlik Özeti Durumu
 `docs/reports/GUVENLIK_OZETI.md` dosyası akademik üslupla hazırlanmış, aşağıdaki konuları kapsamaktadır:
 - Kimlik bilgisi yönetimi
 - Veri gizliliği (yerel LLM)
-- API güvenliği (CORS, input validation)
+- API güvenliği (CORS, girdi doğrulama)
 - Kod kalitesi ve analiz
 - Bağımlılık yönetimi
 - Bilinen sınırlamalar ve öneriler
@@ -219,9 +219,9 @@ curl http://localhost:8000/models
 
 #### Kanıta Dayalı Bulgular
 1. **Kod Kalitesi**: 50 test geçti, ruff/mypy hatasız
-2. **Encoding**: UTF-8 BOM'suz, mojibake yok
-3. **Güvenlik**: Hardcoded secret yok, .env yönetimi doğru
-4. **API Şemaları**: Tüm demo örnekleri gerçek implementasyona göre doğrulandı
+2. **Kodlama**: UTF-8 BOM'suz, mojibake yok
+3. **Güvenlik**: Kod içine gömülü gizli bilgi yok, .env yönetimi doğru
+4. **API Şemaları**: Tüm gösterim örnekleri gerçek uygulamaya göre doğrulandı
 5. **Dokümantasyon**: Akademik üslup uygulandı, emoji ve övgü kaldırıldı
 
 #### Yapılan Değişiklikler
@@ -236,11 +236,11 @@ Kullanıcının ek düzeltme yapması gerekmemektedir. Dokümantasyon jüri sunu
 ## 10. Referanslar
 
 ### Doğrulama Kaynakları
-- `backend/main.py` (satır 159-166): /health endpoint
-- `backend/main.py` (satır 228-236): /models endpoint
+- `backend/main.py` (satır 159-166): /health uç nokta
+- `backend/main.py` (satır 228-236): /models uç nokta
 - `backend/schemas.py` (satır 51-121): ChatRequest, ChatResponse şemaları
-- `backend/providers/base.py`: ModelInfo dataclass
-- `backend/rag_service.py`: RAG citations implementasyonu
+- `backend/providers/base.py`: ModelInfo veri sınıfı (dataclass)
+- `backend/rag_service.py`: RAG atıf uygulaması
 
 ### İlgili Belgeler
 - `docs/reports/DOGRULAMA_RAPORU.md`: Detaylı doğrulama raporu

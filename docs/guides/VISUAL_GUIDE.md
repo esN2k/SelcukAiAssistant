@@ -1,3 +1,3 @@
 # Görsel Rehber
 
-Marka ve görsel kurallar için `docs/BRANDING.md` dosyasını inceleyin.
+Marka ve görsel kurallar için `assets/branding/` klasörünü inceleyin.

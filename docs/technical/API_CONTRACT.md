@@ -1,6 +1,6 @@
-# API Kontratı
+# API Sözleşmesi
 
-Bu doküman backend API sözleşmesini özetler.
+Bu doküman arka uç API sözleşmesini özetler.
 
 ## GET /health
 - Cevap: `{ "status": "ok", "message": "..." }`
@@ -40,7 +40,7 @@ Bu doküman backend API sözleşmesini özetler.
 
 ## POST /chat/stream
 - SSE ile parçalı yanıt döner.
-- Etkinlik tipleri:
+- Olay tipleri:
   - `token`: `{ "type": "token", "token": "...", "request_id": "..." }`
   - `end`: `{ "type": "end", "usage": { ... }, "citations": [ ... ], "request_id": "..." }`
   - `error`: `{ "type": "error", "message": "...", "request_id": "..." }`

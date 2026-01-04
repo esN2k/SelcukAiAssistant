@@ -1,1 +1,1 @@
-Bu klasor iOS LaunchImage varliklarina aittir. Flutter otomatik olarak kullanir.
+Bu klasör iOS LaunchImage varlıklarına aittir. Flutter otomatik olarak kullanır.

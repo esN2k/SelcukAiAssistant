@@ -10,7 +10,7 @@ Bu doküman, Selçuk AI Akademik Asistan projesinin güvenlik açısından değe
 - ✅ **Ortam Değişkenleri**: Tüm hassas bilgiler `.env` dosyasında
 - ✅ **.gitignore**: `.env` dosyaları git'e dahil edilmemiş
 - ✅ **.env.example**: Şablon dosyalar güvenli değerlerle sağlanmış
-- ✅ **Hardcoded Secret Kontrolü**: Kodda sabit şifre/anahtar bulunamadı
+- ✅ **Kod İçi Gizli Bilgi Kontrolü**: Kodda sabit şifre/anahtar bulunamadı
 
 ### 2. Veri Gizliliği
 - ✅ **Yerel İşleme**: Tüm LLM çalışması yerel olarak gerçekleştiriliyor
@@ -20,13 +20,13 @@ Bu doküman, Selçuk AI Akademik Asistan projesinin güvenlik açısından değe
 
 ### 3. API Güvenliği
 - ✅ **CORS Yapılandırması**: `ALLOWED_ORIGINS` ile kontrollü
-- ✅ **Request Timeout**: Zaman aşımı limitleri mevcut
-- ✅ **Input Validation**: Pydantic ile giriş validasyonu
-- ✅ **Max Token Limitleri**: Kaynak tüketimi sınırlandırılmış
+- ✅ **İstek Zaman Aşımı**: Zaman aşımı limitleri mevcut
+- ✅ **Girdi Doğrulama**: Pydantic ile giriş doğrulaması
+- ✅ **Azami Belirteç Limitleri**: Kaynak tüketimi sınırlandırılmış
 
 ### 4. Kod Kalitesi ve Güvenlik Analizi
-- ✅ **Ruff Linting**: Kod kalitesi kontrolleri
-- ✅ **Mypy Type Checking**: Tip güvenliği kontrolleri
+- ✅ **Ruff Biçem Denetimi**: Kod kalitesi kontrolleri
+- ✅ **Mypy Tip Denetimi**: Tip güvenliği kontrolleri
 - ✅ **Pytest**: Birim testler ile davranış doğrulaması
 - ✅ **CI/CD**: Otomatik kalite kontrolleri
 
@@ -34,7 +34,7 @@ Bu doküman, Selçuk AI Akademik Asistan projesinin güvenlik açısından değe
 - ✅ **requirements.txt**: Sabit sürüm bağımlılıkları
 - ✅ **requirements-dev.txt**: Geliştirme bağımlılıkları ayrı
 - ✅ **requirements-hf.txt**: Opsiyonel bağımlılıklar ayrı
-- ⚠️ **Dependency Scanning**: Manuel kontrol gerekli (GitHub Dependabot önerilir)
+- ⚠️ **Bağımlılık Taraması**: Manuel kontrol gerekli (GitHub Dependabot önerilir)
 
 ## ⚠️ Bilinen Sınırlamalar ve Öneriler
 
@@ -57,10 +57,10 @@ pip-audit
 **Risk Seviyesi**: Düşük (yerel ağ)  
 **Öneri**: Prodüksiyon dağıtımında Nginx/Caddy ile HTTPS zorunlu
 
-### 3. Rate Limiting
-**Durum**: API endpoint'lerinde rate limiting yok  
+### 3. İstek Hız Sınırlama
+**Durum**: API uç noktalarında istek hız sınırlama yok  
 **Risk Seviyesi**: Orta (DoS riski)  
-**Öneri**: FastAPI middleware ile rate limiting ekleme
+**Öneri**: FastAPI ara katman ile hız sınırlama ekleme
 
 ```python
 # Örnek: slowapi kullanımı
@@ -71,44 +71,44 @@ limiter = Limiter(key_func=get_remote_address)
 app.state.limiter = limiter
 ```
 
-### 4. Logging ve Audit Trail
-**Durum**: Temel logging mevcut  
+### 4. Günlükleme ve Denetim İzi
+**Durum**: Temel günlükleme mevcut  
 **Risk Seviyesi**: Düşük  
-**Öneri**: Detaylı audit logging (istek/yanıt/hata) ekleme
+**Öneri**: Detaylı denetim günlükleri (istek/yanıt/hata) ekleme
 
-### 5. Input Sanitization
-**Durum**: Pydantic validasyonu mevcut  
+### 5. Girdi Temizleme
+**Durum**: Pydantic doğrulaması mevcut  
 **Risk Seviyesi**: Düşük  
-**Öneri**: SQL injection riski yok (vektör DB kullanılıyor), XSS için frontend sanitization kontrol edilmeli
+**Öneri**: SQL injection riski yok (vektör veritabanı kullanılıyor), XSS için ön uç temizleme kontrol edilmeli
 
 ## 🔒 Güvenlik En İyi Uygulamaları
 
-### Backend
+### Arka Uç
 1. **Ortam Değişkenleri**: Asla kodda sabit değer kullanmayın
 2. **CORS**: Sadece güvenilen origin'lere izin verin
-3. **Timeout**: Zaman aşımı limitleri her zaman tanımlayın
-4. **Error Messages**: Üretim ortamında detaylı hata mesajları kapatın
+3. **Zaman Aşımı**: Zaman aşımı limitleri her zaman tanımlayın
+4. **Hata Mesajları**: Üretim ortamında detaylı hata mesajları kapatın
 
-### Frontend
+### Ön Uç
 1. **API URL**: Ortam değişkenlerinden alın (.env)
-2. **Sensitive Data**: Local storage'da hassas veri saklamayın
-3. **Validation**: Backend validasyonuna güvenin ama frontend'de de kontrol yapın
+2. **Hassas Veri**: Yerel depolamada hassas veri saklamayın
+3. **Doğrulama**: Arka uç doğrulamasına güvenin ama ön uçta da kontrol yapın
 
-### Deployment
+### Dağıtım
 1. **HTTPS**: Prodüksiyonda her zaman HTTPS kullanın
 2. **Firewall**: Sadece gerekli portları açın
-3. **Updates**: Bağımlılıkları düzenli güncelleyin
-4. **Backup**: RAG indeksi ve yapılandırmaları yedekleyin
+3. **Güncellemeler**: Bağımlılıkları düzenli güncelleyin
+4. **Yedekleme**: RAG indeksi ve yapılandırmaları yedekleyin
 
 ## 📊 Güvenlik Skoru
 
 | Kategori | Puan | Açıklama |
 |----------|------|----------|
-| Kimlik Bilgisi Yönetimi | 10/10 | Mükemmel - .env kullanımı, hardcoded yok |
+| Kimlik Bilgisi Yönetimi | 10/10 | Mükemmel - .env kullanımı, kod içine gömülü yok |
 | Veri Gizliliği | 10/10 | Mükemmel - Yerel işleme |
-| API Güvenliği | 8/10 | İyi - CORS ve validation mevcut, rate limiting eksik |
-| Kod Kalitesi | 9/10 | Çok iyi - Linting, type checking, testler |
-| Bağımlılık Güvenliği | 7/10 | İyi - Güncel paketler, otomatik scan yok |
+| API Güvenliği | 8/10 | İyi - CORS ve doğrulama mevcut, hız sınırlama eksik |
+| Kod Kalitesi | 9/10 | Çok iyi - Biçem denetimi, tip denetimi, testler |
+| Bağımlılık Güvenliği | 7/10 | İyi - Güncel paketler, otomatik tarama yok |
 | **TOPLAM** | **44/50** | **%88 - Çok İyi** |
 
 ## ✅ Jüri Sunumu İçin Güvenlik Mesajları
@@ -117,12 +117,12 @@ app.state.limiter = limiter
 1. **"Veri Gizliliği Öncelikli Tasarım"**: Tüm işlemler yerel, bulut servis yok
 2. **"Ortam Değişkeni Yönetimi"**: Hassas bilgiler kodda değil, .env'de
 3. **"Kod Kalitesi Kontrolleri"**: CI/CD ile otomatik güvenlik ve kalite testleri
-4. **"Type Safety"**: Mypy ile tip güvenliği, Pydantic ile veri validasyonu
+4. **"Tip Güvenliği"**: Mypy ile tip güvenliği, Pydantic ile veri doğrulaması
 
 ### Bilinen Sınırlamalar (Dürüstçe Belirtilmeli)
-1. **"Rate Limiting"**: Prodüksiyon dağıtımında middleware eklenmeli
+1. **"İstek Hız Sınırlama"**: Prodüksiyon dağıtımında ara katman eklenmeli
 2. **"HTTPS"**: Yerel geliştirmede HTTP, prodüksiyonda HTTPS gerekli
-3. **"Dependency Scanning"**: Manuel kontrol, Dependabot önerilir
+3. **"Bağımlılık Taraması"**: Manuel kontrol, Dependabot önerilir
 
 ### Olası Jüri Soruları ve Yanıtlar
 
@@ -130,30 +130,30 @@ app.state.limiter = limiter
 Y: Evet, tüm işlemler yerel LLM ile yapılıyor. Veri bulut servislerine gönderilmiyor. RAG verileri de yerel FAISS indeksinde tutuluyor.
 
 **S: API güvenliği nasıl sağlanıyor?**  
-Y: CORS yapılandırması, Pydantic input validation, request timeout limitleri ve max token sınırlamaları mevcut. Prodüksiyon için rate limiting eklenmesi planlanıyor.
+Y: CORS yapılandırması, Pydantic girdi doğrulama, istek zaman aşımı limitleri ve azami belirteç sınırlamaları mevcut. Prodüksiyon için hız sınırlama eklenmesi planlanıyor.
 
 **S: Bağımlılıklarda güvenlik açığı var mı?**  
 Y: Güncel ve stabil paketler kullanılıyor. Manuel kontroller yapıldı, bilinen kritik açık yok. GitHub Dependabot ile otomatik izleme öneriliyor.
 
 **S: Şifreler/anahtarlar nasıl saklanıyor?**  
-Y: Ortam değişkenleri (.env) ile yönetiliyor. .gitignore ile git'e dahil edilmiyor. Kodda hardcoded değer yok.
+Y: Ortam değişkenleri (.env) ile yönetiliyor. .gitignore ile git'e dahil edilmiyor. Kodda sabit (kod içine gömülü) değer yok.
 
 **S: Yerel model güvenliği?**  
 Y: Ollama modelleri güvenilir kaynaklardan (ollama.com) indiriliyor. HF modelleri için de resmi HuggingFace Hub kullanılıyor.
 
 ## 🚀 Gelecek Güvenlik İyileştirmeleri
 
-1. **Rate Limiting**: slowapi veya FastAPI middleware
-2. **Dependency Scanning**: GitHub Dependabot veya pip-audit entegrasyonu
-3. **Audit Logging**: Detaylı istek/yanıt/hata logları
-4. **HTTPS Enforcement**: Nginx/Caddy reverse proxy
-5. **Security Headers**: HSTS, CSP, X-Frame-Options
-6. **Session Management**: Appwrite entegrasyonu ile güvenli session
+1. **İstek Hız Sınırlama**: slowapi veya FastAPI ara katman
+2. **Bağımlılık Taraması**: GitHub Dependabot veya pip-audit entegrasyonu
+3. **Denetim Günlükleri**: Detaylı istek/yanıt/hata kayıtları
+4. **HTTPS Zorunluluğu**: Nginx/Caddy ters proxy
+5. **Güvenlik Başlıkları**: HSTS, CSP, X-Frame-Options
+6. **Oturum Yönetimi**: Appwrite entegrasyonu ile güvenli oturum
 
 ## 📝 Sonuç
 
 Proje, akademik bir çalışma için **yeterli güvenlik standartlarına** sahip. Veri gizliliği ve yerel işleme odaklı tasarım, projenin en güçlü güvenlik özelliği. Kimlik bilgisi yönetimi ve kod kalitesi kontrolleri profesyonel seviyede. 
 
-Prodüksiyon dağıtımı için rate limiting, HTTPS ve otomatik dependency scanning eklenmesi önerilir, ancak **eğitim projesi kapsamında mevcut güvenlik önlemleri yeterli ve uygun**.
+Prodüksiyon dağıtımı için hız sınırlama, HTTPS ve otomatik bağımlılık taraması eklenmesi önerilir, ancak **eğitim projesi kapsamında mevcut güvenlik önlemleri yeterli ve uygun**.
 
 **Güvenlik Değerlendirmesi: ✅ BAŞARILI - Jüri sunumuna hazır**

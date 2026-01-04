@@ -1,16 +1,16 @@
 # RAG (Kaynak Destekli Yanıtlar)
 
-RAG (Retrieval-Augmented Generation), modelin yanıtlarını kaynak belgelerle
+RAG (Geri Getirim Destekli Üretim), modelin yanıtlarını kaynak belgelerle
 desteklemesini sağlar. Bu sayede akademik doğruluk artar ve kaynak gösterimi
 kolaylaşır.
 
 ## 1) Genel Akış
 ```
-Soru -> Embedding -> FAISS -> En yakın parçalar -> Prompt -> Yanıt + Kaynaklar
+Soru -> Gömme -> FAISS -> En yakın parçalar -> İstem -> Yanıt + Kaynaklar
 ```
 
-## 2) İndeksleme (Ingestion)
-CLI aracı: `backend/rag_ingest.py`
+## 2) İndeksleme (İçe Aktarım)
+Komut satırı aracı: `backend/rag_ingest.py`
 
 Örnek:
 ```bash
@@ -25,7 +25,7 @@ Desteklenen formatlar:
 
 Her parça için kaynak (dosya adı) ve sayfa bilgisi saklanır.
 
-## 3) Backend Ayarları (.env)
+## 3) Arka Uç Ayarları (.env)
 ```
 RAG_ENABLED=true
 RAG_VECTOR_DB_PATH=./data/rag
@@ -34,16 +34,16 @@ RAG_EMBEDDING_MODEL=sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
 RAG_STRICT_DEFAULT=true
 ```
 
-## 3.1) Bağımlılıklar (Dependencies)
-- **Embedding (gömme)** üretimi için `sentence-transformers` ve `torch` gerekir.
+## 3.1) Bağımlılıklar
+- **Gömme** üretimi için `sentence-transformers` ve `torch` gerekir.
 - Windows’ta `WinError 126 / torch_python.dll` görülürse:
   - Microsoft Visual C++ 2015–2022 Redistributable kurulu olmalı.
-  - Gerekirse CPU PyTorch sürümünü kurun (bkz. `docs/SORUN_GIDERME.md`).
+  - Gerekirse CPU PyTorch sürümünü kurun (bkz. `docs/ops/SORUN_GIDERME.md`).
 
-## 4) Strict Mod
-- RAG açıkken kaynak bulunamazsa backend: **“Bu bilgi kaynaklarda yok.”** döner.
-- İstek bazında `rag_strict` ile override edilebilir.
+## 4) Katı Mod
+- RAG açıkken kaynak bulunamazsa arka uç: **“Bu bilgi kaynaklarda yok.”** döner.
+- İstek bazında `rag_strict` ile geçersiz kılınabilir.
 
-## 5) Citations
+## 5) Atıflar
 - `/chat` cevabında `citations` alanı döner.
-- `/chat/stream` sonunda `end` event içinde `citations` taşınır.
+- `/chat/stream` sonunda `end` olayı içinde `citations` taşınır.

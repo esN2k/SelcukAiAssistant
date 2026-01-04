@@ -1,6 +1,6 @@
 # Sorun Giderme
 
-## Backend erişilemiyor
+## Arka Uç erişilemiyor
 - `backend/.env` içindeki HOST/PORT ayarlarını kontrol edin.
 - Firewall veya antivirüs engellerini kontrol edin.
 - `GET /health` ile sağlık kontrolü yapın.
@@ -10,9 +10,9 @@
 - Ollama için `ollama pull <model>` çalıştırın.
 - HuggingFace için `backend/requirements-hf.txt` kurulu olmalı.
 
-## HF offline kullanımda model bulunamıyor
+## HF çevrimdışı kullanımda model bulunamıyor
 **Belirti:** `/models` listesinde HF model “uygun değil” görünüyor.  
-**Neden:** Model önbellekte (cache) yok veya offline bayrakları erken açılmış.
+**Neden:** Model önbellekte yok veya çevrimdışı bayrakları erken açılmış.
 
 **Çözüm:**
 1. İnternet açıkken modeli önceden indirin:
@@ -22,18 +22,18 @@
    snapshot_download("Qwen/Qwen2.5-1.5B-Instruct")
    PY
    ```
-2. Cache dizinlerini tanımlayın: `HF_HOME`, `TRANSFORMERS_CACHE`, `HUGGINGFACE_HUB_CACHE`.
-3. Cache dizinini doğrulayın:
+2. Önbellek dizinlerini tanımlayın: `HF_HOME`, `TRANSFORMERS_CACHE`, `HUGGINGFACE_HUB_CACHE`.
+3. Önbellek dizinini doğrulayın:
    ```powershell
    dir $env:HF_HOME
    ```
-4. Offline mod için:
+4. Çevrimdışı mod için:
    - `HF_HUB_OFFLINE=1`
    - `TRANSFORMERS_OFFLINE=1`
 
 ## Windows: `torch_python.dll` / WinError 126
 **Belirti:** HuggingFace modeli çağrılırken `WinError 126` ve `torch_python.dll` hatası.  
-**Anlamı:** Torch çalışma zamanı (runtime) bağımlılıkları veya DLL (Dinamik Bağlantı Kütüphanesi) eksik.
+**Anlamı:** Torch çalışma zamanı bağımlılıkları veya DLL (Dinamik Bağlantı Kütüphanesi) eksik.
 
 **Çözüm adımları:**
 1. **Microsoft Visual C++ 2015–2022 Redistributable** kurulu olmalı.
@@ -47,19 +47,19 @@
    $env:Path += ";$env:VIRTUAL_ENV\\Lib\\site-packages\\torch\\lib"
    ```
 
-## Streaming akmıyor
+## Akış yanıtı gelmiyor
 - Nginx kullanıyorsanız `X-Accel-Buffering: no` ve `Cache-Control: no-cache` ayarları gerekir.
-- Proxy time-out değerlerini artırın.
+- Vekil zaman aşımı değerlerini artırın.
 
 ## RAG kaynak göstermiyor
 - `RAG_ENABLED=true` ve `RAG_VECTOR_DB_PATH` ayarlarını kontrol edin.
 - İndeksin üretildiğinden emin olun: `python rag_ingest.py`.
 
-## Windows build - WebView2.h hatası
+## Windows derleme - WebView2.h hatası
 - **Belirti:** `WebView2.h(20,10)` için `disable` tanımsız / syntax hatası
-- **Neden:** pub cache bozulması
+- **Neden:** pub önbelleği bozulması
 - **Çözüm:**
   - `flutter clean`
-  - `dart pub cache repair` veya cache temizleme
+  - `dart pub cache repair` veya önbellek temizleme
   - Gerekirse `dotnet nuget locals all --clear`
-  - Problem devam ederse ilgili plugin cache klasörünü silip yeniden `flutter pub get` çalıştırın
+  - Problem devam ederse ilgili eklenti önbellek klasörünü silip yeniden `flutter pub get` çalıştırın

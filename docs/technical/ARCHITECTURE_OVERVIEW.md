@@ -5,28 +5,28 @@ Bu doküman, Selçuk AI Akademik Asistan’ın uçtan uca mimarisini ve veri ak�
 
 ## 1) Yüksek seviye bileşenler
 ```
-Flutter (UI) ──HTTP/SSE──> FastAPI ──> LLM (Ollama / HuggingFace)
+Flutter (arayüz) ──HTTP/SSE──> FastAPI ──> LLM (Ollama / HuggingFace)
                          └──> RAG (FAISS + ChromaDB)
 ```
 
 ## 2) Bileşenler ve sorumluluklar
-- **Flutter (GetX)**: UI, model seçimi, ayarlar, sohbet akışı.
+- **Flutter (GetX)**: Arayüz, model seçimi, ayarlar, sohbet akışı.
 - **FastAPI**: İstek doğrulama, model yönlendirme, RAG orkestrasyonu.
 - **Ollama**: Yerel LLM çalıştırma (Llama 3.1).
-- **HuggingFace (HF)**: Opsiyonel yerel model akışı (torch/transformers bağımlı).
+- **HuggingFace (HF)**: İsteğe bağlı yerel model akışı (torch/transformers bağımlı).
 - **RAG Katmanı**: FAISS indeksinden kaynak parçaları çekme.
-- **ChromaDB**: Vektör veritabanı (persisted storage).
-- **Provider Pattern**: `backend/providers/` ile çoklu sağlayıcı (multi‑provider) yönlendirme.
+- **ChromaDB**: Vektör veritabanı (kalıcı depolama).
+- **Sağlayıcı Deseni**: `backend/providers/` ile çoklu sağlayıcı yönlendirme.
 
 ## 3) Veri akışı (chat)
-1. Kullanıcı mesajı Flutter’dan **/chat** veya **/chat/stream** ile backend’e gider.
+1. Kullanıcı mesajı Flutter’dan **/chat** veya **/chat/stream** ile arka uca gider.
 2. **RAG etkinse**: Soru metniyle FAISS üzerinde arama yapılır.
-3. Bulunan kaynak parçaları sistem promptuna eklenir.
-4. LLM yanıt üretir ve sonuç frontend’e döner.
+3. Bulunan kaynak parçaları sistem istemine eklenir.
+4. LLM yanıt üretir ve sonuç ön uca döner.
 5. /chat/stream için SSE ile parça parça yanıt akıtılır.
 
 ## 4) RAG bileşenleri
-- **Embedding üretimi**: SentenceTransformer (çok dilli).
+- **Gömme üretimi**: SentenceTransformer (çok dilli).
 - **İndeksleme**: `rag_ingest.py` ile belgeler parçalanır ve FAISS’e yazılır.
 - **Sorgu**: En yakın `top_k` parça çekilir, kaynak etiketi üretilir.
 
@@ -34,7 +34,7 @@ Flutter (UI) ──HTTP/SSE──> FastAPI ──> LLM (Ollama / HuggingFace)
 - Ollama veya RAG servisleri devre dışıysa kullanıcıya **Türkçe** hata mesajı döner.
 - Zaman aşımı ve bağlantı hataları HTTP hata kodlarıyla raporlanır.
 
-## 6) Konfigürasyon
+## 6) Yapılandırma
 Tüm ayarlar `backend/.env` üzerinden yönetilir. Önemli alanlar:
 - `OLLAMA_BASE_URL`, `OLLAMA_MODEL`
 - `MODEL_BACKEND` (varsayılan sağlayıcı)

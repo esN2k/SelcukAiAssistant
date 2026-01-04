@@ -5,7 +5,7 @@ Bu dosyada RAG veri toplama süreci için kullanılan resmi kaynaklar ve oluşan
 ## 1) Kaynak Alanı
 - İzinli alan adı: `selcuk.edu.tr`
 
-## 2) Başlangıç URL'leri (Seed)
+## 2) Başlangıç URL'leri
 - https://www.selcuk.edu.tr/
 - https://www.selcuk.edu.tr/ogrenci
 - https://www.selcuk.edu.tr/akademik
@@ -14,14 +14,14 @@ Bu dosyada RAG veri toplama süreci için kullanılan resmi kaynaklar ve oluşan
 - https://www.selcuk.edu.tr/dokumanlar
 - https://www.selcuk.edu.tr/haberler
 
-## 3) Sitemap
+## 3) Site Haritası
 - https://www.selcuk.edu.tr/sitemap.xml
 
 ## 4) Toplanan Veri İstatistikleri
 - Ham HTML sayfa sayısı: `400`
 - Temizlenmiş doküman sayısı: `400`
 - FAISS indeksine eklenen parça sayısı: `1481`
-- Kullanılan embedding modeli: `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`
+- Kullanılan gömme modeli: `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`
 
 ## 5) Depolama Konumları
 - Ham içerik: `data/raw_web/html`

@@ -1,6 +1,6 @@
-# Backend (FastAPI)
+# Arka Uç (FastAPI)
 
-Bu klasör Selçuk AI Asistanı backend servisidir.
+Bu klasör Selçuk AI Asistanı arka uç servisidir.
 
 ## Çalıştırma
 ```bash

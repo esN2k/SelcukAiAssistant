@@ -1,7 +1,7 @@
 # Kurulum Rehberi (Windows / Linux / macOS)
 
 Bu doküman, Selçuk AI Akademik Asistan projesini yerel ortamda çalıştırmak için
-gerekli adımları içerir. Backend (FastAPI) ve frontend (Flutter) birlikte
+gerekli adımları içerir. Arka uç (FastAPI) ve ön uç (Flutter) birlikte
 çalıştırılır.
 
 ## 1) Önkoşullar
@@ -11,7 +11,7 @@ gerekli adımları içerir. Backend (FastAPI) ve frontend (Flutter) birlikte
 - **Ollama** (yerel LLM için)
 - (Opsiyonel) **Docker** ve **Docker Compose**
 
-> Not: Backend bağımlılıklarında (pydantic-core, faiss-cpu, torch) Python 3.14 için
+> Not: Arka uç bağımlılıklarında (pydantic-core, faiss-cpu, torch) Python 3.14 için
 > hazır wheel bulunmayabilir. Yerel geliştirme ve testler için Python 3.12 önerilir.
 
 ## 2) Depoyu klonlama
@@ -43,7 +43,7 @@ ollama pull llama3.1
 > Not: Özel model kullanıyorsanız `backend/Modelfile` veya `backend/Modelfile.deepseek`
 > üzerinden `ollama create` ile özel model oluşturabilirsiniz.
 
-## 4) Backend kurulumu (FastAPI)
+## 4) Arka uç kurulumu (FastAPI)
 ```bash
 cd backend
 python -m venv .venv
@@ -68,7 +68,7 @@ cp .env.example .env
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-### 4.1) HuggingFace (HF) opsiyonel kurulum
+### 4.1) HuggingFace (HF) isteğe bağlı kurulum
 > HuggingFace (HF), yerel modelleri indirmek için kullanılan açık model deposudur.
 
 ```bash
@@ -76,13 +76,13 @@ cd backend
 pip install -r requirements-hf.txt
 ```
 
-### 4.2) HF Offline / Önbellek (Cache) Ayarları
-**Amaç:** Model dosyaları önceden indirilerek çevrimdışı (offline) kullanım sağlanır.
+### 4.2) HF Çevrimdışı / Önbellek Ayarları
+**Amaç:** Model dosyaları önceden indirilerek çevrimdışı kullanım sağlanır.
 
 Önerilen ortam değişkenleri:
-- `HF_HOME`: HuggingFace ana dizini (cache kökü)
-- `TRANSFORMERS_CACHE`: Transformers cache dizini
-- `HUGGINGFACE_HUB_CACHE`: Hub cache dizini
+- `HF_HOME`: HuggingFace ana dizini (önbellek kökü)
+- `TRANSFORMERS_CACHE`: Transformers önbellek dizini
+- `HUGGINGFACE_HUB_CACHE`: Hub önbellek dizini
 - `HF_HUB_OFFLINE=1`, `TRANSFORMERS_OFFLINE=1`: çevrimdışı mod
 
 **Windows (PowerShell):**
@@ -113,7 +113,7 @@ PY
 
 **Disk planlama:** 5–10 GB aralığı küçük/orta modeller için önerilir.
 
-**Doğrulama adımı (cache kontrolü):**
+**Doğrulama adımı (önbellek kontrolü):**
 ```powershell
 dir $env:HF_HOME
 ```
@@ -167,4 +167,4 @@ curl http://localhost:8000/models
 ```
 
 ## 8) Sorun giderme
-Detaylı hata senaryoları için `docs/SORUN_GIDERME.md` dosyasına bakın.
+Detaylı hata senaryoları için `docs/ops/SORUN_GIDERME.md` dosyasına bakın.

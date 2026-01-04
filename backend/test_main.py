@@ -29,7 +29,7 @@ def test_root_endpoint():
     assert response.status_code == 200
     assert response.json() == {
         "status": "ok",
-        "message": "Selçuk AI Asistanı backend çalışıyor",
+        "message": "Selçuk AI Asistanı arka uç çalışıyor",
     }
 
 

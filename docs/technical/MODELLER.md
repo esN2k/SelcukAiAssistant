@@ -4,7 +4,7 @@ Bu doküman, sistemde kullanılan model tiplerini ve seçim mantığını özetl
 
 ## 1) Kategoriler
 - **Yerel (Ollama):** Cihazda çalışır. `ollama pull <model>` gerekir.
-- **Yerel (HuggingFace / HF):** Backend üzerinde HF model önbelleği gerekir.
+- **Yerel (HuggingFace / HF):** Arka uç üzerinde HF model önbelleği gerekir.
 - **Uzak (API):** OpenAI/Anthropic/Gemini/xAI servisleri için API anahtarı gerekir.
 
 ## 2) Model Seçici Notları
@@ -31,17 +31,17 @@ Model ağırlıkları ilk çalışmada indirilecektir.
 
 **Windows notu (DLL / Dinamik Bağlantı Kütüphanesi):**
 - `WinError 126` veya `torch_python.dll` hatası alırsanız:
-  - Microsoft Visual C++ 2015-2022 Redistributable kurulu olmalıdır.
+- Microsoft Visual C++ 2015-2022 Redistributable (dağıtım paketi) kurulu olmalıdır.
   - CPU kullanımında PyTorch CPU sürümü önerilir:
     ```powershell
     pip install torch --index-url https://download.pytorch.org/whl/cpu
     ```
 
-## 4) HF Offline ve Önbellek (Cache)
+## 4) HF Çevrimdışı ve Önbellek
 **Amaç:** Model dosyaları önceden indirilerek çevrimdışı kullanım sağlanır.
 
 Ortam değişkenleri:
-- `HF_HOME` (cache kökü)
+- `HF_HOME` (önbellek kökü)
 - `TRANSFORMERS_CACHE` (transformers önbelleği)
 - `HUGGINGFACE_HUB_CACHE` (hub önbelleği)
 - `HF_HUB_OFFLINE=1`, `TRANSFORMERS_OFFLINE=1`
@@ -57,7 +57,7 @@ $env:TRANSFORMERS_OFFLINE=1
 
 Disk planlama: küçük/orta modeller için 5-10 GB aralığı önerilir.
 
-Modeli önceden indirme (internet açıkken):
+Modeli önceden indirme (İnternet açıkken):
 ```bash
 python - <<'PY'
 from huggingface_hub import snapshot_download
