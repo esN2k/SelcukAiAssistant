@@ -81,7 +81,7 @@ def main():
     # JSON'a kaydet
     with open('test_results.json', 'w', encoding='utf-8') as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
-    print(f"\n💾 Sonuçlar kaydedildi: test_results.json")
+    print("\n💾 Sonuçlar kaydedildi: test_results.json")
 
 if __name__ == "__main__":
     main()

@@ -1,7 +1,6 @@
 """RAG index'i manuel olarak oluştur (torch olmadan)."""
 import json
 from pathlib import Path
-import sys
 
 # Basit metin index oluştur
 data_dir = Path("data/rag/selcuk")

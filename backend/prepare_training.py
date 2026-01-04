@@ -1,7 +1,6 @@
 """Q&A dataset oluşturma ve modeli eğitme hazırlığı."""
 import json
 from pathlib import Path
-from typing import List, Dict
 from datetime import datetime
 
 from selcuk_data import QA_PAIRS, SELCUK_UNI_FACTS
@@ -89,13 +88,13 @@ def create_rag_documents(output_dir: str = "data/rag/selcuk"):
             f.write("---\n\n")
     
     print(f"✅ RAG dokümanları oluşturuldu: {output_path}")
-    print(f"📁 4 doküman dosyası")
+    print("📁 4 doküman dosyası")
     return output_path
 
 
 def create_modelfile(model_name: str = "turkcell_llm_7b_selcuk"):
     """Özelleştirilmiş Modelfile oluştur."""
-    modelfile_content = f"""FROM turkcell_llm_7b
+    modelfile_content = """FROM turkcell_llm_7b
 
 # Selçuk Üniversitesi özel sistem promptu - FEW-SHOT LEARNING
 SYSTEM \"\"\"SEN SELÇUK ÜNİVERSİTESİ AI ASİSTANISIN!
@@ -149,7 +148,7 @@ PARAMETER stop "<|im_end|>"
         f.write(modelfile_content)
     
     print(f"✅ Modelfile oluşturuldu: {modelfile_path}")
-    print(f"\n🔨 Modeli oluşturmak için:")
+    print("\n🔨 Modeli oluşturmak için:")
     print(f"   ollama create {model_name} -f Modelfile.{model_name}")
     return modelfile_path
 

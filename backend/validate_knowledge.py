@@ -84,9 +84,9 @@ def validate_knowledge_base():
     # MÜDEK kontrolü
     mudek = kb.get("bilgisayar_muhendisligi", {}).get("akreditasyon", {}).get("mudek", False)
     if not mudek:
-        errors.append(f"❌ MÜDEK akreditasyonu eksik veya yanlış")
+        errors.append("❌ MÜDEK akreditasyonu eksik veya yanlış")
     else:
-        print(f"✅ MÜDEK akreditasyonu doğru: Var")
+        print("✅ MÜDEK akreditasyonu doğru: Var")
     
     if errors:
         print("\n❌ HATALAR:")
@@ -110,7 +110,7 @@ def validate_response(question: str, answer: str, category: str) -> bool:
     # Yanlış kelimeler var mı kontrol et
     for yanlis in rules["yanlış"]:
         if yanlis in answer_lower:
-            print(f"❌ YANLIŞ BİLGİ tespit edildi!")
+            print("❌ YANLIŞ BİLGİ tespit edildi!")
             print(f"   Soru: {question}")
             print(f"   Yanıt: {answer}")
             print(f"   Sorun: '{yanlis}' kelimesi bulunmamalı!")
@@ -119,7 +119,7 @@ def validate_response(question: str, answer: str, category: str) -> bool:
     # Doğru kelimelerden en az biri var mı kontrol et
     has_correct = any(dogru in answer_lower for dogru in rules["doğru"])
     if not has_correct:
-        print(f"⚠️  UYARI: Yanıtta beklenen kelimeler bulunamadı!")
+        print("⚠️  UYARI: Yanıtta beklenen kelimeler bulunamadı!")
         print(f"   Soru: {question}")
         print(f"   Yanıt: {answer}")
         print(f"   Beklenen kelimelerden biri: {', '.join(rules['doğru'])}")
@@ -148,7 +148,6 @@ def test_critical_responses():
     failed = 0
     
     for qa in sss:
-        kategori = qa.get("kategori", "")
         soru = qa.get("soru", "")
         cevap = qa.get("cevap", "")
         
