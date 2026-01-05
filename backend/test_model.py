@@ -32,7 +32,7 @@ TEST_QUESTIONS = [
     "Konya Teknokent ile işbirliği var mı?",
 ]
 
-def test_model(question: str, model: str = "turkcell_llm_7b_selcuk") -> dict:
+def run_model(question: str, model: str = "turkcell_llm_7b_selcuk") -> dict:
     """Modele soru sor ve cevabı al."""
     try:
         result = subprocess.run(
@@ -61,7 +61,7 @@ def main():
     results = []
     for i, question in enumerate(TEST_QUESTIONS, 1):
         print(f"\n[{i}/{len(TEST_QUESTIONS)}] ❓ {question}")
-        result = test_model(question)
+        result = run_model(question)
         results.append(result)
         
         if result['success']:
@@ -81,7 +81,7 @@ def main():
     # JSON'a kaydet
     with open('test_results.json', 'w', encoding='utf-8') as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
-    print(f"\n💾 Sonuçlar kaydedildi: test_results.json")
+    print("\n💾 Sonuçlar kaydedildi: test_results.json")
 
 if __name__ == "__main__":
     main()

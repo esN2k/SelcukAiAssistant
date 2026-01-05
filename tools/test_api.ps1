@@ -13,6 +13,20 @@ $utf8 = [System.Text.UTF8Encoding]::new($false)
 [Console]::OutputEncoding = $utf8
 $OutputEncoding = $utf8
 
+$tr_c = [char]0x00E7
+$tr_g = [char]0x011F
+$tr_i = [char]0x0131
+$tr_I = [char]0x0130
+$tr_o = [char]0x00F6
+$tr_s = [char]0x015F
+$tr_u = [char]0x00FC
+$tr_C = [char]0x00C7
+$tr_G = [char]0x011E
+$tr_O = [char]0x00D6
+$tr_S = [char]0x015E
+$tr_U = [char]0x00DC
+$turkishChars = "$tr_c$tr_g$tr_i$tr_I$tr_o$tr_s$tr_u$tr_C$tr_G$tr_O$tr_S$tr_U"
+
 function Write-Result {
   param(
     [string]$Name,
@@ -168,7 +182,7 @@ function Build-Payload {
   return ($payload | ConvertTo-Json -Depth 6)
 }
 
-Write-Host "== Selçuk AI Asistanı API smoke testi =="
+Write-Host "== Sel${tr_c}uk AI Asistan${tr_i} API smoke testi =="
 Write-Host "Taban URL: $BaseUrl"
 
 $health = Invoke-Curl @("-sS", "--max-time", "$TimeoutSec", "$BaseUrl/health")
@@ -187,11 +201,11 @@ Write-Result "GET /health" $healthOk (Limit-Text $health.Output)
 
 $encodingOk = $false
 if (-not [string]::IsNullOrWhiteSpace($healthMessage)) {
-  $containsTurkish = $healthMessage -match '[çğıİöşüÇĞİÖŞÜ]'
+  $containsTurkish = $healthMessage -match "[$turkishChars]"
   $containsMojibake = $healthMessage -match '[\u00C3\u00C5\u00C4\u00C2\u00D0\u00DE\uFFFD]'
   $encodingOk = $containsTurkish -and (-not $containsMojibake)
 }
-Write-Result "UTF-8/Türkçe karakter kontrolü" $encodingOk (Limit-Text $healthMessage)
+Write-Result "UTF-8/T${tr_u}rk${tr_c}e karakter kontrol${tr_u}" $encodingOk (Limit-Text $healthMessage)
 
 $models = Invoke-Curl @("-sS", "--max-time", "$TimeoutSec", "$BaseUrl/models")
 $modelsOk = $false
@@ -208,7 +222,7 @@ if ($models.ExitCode -eq 0) {
 Write-Result "GET /models" $modelsOk (Limit-Text $models.Output)
 
 if (-not $modelsOk) {
-  Write-Host "/chat ve /chat/stream atlandı (uygun model yok)."
+  Write-Host "/chat ve /chat/stream atland${tr_i} (uygun model yok)."
   if (-not $AllowNoModel) {
     exit 1
   }
@@ -229,24 +243,19 @@ $hfModel = Get-Model -Models $availableModels -Provider "huggingface" -Preferred
 )
 
 if (-not $ollamaModel) {
-  if ($AllowNoModel) {
-    Write-Skipped "Ollama modeli seçimi" "/models içinde uygun ollama modeli yok"
-  } else {
-    Write-Result "Ollama modeli seçimi" $false "/models içinde uygun ollama modeli yok"
-  }
+  Write-Skipped "Ollama modeli se${tr_c}imi" "/models i${tr_c}inde uygun ollama modeli yok"
 }
 if (-not $hfModel) {
-  if ($AllowNoModel) {
-    Write-Skipped "HuggingFace modeli seçimi" "/models içinde uygun huggingface modeli yok"
-  } else {
-    Write-Result "HuggingFace modeli seçimi" $false "/models içinde uygun huggingface modeli yok"
-  }
+  Write-Skipped "HuggingFace modeli se${tr_c}imi" "/models i${tr_c}inde uygun huggingface modeli yok"
 }
 
 $tmpDir = Join-Path $PSScriptRoot ".tmp"
 New-Item -ItemType Directory -Path $tmpDir -Force | Out-Null
 
+$ranChatTests = $false
+
 if ($ollamaModel) {
+  $ranChatTests = $true
   $ollamaPayload = Build-Payload -ModelId $ollamaModel.id -Stream:$false
   $ollamaPayloadPath = Join-Path $tmpDir "payload_ollama.json"
   Write-Utf8NoBom -Path $ollamaPayloadPath -Content $ollamaPayload
@@ -292,14 +301,15 @@ if ($ollamaModel) {
   $hasError = $streamText -match '"type"\s*:\s*"error"'
   $streamOk = ($hasToken -or $hasEnd) -and (-not $hasError)
   Write-Result "POST /chat/stream (ollama: $($ollamaModel.id))" $streamOk (Limit-Text $streamText)
-  Write-Host "SSE örnek (ollama):"
+  Write-Host "SSE ${tr_o}rnek (ollama):"
   ($streamText -split "`r?`n" | Where-Object { $_ -ne "" } | Select-Object -First 20) | ForEach-Object { Write-Host $_ }
-} elseif ($AllowNoModel) {
+} else {
   Write-Skipped "POST /chat (ollama)" "Uygun model yok"
   Write-Skipped "POST /chat/stream (ollama)" "Uygun model yok"
 }
 
 if ($hfModel) {
+  $ranChatTests = $true
   $hfPayload = Build-Payload -ModelId $hfModel.id -Stream:$false
   $hfPayloadPath = Join-Path $tmpDir "payload_hf.json"
   Write-Utf8NoBom -Path $hfPayloadPath -Content $hfPayload
@@ -345,16 +355,24 @@ if ($hfModel) {
   $hasError = $streamText -match '"type"\s*:\s*"error"'
   $streamOk = ($hasToken -or $hasEnd) -and (-not $hasError)
   Write-Result "POST /chat/stream (hf: $($hfModel.id))" $streamOk (Limit-Text $streamText)
-  Write-Host "SSE örnek (hf):"
+  Write-Host "SSE ${tr_o}rnek (hf):"
   ($streamText -split "`r?`n" | Where-Object { $_ -ne "" } | Select-Object -First 20) | ForEach-Object { Write-Host $_ }
-} elseif ($AllowNoModel) {
+} else {
   Write-Skipped "POST /chat (hf)" "Uygun model yok"
   Write-Skipped "POST /chat/stream (hf)" "Uygun model yok"
 }
 
+if (-not $ranChatTests) {
+  if ($AllowNoModel) {
+    Write-Skipped "Model testleri" "Uygun model yok"
+  } else {
+    Write-Result "Model testleri" $false "Uygun model yok"
+  }
+}
+
 if ($script:failures -gt 0) {
-  Write-Host "BAŞARISIZ: $script:failures kontrol başarısız."
+  Write-Host "BA${tr_S}ARISIZ: $script:failures kontrol ba${tr_s}ar${tr_i}s${tr_i}z."
   exit 1
 }
 
-Write-Host "Tüm kontroller başarılı."
+Write-Host "T${tr_u}m kontroller ba${tr_s}ar${tr_i}l${tr_i}."

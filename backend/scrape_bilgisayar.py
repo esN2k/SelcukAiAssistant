@@ -55,9 +55,6 @@ async def scrape_bilgisayar_muhendisligi():
                 else:
                     content_text = h.handle(html)
                 
-                # Adres bilgisi
-                address = soup.find(string=lambda text: text and 'Alaeddin Keykubat' in text)
-                
                 # İletişim bilgileri
                 email = soup.find('a', href=lambda x: x and 'mailto:' in x)
                 email_text = email.get('href').replace('mailto:', '') if email else None
@@ -92,9 +89,9 @@ async def scrape_bilgisayar_muhendisligi():
                 with open(text_file, 'w', encoding='utf-8') as f:
                     f.write(f"# {title_text}\n\n")
                     f.write(f"**Kaynak:** {url}\n\n")
-                    f.write(f"**Fakülte:** Teknoloji Fakültesi\n")
-                    f.write(f"**Yerleşke:** Alaeddin Keykubat Yerleşkesi\n")
-                    f.write(f"**Şehir:** Konya\n")
+                    f.write("**Fakülte:** Teknoloji Fakültesi\n")
+                    f.write("**Yerleşke:** Alaeddin Keykubat Yerleşkesi\n")
+                    f.write("**Şehir:** Konya\n")
                     if email_text:
                         f.write(f"**E-posta:** {email_text}\n")
                     if phone_numbers:
@@ -124,7 +121,7 @@ async def main():
         print("\n" + "="*60)
         print("✅ Scraping tamamlandı!")
         print("="*60)
-        print(f"📁 Dosyalar: data/rag/scraped/")
+        print("📁 Dosyalar: data/rag/scraped/")
         print(f"📊 Toplam içerik: {len(data['content'])} karakter")
     else:
         print("\n❌ Scraping başarısız")

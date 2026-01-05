@@ -1,6 +1,7 @@
 """Selçuk Üniversitesi temel bilgileri - Manuel doğrulanmış veriler."""
+from typing import Any
 
-SELCUK_UNI_FACTS = {
+SELCUK_UNI_FACTS: dict[str, Any] = {
     "genel_bilgiler": {
         "ad": "Selçuk Üniversitesi",
         "sehir": "Konya",
@@ -89,7 +90,7 @@ SELCUK_UNI_FACTS = {
 
 
 # Sık sorulan sorular ve cevaplar
-QA_PAIRS = [
+QA_PAIRS: list[dict[str, str]] = [
     # Konum soruları
     {
         "question": "Selçuk Üniversitesi nerede?",

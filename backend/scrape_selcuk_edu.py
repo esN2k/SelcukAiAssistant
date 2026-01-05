@@ -6,7 +6,7 @@ import asyncio
 import json
 import logging
 from pathlib import Path
-from typing import List, Dict, Set
+from typing import Dict, Set
 from datetime import datetime
 
 import aiohttp

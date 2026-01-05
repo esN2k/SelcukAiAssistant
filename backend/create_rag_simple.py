@@ -1,14 +1,21 @@
 """RAG index'i manuel olarak oluştur (torch olmadan)."""
 import json
 from pathlib import Path
-import sys
+from typing import TypedDict
+
+
+class Document(TypedDict):
+    content: str
+    source: str
+    chunk: int
+    category: str
 
 # Basit metin index oluştur
 data_dir = Path("data/rag/selcuk")
 output_dir = Path("data/rag")
 output_dir.mkdir(parents=True, exist_ok=True)
 
-documents = []
+documents: list[Document] = []
 for txt_file in data_dir.glob("*.txt"):
     content = txt_file.read_text(encoding='utf-8')
     
@@ -20,7 +27,7 @@ for txt_file in data_dir.glob("*.txt"):
             chunks.append(chunk)
     
     for idx, chunk in enumerate(chunks):
-        doc = {
+        doc: Document = {
             "content": chunk,
             "source": txt_file.name,
             "chunk": idx + 1,
