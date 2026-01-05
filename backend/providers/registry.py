@@ -125,6 +125,17 @@ def _catalog_entries() -> list[CatalogEntry]:
             notes="Turkcell LLM 7B GGUF Q4_K_M quantized. Selçuk Üniversitesi için optimize edilecek.",
         ),
         CatalogEntry(
+            id="turkcell_llm_7b_selcuk_4k",
+            provider="ollama",
+            model_id="turkcell_llm_7b_selcuk_4k",
+            display_name="Turkcell LLM 7B Selçuk (4K)",
+            local_or_remote="local",
+            requires_api_key=False,
+            context_length=4096,
+            tags=["turkish", "selcuk", "demo"],
+            notes="4K context için optimize edilmiş Selçuk profil modeli.",
+        ),
+        CatalogEntry(
             id="old_selcuk_ai_assistant_r1",
             provider="ollama",
             model_id="old_selcuk_ai_assistant_r1",
