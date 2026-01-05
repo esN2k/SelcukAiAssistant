@@ -46,6 +46,17 @@ def insert_paragraph_after(paragraph: Paragraph, text: str = "", style: str | No
     return new_para
 
 
+def insert_paragraph_before(paragraph: Paragraph, text: str = "", style: str | None = None) -> Paragraph:
+    new_p = OxmlElement("w:p")
+    paragraph._p.addprevious(new_p)
+    new_para = Paragraph(new_p, paragraph._parent)
+    if style:
+        new_para.style = style
+    if text:
+        new_para.add_run(text)
+    return new_para
+
+
 def delete_paragraph(paragraph: Paragraph) -> None:
     p = paragraph._p
     p.getparent().remove(p)
@@ -88,7 +99,7 @@ def add_heading_with_paragraphs(
 
 
 def insert_table_after(paragraph: Paragraph, rows: int, cols: int):
-    table = paragraph._parent.add_table(rows=rows, cols=cols)
+    table = paragraph._parent.add_table(rows=rows, cols=cols, width=Inches(6.5))
     table.style = "Table Grid"
     paragraph._p.addnext(table._tbl)
     return table
@@ -215,6 +226,20 @@ def clean_doc_text(text: str) -> list[str]:
     return lines
 
 
+def estimate_pages(doc: Document, words_per_page: int = 350) -> int:
+    words = 0
+    for p in doc.paragraphs:
+        if p.text:
+            words += len(p.text.split())
+    for table in doc.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                for p in cell.paragraphs:
+                    if p.text:
+                        words += len(p.text.split())
+    return max(1, round(words / words_per_page))
+
+
 abstract_tr = [
     "Bu çalışma, Selçuk Üniversitesi için geliştirilen yerel ve gizlilik odaklı yapay zeka destekli bilgi asistanının tasarımını ve uygulamasını sunmaktadır.",
     "Sistem, Flutter tabanlı arayüz, FastAPI tabanlı arka uç, yerel Ollama modeli ve FAISS tabanlı RAG katmanından oluşmaktadır.",
@@ -261,9 +286,55 @@ scope_paragraphs = [
     "Kimlik doğrulama ve kurumsal SSO entegrasyonları bu çalışmanın kapsamı dışında bırakılmıştır.",
 ]
 
+intro_org = [
+    "Rapor, literatür taramasıyla başlamakta, yöntem ve uygulama bölümleriyle devam etmektedir.",
+    "Bulgular ve tartışma bölümünde test sonuçları değerlendirilmiş, sonuçlar bölümünde öneriler sunulmuştur.",
+]
+
+literature_transformer = [
+    "Transformer mimarisi, dikkat mekanizması sayesinde uzun bağlam ilişkilerini verimli biçimde modelleyebilmiş ve LLM’lerin temelini oluşturmuştur (Vaswani ve diğerleri, 2017).",
+]
+
+literature_llms = [
+    "GPT, LLaMA ve Gemini gibi model aileleri, farklı ölçek ve veri stratejileriyle yüksek kaliteli metin üretimi sağlamaktadır (Brown ve diğerleri, 2020; Touvron ve diğerleri, 2023).",
+    "ChatGPT’nin yaygınlaşması, sohbet tabanlı arayüzlerin bilgi erişiminde etkinliğini göstermiştir (OpenAI, 2022).",
+]
+
+literature_local = [
+    "Yerel LLM çözümleri, gizlilik ve çevrimdışı çalışma gereksinimleri için tercih edilmektedir. Ollama, GGUF modelleri yerel çalıştırma kolaylığıyla öne çıkmaktadır (Ollama, 2024).",
+]
+
+literature_rag = [
+    "RAG yaklaşımı, üretim sürecine dış kaynak bağlamı ekleyerek doğrulanabilir yanıtlar üretmeyi amaçlar (Lewis ve diğerleri, 2020).",
+    "FAISS ve sentence-transformers, semantik arama ve gömme üretimi için sık kullanılan altyapılardır (Johnson ve diğerleri, 2017; Reimers ve Gurevych, 2019).",
+]
+
+literature_flutter = [
+    "Flutter, tek kod tabanı ile çoklu platform geliştirme imkânı sunar ve kurumsal uygulamalarda bakım maliyetini düşürür (Flutter, 2024).",
+]
+
+literature_chatbots = [
+    "Georgia State Üniversitesi ve Deakin Üniversitesi örnekleri, öğrenci destek süreçlerinde chatbot kullanımının yaygınlaştığını göstermektedir (Georgia State University, 2023; Deakin University, 2023).",
+]
+
 method_paragraphs = [
     "Geliştirme süreci iteratif şekilde yürütülmüş; dokümantasyon güncellemeleri ve kalite kontrolleri ile desteklenmiştir.",
     "Veri toplama için Selçuk Üniversitesi web sayfaları hedeflenmiş; scraping ve manuel doğrulama ile RAG veri seti hazırlanmıştır.",
+]
+
+method_model_paragraphs = [
+    "Model seçiminde yerel çalışma ve Türkçe yanıt kalitesi esas alınmıştır. Varsayılan sağlayıcı Ollama olup MODEL_BACKEND parametresiyle yönetilmektedir.",
+    "HuggingFace sağlayıcısı opsiyonel olarak kullanılabilmekte ve transformers bağımlılıkları mevcut olduğunda etkinleşmektedir.",
+]
+
+method_rag_paragraphs = [
+    "RAG indeksleme süreci rag_ingest.py ile yürütülmekte, belgeler parçalara ayrıldıktan sonra gömme vektörleri FAISS indeksine eklenmektedir.",
+    "Strict mod etkin olduğunda kaynak bulunamazsa yanıt üretimi durdurularak kaynaklı doğruluk korunmaktadır.",
+]
+
+method_metrics_paragraphs = [
+    "Değerlendirme, birim testleri, kritik bilgi doğruluğu ve CI kalite kontrolleriyle yapılmıştır.",
+    "Performans gözlemleri, benchmark raporlarında yer alan TTFT ve belirteç/saniye ölçümlerine dayanmaktadır.",
 ]
 
 system_paragraphs = [
@@ -271,14 +342,49 @@ system_paragraphs = [
     "Model sağlayıcıları providers katmanında soyutlanmış; Ollama ve HuggingFace opsiyonel şekilde çalıştırılmaktadır.",
 ]
 
+system_backend_paragraphs = [
+    "main.py, /chat ve /chat/stream uç noktalarında istek doğrulama, model yönlendirme ve RAG entegrasyonunu yürütmektedir.",
+    "ModelRegistry sınıfı katalog, varsayılan model ve uygunluk durumlarını tek noktadan yönetmektedir.",
+]
+
+system_rag_paragraphs = [
+    "rag_service.py, FAISS indeks yönetimi ve kaynak etiketli bağlam üretimini sağlamaktadır.",
+    "Citation formatı kaynak dosya ve sayfa bilgisiyle oluşturularak yanıt güvenilirliği artırılmaktadır.",
+]
+
+system_frontend_paragraphs = [
+    "Flutter uygulaması GetX ile durum yönetimi yapmakta, konuşma geçmişi Hive üzerinde saklanmaktadır.",
+    "EnhancedChatController SSE akışını yönetmekte, sesli giriş speech_to_text paketiyle desteklenmektedir.",
+]
+
+system_security_paragraphs = [
+    "Hassas bilgiler .env üzerinden yönetilmekte, CORS yapılandırması kontrollü şekilde uygulanmaktadır.",
+    "Yanıt temizleme katmanları, modelin meta veya düşünce bloklarını son kullanıcıya yansıtmamaktadır.",
+]
+
 findings_paragraphs = [
     "pytest, ruff ve mypy tabanlı kalite kontrolleri CI iş akışında çalıştırılmaktadır.",
     "test_critical_facts.py ile Konya, 1975 ve Teknoloji Fakültesi gibi kritik bilgiler doğrulanmaktadır.",
 ]
 
+findings_benchmark_paragraphs = [
+    "Benchmark raporları, yerel Ollama modellerinde TTFT ve belirteç/saniye ölçümlerinin karşılaştırıldığını göstermektedir.",
+    "llama3.2:3b modeli hız odaklı senaryolarda öne çıkarken, turkcell-llm-7b gibi modeller kalite odaklı adaylar olarak değerlendirilmiştir.",
+]
+
+findings_challenges_paragraphs = [
+    "UTF-8 uyumluluğu, SSE akışında kesinti yönetimi ve halüsinasyon riski proje boyunca yönetilmesi gereken başlıca zorluklar olmuştur.",
+    "Encoding guard ve strict RAG yaklaşımı bu risklerin azaltılmasına katkı sağlamıştır.",
+]
+
 conclusion_paragraphs = [
     "Sistem, yerel LLM ve RAG yaklaşımıyla gizlilik ve doğruluk gereksinimlerini karşılamaktadır.",
     "Gelecek çalışmalarda çok dilli destek ve sesli asistan özellikleri genişletilebilir.",
+]
+
+recommendation_paragraphs = [
+    "RAG indeksinin periyodik güncellenmesi ve veri toplama otomasyonunun genişletilmesi önerilmektedir.",
+    "Kurumsal kimlik doğrulama ve rol bazlı erişim mekanizmaları ileride entegre edilebilir.",
 ]
 
 references = [
@@ -289,6 +395,9 @@ references = [
     "Johnson, J., Douze, M., ve Jégou, H., 2017, Billion-scale similarity search with GPUs, IEEE Transactions on Big Data.",
     "Reimers, N., ve Gurevych, I., 2019, Sentence-BERT, EMNLP.",
     "Ollama, 2024, Ollama Documentation, https://ollama.com (Erişim: 2025-12-30).",
+    "OpenAI, 2022, ChatGPT: Optimizing Language Models for Dialogue, https://openai.com/blog/chatgpt (Erişim: 2025-12-30).",
+    "Georgia State University, 2023, Pounce Chatbot, https://success.gsu.edu/pounce/ (Erişim: 2025-12-30).",
+    "Deakin University, 2023, Genie Virtual Assistant, https://www.deakin.edu.au/about-deakin/media-releases/articles/meet-genie (Erişim: 2025-12-30).",
     "FastAPI, 2024, FastAPI Documentation, https://fastapi.tiangolo.com (Erişim: 2025-12-30).",
     "Flutter, 2024, Flutter Documentation, https://docs.flutter.dev (Erişim: 2025-12-30).",
 ]
@@ -322,7 +431,7 @@ def main() -> None:
     approval_para = find_paragraph(doc, "tarafından hazırlan")
     approval_para.text = (
         f"{STUDENTS[0].split(' (')[0]} ve {STUDENTS[1].split(' (')[0]} tarafından hazırlanan "
-        f\"{TITLE_TR}\" adlı proje çalışması …/…/2025 tarihinde aşağıdaki jüri üyeleri tarafından "
+        f"\"{TITLE_TR}\" adlı proje çalışması .../.../2025 tarihinde aşağıdaki jüri üyeleri tarafından "
         "Selçuk Üniversitesi Teknoloji Fakültesi Bilgisayar Mühendisliği bölümünde Bitirme Projesi "
         "olarak kabul edilmiştir."
     )
@@ -343,14 +452,13 @@ def main() -> None:
     # Declaration signature table
     decl_table = doc.tables[3]
     decl_table.cell(1, 1).text = f"{STUDENTS[0]}\n{STUDENTS[1]}"
-    decl_table.cell(2, 1).text = "Tarih: …./…./2025"
+    decl_table.cell(2, 1).text = "Tarih: .../.../2025"
 
     # Abstract (TR)
     find_paragraph(doc, "PROJE BAŞLIĞINI BURAYA YAZINIZ").text = TITLE_TR
     for p in doc.paragraphs:
         if p.text.strip() == "Öğrencinin Adı SOYADI":
             p.text = f"{STUDENTS[0]}\n{STUDENTS[1]}"
-            break
 
     for p in doc.paragraphs:
         if p.text.strip().startswith("Danışman:"):
@@ -378,7 +486,7 @@ def main() -> None:
     find_paragraph(doc, "PROJE BAŞLIĞININ İNGİLİZCE’SİNİ BURAYA YAZINIZ").text = TITLE_EN
     for p in doc.paragraphs:
         if p.text.strip().startswith("Year,"):
-            p.text = "2025, … Pages"
+            p.text = "2025, ... Pages"
             break
 
     abstract_en_anchor = find_paragraph(doc, "Türkçe özet metninin İngilizce’sini yazmaya buradan başlayınız")
@@ -392,6 +500,14 @@ def main() -> None:
     keywords_en = find_paragraph(doc, "Keywords:")
     keywords_en.text = abstract_keywords_en
     set_run_font(keywords_en, 10)
+
+    for p in doc.paragraphs:
+        if p.text.strip() == "Danışmanın Unvanı Adı SOYADI":
+            p.text = f"Danışman: {ADVISORS[0]}"
+        if p.text.strip().startswith("Advisor:"):
+            p.text = f"Advisor: {ADVISORS[0]} / {ADVISORS[1]}"
+        if p.text.strip().startswith("Advisor Danışmanın"):
+            p.text = f"Advisor: {ADVISORS[0]}"
 
     # Preface
     preface_anchor = find_paragraph(doc, "Önsöz metnini yazım kılavuzuna uygun olarak yazmaya buradan başlayınız")
@@ -420,12 +536,16 @@ def main() -> None:
     cursor = add_heading_with_paragraphs(cursor, "1.1. Projenin Arka Planı", 2, intro_paragraphs)
     cursor = add_heading_with_paragraphs(cursor, "1.2. Projenin Önemi", 2, importance_paragraphs)
     cursor = add_heading_with_paragraphs(cursor, "1.3. Projenin Kapsamı", 2, scope_paragraphs)
+    cursor = add_heading_with_paragraphs(cursor, "1.4. Raporun Organizasyonu", 2, intro_org)
 
     # Section 2: Literature
     cursor = delete_between(doc, "2. KAYNAK ARAŞTIRMASI", "3. MATERYAL VE YÖNTEM")
-    lit_doc = (ROOT / "docs" / "technical" / "ARCHITECTURE_OVERVIEW.md").read_text(encoding="utf-8", errors="ignore")
-    lit_lines = clean_doc_text(lit_doc)
-    cursor = add_heading_with_paragraphs(cursor, "2.1. Literatür Özeti", 2, lit_lines[:12])
+    cursor = add_heading_with_paragraphs(cursor, "2.1. Transformer ve LLM Gelişimi", 2, literature_transformer)
+    cursor = add_heading_with_paragraphs(cursor, "2.2. Büyük Dil Modelleri (GPT, LLaMA, Gemini)", 2, literature_llms)
+    cursor = add_heading_with_paragraphs(cursor, "2.3. Yerel LLM Çözümleri ve Ollama", 2, literature_local)
+    cursor = add_heading_with_paragraphs(cursor, "2.4. RAG ve Vektör Arama", 2, literature_rag)
+    cursor = add_heading_with_paragraphs(cursor, "2.5. Flutter ve Mobil Uygulama Geliştirme", 2, literature_flutter)
+    cursor = add_heading_with_paragraphs(cursor, "2.6. Üniversite Chatbot Örnekleri", 2, literature_chatbots)
 
     # Section 3: Material & Method
     cursor = delete_between(doc, "3. MATERYAL VE YÖNTEM", "4. ARAŞTIRMA SONUÇLARI VE TARTIŞMA")
@@ -434,6 +554,8 @@ def main() -> None:
     data_doc = (ROOT / "docs" / "reports" / "VERI_KAYNAKLARI.md").read_text(encoding="utf-8", errors="ignore")
     data_lines = clean_doc_text(data_doc)
     cursor = add_heading_with_paragraphs(cursor, "3.2. Veri Toplama", 2, data_lines[:10])
+    cursor = add_heading_with_paragraphs(cursor, "3.3. Model Seçimi", 2, method_model_paragraphs)
+    cursor = add_heading_with_paragraphs(cursor, "3.4. RAG Tasarımı", 2, method_rag_paragraphs)
 
     # RAG params table
     table_caption = insert_paragraph_after(cursor, "Çizelge 3.1. RAG yapılandırma parametreleri", style=TABLE_CAPTION)
@@ -455,18 +577,23 @@ def main() -> None:
     table.cell(4, 1).text = "paraphrase-multilingual-MiniLM-L12-v2"
     table.cell(4, 2).text = "Gömme modeli"
     set_table_font(table, 10)
+    cursor = add_heading_with_paragraphs(table_caption, "3.5. Değerlendirme Ölçütleri", 2, method_metrics_paragraphs)
 
     # Section 4: rename heading to System Design
     find_paragraph(doc, "4. ARAŞTIRMA SONUÇLARI VE TARTIŞMA").text = "4. SİSTEM TASARIMI VE UYGULAMA"
     cursor = delete_between(doc, "4. SİSTEM TASARIMI VE UYGULAMA", "5. SONUÇLAR VE ÖNERİLER")
     cursor = add_heading_with_paragraphs(cursor, "4.1. Genel Mimari", 2, system_paragraphs)
     cursor = add_figure(cursor, arch_path, "Şekil 4.1. Selçuk AI Asistanı genel mimarisi")
+    cursor = add_heading_with_paragraphs(cursor, "4.2. Backend Tasarımı", 2, system_backend_paragraphs)
+    cursor = add_heading_with_paragraphs(cursor, "4.3. RAG Servisi", 2, system_rag_paragraphs)
 
     api_doc = (ROOT / "docs" / "technical" / "API_CONTRACT.md").read_text(encoding="utf-8", errors="ignore")
     api_lines = clean_doc_text(api_doc)
-    cursor = add_heading_with_paragraphs(cursor, "4.2. API Tasarımı", 2, api_lines[:12])
+    cursor = add_heading_with_paragraphs(cursor, "4.4. API Tasarımı", 2, api_lines[:12])
 
     cursor = add_figure(cursor, rag_path, "Şekil 4.2. RAG süreci")
+    cursor = add_heading_with_paragraphs(cursor, "4.5. Flutter Arayüzü", 2, system_frontend_paragraphs)
+    cursor = add_heading_with_paragraphs(cursor, "4.6. Güvenlik ve Gizlilik", 2, system_security_paragraphs)
 
     # Section 5: Findings
     find_paragraph(doc, "5. SONUÇLAR VE ÖNERİLER").text = "5. ARAŞTIRMA BULGULARI VE TARTIŞMA"
@@ -476,11 +603,14 @@ def main() -> None:
     tests_doc = (ROOT / "docs" / "reports" / "TEST_RAPORU.md").read_text(encoding="utf-8", errors="ignore")
     tests_lines = clean_doc_text(tests_doc)
     cursor = add_heading_with_paragraphs(cursor, "5.2. CI ve Kalite Kontrolleri", 2, tests_lines[:12])
+    cursor = add_heading_with_paragraphs(cursor, "5.3. RAG Performansı", 2, findings_benchmark_paragraphs)
+    cursor = add_heading_with_paragraphs(cursor, "5.4. Karşılaşılan Zorluklar", 2, findings_challenges_paragraphs)
 
     # Insert new Section 6 before references
     ref_anchor = find_paragraph(doc, "KAYNAKLAR")
-    cursor = insert_paragraph_after(ref_anchor, "6. SONUÇLAR VE ÖNERİLER", style=HEADING_1)
+    cursor = insert_paragraph_before(ref_anchor, "6. SONUÇLAR VE ÖNERİLER", style=HEADING_1)
     cursor = add_heading_with_paragraphs(cursor, "6.1. Sonuçlar", 2, conclusion_paragraphs)
+    cursor = add_heading_with_paragraphs(cursor, "6.2. Öneriler", 2, recommendation_paragraphs)
 
     # References
     delete_between(doc, "KAYNAKLAR", "EKLER")
@@ -495,15 +625,40 @@ def main() -> None:
     cursor = add_heading_with_paragraphs(cursor, "EK-1: API Sözleşmesi (Özet)", 2, [])
     for line in api_lines:
         cursor = insert_paragraph_after(cursor, line, style=BODY_STYLE_10)
-        set_run_font(cursor, 9, name="Courier New")
+        set_run_font(cursor, 10)
 
     cursor = add_heading_with_paragraphs(cursor, "EK-2: Örnek Kodlar", 2, [])
     code_files = [
         ROOT / "backend" / "main.py",
         ROOT / "backend" / "rag_service.py",
+        ROOT / "backend" / "ollama_service.py",
+        ROOT / "backend" / "utils.py",
+        ROOT / "backend" / "response_cleaner.py",
+        ROOT / "backend" / "prompts.py",
+        ROOT / "backend" / "schemas.py",
+        ROOT / "backend" / "providers" / "registry.py",
+        ROOT / "backend" / "rag_ingest.py",
+        ROOT / "backend" / "selcuk_data.py",
+        ROOT / "backend" / "test_critical_facts.py",
+        ROOT / "backend" / "test_main.py",
+        ROOT / "backend" / "test_extended.py",
+        ROOT / "backend" / "test_response_cleaner.py",
+        ROOT / "backend" / "test_reasoning_cleanup.py",
         ROOT / "backend" / "providers" / "ollama_provider.py",
         ROOT / "backend" / "providers" / "huggingface_provider.py",
         ROOT / "lib" / "controller" / "enhanced_chat_controller.dart",
+        ROOT / "lib" / "controller" / "chat_controller.dart",
+        ROOT / "lib" / "screen" / "feature" / "new_chat_screen.dart",
+        ROOT / "lib" / "services" / "conversation_service.dart",
+        ROOT / "lib" / "services" / "sse_client.dart",
+        ROOT / "lib" / "services" / "model_service.dart",
+        ROOT / "lib" / "apis" / "apis.dart",
+        ROOT / "lib" / "config" / "backend_config.dart",
+        ROOT / "lib" / "screen" / "model_picker_screen.dart",
+        ROOT / "lib" / "screen" / "settings_screen.dart",
+        ROOT / ".github" / "workflows" / "backend.yml",
+        ROOT / ".github" / "workflows" / "dart.yml",
+        ROOT / "docker-compose.yml",
     ]
 
     for code_path in code_files:
@@ -511,15 +666,40 @@ def main() -> None:
         code_text = code_path.read_text(encoding="utf-8", errors="ignore")
         for line in code_text.splitlines():
             cursor = insert_paragraph_after(cursor, line, style=BODY_STYLE_10)
-            set_run_font(cursor, 9, name="Courier New")
+            set_run_font(cursor, 10)
+
+    cursor = add_heading_with_paragraphs(cursor, "EK-3: Test ve Benchmark Raporları", 2, [])
+    report_files = [
+        ROOT / "docs" / "reports" / "TEST_RAPORU.md",
+        ROOT / "docs" / "reports" / "BENCHMARK_RAPORU.md",
+        ROOT / "docs" / "reports" / "VERI_KAYNAKLARI.md",
+    ]
+    for report_path in report_files:
+        cursor = add_heading_with_paragraphs(cursor, f"{report_path.as_posix()}", 3, [])
+        report_text = report_path.read_text(encoding="utf-8", errors="ignore")
+        for line in report_text.splitlines():
+            if not line.strip():
+                continue
+            cursor = insert_paragraph_after(cursor, line, style=BODY_STYLE_10)
+            set_run_font(cursor, 10)
 
     # CV section
     cv_anchor = find_paragraph(doc, "ÖZGEÇMİŞ")
     cursor = cv_anchor
-    cursor = insert_paragraph_after(cursor, "ÖZGEÇMİŞ", style=HEADING_1)
     for student in STUDENTS:
         cursor = add_heading_with_paragraphs(cursor, student, 2, [])
         cursor = insert_paragraph_after(cursor, "Kişisel bilgiler, eğitim ve iletişim alanları öğrenci tarafından doldurulacaktır.", style=BODY_STYLE)
+
+    # Update page count placeholders using word-count estimate
+    estimated_pages = estimate_pages(doc)
+    for p in doc.paragraphs:
+        if p.text.strip().startswith("2025,") and "Sayfa" in p.text:
+            p.text = f"2025, {estimated_pages} Sayfa"
+            break
+    for p in doc.paragraphs:
+        if p.text.strip().startswith("2025,") and "Pages" in p.text:
+            p.text = f"2025, {estimated_pages} Pages"
+            break
 
     doc.save(str(OUTPUT))
     print(f"Saved: {OUTPUT}")
