@@ -292,10 +292,6 @@ class EnhancedChatController extends GetxController {
         : history;
 
     final payload = <Map<String, String>>[
-      {
-        'role': 'system',
-        'content': _systemPrompt(),
-      },
       ...recent.map(
         (msg) => {
           'role': msg.isUser ? 'user' : 'assistant',

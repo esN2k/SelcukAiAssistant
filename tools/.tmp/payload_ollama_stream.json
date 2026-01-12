@@ -1,13 +1,13 @@
 {
-  "max_tokens": 128,
-  "temperature": 0.2,
-  "top_p": 0.9,
-  "stream": true,
-  "model": "gemma2:2b",
-  "messages": [
-    {
-      "content": "Merhaba",
-      "role": "user"
-    }
-  ]
+    "messages":  [
+                     {
+                         "content":  "Merhaba",
+                         "role":  "user"
+                     }
+                 ],
+    "stream":  true,
+    "max_tokens":  128,
+    "temperature":  0.2,
+    "model":  "qwen2.5:7b",
+    "top_p":  0.9
 }

@@ -48,8 +48,36 @@ def normalize_messages(
     İşleyiş: Sistem mesajı yoksa ekler, içerikleri kopyalar.
     """
     normalized = [ChatMessage(role=m.role, content=m.content) for m in messages]
-    if not any(m.role == "system" for m in normalized):
+    default_prompt = build_default_system_prompt(language).strip()
+    system_indices = [idx for idx, msg in enumerate(normalized) if msg.role == "system"]
+
+    if not system_indices:
         normalized.insert(0, build_default_system_message(language))
+        return normalized
+
+    # Always prepend the official Selcuk system prompt so core facts are present.
+    primary_index = system_indices[0]
+    merged_parts: list[str] = []
+    primary_content = normalized[primary_index].content
+    if default_prompt and default_prompt not in primary_content:
+        merged_parts.append(default_prompt)
+
+    for idx in system_indices:
+        content = normalized[idx].content.strip()
+        if not content:
+            continue
+        if content == default_prompt and default_prompt in merged_parts:
+            continue
+        merged_parts.append(content)
+
+    normalized[primary_index] = ChatMessage(
+        role="system",
+        content="\n\n---\n\n".join(merged_parts).strip(),
+    )
+
+    for idx in reversed(system_indices[1:]):
+        normalized.pop(idx)
+
     return normalized
 
 

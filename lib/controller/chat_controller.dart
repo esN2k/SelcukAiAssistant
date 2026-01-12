@@ -136,7 +136,6 @@ class ChatController extends GetxController {
       textC.text = '';
 
       final payload = [
-        {'role': 'system', 'content': _systemPrompt()},
         {'role': 'user', 'content': question},
       ];
 
