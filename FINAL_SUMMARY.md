@@ -279,5 +279,4 @@ curl -X POST http://localhost:8000/chat \
 ---
 
 **Son Güncelleme:** 2026-01-12  
-**Hazırlayan:** GitHub Copilot Agent  
 **Commit:** e0541f7

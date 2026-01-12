@@ -349,5 +349,4 @@ Accuracy guard sistemi ile kritik bilgi doğruluğu garantisi - literatürde ben
 ---
 
 **Son Güncelleme:** 2026-01-12  
-**Hazırlayan:** GitHub Copilot Agent  
 **Versiyon:** 1.0.0 (Jüri Hazır)

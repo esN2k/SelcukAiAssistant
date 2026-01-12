@@ -464,24 +464,15 @@ async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingR
                             question_text, accumulated_response, language
                         )
                         
-                        # Eğer düzeltme yapıldıysa, düzeltilmiş kısmı gönder
+                        # Eğer düzeltme yapıldıysa, düzeltilmiş yanıtı kullan
                         if was_corrected:
                             logger.warning(
                                 "request_id=%s event=stream_accuracy_guard_corrected question=%s",
                                 request_id,
                                 question_text[:100],
                             )
-                            # Düzeltilmiş yanıtı gönder (orijinalden farklıysa)
+                            # Düzeltilmiş yanıt direkt kullanılacak, orijinal yerine
                             if corrected_response != accumulated_response:
-                                # Farkı hesapla ve yeni token olarak gönder
-                                correction_note = "\n\n---\n*(Yanıt doğruluk kontrolünden geçirildi)*\n\n" + corrected_response
-                                yield sse_event(
-                                    {
-                                        "type": "token",
-                                        "token": correction_note,
-                                        "request_id": request_id,
-                                    }
-                                )
                                 accumulated_response = corrected_response
                         
                         # Appwrite'a kaydet
