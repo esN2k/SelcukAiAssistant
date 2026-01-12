@@ -126,32 +126,32 @@ def guard_response_accuracy(
         if category == "konum":
             if language.lower().startswith("en"):
                 corrected = (
-                    f"Selçuk University is located in **Konya**, Turkey.\n\n"
-                    f"Specifically, it has two main campuses:\n"
-                    f"- **Alaeddin Keykubat Campus** in Selçuklu district (Engineering, Technology, Science faculties)\n"
-                    f"- **Ardıçlı Campus** in Karatay district (Medicine, Health Sciences)\n\n"
-                    f"The university was founded in 1975 and is one of Turkey's prominent state universities."
+                    "Selçuk University is located in **Konya**, Turkey.\n\n"
+                    "Specifically, it has two main campuses:\n"
+                    "- **Alaeddin Keykubat Campus** in Selçuklu district (Engineering, Technology, Science faculties)\n"
+                    "- **Ardıçlı Campus** in Karatay district (Medicine, Health Sciences)\n\n"
+                    "The university was founded in 1975 and is one of Turkey's prominent state universities."
                 )
             else:
                 corrected = (
-                    f"Selçuk Üniversitesi **Konya**'dadır.\n\n"
-                    f"İki ana kampüsü bulunmaktadır:\n"
-                    f"- **Alaeddin Keykubat Yerleşkesi** (Selçuklu/Konya): Mühendislik, Teknoloji, Fen fakülteleri\n"
-                    f"- **Ardıçlı Yerleşkesi** (Karatay/Konya): Tıp, Sağlık Bilimleri\n\n"
-                    f"Üniversite 1975 yılında kurulmuş olup, Türkiye'nin önde gelen devlet üniversitelerinden biridir."
+                    "Selçuk Üniversitesi **Konya**'dadır.\n\n"
+                    "İki ana kampüsü bulunmaktadır:\n"
+                    "- **Alaeddin Keykubat Yerleşkesi** (Selçuklu/Konya): Mühendislik, Teknoloji, Fen fakülteleri\n"
+                    "- **Ardıçlı Yerleşkesi** (Karatay/Konya): Tıp, Sağlık Bilimleri\n\n"
+                    "Üniversite 1975 yılında kurulmuş olup, Türkiye'nin önde gelen devlet üniversitelerinden biridir."
                 )
         elif category == "kuruluş_yılı":
             if language.lower().startswith("en"):
                 corrected = (
-                    f"Selçuk University was founded in **1975** in Konya, Turkey.\n\n"
-                    f"It started with the Konya State Academy of Architecture and Engineering "
-                    f"and gained its current structure in 1982."
+                    "Selçuk University was founded in **1975** in Konya, Turkey.\n\n"
+                    "It started with the Konya State Academy of Architecture and Engineering "
+                    "and gained its current structure in 1982."
                 )
             else:
                 corrected = (
-                    f"Selçuk Üniversitesi **1975** yılında Konya'da kurulmuştur.\n\n"
-                    f"Konya Devlet Mimarlık ve Mühendislik Akademisi temelinde kurulan üniversite, "
-                    f"1982 yılında mevcut yapısına kavuşmuştur."
+                    "Selçuk Üniversitesi **1975** yılında Konya'da kurulmuştur.\n\n"
+                    "Konya Devlet Mimarlık ve Mühendislik Akademisi temelinde kurulan üniversite, "
+                    "1982 yılında mevcut yapısına kavuşmuştur."
                 )
         else:
             # Diğer kategoriler için orijinal yanıtı kullan ama uyarı ekle
