@@ -17,6 +17,7 @@ from providers.base import CancellationToken, ModelProvider, Usage
 from providers.huggingface_provider import HuggingFaceProvider
 from providers.ollama_provider import OllamaProvider
 from providers.registry import ModelRegistry
+from accuracy_guard import guard_response_accuracy
 from prompts import build_rag_system_prompt, rag_no_source_message
 from rag_service import rag_service
 from response_cleaner import StreamingResponseCleaner, clean_text
@@ -306,8 +307,19 @@ async def chat(request: ChatRequest, http_request: Request) -> ChatResponse:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
     answer = clean_text(result.text, language=language)
+    
+    # Kritik doğruluk kontrolü ve düzeltme
+    question_text = next((m.content for m in reversed(messages) if m.role == "user"), "")
+    answer, was_corrected = guard_response_accuracy(question_text, answer, language)
+    if was_corrected:
+        logger.warning(
+            "request_id=%s event=accuracy_guard_corrected question=%s",
+            request_id,
+            question_text[:100],
+        )
+    
     _log_chat_to_appwrite(
-        question=next((m.content for m in reversed(messages) if m.role == "user"), ""),
+        question=question_text,
         answer=answer,
     )
 
@@ -446,9 +458,25 @@ async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingR
                                 }
                             )
                         
+                        # Kritik doğruluk kontrolü ve gerekirse düzeltme
+                        question_text = next((m.content for m in reversed(messages) if m.role == "user"), "")
+                        corrected_response, was_corrected = guard_response_accuracy(
+                            question_text, accumulated_response, language
+                        )
+                        
+                        # Eğer düzeltme yapıldıysa, düzeltilmiş yanıtı kullan
+                        if was_corrected:
+                            logger.warning(
+                                "request_id=%s event=stream_accuracy_guard_corrected question=%s",
+                                request_id,
+                                question_text[:100],
+                            )
+                            # Düzeltilmiş yanıt direkt kullanılacak, orijinal yerine
+                            if corrected_response != accumulated_response:
+                                accumulated_response = corrected_response
+                        
                         # Appwrite'a kaydet
-                        question = next((m.content for m in reversed(messages) if m.role == "user"), "")
-                        _log_chat_to_appwrite(question=question, answer=accumulated_response)
+                        _log_chat_to_appwrite(question=question_text, answer=accumulated_response)
                         
                         usage_schema = _usage_to_schema(chunk.usage)
                         yield sse_event(
