@@ -8,30 +8,40 @@ from __future__ import annotations
 import re
 from typing import Optional
 
+
+def _turkish_lower(text: str) -> str:
+    """Türkçe karakterleri doğru şekilde küçük harfe çevirir.
+    
+    Python'ın standart lower() fonksiyonu İ -> i̇ dönüşümü yapar,
+    ancak biz İ -> i dönüşümü istiyoruz.
+    """
+    return text.replace("İ", "i").replace("I", "ı").lower()
+
+
 # Kritik bilgiler ve doğrulama kuralları
 CRITICAL_FACTS = {
     "konum": {
         "doğru": ["konya"],
         "yanlış": ["izmir", "ankara", "istanbul", "bursa", "antalya", "eskişehir"],
         "triggers": [
-            r"\bnerede\b",
-            r"\bhangi (şehir|il|yer)\b",
-            r"\bkonumu?\b",
-            r"\bbulunur\b",
-            r"\blocation\b",
-            r"\bwhere\b",
-            r"\bcity\b",
+            r"nerede",
+            r"hangi (şehir|il|yer)",
+            r"konum",
+            r"bulunur",
+            r"location",
+            r"where",
+            r"city",
         ]
     },
     "kuruluş_yılı": {
         "doğru": ["1975"],
         "yanlış": ["1974", "1976", "1980", "1970", "1982"],
         "triggers": [
-            r"\bne zaman kuruldu\b",
-            r"\bkaç yılında\b",
-            r"\bkuruluş yılı\b",
-            r"\bfounded\b",
-            r"\bestablished\b",
+            r"ne zaman kuruldu",
+            r"kaç yılında",
+            r"kuruluş yılı",
+            r"founded",
+            r"established",
         ]
     },
 }
@@ -43,17 +53,18 @@ def _detect_question_category(question: str) -> Optional[str]:
     Çıkış: Kategori adı veya None.
     İşleyiş: Sorunun hangi kritik bilgi kategorisine ait olduğunu tespit eder.
     """
-    question_lower = question.lower()
+    question_lower = _turkish_lower(question)
     
     # Selçuk Üniversitesi ile ilgili mi kontrol et
-    if not any(keyword in question_lower for keyword in ["selçuk", "selcuk", "üniversite", "university"]):
-        return None
+    has_university_context = any(keyword in question_lower for keyword in ["selçuk", "selcuk", "üniversite", "university"])
     
     # Kategori tetikleyicilerini kontrol et
     for category, rules in CRITICAL_FACTS.items():
         for trigger_pattern in rules["triggers"]:
-            if re.search(trigger_pattern, question_lower):
-                return category
+            if re.search(trigger_pattern, question_lower, re.IGNORECASE):
+                # Eğer üniversite bağlamı varsa veya çok spesifik bir tetikleyici ise kabul et
+                if has_university_context or "kuruluş" in trigger_pattern or "founded" in trigger_pattern:
+                    return category
     
     return None
 
@@ -67,14 +78,14 @@ def _contains_wrong_fact(text: str, category: str) -> Optional[str]:
     if category not in CRITICAL_FACTS:
         return None
     
-    text_lower = text.lower()
+    text_lower = _turkish_lower(text)
     rules = CRITICAL_FACTS[category]
     
     # Yanlış bilgileri kontrol et
     for wrong_fact in rules["yanlış"]:
         # Kelime sınırlarıyla ara (örn: "konyadaki" değil, "konya" ara)
         pattern = r'\b' + re.escape(wrong_fact) + r'\b'
-        if re.search(pattern, text_lower):
+        if re.search(pattern, text_lower, re.IGNORECASE):
             return wrong_fact
     
     return None
@@ -89,13 +100,13 @@ def _contains_correct_fact(text: str, category: str) -> bool:
     if category not in CRITICAL_FACTS:
         return True  # Bilinmeyen kategori için geç
     
-    text_lower = text.lower()
+    text_lower = _turkish_lower(text)
     rules = CRITICAL_FACTS[category]
     
     # Doğru bilgilerden en az biri var mı
     for correct_fact in rules["doğru"]:
         pattern = r'\b' + re.escape(correct_fact) + r'\b'
-        if re.search(pattern, text_lower):
+        if re.search(pattern, text_lower, re.IGNORECASE):
             return True
     
     return False
