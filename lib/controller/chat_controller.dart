@@ -47,20 +47,6 @@ class ChatController extends GetxController {
     return _languageCode() == 'en' ? 'en_US' : 'tr_TR';
   }
 
-  String _systemPrompt() {
-    if (_languageCode() == 'en') {
-      return 'You are a helpful assistant for Selçuk University. '
-          'Reply in English. Do not reveal reasoning or internal thoughts. '
-          'If the user greets vaguely (e.g. "Hello"), ask what they need about '
-          'Selçuk University.';
-    }
-    return 'Sel\u00e7uk \u00dcniversitesi i\u00e7in yard\u0131mc\u0131 bir '
-        'asistans\u0131n. Yan\u0131tlar\u0131n\u0131 T\u00fcrk\u00e7e ver. '
-        'Ak\u0131l y\u00fcr\u00fctme veya i\u00e7 konu\u015fma '
-        'payla\u015fma. Kullan\u0131c\u0131 genel bir selam verirse '
-        '(\u00f6r. "Merhaba"), Sel\u00e7uk \u00dcniversitesi ile ilgili '
-        'neye ihtiya\u00e7 duydu\u011funu sor.';
-  }
 
   Future<void> _initSpeech() async {
     speechEnabled.value = await _speechToText.initialize(
