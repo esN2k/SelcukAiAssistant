@@ -1,3 +1,31 @@
+/// ══════════════════════════════════════════════════════════════════════════════
+/// DOSYA ADI: message_card.dart
+/// AMAÇ: Sohbet mesajı kartı widget'ı
+/// KULLANIM: ChatBotFeature ListView'ında kullanılır
+/// İLGİLİ EKRANLAR: ChatBotFeature, NewChatScreen
+/// YAZAN: esN2k - Selçuk Üniversitesi
+/// ══════════════════════════════════════════════════════════════════════════════
+///
+/// DETAYLI AÇIKLAMA:
+/// ────────────────
+/// Bu widget, sohbet ekranında gösterilen mesaj balonlarını oluşturur.
+///
+/// ÖZELLİKLER:
+/// • Kullanıcı mesajları sağda, bot mesajları solda
+/// • Bot mesajları robot ikonu ile gösterilir
+/// • Markdown formatı desteklenir
+/// • Boş mesajlar için typing indicator gösterilir
+///
+/// UI YAPISI:
+/// Bot mesajı:    [Avatar] [Mesaj Balonu    ]
+/// Kullanıcı:               [    Mesaj Balonu]
+///
+/// ÖRNEK KULLANIM:
+/// ──────────────
+/// ```dart
+/// MessageCard(message: Message(msg: "Merhaba", msgType: MessageType.user))
+/// ```
+
 // Using deprecated withOpacity API until migrated to withValues
 // ignore_for_file: deprecated_member_use
 

@@ -1,3 +1,39 @@
+/// ══════════════════════════════════════════════════════════════════════════════
+/// DOSYA ADI: main.dart
+/// AMAÇ: Flutter uygulamasının ana giriş noktası
+/// KULLANIM: flutter run komutuyla çalıştırılır
+/// İLGİLİ EKRANLAR: SplashScreen (başlangıç ekranı)
+/// YAZAN: esN2k - Selçuk Üniversitesi
+/// ══════════════════════════════════════════════════════════════════════════════
+///
+/// DETAYLI AÇIKLAMA:
+/// ────────────────
+/// Bu dosya, Selçuk AI Akademik Asistan uygulamasının başlangıç noktasıdır.
+/// main() fonksiyonu uygulama başlatılırken ilk çalışan koddur.
+///
+/// BAŞLATMA ADIMLARI:
+/// 1. Flutter binding'leri başlatılır
+/// 2. Hata yakalama ayarlanır
+/// 3. StorageService başlatılır (yerel veritabanı)
+/// 4. Tercihler (Pref) yüklenir
+/// 5. .env dosyası okunur
+/// 6. Mobil platformlarda reklam SDK'sı başlatılır
+/// 7. MyApp widget'ı çalıştırılır
+///
+/// KULLANILAN PAKETLER:
+/// • flutter_dotenv: Ortam değişkenleri
+/// • get: State management ve navigasyon
+/// • speech_to_text: Sesli giriş
+/// • hive: Yerel veritabanı
+///
+/// ÖRNEK KULLANIM:
+/// ──────────────
+/// ```bash
+/// flutter run -d chrome    # Web'de çalıştır
+/// flutter run -d windows   # Windows'ta çalıştır
+/// flutter run              # Bağlı cihazda çalıştır
+/// ```
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

@@ -1,4 +1,40 @@
-"""Selçuk AI Asistanı FastAPI backend uygulaması."""
+"""
+╔════════════════════════════════════════════════════════════════════════════════╗
+║  DOSYA ADI: main.py                                                            ║
+║  AMAÇ: FastAPI backend uygulamasının ana giriş noktası                        ║
+║  KULLANIM: uvicorn main:app --reload --host 0.0.0.0 --port 8000               ║
+║  BAĞIMLILIKLAR: fastapi, uvicorn, pydantic, requests                          ║
+║  YAZAN: esN2k - Selçuk Üniversitesi                                           ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+DETAYLI AÇIKLAMA:
+─────────────────
+Bu dosya, Selçuk AI Akademik Asistan projesinin FastAPI backend'inin ana giriş
+noktasıdır. HTTP endpoint'leri burada tanımlanır ve istemci istekleri işlenir.
+
+ANA ENDPOINT'LER:
+• GET  /          → Basit sağlık kontrolü
+• GET  /health    → Sağlık durumu
+• GET  /health/ollama → Ollama sağlık kontrolü
+• GET  /health/hf → HuggingFace sağlık kontrolü
+• GET  /models    → Kullanılabilir modellerin listesi
+• POST /chat      → Senkron sohbet isteği
+• POST /chat/stream → SSE tabanlı akış yanıtı
+
+VERİ AKIŞI:
+1. İstemci HTTP isteği gönderir
+2. Mesajlar normalize edilir (sistem promptu eklenir)
+3. RAG aktifse, ilgili belgeler aranır
+4. LLM sağlayıcısı (Ollama/HuggingFace) çağrılır
+5. Yanıt temizlenir ve doğruluk kontrolü yapılır
+6. Sonuç istemciye döndürülür
+
+ÖRNEK KULLANIM:
+──────────────
+curl -X POST http://localhost:8000/chat \\
+  -H "Content-Type: application/json" \\
+  -d '{"messages": [{"role": "user", "content": "Selçuk Üniversitesi nerede?"}]}'
+"""
 from __future__ import annotations
 
 import asyncio

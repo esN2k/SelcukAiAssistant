@@ -1,3 +1,32 @@
+/// ══════════════════════════════════════════════════════════════════════════════
+/// DOSYA ADI: settings_screen.dart
+/// AMAÇ: Uygulama ayarları ekranı
+/// KULLANIM: HomeScreen'den açılır
+/// İLGİLİ EKRANLAR: ModelPickerScreen, DiagnosticsScreen
+/// YAZAN: esN2k - Selçuk Üniversitesi
+/// ══════════════════════════════════════════════════════════════════════════════
+///
+/// DETAYLI AÇIKLAMA:
+/// ────────────────
+/// Bu ekran, kullanıcı tercihlerini yönetmek için kullanılır.
+///
+/// YÖNETİLEN AYARLAR:
+/// • Tema seçimi (açık/koyu mod)
+/// • Dil seçimi (Türkçe/İngilizce)
+/// • Model seçimi (Llama 3.1, Qwen, vb.)
+/// • Sesli giriş ayarları
+/// • Backend URL yapılandırması
+/// • Sohbet geçmişi temizleme
+///
+/// KULLANILAN CONTROLLER:
+/// SettingsController (GetX)
+///
+/// ÖRNEK KULLANIM:
+/// ──────────────
+/// ```dart
+/// Get.to(() => const SettingsScreen());
+/// ```
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';

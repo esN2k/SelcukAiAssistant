@@ -1,3 +1,29 @@
+/// ══════════════════════════════════════════════════════════════════════════════
+/// DOSYA ADI: splash_screen.dart
+/// AMAÇ: Uygulama açılış ekranı (splash screen)
+/// KULLANIM: main.dart'tan ilk açılan ekran
+/// İLGİLİ EKRANLAR: OnboardingScreen, HomeScreen
+/// YAZAN: esN2k - Selçuk Üniversitesi
+/// ══════════════════════════════════════════════════════════════════════════════
+///
+/// DETAYLI AÇIKLAMA:
+/// ────────────────
+/// Bu ekran, uygulama açıldığında 2 saniye gösterilen karşılama ekranıdır.
+/// Logo ve yükleme göstergesi içerir.
+///
+/// AKIŞ:
+/// 1. Uygulama açılır → SplashScreen görünür
+/// 2. 2 saniye beklenir
+/// 3. İlk kullanımsa → OnboardingScreen'e yönlendir
+/// 4. Değilse → HomeScreen'e yönlendir
+///
+/// ÖRNEK KULLANIM:
+/// ──────────────
+/// ```dart
+/// // main.dart'ta
+/// home: const SplashScreen(),
+/// ```
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';

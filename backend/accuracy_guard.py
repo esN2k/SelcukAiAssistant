@@ -1,7 +1,42 @@
-"""Kritik bilgi doğruluğu için guard fonksiyonları.
+"""
+╔════════════════════════════════════════════════════════════════════════════════╗
+║  DOSYA ADI: accuracy_guard.py                                                  ║
+║  AMAÇ: Kritik bilgi doğruluğu kontrolü ve düzeltme                            ║
+║  KULLANIM: from accuracy_guard import guard_response_accuracy                  ║
+║  BAĞIMLILIKLAR: re (regex)                                                     ║
+║  YAZAN: esN2k - Selçuk Üniversitesi                                           ║
+╚════════════════════════════════════════════════════════════════════════════════╝
 
-Bu modül, Selçuk Üniversitesi hakkında verilen yanıtlarda
-kritik bilgilerin (konum, kuruluş yılı, vb.) doğru olduğundan emin olur.
+DETAYLI AÇIKLAMA:
+─────────────────
+Bu modül, Selçuk Üniversitesi hakkında verilen yanıtlarda kritik bilgilerin
+(konum, kuruluş yılı, vb.) doğru olduğundan emin olur.
+
+NEDEN GEREKLİ:
+LLM'ler bazen halüsinasyon yapabilir. Örneğin Selçuk Üniversitesi'nin
+İzmir'de olduğunu söyleyebilir (yanlış - doğrusu Konya'dır).
+Bu modül bu tür hataları tespit eder ve düzeltir.
+
+KRİTİK BİLGİLER:
+• Konum: Konya (İzmir, Ankara, vb. yanlış!)
+• Kuruluş Yılı: 1975
+
+ÇALIŞMA MANTIĞI:
+1. Soru kategorisi tespit edilir (konum mu, kuruluş yılı mı?)
+2. Yanıtta yanlış bilgi aranır
+3. Yanlış bilgi bulunursa, doğru yanıt üretilir
+4. Doğru bilgi eksikse, eklenir
+
+ÖRNEK KULLANIM:
+──────────────
+from accuracy_guard import guard_response_accuracy
+
+soru = "Selçuk Üniversitesi nerede?"
+yanit = "Selçuk Üniversitesi İzmir'dedir."  # YANLIŞ!
+
+duzeltilmis, degisti = guard_response_accuracy(soru, yanit, "tr")
+print(degisti)  # True
+print(duzeltilmis)  # "Selçuk Üniversitesi **Konya**'dadır..."
 """
 from __future__ import annotations
 

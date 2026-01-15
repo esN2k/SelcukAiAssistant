@@ -1,3 +1,38 @@
+/// ══════════════════════════════════════════════════════════════════════════════
+/// DOSYA ADI: chatbot_feature.dart
+/// AMAÇ: Ana sohbet ekranı widget'ı
+/// KULLANIM: HomeScreen'den yönlendirme ile açılır
+/// İLGİLİ EKRANLAR: HomeScreen, SettingsScreen, LoginScreen
+/// YAZAN: esN2k - Selçuk Üniversitesi
+/// ══════════════════════════════════════════════════════════════════════════════
+///
+/// DETAYLI AÇIKLAMA:
+/// ────────────────
+/// Bu widget, kullanıcının AI asistanıyla sohbet ettiği ana ekranı oluşturur.
+///
+/// ÖZELLİKLER:
+/// • Mesaj listesi gösterimi (ListView)
+/// • Mesaj gönderme (TextField + Send button)
+/// • Sesli giriş (mikrofon butonu)
+/// • Tema değiştirme (açık/koyu mod)
+/// • Appwrite bağlantı testi (ping butonu)
+/// • Çıkış yapma
+///
+/// UI BİLEŞENLERİ:
+/// • AppBar: Başlık, ping, tema ve çıkış butonları
+/// • ListView: Mesaj kartları
+/// • BottomNavigationBar: Mikrofon, TextField, Gönder butonu
+///
+/// STATE YÖNETİMİ:
+/// GetX ChatController kullanılır.
+/// Obx widget'ı ile reaktif güncelleme yapılır.
+///
+/// ÖRNEK KULLANIM:
+/// ──────────────
+/// ```dart
+/// Get.to(() => const ChatBotFeature());
+/// ```
+
 // Geçici olarak Material 2 API'lerindeki withOpacity kullanımını sürdürüyoruz.
 // ignore_for_file: deprecated_member_use
 
