@@ -2,8 +2,14 @@
 
 **Fakülte:** Teknoloji Fakültesi
 **Yerleşke:** Alaeddin Keykubat Yerleşkesi
+**Program Kodu:** 108911205
+**Eğitim Dili:** Türkçe
+**Puan Türü:** SAY (Sayısal)
 **Program Türleri:** Lisans, Yüksek Lisans, Doktora
 **Web Sitesi:** https://www.selcuk.edu.tr/Birim/Bolum/teknoloji-bilgisayar_muhendisligi/15620
+**Bologna Sistemi:** https://bologna.selcuk.edu.tr/tr/dersler/teknoloji-bilgisayar_muhendisligi-bilgisayar_muhendisligi-lisans
+**YÖK Atlas:** https://yokatlas.yok.gov.tr/lisans.php?y=108911205
+**Facebook:** https://www.facebook.com/selcukteknolojibilgisayar/
 **E-posta:** tfdekanlik@selcuk.edu.tr
 **Adres:** Selçuk Üniversitesi Alaeddin Keykubat Yerleşkesi Teknoloji Fakültesi PK:42075 Selçuklu / KONYA
 

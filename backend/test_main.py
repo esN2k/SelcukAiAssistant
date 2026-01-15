@@ -49,7 +49,7 @@ async def test_chat_endpoint_success(mock_generate):
 
     response = client.post(
         "/chat",
-        json={"messages": [{"role": "user", "content": "Merhaba"}]},
+        json={"messages": [{"role": "user", "content": "Merhaba"}], "rag_enabled": False},
     )
 
     assert response.status_code == 200
@@ -72,7 +72,7 @@ def test_chat_endpoint_connection_error(mock_generate):
 
     response = client.post(
         "/chat",
-        json={"messages": [{"role": "user", "content": "Test"}]},
+        json={"messages": [{"role": "user", "content": "Test"}], "rag_enabled": False},
     )
 
     assert response.status_code == 503
@@ -100,10 +100,13 @@ def test_prompt_contains_question(mock_generate):
     """
     mock_generate.return_value = ChatResult(text="Test response")
 
-    question = "Selçuk Üniversitesi nerede?"
+    question = "Selçuk Üniversitesi hakkında genel bilgi verir misin?"
     response = client.post(
         "/chat",
-        json={"messages": [{"role": "user", "content": question}]},
+        json={
+            "messages": [{"role": "user", "content": question}],
+            "rag_enabled": False,
+        },
     )
 
     assert response.status_code == 200
@@ -163,7 +166,7 @@ def test_chat_endpoint_timeout(mock_generate):
 
     response = client.post(
         "/chat",
-        json={"messages": [{"role": "user", "content": "Test"}]},
+        json={"messages": [{"role": "user", "content": "Test"}], "rag_enabled": False},
     )
 
     assert response.status_code == 504

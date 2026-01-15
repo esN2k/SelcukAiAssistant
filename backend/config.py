@@ -129,7 +129,7 @@ class Config:
     REQUEST_TIMEOUT: int = int(os.getenv("REQUEST_TIMEOUT", "120"))
 
     # RAG configuration
-    RAG_ENABLED: bool = os.getenv("RAG_ENABLED", "false").lower() == "true"
+    RAG_ENABLED: bool = os.getenv("RAG_ENABLED", "true").lower() == "true"
     RAG_VECTOR_DB_PATH: Optional[str] = os.getenv("RAG_VECTOR_DB_PATH", None)
     RAG_COLLECTION_NAME: str = os.getenv("RAG_COLLECTION_NAME", "selcuk_documents")
     RAG_CHUNK_SIZE: int = int(os.getenv("RAG_CHUNK_SIZE", "500"))

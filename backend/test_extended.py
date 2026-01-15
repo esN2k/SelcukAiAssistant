@@ -16,18 +16,21 @@ from main import app
 from ollama_service import OllamaService
 from providers.base import ChatResult
 from providers.ollama_provider import OllamaProvider
-from rag_service import Document, RAGService, RagIndex, chunk_text
+from rag_service import Document, RAGService, RagIndex, chunk_text, faiss
 
 client = TestClient(app)
 
 
-def _chat_payload(content: str) -> dict[str, list[dict[str, str]]]:
+def _chat_payload(content: str) -> dict[str, object]:
     """Giriş: Kullanıcı mesajı.
 
     Çıkış: Chat payload sözlüğü.
     İşleyiş: /chat şemasına uygun JSON üretir.
     """
-    return {"messages": [{"role": "user", "content": content}]}
+    return {
+        "messages": [{"role": "user", "content": content}],
+        "rag_enabled": False,
+    }
 
 
 # ============================================================================
@@ -438,6 +441,8 @@ def test_rag_index_add_and_search(tmp_path):
     Çıkış: Arama sonucu.
     İşleyiş: İndeks ekleme/arama akışını doğrular.
     """
+    if faiss is None:
+        pytest.skip("faiss-cpu yüklü değil.")
     embedder = DummyEmbeddingBackend()
     index = RagIndex(tmp_path, embedder)
     docs = [

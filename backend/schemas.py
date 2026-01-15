@@ -69,7 +69,7 @@ class ChatRequest(BaseModel):
     top_p: float = Field(default=0.9, ge=0.0, le=1.0)
     max_tokens: int = Field(default=256, ge=1, le=8192)
     stream: bool = Field(default=False)
-    rag_enabled: bool = Field(default=False, description="RAG bağlamını etkinleştir")
+    rag_enabled: bool = Field(default=True, description="RAG bağlamını etkinleştir")
     rag_strict: Optional[bool] = Field(
         default=None, description="Sıkı RAG modu (sunucu varsayılanını ezer)"
     )

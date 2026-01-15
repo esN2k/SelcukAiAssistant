@@ -5,32 +5,41 @@
     "şehir": "Konya",
     "il": "Konya",
     "ilçe": "Selçuklu",
-    "adres": "Alaeddin Keykubat Kampüsü, Selçuklu/Konya",
-    "posta_kodu": "42250",
+    "adres": "Alaeddin Keykubat Yerleşkesi, Akademi Mah. Yeni İstanbul Cad. No:369, 42130 Selçuklu/Konya",
+    "posta_kodu": "42130",
     "web_sitesi": "https://www.selcuk.edu.tr",
-    "telefon": "+90 332 223 1000",
-    "rektör": "Prof. Dr. Metin Aksoy",
+    "telefon": "+90 332 241 0041",
+    "rektör": "Prof. Dr. Hüseyin Yılmaz",
     "rektörlük_telefon": "+90 332 223 1001",
-    "öğrenci_sayısı": "100,000+",
+    "öğrenci_sayısı": "70.000 (yaklaşık)",
     "akademisyen_sayısı": "4,000+",
     "fakülte_sayısı": 23,
-    "yüksekokul_sayısı": 4,
-    "enstitü_sayısı": 5,
+    "yüksekokul_sayısı": 5,
+    "enstitü_sayısı": 7,
     "kampüsler": [
-      "Alaeddin Keykubat Kampüsü",
-      "Ardıçlı Kampüsü"
+      "Alaeddin Keykubat Yerleşkesi",
+      "Ardıçlı Yerleşkesi"
     ],
     "tip": "Devlet Üniversitesi",
     "kuruluş_kanun": "1750 sayılı kanun",
-    "slogan": "Bilimde ve Teknolojide Öncü Üniversite"
+    "slogan": "Bilimde ve Teknolojide Öncü Üniversite",
+    "meslek_yuksekokulu_sayisi": 23,
+    "devlet_konservatuvari_sayisi": 1,
+    "arastirma_merkezi_sayisi": 53
   },
   "tarihçe": {
     "kuruluş_yılı": 1975,
     "kuruluş_açıklama": "Selçuk Üniversitesi, 1975 yılında Konya'da kurulmuştur. Konya Devlet Mimarlık ve Mühendislik Akademisi'nin temelini oluşturduğu üniversite, 1982 yılında mevcut yapısına kavuşmuştur.",
     "adının_kökeni": "Selçuklu Devleti'nden almaktadır",
     "önemli_tarihler": [
-      {"yıl": 1975, "olay": "Üniversitenin kurulması"},
-      {"yıl": 1982, "olay": "Mevcut yapısına kavuşması"}
+      {
+        "yıl": 1975,
+        "olay": "Üniversitenin kurulması"
+      },
+      {
+        "yıl": 1982,
+        "olay": "Mevcut yapısına kavuşması"
+      }
     ]
   },
   "kampüsler_detay": {
@@ -121,7 +130,11 @@
     "telefon": "0(332) 223 33 73",
     "email": "tfdekanlik@selcuk.edu.tr",
     "web": "https://www.selcuk.edu.tr/Birim/Bolum/teknoloji-bilgisayar_muhendisligi/15620",
-    "program_türleri": ["Lisans", "Yüksek Lisans", "Doktora"],
+    "program_türleri": [
+      "Lisans",
+      "Yüksek Lisans",
+      "Doktora"
+    ],
     "kontenjan": "120 (yaklaşık)",
     "akreditasyon": {
       "mudek": true,
@@ -171,17 +184,31 @@
       "Bilgisayar Ağları",
       "İşletim Sistemleri",
       "Yazılım Mühendisliği"
-    ]
+    ],
+    "program_kodu": "108911205",
+    "egitim_dili": "Türkçe",
+    "puan_turu": "SAY",
+    "bologna_url": "https://bologna.selcuk.edu.tr/tr/dersler/teknoloji-bilgisayar_muhendisligi-bilgisayar_muhendisligi-lisans",
+    "yokatlas_url": "https://yokatlas.yok.gov.tr/lisans.php?y=108911205",
+    "facebook_url": "https://www.facebook.com/selcukteknolojibilgisayar/"
   },
   "önemli_yerler": {
     "kütüphane": {
       "ad": "Merkez Kütüphane",
       "konum": "Alaeddin Keykubat Kampüsü",
-      "hizmetler": ["Kitap ödünç verme", "Elektronik kaynaklar", "Çalışma alanları", "Araştırma desteği"],
+      "hizmetler": [
+        "Kitap ödünç verme",
+        "Elektronik kaynaklar",
+        "Çalışma alanları",
+        "Araştırma desteği"
+      ],
       "çalışma_saatleri": "Hafta içi 08:00-24:00"
     },
     "yemekhane": {
-      "lokasyonlar": ["Merkez Yemekhane", "Fakülte Yemekhaneleri"],
+      "lokasyonlar": [
+        "Merkez Yemekhane",
+        "Fakülte Yemekhaneleri"
+      ],
       "öğün_saatleri": {
         "kahvaltı": "07:30-09:00",
         "öğle": "11:30-14:00",
@@ -198,13 +225,23 @@
     "sağlık": {
       "ad": "Selçuk Üniversitesi Tıp Fakültesi Hastanesi",
       "konum": "Ardıçlı Kampüsü",
-      "hizmetler": ["Poliklinik", "Acil Servis", "Yatan Hasta", "Ameliyathane"]
+      "hizmetler": [
+        "Poliklinik",
+        "Acil Servis",
+        "Yatan Hasta",
+        "Ameliyathane"
+      ]
     },
     "öğrenci_işleri": {
       "ad": "Öğrenci İşleri Daire Başkanlığı",
       "telefon": "+90 332 223 3800",
       "email": "ogrenci@selcuk.edu.tr",
-      "hizmetler": ["Kayıt", "Transkript", "Öğrenci Belgesi", "Mezuniyet İşlemleri"]
+      "hizmetler": [
+        "Kayıt",
+        "Transkript",
+        "Öğrenci Belgesi",
+        "Mezuniyet İşlemleri"
+      ]
     }
   },
   "akademik_takvim": {
@@ -230,111 +267,265 @@
       "kategori": "genel",
       "soru": "Selçuk Üniversitesi nerede?",
       "cevap": "Selçuk Üniversitesi Konya ilinde, Selçuklu ilçesinde yer almaktadır. Ana kampüsü Alaeddin Keykubat Kampüsü'dür.",
-      "anahtar_kelimeler": ["konum", "nerede", "şehir", "il"]
+      "anahtar_kelimeler": [
+        "konum",
+        "nerede",
+        "şehir",
+        "il"
+      ]
     },
     {
       "kategori": "genel",
       "soru": "Selçuk Üniversitesi hangi şehirde?",
       "cevap": "Selçuk Üniversitesi Konya şehrindedir.",
-      "anahtar_kelimeler": ["konum", "şehir"]
+      "anahtar_kelimeler": [
+        "konum",
+        "şehir"
+      ]
     },
     {
       "kategori": "genel",
       "soru": "Selçuk Üniversitesi hangi ilde?",
       "cevap": "Konya ilinde.",
-      "anahtar_kelimeler": ["konum", "il"]
+      "anahtar_kelimeler": [
+        "konum",
+        "il"
+      ]
     },
     {
       "kategori": "genel",
       "soru": "Selçuk Üniversitesi ne zaman kuruldu?",
       "cevap": "Selçuk Üniversitesi 1975 yılında Konya'da kurulmuştur.",
-      "anahtar_kelimeler": ["kuruluş", "tarih", "yıl"]
+      "anahtar_kelimeler": [
+        "kuruluş",
+        "tarih",
+        "yıl"
+      ]
     },
     {
       "kategori": "genel",
       "soru": "Selçuk Üniversitesi kaç yılında kuruldu?",
       "cevap": "1975 yılında kurulmuştur.",
-      "anahtar_kelimeler": ["kuruluş", "yıl"]
+      "anahtar_kelimeler": [
+        "kuruluş",
+        "yıl"
+      ]
     },
     {
       "kategori": "genel",
       "soru": "Rektör kim?",
-      "cevap": "Selçuk Üniversitesi Rektörü Prof. Dr. Metin Aksoy'dur.",
-      "anahtar_kelimeler": ["rektör", "yönetim"]
+      "cevap": "Selçuk Üniversitesi Rektörü Prof. Dr. Hüseyin Yılmaz'dır (26 Temmuz 2024'ten beri görevde).",
+      "anahtar_kelimeler": [
+        "rektör",
+        "yönetim"
+      ]
     },
     {
       "kategori": "genel",
       "soru": "Kaç fakülte var?",
       "cevap": "Selçuk Üniversitesi'nde 23 fakülte bulunmaktadır.",
-      "anahtar_kelimeler": ["fakülte", "sayı"]
+      "anahtar_kelimeler": [
+        "fakülte",
+        "sayı"
+      ]
     },
     {
       "kategori": "genel",
       "soru": "Öğrenci sayısı kaç?",
-      "cevap": "Selçuk Üniversitesi'nde yaklaşık 100.000'den fazla öğrenci eğitim görmektedir.",
-      "anahtar_kelimeler": ["öğrenci", "sayı"]
+      "cevap": "Selçuk Üniversitesi'nde yaklaşık 70.000 öğrenci bulunmaktadır.",
+      "anahtar_kelimeler": [
+        "öğrenci",
+        "sayı"
+      ]
     },
     {
       "kategori": "kampüs",
       "soru": "Kampüsler hangileri?",
       "cevap": "Selçuk Üniversitesi'nde iki ana kampüs bulunmaktadır: Alaeddin Keykubat Yerleşkesi (Selçuklu/Konya) ve Ardıçlı Yerleşkesi (Karatay/Konya).",
-      "anahtar_kelimeler": ["kampüs", "yerleşke"]
+      "anahtar_kelimeler": [
+        "kampüs",
+        "yerleşke"
+      ]
     },
     {
       "kategori": "kampüs",
       "soru": "Alaeddin Keykubat Yerleşkesi nerede?",
       "cevap": "Alaeddin Keykubat Yerleşkesi Selçuklu/Konya'da bulunmaktadır. Mühendislik, Fen, Edebiyat, Teknoloji ve diğer fakülteler bu kampüstedir.",
-      "anahtar_kelimeler": ["kampüs", "yerleşke", "konum"]
+      "anahtar_kelimeler": [
+        "kampüs",
+        "yerleşke",
+        "konum"
+      ]
     },
     {
       "kategori": "kampüs",
       "soru": "Ardıçlı Yerleşkesi nerede?",
       "cevap": "Ardıçlı Yerleşkesi Karatay/Konya'da bulunmaktadır. Tıp, Sağlık Bilimleri, Diş Hekimliği ve Eczacılık fakülteleri bu kampüstedir.",
-      "anahtar_kelimeler": ["kampüs", "yerleşke", "konum", "tıp"]
+      "anahtar_kelimeler": [
+        "kampüs",
+        "yerleşke",
+        "konum",
+        "tıp"
+      ]
     },
     {
       "kategori": "bilgisayar_mühendisliği",
       "soru": "Bilgisayar Mühendisliği bölümü hangi kampusta?",
       "cevap": "Bilgisayar Mühendisliği bölümü, Teknoloji Fakültesi bünyesinde Alaeddin Keykubat Yerleşkesi'nde bulunmaktadır.",
-      "anahtar_kelimeler": ["bilgisayar", "kampüs", "konum"]
+      "anahtar_kelimeler": [
+        "bilgisayar",
+        "kampüs",
+        "konum"
+      ]
     },
     {
       "kategori": "bilgisayar_mühendisliği",
       "soru": "Bilgisayar Mühendisliği hangi fakültede?",
       "cevap": "Bilgisayar Mühendisliği, Teknoloji Fakültesi bünyesindedir.",
-      "anahtar_kelimeler": ["bilgisayar", "fakülte"]
+      "anahtar_kelimeler": [
+        "bilgisayar",
+        "fakülte"
+      ]
     },
     {
       "kategori": "bilgisayar_mühendisliği",
       "soru": "Bilgisayar Mühendisliği akredite mi?",
       "cevap": "Evet, Bilgisayar Mühendisliği bölümü MÜDEK (Mühendislik Eğitim Programları Değerlendirme ve Akreditasyon Derneği) akreditasyonuna sahiptir.",
-      "anahtar_kelimeler": ["bilgisayar", "akreditasyon", "mudek"]
+      "anahtar_kelimeler": [
+        "bilgisayar",
+        "akreditasyon",
+        "mudek"
+      ]
     },
     {
       "kategori": "bilgisayar_mühendisliği",
       "soru": "MÜDEK nedir?",
       "cevap": "MÜDEK (Mühendislik Eğitim Programları Değerlendirme ve Akreditasyon Derneği), mühendislik programlarının kalite güvencesini sağlayan akreditasyon kuruluşudur.",
-      "anahtar_kelimeler": ["mudek", "akreditasyon"]
+      "anahtar_kelimeler": [
+        "mudek",
+        "akreditasyon"
+      ]
     },
     {
       "kategori": "bilgisayar_mühendisliği",
       "soru": "Erasmus programı var mı?",
       "cevap": "Evet, Bilgisayar Mühendisliği bölümünde Erasmus+ değişim programı mevcuttur.",
-      "anahtar_kelimeler": ["erasmus", "değişim", "yurtdışı"]
+      "anahtar_kelimeler": [
+        "erasmus",
+        "değişim",
+        "yurtdışı"
+      ]
     },
     {
       "kategori": "bilgisayar_mühendisliği",
       "soru": "HPC nedir?",
       "cevap": "HPC (High Performance Computing - Yüksek Başarımlı Hesaplama) laboratuvarı, Bilgisayar Mühendisliği bölümünde bulunan özel bir araştırma altyapısıdır.",
-      "anahtar_kelimeler": ["hpc", "laboratuvar"]
+      "anahtar_kelimeler": [
+        "hpc",
+        "laboratuvar"
+      ]
+    },
+    {
+      "kategori": "genel",
+      "soru": "Selçuk Üniversitesi adresi nedir?",
+      "cevap": "Alaeddin Keykubat Yerleşkesi, Akademi Mah. Yeni İstanbul Cad. No:369, 42130 Selçuklu/Konya",
+      "anahtar_kelimeler": [
+        "adres",
+        "iletişim"
+      ]
+    },
+    {
+      "kategori": "genel",
+      "soru": "Selçuk Üniversitesi telefon numarası nedir?",
+      "cevap": "+90 332 241 0041",
+      "anahtar_kelimeler": [
+        "telefon",
+        "iletişim"
+      ]
+    },
+    {
+      "kategori": "genel",
+      "soru": "Selçuk Üniversitesi web sitesi nedir?",
+      "cevap": "https://www.selcuk.edu.tr/",
+      "anahtar_kelimeler": [
+        "web",
+        "internet"
+      ]
+    },
+    {
+      "kategori": "genel",
+      "soru": "Selçuk Üniversitesi rektörü kimdir?",
+      "cevap": "Selçuk Üniversitesi Rektörü Prof. Dr. Hüseyin Yılmaz'dır (26 Temmuz 2024'ten beri görevde).",
+      "anahtar_kelimeler": [
+        "rektör",
+        "yönetim"
+      ]
+    },
+    {
+      "kategori": "genel",
+      "soru": "Selçuk Üniversitesi akademik birim sayıları nedir?",
+      "cevap": "23 fakülte, 7 enstitü, 5 yüksekokul, 1 devlet konservatuvarı, 23 meslek yüksekokulu ve 53 araştırma merkezi bulunmaktadır.",
+      "anahtar_kelimeler": [
+        "akademik yapı",
+        "birim"
+      ]
+    },
+    {
+      "kategori": "bilgisayar_mühendisliği",
+      "soru": "Bilgisayar Mühendisliği program kodu nedir?",
+      "cevap": "108911205",
+      "anahtar_kelimeler": [
+        "program kodu",
+        "yök atlas"
+      ]
+    },
+    {
+      "kategori": "bilgisayar_mühendisliği",
+      "soru": "Bilgisayar Mühendisliği eğitim dili nedir?",
+      "cevap": "Türkçe",
+      "anahtar_kelimeler": [
+        "eğitim dili"
+      ]
+    },
+    {
+      "kategori": "bilgisayar_mühendisliği",
+      "soru": "Bilgisayar Mühendisliği puan türü nedir?",
+      "cevap": "SAY (Sayısal)",
+      "anahtar_kelimeler": [
+        "puan türü"
+      ]
+    },
+    {
+      "kategori": "bilgisayar_mühendisliği",
+      "soru": "Bilgisayar Mühendisliği Bologna sayfası nedir?",
+      "cevap": "https://bologna.selcuk.edu.tr/tr/dersler/teknoloji-bilgisayar_muhendisligi-bilgisayar_muhendisligi-lisans",
+      "anahtar_kelimeler": [
+        "bologna"
+      ]
+    },
+    {
+      "kategori": "bilgisayar_mühendisliği",
+      "soru": "Bilgisayar Mühendisliği YÖK Atlas linki nedir?",
+      "cevap": "https://yokatlas.yok.gov.tr/lisans.php?y=108911205",
+      "anahtar_kelimeler": [
+        "yök atlas"
+      ]
+    },
+    {
+      "kategori": "bilgisayar_mühendisliği",
+      "soru": "Bilgisayar Mühendisliği Facebook sayfası var mı?",
+      "cevap": "https://www.facebook.com/selcukteknolojibilgisayar/",
+      "anahtar_kelimeler": [
+        "facebook"
+      ]
     }
   ],
   "iletişim": {
     "genel": {
-      "telefon": "+90 332 223 1000",
+      "telefon": "+90 332 241 0041",
       "email": "bilgi@selcuk.edu.tr",
       "web": "https://www.selcuk.edu.tr",
-      "adres": "Selçuklu, 42250 Konya"
+      "adres": "Alaeddin Keykubat Yerleşkesi, Akademi Mah. Yeni İstanbul Cad. No:369, 42130 Selçuklu/Konya"
     },
     "öğrenci_işleri": {
       "telefon": "+90 332 223 3800",

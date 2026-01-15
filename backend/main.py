@@ -17,7 +17,9 @@ from providers.base import CancellationToken, ModelProvider, Usage
 from providers.huggingface_provider import HuggingFaceProvider
 from providers.ollama_provider import OllamaProvider
 from providers.registry import ModelRegistry
+from critical_facts import apply_guard, get_critical_answer, is_selcuk_related
 from prompts import build_rag_system_prompt, rag_no_source_message
+from rag_guard import apply_rag_guard, is_context_relevant
 from rag_service import rag_service
 from response_cleaner import StreamingResponseCleaner, clean_text
 from schemas import ChatRequest, ChatResponse, UsageInfo
@@ -260,15 +262,27 @@ async def chat(request: ChatRequest, http_request: Request) -> ChatResponse:
     rag_top_k = request.rag_top_k or Config.RAG_TOP_K
 
     messages = normalize_messages(request.messages, language)
+    question = next((m.content for m in reversed(messages) if m.role == "user"), "")
+    critical_answer = get_critical_answer(question, language)
+    if critical_answer:
+        _log_chat_to_appwrite(question=question, answer=critical_answer)
+        return ChatResponse(
+            answer=critical_answer,
+            request_id=request_id,
+            provider=resolved.provider,
+            model=resolved.model_id,
+            usage=None,
+            citations=None,
+        )
+    rag_context = ""
     citations: list[str] = []
 
     if rag_enabled:
-        question = next((m.content for m in reversed(messages) if m.role == "user"), "")
         try:
-            context, citations = rag_service.get_context(question, top_k=rag_top_k)
+            rag_context, citations = rag_service.get_context(question, top_k=rag_top_k)
         except RuntimeError as exc:
             raise HTTPException(status_code=503, detail=str(exc)) from exc
-        if rag_strict and not context:
+        if not rag_context:
             answer = rag_no_source_message(language)
             return ChatResponse(
                 answer=answer,
@@ -276,15 +290,24 @@ async def chat(request: ChatRequest, http_request: Request) -> ChatResponse:
                 provider=resolved.provider,
                 model=resolved.model_id,
                 usage=None,
-                citations=citations,
+                citations=None,
             )
-        if context:
-            messages[0].content = build_rag_system_prompt(
-                messages[0].content,
-                context,
-                language,
-                rag_strict,
+        if not is_context_relevant(question, rag_context, language):
+            answer = rag_no_source_message(language)
+            return ChatResponse(
+                answer=answer,
+                request_id=request_id,
+                provider=resolved.provider,
+                model=resolved.model_id,
+                usage=None,
+                citations=None,
             )
+        messages[0].content = build_rag_system_prompt(
+            messages[0].content,
+            rag_context,
+            language,
+            rag_strict,
+        )
     messages = trim_messages_for_context(messages, Config.MAX_CONTEXT_TOKENS)
     max_tokens = clamp_max_tokens(request.max_tokens, Config.MAX_OUTPUT_TOKENS)
 
@@ -306,8 +329,19 @@ async def chat(request: ChatRequest, http_request: Request) -> ChatResponse:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
     answer = clean_text(result.text, language=language)
+    rag_guarded = False
+    if rag_enabled and rag_context:
+        answer, rag_guarded = apply_rag_guard(
+            question,
+            answer,
+            rag_context,
+            language,
+        )
+    answer, guard_applied = apply_guard(question, answer, language)
+    if guard_applied or rag_guarded:
+        citations = []
     _log_chat_to_appwrite(
-        question=next((m.content for m in reversed(messages) if m.role == "user"), ""),
+        question=question,
         answer=answer,
     )
 
@@ -351,12 +385,42 @@ async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingR
     rag_top_k = request.rag_top_k or Config.RAG_TOP_K
 
     messages = normalize_messages(request.messages, language)
+    question = next((m.content for m in reversed(messages) if m.role == "user"), "")
+    critical_answer = get_critical_answer(question, language)
     citations: list[str] = []
     rag_context = ""
     rag_error: Optional[str] = None
 
+    if critical_answer:
+        async def event_generator() -> Any:
+            yield sse_event(
+                {
+                    "type": "token",
+                    "token": critical_answer,
+                    "request_id": request_id,
+                }
+            )
+            yield sse_event(
+                {
+                    "type": "end",
+                    "usage": None,
+                    "request_id": request_id,
+                    "citations": None,
+                }
+            )
+
+        _log_chat_to_appwrite(question=question, answer=critical_answer)
+        return StreamingResponse(
+            event_generator(),
+            media_type="text/event-stream",
+            headers={
+                "Cache-Control": "no-cache",
+                "Connection": "keep-alive",
+                "X-Accel-Buffering": "no",
+            },
+        )
+
     if rag_enabled:
-        question = next((m.content for m in reversed(messages) if m.role == "user"), "")
         try:
             rag_context, citations = rag_service.get_context(question, top_k=rag_top_k)
         except RuntimeError as exc:
@@ -370,6 +434,122 @@ async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingR
             )
     messages = trim_messages_for_context(messages, Config.MAX_CONTEXT_TOKENS)
     max_tokens = clamp_max_tokens(request.max_tokens, Config.MAX_OUTPUT_TOKENS)
+    guard_stream = is_selcuk_related(question) or rag_enabled
+    if guard_stream:
+        async def event_generator() -> Any:
+            if rag_error:
+                yield sse_event(
+                    {
+                        "type": "error",
+                        "message": rag_error,
+                        "request_id": request_id,
+                    }
+                )
+                return
+            if rag_enabled and not rag_context:
+                no_source = rag_no_source_message(language)
+                yield sse_event(
+                    {
+                        "type": "token",
+                        "token": no_source,
+                        "request_id": request_id,
+                    }
+                )
+                yield sse_event(
+                    {
+                        "type": "end",
+                        "usage": None,
+                        "request_id": request_id,
+                        "citations": None,
+                    }
+                )
+                return
+            if rag_enabled and not is_context_relevant(question, rag_context, language):
+                no_source = rag_no_source_message(language)
+                yield sse_event(
+                    {
+                        "type": "token",
+                        "token": no_source,
+                        "request_id": request_id,
+                    }
+                )
+                yield sse_event(
+                    {
+                        "type": "end",
+                        "usage": None,
+                        "request_id": request_id,
+                        "citations": None,
+                    }
+                )
+                return
+
+            try:
+                async with asyncio.timeout(Config.REQUEST_TIMEOUT):
+                    result = await provider.generate(
+                        messages=[m.model_dump() for m in messages],
+                        model_id=resolved.model_id,
+                        temperature=request.temperature,
+                        top_p=request.top_p,
+                        max_tokens=max_tokens,
+                        request_id=request_id,
+                    )
+            except TimeoutError:
+                yield sse_event(
+                    {
+                        "type": "error",
+                        "message": "İstek zaman aşımına uğradı.",
+                        "request_id": request_id,
+                    }
+                )
+                return
+            except RuntimeError as exc:
+                yield sse_event(
+                    {
+                        "type": "error",
+                        "message": str(exc),
+                        "request_id": request_id,
+                    }
+                )
+                return
+
+            answer = clean_text(result.text, language=language)
+            rag_guarded = False
+            if rag_enabled and rag_context:
+                answer, rag_guarded = apply_rag_guard(
+                    question,
+                    answer,
+                    rag_context,
+                    language,
+                )
+            answer, guarded = apply_guard(question, answer, language)
+            _log_chat_to_appwrite(question=question, answer=answer)
+            usage_schema = _usage_to_schema(result.usage)
+            citations_out = None if (guarded or rag_guarded) else (citations or None)
+            yield sse_event(
+                {
+                    "type": "token",
+                    "token": answer,
+                    "request_id": request_id,
+                }
+            )
+            yield sse_event(
+                {
+                    "type": "end",
+                    "usage": usage_schema.model_dump() if usage_schema else None,
+                    "request_id": request_id,
+                    "citations": citations_out,
+                }
+            )
+
+        return StreamingResponse(
+            event_generator(),
+            media_type="text/event-stream",
+            headers={
+                "Cache-Control": "no-cache",
+                "Connection": "keep-alive",
+                "X-Accel-Buffering": "no",
+            },
+        )
     cancel_token = CancellationToken()
 
     async def event_generator() -> Any:
@@ -387,7 +567,7 @@ async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingR
                 }
             )
             return
-        if rag_enabled and rag_strict and not rag_context:
+        if rag_enabled and not rag_context:
             no_source = rag_no_source_message(language)
             yield sse_event(
                 {
@@ -401,7 +581,25 @@ async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingR
                     "type": "end",
                     "usage": None,
                     "request_id": request_id,
-                    "citations": citations,
+                    "citations": None,
+                }
+            )
+            return
+        if rag_enabled and not is_context_relevant(question, rag_context, language):
+            no_source = rag_no_source_message(language)
+            yield sse_event(
+                {
+                    "type": "token",
+                    "token": no_source,
+                    "request_id": request_id,
+                }
+            )
+            yield sse_event(
+                {
+                    "type": "end",
+                    "usage": None,
+                    "request_id": request_id,
+                    "citations": None,
                 }
             )
             return

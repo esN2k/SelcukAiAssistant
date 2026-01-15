@@ -20,7 +20,13 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
 ## RAG
 - FAISS indeksleri için `rag_ingest.py` kullanılır.
+- Doküman güncellendiğinde indeksi yenilemek için `refresh_rag_index.ps1` kullanılır.
 - Ayarlar: `RAG_ENABLED`, `RAG_VECTOR_DB_PATH`, `RAG_TOP_K`.
+
+İndeksi repo kökünden tek komutla yenilemek için:
+```bash
+python backend/rag_ingest.py --input backend/data/rag/selcuk --output backend/data/rag --reset
+```
 
 ## Testler
 ```bash

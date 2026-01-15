@@ -18,6 +18,24 @@ cd backend
 python rag_ingest.py --input ../docs --output ./data/rag
 ```
 
+## 2.1) İndeks Yenileme Rutini
+Dokümanlar güncellendiğinde indeksi sıfırlayıp yeniden üretmek için:
+```bash
+cd backend
+powershell -ExecutionPolicy Bypass -File refresh_rag_index.ps1
+```
+
+Alternatif olarak aynı komutu doğrudan çalıştırabilirsiniz:
+```bash
+cd backend
+python rag_ingest.py --input data/rag/selcuk --output data/rag --reset
+```
+
+Repo kökünden tek komutla çalıştırmak için:
+```bash
+python backend/rag_ingest.py --input backend/data/rag/selcuk --output backend/data/rag --reset
+```
+
 Desteklenen formatlar:
 - PDF
 - TXT / MD
@@ -47,3 +65,12 @@ RAG_STRICT_DEFAULT=true
 ## 5) Atıflar
 - `/chat` cevabında `citations` alanı döner.
 - `/chat/stream` sonunda `end` olayı içinde `citations` taşınır.
+
+## 6) CI ile Otomatik Yenileme
+`RAG Index Refresh` GitHub Actions işi, RAG dokumanlari guncellendiginde
+indeksi otomatik yeniler ve `main` dalına commit eder.
+
+Branch korumasi varsa, Actions'in `main` dalina push atabilmesi icin:
+- Repo Settings → Actions → General → Workflow permissions: Read and write
+- Branch protection/rulesets: `github-actions[bot]` icin bypass veya push izni
+- "Require pull request before merging" aciksa, Actions icin istisna tanimlayin

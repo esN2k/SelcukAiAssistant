@@ -111,7 +111,7 @@ class Pref {
   }
 
   static bool get ragEnabled =>
-      (box.get('ragEnabled') as bool?) ?? false;
+      (box.get('ragEnabled') as bool?) ?? true;
 
   static set ragEnabled(bool value) => box.put('ragEnabled', value);
 
