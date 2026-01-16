@@ -12,7 +12,7 @@ beautifulsoup4==4.12.3
 
 # TranslateGemma (4B model için çok dilli çeviri)
 transformers==4.46.0
-torch==2.1.0
+torch>=2.2.0
 accelerate==0.34.0
 bitsandbytes==0.44.0
 sentencepiece==0.2.0
