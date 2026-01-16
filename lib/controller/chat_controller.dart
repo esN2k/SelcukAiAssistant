@@ -1,3 +1,39 @@
+// ════════════════════════════════════════════════════════════════════
+// DOSYA ADI: chat_controller.dart
+// AMAÇ: Sohbet ekranı state (durum) yönetimi
+// KULLANIM: ChatBotFeature ekranında kullanılır
+// İLGİLİ EKRANLAR: ChatBotFeature, NewChatScreen
+// YAZAN: esN2k - Selçuk Üniversitesi
+// ════════════════════════════════════════════════════════════════════
+//
+// DETAYLI AÇIKLAMA:
+// Bu controller, sohbet ekranının tüm durumunu yönetir.
+// GetX paketi ile reaktif state management sağlar.
+//
+// YÖNETİLEN DURUMLAR:
+// • list: Sohbet mesajları listesi (RxList)
+// • isListening: Mikrofon dinleme durumu
+// • speechEnabled: Konuşma tanıma kullanılabilirliği
+// • recognizedText: Tanınan ses metni
+//
+// ANA FONKSİYONLAR:
+// • askQuestion(): Kullanıcı sorusunu backend'e gönderir
+// • startListening(): Sesli giriş başlatır
+// • stopListening(): Sesli girişi durdurur
+//
+// VERİ AKIŞI:
+// 1. Kullanıcı textC (TextField) üzerinden mesaj yazar
+// 2. askQuestion() mesajı APIs sınıfına gönderir
+// 3. Yanıt ResponseCleaner ile temizlenir
+// 4. list güncellenir ve UI otomatik yenilenir
+//
+// ÖRNEK KULLANIM:
+// final controller = ChatController();
+// controller.textC.text = "Selçuk Üniversitesi nerede?";
+// await controller.askQuestion();
+// print(controller.list.last.msg);  // Yanıt
+// ════════════════════════════════════════════════════════════════════
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';

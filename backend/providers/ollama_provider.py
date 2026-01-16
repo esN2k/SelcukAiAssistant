@@ -1,4 +1,42 @@
-"""Ollama sağlayıcı uyarlaması."""
+"""
+╔════════════════════════════════════════════════════════════════════════════════╗
+║  DOSYA ADI: providers/ollama_provider.py                                       ║
+║  AMAÇ: Ollama LLM sağlayıcısı uyarlaması                                      ║
+║  KULLANIM: from providers.ollama_provider import OllamaProvider               ║
+║  BAĞIMLILIKLAR: ollama_service, config                                         ║
+║  YAZAN: esN2k - Selçuk Üniversitesi                                           ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+DETAYLI AÇIKLAMA:
+─────────────────
+Bu dosya, yerel Ollama LLM servisine bağlanmak için sağlayıcı sınıfını tanımlar.
+Ollama, yerel makinede çalışan açık kaynak LLM altyapısıdır.
+
+OLLAMA NEDİR:
+Ollama, Llama 3.1 gibi açık kaynak LLM'leri yerel makinede çalıştırmanızı sağlar.
+Bu sayede veri gizliliği korunur - hiçbir veri dışarıya gitmez.
+
+SAĞLANAN METODLAR:
+• generate(): Senkron yanıt üretir
+• stream(): Akış yanıtı üretir (token token)
+• list_models(): Yüklü Ollama modellerini listeler
+• health_check(): Ollama servisinin durumunu kontrol eder
+
+YAPILANDIRMA:
+• OLLAMA_BASE_URL: Ollama API adresi (varsayılan: http://localhost:11434)
+• OLLAMA_MODEL: Varsayılan model (varsayılan: llama3.1)
+• OLLAMA_TIMEOUT: İstek zaman aşımı
+
+ÖRNEK KULLANIM:
+──────────────
+provider = OllamaProvider()
+result = await provider.generate(
+    messages=[{"role": "user", "content": "Merhaba"}],
+    model_id="llama3.1",
+    temperature=0.2
+)
+print(result.text)
+"""
 from __future__ import annotations
 
 import logging

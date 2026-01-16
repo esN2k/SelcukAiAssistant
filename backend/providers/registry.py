@@ -1,4 +1,42 @@
-"""Model kataloğu ve yönlendirme mantığı."""
+"""
+╔════════════════════════════════════════════════════════════════════════════════╗
+║  DOSYA ADI: providers/registry.py                                              ║
+║  AMAÇ: Model kataloğu ve yönlendirme mantığı                                  ║
+║  KULLANIM: from providers.registry import ModelRegistry                        ║
+║  BAĞIMLILIKLAR: config, ollama_service, providers.base                         ║
+║  YAZAN: esN2k - Selçuk Üniversitesi                                           ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+DETAYLI AÇIKLAMA:
+─────────────────
+Bu dosya, farklı LLM sağlayıcılarından gelen modelleri tek bir katalogda
+toplar ve model çözümleme (resolution) mantığını içerir.
+
+MODEL ÇÖZÜMLEME:
+İstemci "llama3.1" dediğinde, registry bu modelin hangi sağlayıcıda
+olduğunu bulur ve doğru provider'ı döndürür.
+
+VERİ SINIFLARI:
+• ResolvedModel: Çözümlenmiş model bilgisi
+• CatalogEntry: Katalog girdisi
+
+ANA SINIF:
+• ModelRegistry: Model kataloğu yöneticisi
+  - resolve(alias): Alias'ı provider+model_id'ye çözer
+  - list_models(): Tüm kullanılabilir modelleri listeler
+
+MODEL KAYNAKLARI:
+• Ollama: Yerel olarak yüklü modeller
+• HuggingFace: Uzak model deposu
+• Ortam değişkenleri: MODEL_ALIASES ile özel alias tanımlanabilir
+
+ÖRNEK KULLANIM:
+──────────────
+registry = ModelRegistry(providers)
+resolved = registry.resolve("llama3.1")
+print(resolved.provider)  # "ollama"
+print(resolved.model_id)  # "llama3.1"
+"""
 from __future__ import annotations
 
 from dataclasses import dataclass, field

@@ -1,4 +1,40 @@
-"""Model sağlayıcı arayüzü ve ortak veri sınıfları."""
+"""
+╔════════════════════════════════════════════════════════════════════════════════╗
+║  DOSYA ADI: providers/base.py                                                  ║
+║  AMAÇ: Model sağlayıcı temel arayüzü ve ortak veri sınıfları                  ║
+║  KULLANIM: from providers.base import ModelProvider, ChatResult               ║
+║  BAĞIMLILIKLAR: dataclasses, typing                                            ║
+║  YAZAN: esN2k - Selçuk Üniversitesi                                           ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+DETAYLI AÇIKLAMA:
+─────────────────
+Bu dosya, tüm LLM sağlayıcıları için ortak arayüzü (interface) tanımlar.
+Provider Pattern kullanılarak farklı LLM'ler aynı arayüzle çağrılabilir.
+
+VERİ SINIFLARI:
+• Usage: Token kullanım bilgileri (prompt_tokens, completion_tokens)
+• ChatResult: Senkron yanıt sonucu (text + usage)
+• StreamChunk: Akış parçası (token + done + usage)
+• ModelInfo: Model meta bilgisi
+
+PROTOCOL/ARAYÜZ:
+• ModelProvider: Tüm sağlayıcıların uygulaması gereken arayüz
+  - generate(): Senkron yanıt üretir
+  - stream(): Akış yanıtı üretir (AsyncIterator)
+  - list_models(): Kullanılabilir modelleri listeler
+  - health_check(): Sağlık kontrolü
+
+PROVIDER PATTERN:
+Farklı LLM sağlayıcıları (Ollama, HuggingFace) aynı arayüzü uygular.
+Bu sayede backend, sağlayıcıdan bağımsız olarak çalışır.
+
+ÖRNEK KULLANIM:
+──────────────
+class OllamaProvider(ModelProvider):
+    async def generate(...) -> ChatResult:
+        # Ollama'ya özel implementasyon
+"""
 from __future__ import annotations
 
 from dataclasses import dataclass, field
