@@ -67,7 +67,12 @@ class SentenceTransformerBackend(EmbeddingBackend):
     İşleyiş: SentenceTransformer encode ile vektör üretir.
     """
 
-    def __init__(self, model_name: str, batch_size: int = 32) -> None:
+    def __init__(
+        self,
+        model_name: str,
+        batch_size: int = 32,
+        device: Optional[str] = None,
+    ) -> None:
         """Giriş: Model adı ve batch size.
 
         Çıkış: Nesne.
@@ -76,12 +81,43 @@ class SentenceTransformerBackend(EmbeddingBackend):
         from sentence_transformers import SentenceTransformer
 
         self.model_name = model_name
-        self._model = SentenceTransformer(model_name)
+        resolved_device = self._resolve_device(device)
+        if resolved_device:
+            self._model = SentenceTransformer(model_name, device=resolved_device)
+        else:
+            self._model = SentenceTransformer(model_name)
         self._batch_size = max(1, batch_size)
         dimension = self._model.get_sentence_embedding_dimension()
         if dimension is None:
             raise RuntimeError("Gömleme boyutu alınamadı.")
         self._dimension = int(dimension)
+
+    @staticmethod
+    def _resolve_device(device: Optional[str]) -> Optional[str]:
+        if not device or device == "auto":
+            try:
+                import torch
+            except Exception:
+                return None
+            if torch.cuda.is_available():
+                return "cuda"
+            if getattr(torch.backends, "mps", None) and torch.backends.mps.is_available():
+                return "mps"
+            return "cpu"
+        try:
+            import torch
+        except Exception:
+            return device
+        if device == "cuda" and not torch.cuda.is_available():
+            logger.warning("RAG_EMBEDDING_DEVICE=cuda ancak CUDA yok; cpu kullanılıyor.")
+            return "cpu"
+        if device == "mps" and not (
+            getattr(torch.backends, "mps", None)
+            and torch.backends.mps.is_available()
+        ):
+            logger.warning("RAG_EMBEDDING_DEVICE=mps ancak MPS yok; cpu kullanılıyor.")
+            return "cpu"
+        return device
 
     @property
     def dimension(self) -> int:
@@ -339,6 +375,7 @@ class RAGService:
         top_k: int = 3,
         embedder: Optional[EmbeddingBackend] = None,
         embedding_batch_size: Optional[int] = None,
+        embedding_device: Optional[str] = None,
     ) -> None:
         """Giriş: RAG yapılandırma parametreleri.
 
@@ -357,6 +394,7 @@ class RAGService:
         self.embedding_batch_size = (
             embedding_batch_size or Config.RAG_EMBEDDING_BATCH_SIZE
         )
+        self.embedding_device = embedding_device or Config.RAG_EMBEDDING_DEVICE
         self._embedder = embedder
         self._index: Optional[RagIndex] = None
 
@@ -377,6 +415,7 @@ class RAGService:
             self._embedder = self._embedder or SentenceTransformerBackend(
                 self.embedding_model,
                 batch_size=self.embedding_batch_size,
+                device=self.embedding_device,
             )
             self._index = RagIndex(
                 Path(self.vector_db_path),

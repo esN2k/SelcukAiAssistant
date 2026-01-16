@@ -10,7 +10,7 @@ import 'package:selcukaiassistant/model/chat_api_response.dart';
 import 'package:selcukaiassistant/services/sse_client.dart';
 
 class APIs {
-  static const Duration _responseTimeout = Duration(seconds: 120);
+  static const Duration _responseTimeout = Duration(seconds: 180);
 
   static Map<String, String> _buildHeaders() {
     final locale = Pref.localeCode ?? L10n.fallbackLocale.languageCode;
@@ -30,7 +30,7 @@ class APIs {
       'messages': messages,
       'temperature': 0.2,
       'top_p': 0.9,
-      'max_tokens': 256,
+      'max_tokens': 512,
       'stream': stream,
       'rag_enabled': Pref.ragEnabled,
       'rag_strict': Pref.ragStrict,

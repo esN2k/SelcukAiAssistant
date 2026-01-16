@@ -25,6 +25,7 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
   final ScrollController _logScrollController = ScrollController();
 
   List<ModelInfo> _models = [];
+  bool _isDisposed = false;
   bool _isLoadingModels = false;
   bool _isStreaming = false;
   String _streamSample = '';
@@ -43,6 +44,11 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
   String? _lastErrorBody;
   Map<String, String>? _lastErrorHeaders;
 
+  void _safeSetState(VoidCallback fn) {
+    if (_isDisposed || !mounted) return;
+    setState(fn);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -53,15 +59,16 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
 
   @override
   void dispose() {
+    _isDisposed = true;
     _logScrollController.dispose();
     super.dispose();
   }
 
   Future<void> _loadModels() async {
-    setState(() => _isLoadingModels = true);
+    _safeSetState(() => _isLoadingModels = true);
     final models = await ModelService.fetchModels();
     if (!mounted) return;
-    setState(() {
+    _safeSetState(() {
       _models = models;
       _isLoadingModels = false;
     });
@@ -69,7 +76,7 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
 
   Future<void> _loadOllamaHealth({bool log = false}) async {
     final url = Uri.parse('${BackendConfig.baseUrl}/health/ollama');
-    setState(() => _isLoadingOllama = true);
+    _safeSetState(() => _isLoadingOllama = true);
     if (log) {
       _appendLog('GET /health/ollama -> start');
     }
@@ -87,13 +94,13 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
       );
       final body = utf8.decode(response.bodyBytes);
       if (response.statusCode == 200) {
-        setState(() {
+        _safeSetState(() {
           _ollamaInfo = jsonDecode(body) as Map<String, dynamic>;
           _ollamaError = null;
         });
       } else {
         final snippet = _truncate(body);
-        setState(() {
+        _safeSetState(() {
           _ollamaError = 'HTTP ${response.statusCode} $snippet';
           _ollamaInfo = null;
         });
@@ -116,7 +123,7 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
         null,
         stopwatch.elapsedMilliseconds,
       );
-      setState(() {
+      _safeSetState(() {
         _ollamaError = e.toString();
         _ollamaInfo = null;
       });
@@ -126,14 +133,14 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
       }
     } finally {
       if (mounted) {
-        setState(() => _isLoadingOllama = false);
+        _safeSetState(() => _isLoadingOllama = false);
       }
     }
   }
 
   Future<void> _loadHfHealth({bool log = false}) async {
     final url = Uri.parse('${BackendConfig.baseUrl}/health/hf');
-    setState(() => _isLoadingHf = true);
+    _safeSetState(() => _isLoadingHf = true);
     if (log) {
       _appendLog('GET /health/hf -> start');
     }
@@ -151,13 +158,13 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
       );
       final body = utf8.decode(response.bodyBytes);
       if (response.statusCode == 200) {
-        setState(() {
+        _safeSetState(() {
           _hfInfo = jsonDecode(body) as Map<String, dynamic>;
           _hfError = null;
         });
       } else {
         final snippet = _truncate(body);
-        setState(() {
+        _safeSetState(() {
           _hfError = 'HTTP ${response.statusCode} $snippet';
           _hfInfo = null;
         });
@@ -178,7 +185,7 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
         null,
         stopwatch.elapsedMilliseconds,
       );
-      setState(() {
+      _safeSetState(() {
         _hfError = e.toString();
         _hfInfo = null;
       });
@@ -188,7 +195,7 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
       }
     } finally {
       if (mounted) {
-        setState(() => _isLoadingHf = false);
+        _safeSetState(() => _isLoadingHf = false);
       }
     }
   }
@@ -223,10 +230,12 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
 
   void _appendLog(String message) {
     final timestamp = DateTime.now().toIso8601String();
-    setState(() {
+    if (!mounted) return;
+    _safeSetState(() {
       _logs.add('[$timestamp] $message');
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       if (_logScrollController.hasClients) {
         _logScrollController.jumpTo(
           _logScrollController.position.maxScrollExtent,
@@ -241,7 +250,7 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
     int elapsedMs,
   ) {
     if (!mounted) return;
-    setState(() {
+    _safeSetState(() {
       _lastRequestLabel = label;
       _lastRequestStatus = statusCode;
       _lastLatencyMs = elapsedMs;
@@ -254,7 +263,7 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
     String? body,
     Map<String, String>? headers,
   }) {
-    setState(() {
+    _safeSetState(() {
       _lastErrorDetails = details;
       _lastErrorTimestamp = DateTime.now().toIso8601String();
       _lastErrorStatus = statusCode;
@@ -342,7 +351,7 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
 
   Future<void> _testStream() async {
     if (_isStreaming) return;
-    setState(() => _isStreaming = true);
+    _safeSetState(() => _isStreaming = true);
     _appendLog('POST /chat/stream -> start');
 
     ChatStreamSession? session;
@@ -403,7 +412,7 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
       );
 
       final sample = buffer.toString().trim();
-      setState(() {
+      _safeSetState(() {
         _streamSample = sample.isEmpty
             ? (L10n.current()?.diagnosticsNoStreamSample ??
                 'Akış örneği alınamadı.')
@@ -417,7 +426,7 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
       await subscription?.cancel();
       session?.close();
       if (mounted) {
-        setState(() => _isStreaming = false);
+        _safeSetState(() => _isStreaming = false);
       }
     }
   }

@@ -1,9 +1,14 @@
 """Critical fact guardrails for Selcuk University questions."""
 from __future__ import annotations
 
+import json
+import logging
 import re
 import unicodedata
-from typing import Optional
+from pathlib import Path
+from typing import Any, Optional
+
+logger = logging.getLogger(__name__)
 
 
 _TURKISH_MAP = str.maketrans(
@@ -18,6 +23,8 @@ _TURKISH_MAP = str.maketrans(
     }
 )
 
+_KB_PATH = Path(__file__).resolve().parent / "data" / "selcuk_knowledge_base.json"
+
 
 def _normalize(text: str) -> str:
     text = unicodedata.normalize("NFKD", text)
@@ -26,6 +33,26 @@ def _normalize(text: str) -> str:
     text = re.sub(r"[^a-z0-9\s]", " ", text)
     text = re.sub(r"\s+", " ", text).strip()
     return text
+
+
+def _find_kb_key(data: dict[str, Any], key: str) -> Any:
+    target = _normalize(key)
+    for candidate, value in data.items():
+        if _normalize(candidate) == target:
+            return value
+    return None
+
+
+def _load_kb() -> Optional[dict[str, Any]]:
+    if not _KB_PATH.exists():
+        return None
+    try:
+        with _KB_PATH.open("r", encoding="utf-8") as handle:
+            data = json.load(handle)
+    except Exception as exc:
+        logger.warning("KB okunamadi: %s", exc)
+        return None
+    return data if isinstance(data, dict) else None
 
 
 LOCATION_KEYWORDS = [
@@ -340,6 +367,173 @@ CRITICAL_ANSWERS_EN = {
     "ce_language": "Computer Engineering language of instruction: Turkish.",
     "ce_score_type": "Computer Engineering score type: SAY (Quantitative).",
 }
+
+
+def _apply_kb_overrides() -> None:
+    data = _load_kb()
+    if not data:
+        return
+
+    def to_str(value: Any) -> Optional[str]:
+        if value is None:
+            return None
+        if isinstance(value, (int, float)):
+            return str(value)
+        if isinstance(value, str):
+            return value.strip()
+        return str(value)
+
+    uni = _find_kb_key(data, "universite_bilgileri")
+    if isinstance(uni, dict):
+        city = to_str(_find_kb_key(uni, "sehir") or _find_kb_key(uni, "il"))
+        year = to_str(_find_kb_key(uni, "kurulus_yili"))
+        address = to_str(_find_kb_key(uni, "adres"))
+        phone = to_str(_find_kb_key(uni, "telefon"))
+        website = to_str(_find_kb_key(uni, "web_sitesi"))
+        rector = to_str(_find_kb_key(uni, "rektor"))
+        faculty_count = to_str(_find_kb_key(uni, "fakulte_sayisi"))
+        student_count = to_str(_find_kb_key(uni, "ogrenci_sayisi"))
+        institute_count = to_str(_find_kb_key(uni, "enstitu_sayisi"))
+        school_count = to_str(_find_kb_key(uni, "yuksekokul_sayisi"))
+        conserv_count = to_str(_find_kb_key(uni, "devlet_konservatuvari_sayisi"))
+        voc_count = to_str(_find_kb_key(uni, "meslek_yuksekokulu_sayisi"))
+        research_count = to_str(_find_kb_key(uni, "arastirma_merkezi_sayisi"))
+
+        campus_lines: list[str] = []
+        campus_detail = _find_kb_key(data, "kampusler_detay")
+        if isinstance(campus_detail, dict):
+            for campus in campus_detail.values():
+                if not isinstance(campus, dict):
+                    continue
+                name = to_str(_find_kb_key(campus, "ad"))
+                location = to_str(_find_kb_key(campus, "konum"))
+                if name and location:
+                    campus_lines.append(f"- **{name}** ({location})")
+                elif name:
+                    campus_lines.append(f"- **{name}**")
+        elif isinstance(_find_kb_key(uni, "kampusler"), list):
+            for campus in _find_kb_key(uni, "kampusler"):
+                name = to_str(campus)
+                if name:
+                    campus_lines.append(f"- **{name}**")
+
+        if city:
+            location_text = f"Selçuk Üniversitesi **{city}**'dadır."
+            if campus_lines:
+                location_text += "\n\nKampüsler:\n" + "\n".join(campus_lines)
+            CRITICAL_ANSWERS_TR["location"] = location_text
+        if year and city:
+            CRITICAL_ANSWERS_TR["foundation"] = (
+                f"Selçuk Üniversitesi {year} yılında {city}'da kurulmuştur."
+            )
+        elif year:
+            CRITICAL_ANSWERS_TR["foundation"] = (
+                f"Selçuk Üniversitesi {year} yılında kurulmuştur."
+            )
+        if address:
+            CRITICAL_ANSWERS_TR["address"] = f"Resmi adres: {address}"
+        if phone:
+            CRITICAL_ANSWERS_TR["phone"] = f"Telefon: {phone}"
+        if website:
+            CRITICAL_ANSWERS_TR["website"] = f"Resmi web sitesi: {website}"
+        if phone or website or address:
+            parts = []
+            if phone:
+                parts.append(f"İletişim: {phone}")
+            if website:
+                parts.append(f"Web: {website}")
+            if address:
+                parts.append(f"Adres: {address}")
+            if parts:
+                CRITICAL_ANSWERS_TR["contact"] = "\n".join(parts)
+        if rector:
+            CRITICAL_ANSWERS_TR["rector"] = (
+                f"Selçuk Üniversitesi Rektörü {rector}."
+            )
+        if faculty_count:
+            CRITICAL_ANSWERS_TR["faculty_count"] = (
+                f"Selçuk Üniversitesi'nde {faculty_count} fakülte bulunmaktadır."
+            )
+        if student_count:
+            CRITICAL_ANSWERS_TR["student_count"] = (
+                f"Selçuk Üniversitesi'nde yaklaşık {student_count} öğrenci bulunmaktadır."
+            )
+        if (
+            faculty_count
+            and institute_count
+            and school_count
+            and conserv_count
+            and voc_count
+            and research_count
+        ):
+            CRITICAL_ANSWERS_TR["academic_units"] = (
+                "Akademik yapı: "
+                f"{faculty_count} fakülte, {institute_count} enstitü, "
+                f"{school_count} yüksekokul, {conserv_count} devlet konservatuvarı, "
+                f"{voc_count} meslek yüksekokulu ve {research_count} araştırma merkezi."
+            )
+
+    ce = _find_kb_key(data, "bilgisayar_muhendisligi")
+    if isinstance(ce, dict):
+        faculty = to_str(_find_kb_key(ce, "fakulte"))
+        campus = to_str(_find_kb_key(ce, "kampus") or _find_kb_key(ce, "yerleske"))
+        location = to_str(_find_kb_key(ce, "konum"))
+        program_code = to_str(_find_kb_key(ce, "program_kodu"))
+        language = to_str(_find_kb_key(ce, "egitim_dili"))
+        score_type = to_str(_find_kb_key(ce, "puan_turu"))
+        web = to_str(_find_kb_key(ce, "web"))
+        bologna = to_str(_find_kb_key(ce, "bologna_url"))
+        yokatlas = to_str(_find_kb_key(ce, "yokatlas_url"))
+        facebook = to_str(_find_kb_key(ce, "facebook_url"))
+
+        accreditation = _find_kb_key(ce, "akreditasyon")
+        mudek = None
+        if isinstance(accreditation, dict):
+            mudek = _find_kb_key(accreditation, "mudek")
+
+        if faculty:
+            CRITICAL_ANSWERS_TR["ce_faculty"] = (
+                f"Bilgisayar Mühendisliği bölümü {faculty} bünyesindedir."
+            )
+        if campus or location:
+            campus_text = "Bilgisayar Mühendisliği"
+            if campus:
+                campus_text += f", {campus}"
+            if location:
+                campus_text += f" ({location})"
+            CRITICAL_ANSWERS_TR["ce_campus"] = campus_text + " yer alır."
+        if isinstance(mudek, bool):
+            if mudek:
+                CRITICAL_ANSWERS_TR["ce_accreditation"] = (
+                    "Evet, Bilgisayar Mühendisliği programı MÜDEK akreditasyonuna sahiptir."
+                )
+            else:
+                CRITICAL_ANSWERS_TR["ce_accreditation"] = (
+                    "Bilgisayar Mühendisliği programı MÜDEK akreditasyonuna sahip değildir."
+                )
+        if web:
+            CRITICAL_ANSWERS_TR["ce_web"] = f"Bölüm web sitesi: {web}"
+        if bologna:
+            CRITICAL_ANSWERS_TR["ce_bologna"] = f"Bologna sistemi: {bologna}"
+        if yokatlas:
+            CRITICAL_ANSWERS_TR["ce_yokatlas"] = f"YÖK Atlas: {yokatlas}"
+        if facebook:
+            CRITICAL_ANSWERS_TR["ce_facebook"] = f"Facebook: {facebook}"
+        if program_code:
+            CRITICAL_ANSWERS_TR["ce_program_code"] = (
+                f"Bilgisayar Mühendisliği program kodu: {program_code}."
+            )
+        if language:
+            CRITICAL_ANSWERS_TR["ce_language"] = (
+                f"Bilgisayar Mühendisliği eğitim dili: {language}."
+            )
+        if score_type:
+            CRITICAL_ANSWERS_TR["ce_score_type"] = (
+                f"Bilgisayar Mühendisliği puan türü: {score_type}."
+            )
+
+
+_apply_kb_overrides()
 
 
 def _has_any(text: str, keywords: list[str]) -> bool:

@@ -1,0 +1,4 @@
+-r requirements-hf.txt
+datasets>=2.18.0
+peft>=0.11.0
+scikit-learn>=1.4.0

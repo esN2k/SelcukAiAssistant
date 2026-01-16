@@ -181,7 +181,11 @@ def ingest(
             if child.is_file():
                 child.unlink()
 
-    embedder = SentenceTransformerBackend(embedding_model, batch_size=batch_size)
+    embedder = SentenceTransformerBackend(
+        embedding_model,
+        batch_size=batch_size,
+        device=Config.RAG_EMBEDDING_DEVICE,
+    )
     index = RagIndex(output_path, embedder, batch_size=batch_size)
     docs = build_documents(input_path, extensions, chunk_size, chunk_overlap)
     added = index.add_documents(docs)

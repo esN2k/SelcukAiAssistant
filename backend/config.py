@@ -104,8 +104,8 @@ class Config:
 
     # Ollama configuration
     OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-    OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", "llama3.1")
-    OLLAMA_TIMEOUT: int = int(os.getenv("OLLAMA_TIMEOUT", "120"))
+    OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", "turkcell_llm_7b_selcuk_4k")
+    OLLAMA_TIMEOUT: int = int(os.getenv("OLLAMA_TIMEOUT", "180"))
     OLLAMA_MAX_RETRIES: int = int(os.getenv("OLLAMA_MAX_RETRIES", "3"))
     OLLAMA_RETRY_DELAY: float = float(os.getenv("OLLAMA_RETRY_DELAY", "1.0"))
 
@@ -120,13 +120,13 @@ class Config:
     HF_MODEL_NAME: str = os.getenv("HF_MODEL_NAME", "Qwen/Qwen2.5-1.5B-Instruct")
     HF_LOAD_IN_4BIT: bool = os.getenv("HF_LOAD_IN_4BIT", "true").lower() == "true"
     HF_DEVICE: str = os.getenv("HF_DEVICE", "auto")
-    HF_DTYPE: str = os.getenv("HF_DTYPE", "bfloat16")
+    HF_DTYPE: str = os.getenv("HF_DTYPE", "float16")
     HF_ATTENTION_IMPL: str = os.getenv("HF_ATTENTION_IMPL", "sdpa")
 
     # Guardrails
     MAX_CONTEXT_TOKENS: int = int(os.getenv("MAX_CONTEXT_TOKENS", "4096"))
     MAX_OUTPUT_TOKENS: int = int(os.getenv("MAX_OUTPUT_TOKENS", "512"))
-    REQUEST_TIMEOUT: int = int(os.getenv("REQUEST_TIMEOUT", "120"))
+    REQUEST_TIMEOUT: int = int(os.getenv("REQUEST_TIMEOUT", "180"))
 
     # RAG configuration
     RAG_ENABLED: bool = os.getenv("RAG_ENABLED", "true").lower() == "true"
@@ -136,8 +136,9 @@ class Config:
     RAG_CHUNK_OVERLAP: int = int(os.getenv("RAG_CHUNK_OVERLAP", "50"))
     RAG_TOP_K: int = int(os.getenv("RAG_TOP_K", "4"))
     RAG_EMBEDDING_BATCH_SIZE: int = int(
-        os.getenv("RAG_EMBEDDING_BATCH_SIZE", "8")
+        os.getenv("RAG_EMBEDDING_BATCH_SIZE", "16")
     )
+    RAG_EMBEDDING_DEVICE: str = os.getenv("RAG_EMBEDDING_DEVICE", "auto")
     RAG_EMBEDDING_MODEL: str = os.getenv(
         "RAG_EMBEDDING_MODEL",
         "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
