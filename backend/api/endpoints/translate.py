@@ -94,7 +94,7 @@ class BatchTranslateRequest(BaseModel):
     """
 
     texts: List[str] = Field(
-        ..., max_length=10, description="Çevrilecek metinler (max 10)"
+        ..., max_items=10, description="Çevrilecek metinler (max 10)"
     )
     source_lang: str = Field(..., description="Kaynak dil kodu")
     target_lang: str = Field(..., description="Hedef dil kodu")

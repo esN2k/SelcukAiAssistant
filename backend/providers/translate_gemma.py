@@ -219,10 +219,7 @@ class TranslateGemmaProvider:
         )
 
         # Device'a taşı
-        if self._device == "cuda":
-            inputs = {k: v.to(self._device) for k, v in inputs.items()}
-        else:
-            inputs = {k: v.to(self._device) for k, v in inputs.items()}
+        inputs = {k: v.to(self._device) for k, v in inputs.items()}
 
         # Generate
         with torch.inference_mode():
