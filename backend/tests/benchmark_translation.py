@@ -60,7 +60,6 @@ def run_benchmark() -> List[Dict[str, Any]]:
 
     # Model yükle
     print("⏳ Model yükleniyor...")
-    load_start = time.time()
     translator = TranslateGemmaProvider(use_4bit=True)
     # Model ilk çeviride lazy load olacak
 
@@ -129,7 +128,7 @@ def print_summary(results: List[Dict[str, Any]]) -> None:
         min_time = min(times)
         max_time = max(times)
 
-        print(f"\n⏱️  Çeviri Süreleri:")
+        print("\n⏱️  Çeviri Süreleri:")
         print(f"   Ortalama: {avg_time:.0f}ms")
         print(f"   Minimum:  {min_time}ms")
         print(f"   Maximum:  {max_time}ms")
@@ -139,7 +138,7 @@ def print_summary(results: List[Dict[str, Any]]) -> None:
         translator = TranslateGemmaProvider(use_4bit=True)
         info = translator.get_model_info()
 
-        print(f"\n💻 Model Bilgileri:")
+        print("\n💻 Model Bilgileri:")
         print(f"   Model:   {info['model_name']}")
         print(f"   Device:  {info['device']}")
         print(f"   VRAM:    {info['vram_usage_gb']:.2f} GB")

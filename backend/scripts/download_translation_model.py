@@ -71,7 +71,6 @@ def download_model(model_name: str, token: str | None = None) -> bool:
     """
     try:
         from huggingface_hub import snapshot_download
-        from tqdm import tqdm
     except ImportError:
         logger.error(
             "Gerekli kütüphaneler eksik. Şu komutu çalıştırın:\n"
