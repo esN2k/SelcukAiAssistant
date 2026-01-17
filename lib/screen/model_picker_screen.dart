@@ -6,6 +6,7 @@
 /// BAĞIMLILIKLAR:
 ///   - model_service.dart: model listesini alır
 /// SON DEĞİŞİKLİK: 17.01.2026
+library;
 import 'dart:async';
 
 import 'package:flutter/material.dart';

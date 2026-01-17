@@ -6,6 +6,7 @@
 ///   - dart:html
 ///   - app_exception.dart
 /// SON DEĞİŞİKLİK: 17.01.2026
+library;
 // Web ortamı için koşullu olarak yüklenir.
 // Tarayıcı indirme işlemleri için dart:html gerekir.
 // ignore_for_file: avoid_web_libraries_in_flutter, deprecated_member_use

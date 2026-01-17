@@ -8,6 +8,7 @@
 ///   - model_service.dart: model listesi
 ///   - sse_client.dart: akış testi
 /// SON DEĞİŞİKLİK: 17.01.2026
+library;
 import 'dart:async';
 import 'dart:convert';
 

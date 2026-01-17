@@ -7,6 +7,8 @@
 ///   - conversation_service.dart: sohbet verisi
 ///   - sse_client.dart: akış bağlantısı
 /// SON DEĞİŞİKLİK: 17.01.2026
+library;
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -59,7 +61,6 @@ class EnhancedChatController extends GetxController {
   String _speechLocaleId() {
     return _languageCode() == 'en' ? 'en_US' : 'tr_TR';
   }
-
 
   Future<void> _initializeConversation() async {
     await ConversationService.init();
@@ -447,7 +448,7 @@ class EnhancedChatController extends GetxController {
         messages.refresh();
         Get.snackbar(
           l10n?.streamErrorTitle ?? 'Akış hatası',
-          errorMessage ?? '',
+          errorMessage,
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
           colorText: Colors.white,

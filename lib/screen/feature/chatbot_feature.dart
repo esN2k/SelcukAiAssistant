@@ -8,6 +8,7 @@
 ///   - appwrite_service.dart: oturum yönetimi
 ///   - error_handler.dart: hata mesajı dönüşümü
 /// SON DEĞİŞİKLİK: 17.01.2026
+library;
 // Geçici olarak Material 2 API'lerindeki withOpacity kullanımını sürdürüyoruz.
 // ignore_for_file: deprecated_member_use
 
@@ -15,8 +16,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:selcukaiassistant/core/errors/error_handler.dart';
 import 'package:selcukaiassistant/controller/chat_controller.dart';
+import 'package:selcukaiassistant/core/errors/error_handler.dart';
 import 'package:selcukaiassistant/helper/global.dart';
 import 'package:selcukaiassistant/helper/pref.dart';
 import 'package:selcukaiassistant/l10n/l10n.dart';

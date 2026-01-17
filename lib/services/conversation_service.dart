@@ -8,6 +8,7 @@
 ///   - hive: yerel depolama
 ///   - storage_service.dart: kutu yönetimi
 /// SON DEĞİŞİKLİK: 17.01.2026
+library;
 import 'package:hive/hive.dart';
 import 'package:selcukaiassistant/core/errors/app_exception.dart';
 import 'package:selcukaiassistant/core/errors/error_messages.dart';

@@ -8,14 +8,15 @@
 ///   - error_messages.dart
 ///   - app_exception.dart
 /// SON DEĞİŞİKLİK: 17.01.2026
+library;
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
-import 'app_exception.dart';
-import 'error_messages.dart';
+import 'package:selcukaiassistant/core/errors/app_exception.dart';
+import 'package:selcukaiassistant/core/errors/error_messages.dart';
 
 class ErrorHandler {
   /// Giriş: HTTP yanıtı.
@@ -70,7 +71,7 @@ class ErrorHandler {
     }
     if (error is StateError) {
       final message = error.message;
-      if (message is String && message.trim().isNotEmpty) {
+      if (message.trim().isNotEmpty) {
         return message.trim();
       }
     }

@@ -7,6 +7,7 @@
 ///   - onboard.dart: içerik modeli
 ///   - custom_btn.dart: buton bileşeni
 /// SON DEĞİŞİKLİK: 17.01.2026
+library;
 import 'dart:async';
 
 import 'package:flutter/material.dart';

@@ -7,6 +7,10 @@
 ///   - sse_parser.dart: SSE ayrıştırma
 ///   - error_messages.dart: Türkçe hata metinleri
 /// SON DEĞİŞİKLİK: 17.01.2026
+library;
+// This file is the web-specific implementation for the SSE client.
+// It uses `dart:html` to make HTTP requests for Server-Sent Events,
+// which is why `avoid_web_libraries_in_flutter` is ignored.
 // ignore_for_file: avoid_web_libraries_in_flutter, deprecated_member_use
 
 import 'dart:async';

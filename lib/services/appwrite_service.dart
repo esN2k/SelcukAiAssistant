@@ -7,6 +7,7 @@
 ///   - appwrite
 ///   - flutter_dotenv
 /// SON DEĞİŞİKLİK: 17.01.2026
+library;
 import 'dart:developer';
 
 import 'package:appwrite/appwrite.dart';

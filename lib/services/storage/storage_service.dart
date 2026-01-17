@@ -7,6 +7,7 @@
 ///   - hive_flutter
 ///   - migrations.dart
 /// SON DEĞİŞİKLİK: 17.01.2026
+library;
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:selcukaiassistant/model/conversation.dart';
 import 'package:selcukaiassistant/model/model_pref.dart';

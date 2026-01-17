@@ -7,6 +7,7 @@
 ///   - sse_parser.dart: SSE ayrıştırma
 ///   - error_messages.dart: Türkçe hata metinleri
 /// SON DEĞİŞİKLİK: 17.01.2026
+library;
 import 'dart:async';
 import 'dart:convert';
 

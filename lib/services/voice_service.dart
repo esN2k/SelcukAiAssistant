@@ -7,6 +7,7 @@
 ///   - http
 ///   - Pref (kullanıcı dili)
 /// SON DEĞİŞİKLİK: 17.01.2026
+library;
 import 'dart:convert';
 import 'dart:developer';
 

@@ -6,6 +6,8 @@
 /// BAĞIMLILIKLAR:
 ///   - appwrite_service.dart: oturum kontrolü
 /// SON DEĞİŞİKLİK: 17.01.2026
+library;
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -40,7 +42,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _checkAuthAndNavigate() async {
     try {
-      // Appwrite servisi kontrolü - yapılandırılmamışsa giriş ekranına yönlendir.
+      // Appwrite servisi kontrolü
+      // Eğer yapılandırılmamışsa giriş ekranına yönlendir.
       if (_appwriteService.account == null) {
         if (mounted) {
           // Appwrite yoksa giriş ekranına git.

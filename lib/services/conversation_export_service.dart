@@ -6,6 +6,7 @@
 ///   - conversation_export_service_io.dart
 ///   - conversation_export_service_web.dart
 /// SON DEĞİŞİKLİK: 17.01.2026
+library;
 import 'package:selcukaiassistant/services/conversation_export_service_stub.dart'
     if (dart.library.io)
         'package:selcukaiassistant/services/conversation_export_service_io.dart'

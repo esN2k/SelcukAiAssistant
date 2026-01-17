@@ -5,6 +5,7 @@
 /// BAĞIMLILIKLAR:
 ///   - app_exception.dart
 /// SON DEĞİŞİKLİK: 17.01.2026
+library;
 import 'package:selcukaiassistant/core/errors/app_exception.dart';
 import 'package:selcukaiassistant/core/errors/error_messages.dart';
 import 'package:selcukaiassistant/services/conversation_export_types.dart';

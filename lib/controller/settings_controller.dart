@@ -6,14 +6,15 @@
 /// BAĞIMLILIKLAR:
 ///   - Pref: kalıcı ayar saklama
 /// SON DEĞİŞİKLİK: 17.01.2026
+library;
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:selcukaiassistant/core/errors/error_handler.dart';
 import 'package:selcukaiassistant/helper/pref.dart';
 import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/model/model_info.dart';
-import 'package:selcukaiassistant/core/errors/error_handler.dart';
 import 'package:selcukaiassistant/services/model_service.dart';
 
 class SettingsController extends GetxController {

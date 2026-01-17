@@ -5,6 +5,7 @@
 /// BAĞIMLILIKLAR:
 ///   - flutter_markdown_plus
 /// SON DEĞİŞİKLİK: 17.01.2026
+library;
 // withValues'e geçilene kadar withOpacity kullanımını sürdürüyoruz.
 // ignore_for_file: deprecated_member_use
 

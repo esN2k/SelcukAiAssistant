@@ -6,6 +6,7 @@
 ///   - path_provider
 ///   - app_exception.dart
 /// SON DEĞİŞİKLİK: 17.01.2026
+library;
 import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';

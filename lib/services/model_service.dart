@@ -7,6 +7,7 @@
 ///   - backend_config.dart: API adresleri
 ///   - error_handler.dart: hata metni dönüştürme
 /// SON DEĞİŞİKLİK: 17.01.2026
+library;
 import 'dart:convert';
 import 'dart:developer';
 
