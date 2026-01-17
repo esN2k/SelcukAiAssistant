@@ -22,6 +22,15 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Scoring weights for answer evaluation
+KEYWORD_WEIGHT = 0.5  # Weight for keyword matching (most important)
+LENGTH_WEIGHT = 0.3   # Weight for answer length appropriateness
+TURKISH_WEIGHT = 0.2  # Weight for Turkish character presence
+
+# Default model names for comparison
+DEFAULT_BASE_MODEL = "turkcell-llm-selcuk"
+DEFAULT_FINETUNED_MODEL = "selcuk-assistant"
+
 
 def load_test_questions() -> List[Dict]:
     """Test sorularını yükle"""
@@ -107,8 +116,12 @@ def evaluate_answer(answer: str, expected_keywords: List[str]) -> float:
     has_turkish = any(char in answer.lower() for char in turkish_chars)
     turkish_score = 1.0 if has_turkish else 0.5
     
-    # Toplam skor
-    total_score = (keyword_score * 0.5 + length_score * 0.3 + turkish_score * 0.2)
+    # Toplam skor (weighted average)
+    total_score = (
+        keyword_score * KEYWORD_WEIGHT +
+        length_score * LENGTH_WEIGHT +
+        turkish_score * TURKISH_WEIGHT
+    )
     
     return total_score
 
@@ -130,8 +143,8 @@ def benchmark_models():
     
     # Test edilecek modeller
     models = {
-        "Base Model (Turkcell)": "turkcell-llm-selcuk",  # Eski model
-        "Fine-tuned (Selçuk)": "selcuk-assistant"        # Yeni model
+        "Base Model (Turkcell)": DEFAULT_BASE_MODEL,
+        "Fine-tuned (Selçuk)": DEFAULT_FINETUNED_MODEL
     }
     
     results = {}

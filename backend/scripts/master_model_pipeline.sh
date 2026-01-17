@@ -1,18 +1,18 @@
 #!/bin/bash
 
-"""
-DOSYA ADI: master_model_pipeline.sh
-AMAÇ: Model geliştirme pipeline'ını tek komutla çalıştırmak
-NE YAPAR:
-  1. Model değerlendirme yapar
-  2. Dataset hazırlar
-  3. Fine-tuning yapar
-  4. Ollama'ya deploy eder
-  5. Test eder ve rapor oluşturur
-KULLANIM:
-  bash backend/scripts/master_model_pipeline.sh [--skip-eval] [--skip-training]
-SON DEĞİŞİKLİK: 17.01.2026
-"""
+# ============================================================
+# DOSYA ADI: master_model_pipeline.sh
+# AMAÇ: Model geliştirme pipeline'ını tek komutla çalıştırmak
+# NE YAPAR:
+#   1. Model değerlendirme yapar
+#   2. Dataset hazırlar
+#   3. Fine-tuning yapar
+#   4. Ollama'ya deploy eder
+#   5. Test eder ve rapor oluşturur
+# KULLANIM:
+#   bash backend/scripts/master_model_pipeline.sh [--skip-eval] [--skip-training]
+# SON DEĞİŞİKLİK: 17.01.2026
+# ============================================================
 
 set -e  # Hata durumunda dur
 
