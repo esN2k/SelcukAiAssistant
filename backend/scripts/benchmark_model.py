@@ -55,6 +55,23 @@ def test_model(model_name: str, question: str) -> Dict:
             "error": str or None
         }
     """
+    # Validate model_name to prevent command injection
+    # Only allow alphanumeric, hyphens, underscores, and dots
+    if not all(c.isalnum() or c in '-_.' for c in model_name):
+        return {
+            "answer": "",
+            "response_time": 0,
+            "error": f"Invalid model name: {model_name}"
+        }
+    
+    # Validate question length to prevent abuse
+    if len(question) > 1000:
+        return {
+            "answer": "",
+            "response_time": 0,
+            "error": "Question too long (max 1000 characters)"
+        }
+    
     start_time = time.time()
     
     try:

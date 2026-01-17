@@ -50,10 +50,20 @@ while [[ $# -gt 0 ]]; do
       ;;
     --epochs)
       EPOCHS="$2"
+      # Validate epochs is a positive integer
+      if ! [[ "$EPOCHS" =~ ^[0-9]+$ ]] || [ "$EPOCHS" -lt 1 ]; then
+        echo -e "${RED}❌ --epochs must be a positive integer${NC}"
+        exit 1
+      fi
       shift 2
       ;;
     --batch-size)
       BATCH_SIZE="$2"
+      # Validate batch-size is a positive integer
+      if ! [[ "$BATCH_SIZE" =~ ^[0-9]+$ ]] || [ "$BATCH_SIZE" -lt 1 ]; then
+        echo -e "${RED}❌ --batch-size must be a positive integer${NC}"
+        exit 1
+      fi
       shift 2
       ;;
     *)
