@@ -1,3 +1,13 @@
+/// DOSYA ADI: diagnostics_screen.dart
+/// AMAÇ: Backend ve model sağlık kontrollerini görselleştirmek.
+/// NE YAPAR:
+///   - Sağlık kontrollerini çalıştırır.
+///   - Akış testlerini ve logları gösterir.
+///   - Hata detaylarını kullanıcıya sunar.
+/// BAĞIMLILIKLAR:
+///   - model_service.dart: model listesi
+///   - sse_client.dart: akış testi
+/// SON DEĞİŞİKLİK: 17.01.2026
 import 'dart:async';
 import 'dart:convert';
 
@@ -6,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:selcukaiassistant/config/backend_config.dart';
+import 'package:selcukaiassistant/core/errors/error_handler.dart';
 import 'package:selcukaiassistant/helper/pref.dart';
 import 'package:selcukaiassistant/l10n/app_localizations.dart';
 import 'package:selcukaiassistant/l10n/l10n.dart';
@@ -66,25 +77,36 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
 
   Future<void> _loadModels() async {
     _safeSetState(() => _isLoadingModels = true);
-    final models = await ModelService.fetchModels();
-    if (!mounted) return;
-    _safeSetState(() {
-      _models = models;
-      _isLoadingModels = false;
-    });
+    try {
+      final models = await ModelService.fetchModels();
+      if (!mounted) return;
+      _safeSetState(() {
+        _models = models;
+        _isLoadingModels = false;
+      });
+    } on Exception catch (e) {
+      if (!mounted) return;
+      final message = ErrorHandler.fromException(e);
+      _appendLog('Model listesi alınamadı: $message');
+      _recordError('Model listesi alınamadı: $message');
+      _safeSetState(() {
+        _models = [];
+        _isLoadingModels = false;
+      });
+    }
   }
 
   Future<void> _loadOllamaHealth({bool log = false}) async {
     final url = Uri.parse('${BackendConfig.baseUrl}/health/ollama');
     _safeSetState(() => _isLoadingOllama = true);
     if (log) {
-      _appendLog('GET /health/ollama -> start');
+      _appendLog('GET /health/ollama -> başlatıldı');
     }
     final stopwatch = Stopwatch()..start();
     try {
       final response = await http.get(url, headers: _headers()).timeout(
         const Duration(seconds: 12),
-        onTimeout: () => http.Response('Timeout', 408),
+        onTimeout: () => http.Response('Zaman aşımı', 408),
       );
       stopwatch.stop();
       _updateLastRequest(
@@ -129,7 +151,7 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
       });
       _recordError('GET /health/ollama -> $e');
       if (log) {
-        _appendLog('GET /health/ollama -> error: $e');
+        _appendLog('GET /health/ollama -> hata: $e');
       }
     } finally {
       if (mounted) {
@@ -142,13 +164,13 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
     final url = Uri.parse('${BackendConfig.baseUrl}/health/hf');
     _safeSetState(() => _isLoadingHf = true);
     if (log) {
-      _appendLog('GET /health/hf -> start');
+      _appendLog('GET /health/hf -> başlatıldı');
     }
     final stopwatch = Stopwatch()..start();
     try {
       final response = await http.get(url, headers: _headers()).timeout(
         const Duration(seconds: 12),
-        onTimeout: () => http.Response('Timeout', 408),
+        onTimeout: () => http.Response('Zaman aşımı', 408),
       );
       stopwatch.stop();
       _updateLastRequest(
@@ -191,7 +213,7 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
       });
       _recordError('GET /health/hf -> $e');
       if (log) {
-        _appendLog('GET /health/hf -> error: $e');
+        _appendLog('GET /health/hf -> hata: $e');
       }
     } finally {
       if (mounted) {
@@ -281,12 +303,12 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
     String label,
     Future<http.Response> Function() request,
   ) async {
-    _appendLog('$label -> start');
+    _appendLog('$label -> başlatıldı');
     final stopwatch = Stopwatch()..start();
     try {
       final response = await request().timeout(
         const Duration(seconds: 12),
-        onTimeout: () => http.Response('Timeout', 408),
+        onTimeout: () => http.Response('Zaman aşımı', 408),
       );
       stopwatch.stop();
       _updateLastRequest(
@@ -308,7 +330,7 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
     } on Exception catch (e) {
       stopwatch.stop();
       _updateLastRequest(label, null, stopwatch.elapsedMilliseconds);
-      _appendLog('$label -> error: $e');
+      _appendLog('$label -> hata: $e');
       _recordError('$label -> $e');
     }
   }
@@ -352,7 +374,7 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
   Future<void> _testStream() async {
     if (_isStreaming) return;
     _safeSetState(() => _isStreaming = true);
-    _appendLog('POST /chat/stream -> start');
+    _appendLog('POST /chat/stream -> başlatıldı');
 
     ChatStreamSession? session;
     StreamSubscription<ChatStreamEvent>? subscription;
@@ -406,7 +428,7 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
       await completer.future.timeout(
         const Duration(seconds: 15),
         onTimeout: () {
-          _appendLog('POST /chat/stream -> timeout waiting for events');
+          _appendLog('POST /chat/stream -> olaylar beklenirken zaman aşımı');
           return;
         },
       );
@@ -418,9 +440,9 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
                 'Akış örneği alınamadı.')
             : sample;
       });
-      _appendLog('POST /chat/stream -> captured $lines events');
+      _appendLog('POST /chat/stream -> $lines olay alındı');
     } on Exception catch (e) {
-      _appendLog('POST /chat/stream -> error: $e');
+      _appendLog('POST /chat/stream -> hata: $e');
       _recordError('POST /chat/stream -> $e');
     } finally {
       await subscription?.cancel();

@@ -1,3 +1,12 @@
+/// DOSYA ADI: image_picker_service.dart
+/// AMAÇ: Kullanıcıdan görsel seçme işlemini yönetmek.
+/// NE YAPAR:
+///   - Kamera veya galeri üzerinden görsel seçer.
+///   - Hata durumunda kullanıcıya Türkçe mesaj gösterir.
+/// BAĞIMLILIKLAR:
+///   - image_picker
+///   - get
+/// SON DEĞİŞİKLİK: 17.01.2026
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';

@@ -1,10 +1,19 @@
-// Web-only implementation loaded via conditional imports.
-// dart:html is required for streaming XHR in the browser.
+/// DOSYA ADI: sse_client_web.dart
+/// AMAÇ: Web platformunda SSE akışını yönetmek.
+/// NE YAPAR:
+///   - XHR ile stream bağlantısı kurar.
+///   - SSE verisini parse ederek ChatStreamEvent üretir.
+/// BAĞIMLILIKLAR:
+///   - sse_parser.dart: SSE ayrıştırma
+///   - error_messages.dart: Türkçe hata metinleri
+/// SON DEĞİŞİKLİK: 17.01.2026
 // ignore_for_file: avoid_web_libraries_in_flutter, deprecated_member_use
 
 import 'dart:async';
 import 'dart:html' as html;
 
+import 'package:selcukaiassistant/core/errors/app_exception.dart';
+import 'package:selcukaiassistant/core/errors/error_messages.dart';
 import 'package:selcukaiassistant/services/sse_client_types.dart';
 import 'package:selcukaiassistant/services/sse_parser.dart';
 
@@ -31,7 +40,11 @@ class SseClient {
           !sawError) {
         sawError = true;
         controller.addError(
-          'Stream request failed: ${request.status} ${request.statusText}',
+          AppException(
+            ErrorMessages.akisBasarisiz,
+            detail: 'HTTP ${request.status} ${request.statusText}',
+            code: 'stream_error',
+          ),
         );
         request.abort();
       }
@@ -50,7 +63,12 @@ class SseClient {
     request.onError.listen((_) {
       if (!sawError) {
         sawError = true;
-        controller.addError('Stream request failed');
+        controller.addError(
+          AppException(
+            ErrorMessages.akisBasarisiz,
+            code: 'stream_error',
+          ),
+        );
       }
     });
 

@@ -1,4 +1,16 @@
+/// DOSYA ADI: conversation_service.dart
+/// AMAÇ: Sohbet oturumlarını yerel depoda yönetmek.
+/// NE YAPAR:
+///   - Yeni sohbet oluşturur.
+///   - Mesaj ekleme/güncelleme işlemlerini yapar.
+///   - Arşivleme ve istatistik üretir.
+/// BAĞIMLILIKLAR:
+///   - hive: yerel depolama
+///   - storage_service.dart: kutu yönetimi
+/// SON DEĞİŞİKLİK: 17.01.2026
 import 'package:hive/hive.dart';
+import 'package:selcukaiassistant/core/errors/app_exception.dart';
+import 'package:selcukaiassistant/core/errors/error_messages.dart';
 import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/model/conversation.dart';
 import 'package:selcukaiassistant/services/storage/storage_service.dart';
@@ -7,8 +19,11 @@ import 'package:uuid/uuid.dart';
 class ConversationService {
   static Box<Conversation>? _box;
   static const _uuid = Uuid();
-  static const Set<String> _defaultTitles = {'New Chat', 'Yeni Sohbet'};
+  static const Set<String> _defaultTitles = {'yeni sohbet', 'new chat'};
 
+  /// Giriş: yok.
+  /// Çıkış: yok.
+  /// İşleyiş: Depolama kutularını başlatır.
   static Future<void> init() async {
     if (_box != null) {
       return;
@@ -17,14 +32,24 @@ class ConversationService {
     _box = StorageService.conversationsBox;
   }
 
+  /// Giriş: yok.
+  /// Çıkış: Konuşma kutusu.
+  /// İşleyiş: Başlatılmamışsa hata üretir.
   static Box<Conversation> get box {
     if (_box == null) {
-      throw Exception('ConversationService not initialized');
+      throw AppException(ErrorMessages.depolamaBaslatilmadi);
     }
     return _box!;
   }
 
-  // Create a new conversation
+  /// Giriş: Başlık metni.
+  /// Çıkış: Varsayılan başlık mı?
+  /// İşleyiş: Başlığı normalize ederek kontrol eder.
+  static bool isDefaultTitle(String title) {
+    return _defaultTitles.contains(title.trim().toLowerCase());
+  }
+
+  // Yeni bir konuşma oluşturur.
   static Future<Conversation> createConversation({String? title}) async {
     final defaultTitle = L10n.current()?.newChat ?? 'Yeni Sohbet';
     final conversation = Conversation(
@@ -39,7 +64,7 @@ class ConversationService {
     return conversation;
   }
 
-  // Get all conversations sorted by updated time
+  // Tüm konuşmaları güncellenme tarihine göre sıralar.
   static List<Conversation> getAllConversations({
     bool includeArchived = true,
   }) {
@@ -62,12 +87,12 @@ class ConversationService {
       ..sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
   }
 
-  // Get a specific conversation by ID
+  // ID ile konuşma getirir.
   static Conversation? getConversation(String id) {
     return box.get(id);
   }
 
-  // Add a message to a conversation
+  // Konuşmaya mesaj ekler.
   static Future<void> addMessage(
     String conversationId,
     ChatMessage message,
@@ -78,8 +103,8 @@ class ConversationService {
         ..messages.add(message)
         ..updatedAt = DateTime.now();
 
-      // Auto-generate title from first user message if still default
-      if (_defaultTitles.contains(conversation.title) &&
+      // Varsayılan başlıktaysa ilk kullanıcı mesajından otomatik başlık üretir.
+      if (isDefaultTitle(conversation.title) &&
           message.isUser &&
           conversation.messages.where((m) => m.isUser).length == 1) {
         conversation
@@ -91,7 +116,7 @@ class ConversationService {
     }
   }
 
-  // Update a message in a conversation
+  // Konuşmadaki bir mesajı günceller.
   static Future<void> updateMessage(
     String conversationId,
     String messageId, {
@@ -137,12 +162,12 @@ class ConversationService {
     }
   }
 
-  // Delete a conversation
+  // Konuşmayı siler.
   static Future<void> deleteConversation(String id) async {
     await box.delete(id);
   }
 
-  // Rename a conversation
+  // Konuşmayı yeniden adlandırır.
   static Future<void> renameConversation(String id, String newTitle) async {
     final conversation = box.get(id);
     if (conversation != null) {
@@ -153,7 +178,7 @@ class ConversationService {
     }
   }
 
-  // Search conversations
+  // Konuşmaları arar.
   static List<Conversation> searchConversations(
     String query, {
     bool includeArchived = true,
@@ -163,11 +188,11 @@ class ConversationService {
       if (!includeArchived && conversation.archived) {
         return false;
       }
-      // Search in title
+      // Başlık içinde arama.
       if (conversation.title.toLowerCase().contains(lowerQuery)) {
         return true;
       }
-      // Search in messages
+      // Mesaj içeriğinde arama.
       return conversation.messages.any(
         (msg) => msg.content.toLowerCase().contains(lowerQuery),
       );
@@ -198,12 +223,12 @@ class ConversationService {
     }
   }
 
-  // Clear all conversations
+  // Tüm konuşmaları temizler.
   static Future<void> clearAll() async {
     await box.clear();
   }
 
-  // Export conversation as JSON
+  // Konuşmayı JSON olarak dışa aktarır.
   static Map<String, dynamic> exportConversation(String id) {
     final conversation = box.get(id);
     if (conversation != null) {
@@ -212,14 +237,14 @@ class ConversationService {
     return {};
   }
 
-  // Generate a smart title from the first message
+  // İlk mesajdan akıllı başlık üretir.
   static String generateTitle(String content) {
-    // Take first 50 characters or first sentence
+    // İlk 50 karakteri veya ilk cümleyi alır.
     var title = content.trim();
 
     if (title.length > 50) {
       title = title.substring(0, 50);
-      // Try to end at a word boundary
+      // Kelime sınırında bitirmeyi dener.
       final lastSpace = title.lastIndexOf(' ');
       if (lastSpace > 30) {
         title = title.substring(0, lastSpace);
@@ -230,7 +255,7 @@ class ConversationService {
     return title;
   }
 
-  // Get statistics
+  // Konuşma istatistiklerini döndürür.
   static Map<String, dynamic> getStatistics() {
     final conversations = box.values.toList();
     final totalMessages = conversations.fold<int>(

@@ -1,4 +1,11 @@
-// Using deprecated withOpacity API until migrated to withValues
+/// DOSYA ADI: message_card.dart
+/// AMAÇ: Sohbet mesaj kartını göstermek.
+/// NE YAPAR:
+///   - Kullanıcı ve bot mesajlarını biçimlendirir.
+/// BAĞIMLILIKLAR:
+///   - flutter_markdown_plus
+/// SON DEĞİŞİKLİK: 17.01.2026
+// withValues'e geçilene kadar withOpacity kullanımını sürdürüyoruz.
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
@@ -14,6 +21,9 @@ class MessageCard extends StatelessWidget {
   final Message message;
 
   @override
+  /// Giriş: BuildContext.
+  /// Çıkış: Mesaj kartı.
+  /// İşleyiş: Mesaj tipine göre UI üretir.
   Widget build(BuildContext context) {
     const r = Radius.circular(15);
     final markdownEnabled = Pref.markdownEnabled;

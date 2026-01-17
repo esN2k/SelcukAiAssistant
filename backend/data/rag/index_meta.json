@@ -1,0 +1,7 @@
+{
+  "embedding_model": "intfloat/multilingual-e5-small",
+  "dimension": 384,
+  "chunk_size": 512,
+  "chunk_overlap": 128,
+  "documents": 18286
+}

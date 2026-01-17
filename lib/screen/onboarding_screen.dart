@@ -1,3 +1,12 @@
+/// DOSYA ADI: onboarding_screen.dart
+/// AMAÇ: İlk kurulumda kullanıcıyı karşılamak.
+/// NE YAPAR:
+///   - Sayfa bazlı tanıtım ekranlarını gösterir.
+///   - Uygulama girişine yönlendirir.
+/// BAĞIMLILIKLAR:
+///   - onboard.dart: içerik modeli
+///   - custom_btn.dart: buton bileşeni
+/// SON DEĞİŞİKLİK: 17.01.2026
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -14,6 +23,9 @@ class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
 
   @override
+  /// Giriş: BuildContext.
+  /// Çıkış: Onboarding ekranı.
+  /// İşleyiş: Tanıtım sayfalarını oluşturur.
   Widget build(BuildContext context) {
     final c = PageController();
 

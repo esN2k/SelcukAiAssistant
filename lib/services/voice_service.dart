@@ -1,3 +1,12 @@
+/// DOSYA ADI: voice_service.dart
+/// AMAÇ: Sesli giriş için backend konuşma tanıma servisiyle iletişim kurmak.
+/// NE YAPAR:
+///   - Ses dosyasını backend'e gönderir.
+///   - Tanınan metni döndürür.
+/// BAĞIMLILIKLAR:
+///   - http
+///   - Pref (kullanıcı dili)
+/// SON DEĞİŞİKLİK: 17.01.2026
 import 'dart:convert';
 import 'dart:developer';
 
@@ -12,7 +21,7 @@ class VoiceService {
   static Future<String> speechToText(String audioPath) async {
     final l10n = L10n.current();
     try {
-      log('Starting speech recognition, audio path: $audioPath');
+      log('Konuşma tanıma başlatılıyor, dosya yolu: $audioPath');
 
       final request = http.MultipartRequest(
         'POST',
@@ -32,15 +41,15 @@ class VoiceService {
       if (response.statusCode == 200) {
         final jsonData = json.decode(responseData) as Map<String, dynamic>;
         final recognizedText = (jsonData['text'] as String?) ?? '';
-        log('Speech recognition success: $recognizedText');
+        log('Konuşma tanıma başarılı: $recognizedText');
         return recognizedText;
       } else {
-        log('Speech recognition failed, status: ${response.statusCode}');
+        log('Konuşma tanıma başarısız, durum: ${response.statusCode}');
         return l10n?.speechRecognitionFailed ??
             'Konuşma tanıma başarısız oldu. Lütfen tekrar deneyin.';
       }
     } on Exception catch (e) {
-      log('Speech recognition error: $e');
+      log('Konuşma tanıma hatası: $e');
       return l10n?.speechRecognitionError ??
           'Konuşma tanıma hatası. Lütfen ağ bağlantınızı kontrol edin.';
     }
@@ -57,7 +66,7 @@ class VoiceService {
 
       return response.statusCode == 200;
     } on Exception catch (e) {
-      log('Server connection check failed: $e');
+      log('Sunucu bağlantı kontrolü başarısız: $e');
       return false;
     }
   }

@@ -4,6 +4,7 @@ from __future__ import annotations
 import logging
 from typing import Any, AsyncIterator, Optional, cast
 
+from api import error_messages as mesajlar
 from config import Config
 from providers.base import CancellationToken, ChatResult, ModelProvider, StreamChunk, Usage
 from utils import ReasoningFilter
@@ -38,10 +39,7 @@ class HuggingFaceProvider(ModelProvider):
             import torch  # noqa: F401
             import transformers  # noqa: F401
         except ImportError as exc:
-            raise RuntimeError(
-                "HuggingFace bağımlılıkları eksik. "
-                "backend/requirements-hf.txt kurun."
-            ) from exc
+            raise RuntimeError(mesajlar.HF_BAGIMLILIK_EKSIK) from exc
 
     @staticmethod
     def _pick_device(preferred: str) -> str:
@@ -61,12 +59,12 @@ class HuggingFaceProvider(ModelProvider):
         if preferred == "cuda":
             if torch.cuda.is_available():
                 return "cuda"
-            logger.warning("HF_DEVICE=cuda ancak CUDA yok; cpu kullanılıyor.")
+            logger.warning(mesajlar.HF_CUDA_YOK)
             return "cpu"
         if preferred == "mps":
             if getattr(torch.backends, "mps", None) and torch.backends.mps.is_available():
                 return "mps"
-            logger.warning("HF_DEVICE=mps ancak MPS yok; cpu kullanılıyor.")
+            logger.warning(mesajlar.HF_MPS_YOK)
             return "cpu"
         return preferred
 
@@ -111,7 +109,7 @@ class HuggingFaceProvider(ModelProvider):
                 bnb_4bit_compute_dtype=dtype,
             )
         elif Config.HF_LOAD_IN_4BIT:
-            logger.warning("HF_LOAD_IN_4BIT CUDA dışında yok sayıldı.")
+            logger.warning(mesajlar.HF_4BIT_UYARI)
 
         tokenizer = AutoTokenizer.from_pretrained(model_id, use_fast=True)
         if tokenizer.pad_token is None and tokenizer.eos_token is not None:

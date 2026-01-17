@@ -1,9 +1,18 @@
+/// DOSYA ADI: chat_controller.dart
+/// AMAÇ: Basit sohbet akışını yönetmek.
+/// NE YAPAR:
+///   - Mesaj gönderme ve sesli giriş işlemlerini yürütür.
+///   - UI mesaj listesini günceller.
+/// BAĞIMLILIKLAR:
+///   - APIs: backend iletişimi
+/// SON DEĞİŞİKLİK: 17.01.2026
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:selcukaiassistant/apis/apis.dart';
+import 'package:selcukaiassistant/core/errors/error_handler.dart';
 import 'package:selcukaiassistant/helper/my_dialog.dart';
 import 'package:selcukaiassistant/helper/pref.dart';
 import 'package:selcukaiassistant/l10n/l10n.dart';
@@ -140,13 +149,13 @@ class ChatController extends GetxController {
             ),
           );
         _scrollDown();
-      } on Exception {
+      } on Exception catch (e) {
+        final message = ErrorHandler.fromException(e);
         list
           ..removeLast()
           ..add(
             Message(
-              msg: l10n?.errorUnexpected ??
-                  'Hata: Beklenmeyen bir hata oluştu.',
+              msg: l10n?.errorUnexpected ?? message,
               msgType: MessageType.bot,
             ),
           );

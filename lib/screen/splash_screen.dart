@@ -1,3 +1,11 @@
+/// DOSYA ADI: splash_screen.dart
+/// AMAÇ: Açılışta kısa süreli yükleme ekranı göstermek.
+/// NE YAPAR:
+///   - Kullanıcıyı onboarding veya ana ekrana yönlendirir.
+/// BAĞIMLILIKLAR:
+///   - pref.dart: onboarding durumu
+///   - custom_loading.dart: yükleme animasyonu
+/// SON DEĞİŞİKLİK: 17.01.2026
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -18,10 +26,13 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
+  /// Giriş: yok.
+  /// Çıkış: yok.
+  /// İşleyiş: Kısa bekleme sonrası uygun ekrana geçer.
   void initState() {
     super.initState();
 
-    // wait for some time on splash & then move to next screen
+    // Kısa süre bekleyip sonraki ekrana geçilir.
     Future.delayed(const Duration(seconds: 2), () {
       unawaited(
         Get.off<Widget>(
@@ -34,8 +45,11 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   @override
+  /// Giriş: BuildContext.
+  /// Çıkış: Splash ekranı.
+  /// İşleyiş: Logo ve yükleme bileşenlerini gösterir.
   Widget build(BuildContext context) {
-    // initializing device size
+    // Cihaz boyutu alınır.
     Global.mq = MediaQuery.sizeOf(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final maxLogoSize = Global.mq.width * 0.3; // Daha küçük logo

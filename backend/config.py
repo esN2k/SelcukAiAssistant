@@ -4,6 +4,7 @@ from __future__ import annotations
 import logging
 import os
 import sys
+from enum import Enum
 from pathlib import Path
 from typing import Callable, Optional
 
@@ -79,6 +80,35 @@ if load_dotenv is not None:
         logging.warning(".env bulunamadı: %s", env_path)
 
 
+class ModelType(Enum):
+    """Giriş: Model türü değerleri.
+
+    Çıkış: Enum üyeleri.
+    İşleyiş: Model seçiminde tekil kaynak sağlar.
+    """
+
+    TURKCELL_BASE = "TURKCELL/Turkcell-LLM-7b-v1"
+    SELCUK_FINETUNED = "backend/models/selcuk-assistant-v1"
+    GEMMA_TR = "google/gemma-2-9b-it"
+
+
+# Model seçim ve üretim ayarları.
+DEFAULT_MODEL = ModelType.SELCUK_FINETUNED
+DEFAULT_OLLAMA_MODEL = os.getenv("DEFAULT_OLLAMA_MODEL", "selcuk-assistant-v1")
+DEFAULT_HF_MODEL = os.getenv("DEFAULT_HF_MODEL", DEFAULT_MODEL.value)
+
+MODEL_CONFIG = {
+    "max_new_tokens": 512,
+    "temperature": 0.7,
+    "top_p": 0.9,
+    "repetition_penalty": 1.15,
+    "do_sample": True,
+}
+
+USE_4BIT_QUANTIZATION = os.getenv("USE_4BIT_QUANTIZATION", "true").lower() == "true"
+USE_FLASH_ATTENTION_2 = os.getenv("USE_FLASH_ATTENTION_2", "true").lower() == "true"
+
+
 class Config:
     """Giriş: Ortam değişkenleri ve `.env` değerleri.
 
@@ -104,7 +134,7 @@ class Config:
 
     # Ollama configuration
     OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-    OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", "turkcell_llm_7b_selcuk_4k")
+    OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", DEFAULT_OLLAMA_MODEL)
     OLLAMA_TIMEOUT: int = int(os.getenv("OLLAMA_TIMEOUT", "180"))
     OLLAMA_MAX_RETRIES: int = int(os.getenv("OLLAMA_MAX_RETRIES", "3"))
     OLLAMA_RETRY_DELAY: float = float(os.getenv("OLLAMA_RETRY_DELAY", "1.0"))
@@ -117,7 +147,7 @@ class Config:
     MODEL_ALIASES: str = os.getenv("MODEL_ALIASES", "")
 
     # Hugging Face configuration
-    HF_MODEL_NAME: str = os.getenv("HF_MODEL_NAME", "Qwen/Qwen2.5-1.5B-Instruct")
+    HF_MODEL_NAME: str = os.getenv("HF_MODEL_NAME", DEFAULT_HF_MODEL)
     HF_LOAD_IN_4BIT: bool = os.getenv("HF_LOAD_IN_4BIT", "true").lower() == "true"
     HF_DEVICE: str = os.getenv("HF_DEVICE", "auto")
     HF_DTYPE: str = os.getenv("HF_DTYPE", "float16")

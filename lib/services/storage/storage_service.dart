@@ -1,3 +1,12 @@
+/// DOSYA ADI: storage_service.dart
+/// AMAÇ: Hive tabanlı depolama kutularını yönetmek.
+/// NE YAPAR:
+///   - Kutuları başlatır ve migrasyonları çalıştırır.
+///   - Konuşma ve ayar verilerine erişim sağlar.
+/// BAĞIMLILIKLAR:
+///   - hive_flutter
+///   - migrations.dart
+/// SON DEĞİŞİKLİK: 17.01.2026
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:selcukaiassistant/model/conversation.dart';
 import 'package:selcukaiassistant/model/model_pref.dart';
@@ -61,7 +70,7 @@ class StorageService {
 
   static Box<T> _requireBox<T>(Box<T>? box, String name) {
     if (box == null) {
-      throw StateError('StorageService not initialized: $name');
+      throw StateError('Depolama servisi başlatılmadı: $name');
     }
     return box;
   }

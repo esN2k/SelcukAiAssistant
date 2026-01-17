@@ -1,7 +1,18 @@
+/// DOSYA ADI: sse_client_io.dart
+/// AMAÇ: SSE akışını mobil/masaüstü platformlarında yönetmek.
+/// NE YAPAR:
+///   - Backend stream endpoint'ine bağlanır.
+///   - SSE verisini parse ederek ChatStreamEvent üretir.
+/// BAĞIMLILIKLAR:
+///   - sse_parser.dart: SSE ayrıştırma
+///   - error_messages.dart: Türkçe hata metinleri
+/// SON DEĞİŞİKLİK: 17.01.2026
 import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:selcukaiassistant/core/errors/app_exception.dart';
+import 'package:selcukaiassistant/core/errors/error_messages.dart';
 import 'package:selcukaiassistant/services/sse_client_types.dart';
 import 'package:selcukaiassistant/services/sse_parser.dart';
 
@@ -22,7 +33,11 @@ class SseClient {
     final response = await _client.send(request);
     if (response.statusCode != 200) {
       _client.close();
-      throw Exception('Stream request failed: ${response.statusCode}');
+      throw AppException(
+        ErrorMessages.akisBasarisiz,
+        detail: 'HTTP ${response.statusCode}',
+        code: 'stream_error',
+      );
     }
 
     final controller = StreamController<ChatStreamEvent>();

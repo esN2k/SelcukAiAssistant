@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 from typing import Optional
 
+from api import error_messages as mesajlar
 from config import Config
 from ollama_service import OllamaService
 from providers.base import ModelInfo, ModelProvider
@@ -114,15 +115,26 @@ def _catalog_entries() -> list[CatalogEntry]:
     max_context = Config.MAX_CONTEXT_TOKENS
     return [
         CatalogEntry(
+            id="selcuk_assistant_v1",
+            provider="ollama",
+            model_id="selcuk-assistant-v1",
+            display_name="Selçuk Asistan v1 (Fine-tune)",
+            local_or_remote="local",
+            requires_api_key=False,
+            context_length=4096,
+            tags=["turkish", "selcuk", "fine_tuned", "default"],
+            notes="Selçuk Üniversitesi verileriyle QLoRA fine-tune edilmiş üretim modeli.",
+        ),
+        CatalogEntry(
             id="turkcell_llm_7b",
             provider="ollama",
             model_id="turkcell_llm_7b",
-            display_name="Turkcell LLM 7B GGUF (Varsayılan)",
+            display_name="Turkcell LLM 7B GGUF",
             local_or_remote="local",
             requires_api_key=False,
             context_length=max_context,
-            tags=["turkish", "high_quality", "default"],
-            notes="Turkcell LLM 7B GGUF Q4_K_M quantized. Selçuk Üniversitesi için optimize edilecek.",
+            tags=["turkish", "high_quality"],
+            notes="Turkcell LLM 7B GGUF Q4_K_M quantized. Karşılaştırma ve yedek kullanım için saklanır.",
         ),
         CatalogEntry(
             id="turkcell_llm_7b_selcuk_4k",
@@ -430,31 +442,27 @@ class ModelRegistry:
                     ):
                         available = True
                     elif not ollama_models:
-                        reason = "Ollama erişilemiyor veya model bulunamadı."
+                        reason = mesajlar.OLLAMA_ERISIM_YOK
                     else:
-                        reason = (
-                            "Yüklü değil. Çalıştırın: ollama pull "
-                            f"{entry.model_id}"
+                        reason = mesajlar.OLLAMA_MODEL_YUKLU_DEGIL.format(
+                            model_id=entry.model_id
                         )
                 elif entry.provider == "huggingface":
                     if not hf_deps:
-                        reason = (
-                            "HuggingFace bağımlılıkları eksik. "
-                            "backend/requirements-hf.txt kurun."
-                        )
+                        reason = mesajlar.HF_BAGIMLILIK_EKSIK
                     elif not _hf_model_cached(entry.model_id):
-                        reason = "Model önbellekte yok. HuggingFace Hub'dan indirin."
+                        reason = mesajlar.HF_MODEL_ONBELLEKTE_YOK
                     else:
                         available = True
                 else:
-                    reason = "Sağlayıcı sunucuda tanımlı değil."
+                    reason = mesajlar.SAGLAYICI_TANIMSIZ
             else:
                 key_present, keys = _api_key_status(entry.provider)
                 if not key_present:
-                    key_list = ", ".join(keys) if keys else "API key"
-                    reason = f"Eksik API anahtarı: {key_list}"
+                    key_list = ", ".join(keys) if keys else "API anahtarı"
+                    reason = mesajlar.API_ANAHTARI_EKSIK.format(keys=key_list)
                 elif entry.provider not in self.providers:
-                    reason = "Sağlayıcı sunucuda tanımlı değil."
+                    reason = mesajlar.SAGLAYICI_TANIMSIZ
                 else:
                     available = True
 

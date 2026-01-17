@@ -1,3 +1,11 @@
+/// DOSYA ADI: response_cleaner.dart
+/// AMAÇ: Model yanıtlarındaki düşünce ve meta bloklarını temizlemek.
+/// NE YAPAR:
+///   - `<think>` bloklarını çıkarır.
+///   - Kod bloklarını koruyarak metni sadeleştirir.
+/// BAĞIMLILIKLAR:
+///   - yok
+/// SON DEĞİŞİKLİK: 17.01.2026
 class ResponseCleaner {
   final StringBuffer _raw = StringBuffer();
 
@@ -9,7 +17,7 @@ class ResponseCleaner {
   String finalize() => clean(_raw.toString());
 
   static String clean(String text) {
-    // 1) Split by fenced code blocks so we never alter code.
+    // 1) Kod bloklarını ayır, böylece kod içeriği bozulmasın.
     final parts = _splitByFences(text);
 
     for (var i = 0; i < parts.length; i++) {
@@ -19,7 +27,7 @@ class ResponseCleaner {
 
       var cleaned = segment;
 
-      // 2) Remove <think> blocks (complete + incomplete streaming tail).
+      // 2) <think> bloklarını temizle (tamamlanmış + yarım kalan akış).
       cleaned = cleaned.replaceAll(
         RegExp(r'<think>[\s\S]*?</think>', caseSensitive: false),
         '',
@@ -29,7 +37,7 @@ class ResponseCleaner {
         '',
       );
 
-      // 3) Strip only LEADING meta header lines, not mid-response content.
+      // 3) Sadece baştaki meta başlık satırlarını kaldır.
       cleaned = _stripLeadingMetaLines(cleaned);
 
       parts[i] = (cleaned, isCode);
@@ -37,8 +45,7 @@ class ResponseCleaner {
 
     final rebuilt = parts.map((p) => p.$1).join();
 
-    // Avoid aggressive trim that can cause streaming jitter
-    //only trim leading whitespace.
+    // Akışta titreme olmaması için yalnızca baştaki boşluğu temizle.
     return rebuilt.replaceFirst(RegExp(r'^\s+'), '');
   }
 
@@ -46,31 +53,31 @@ class ResponseCleaner {
     final lines = s.replaceAll('\r\n', '\n').split('\n');
 
     var idx = 0;
-    // Skip initial empty lines
+    // Başlangıçtaki boş satırları geç.
     while (idx < lines.length && lines[idx].trim().isEmpty) {
       idx++;
     }
 
     final metaLine = RegExp(
       r'^\s*(?:'
-      // English meta headers
+      // İngilizce meta başlıklar
       r'(?:reasoning|analysis|thoughts?|chain of thought|let me think)\s*:?\s*$|'
-      // Turkish meta headers.
-      // NOTE:
-      // - We match common Turkish meta headers that appear in our prompts.
-      // - We intentionally exclude "mantık" to avoid false positives.
+      // Türkçe meta başlıklar.
+      // Not:
+      // - Sık görülen meta başlıklar eşleşir.
+      // - Yanlış pozitifleri azaltmak için "mantık" hariç tutulur.
       r'(?:düşünce|akıl yürütme|gerekçe)\s*:?\s*$|'
-      // "Final" wrappers
+      // "Final" sarmalayıcıları
       r'(?:final answer|final|answer)\s*:?\s*$|'
-      // Common preamble
+      // Yaygın ön bilgi satırları
       r'(?:final answer|final|answer)\s*:?\s*$|'
-      // Common preamble
+      // Yaygın ön bilgi satırları
       r'okay[, ]+i need to respond.*$'
       ')',
       caseSensitive: false,
     );
 
-    // Remove up to first ~6 meta lines
+    // En fazla ilk 6 meta satırı kaldır.
     var removed = 0;
     while (idx < lines.length && removed < 6) {
       final line = lines[idx].trim();
@@ -101,7 +108,7 @@ class ResponseCleaner {
       }
       out.add((s.substring(i, j), inCode));
 
-      // Toggle code state and keep the fence token itself.
+      // Kod durumunu değiştir ve fence işaretini koru.
       inCode = !inCode;
       out.add((fence, inCode));
 

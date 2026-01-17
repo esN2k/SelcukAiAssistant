@@ -1,4 +1,17 @@
-"""Selçuk AI Asistanı FastAPI backend uygulaması."""
+"""
+DOSYA ADI: main.py
+AMAÇ: Backend FastAPI uygulamasının ana giriş noktası.
+NE YAPAR:
+  - API endpoint'lerini tanımlar.
+  - CORS ayarlarını yapar.
+  - Model sağlayıcılarını başlatır.
+  - Merkezi hata yakalayıcılarını kaydeder.
+BAĞIMLILIKLAR:
+  - error_handlers.py: merkezi hata yönetimi
+  - providers/: model sağlayıcıları
+  - rag_service.py: bilgi tabanı sorguları
+SON DEĞİŞİKLİK: 17.01.2026
+"""
 from __future__ import annotations
 
 import asyncio
@@ -13,6 +26,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 
 from config import Config
+from error_handlers import register_error_handlers
 from providers.base import CancellationToken, ModelProvider, Usage
 from providers.huggingface_provider import HuggingFaceProvider
 from providers.ollama_provider import OllamaProvider
@@ -20,6 +34,7 @@ from providers.registry import ModelRegistry
 from api.endpoints.admin import router as admin_router
 from api.endpoints.translate import router as translate_router
 from analytics_service import analytics_service
+from api import error_messages as mesajlar
 from cache_service import cache_service
 from critical_facts import apply_guard, get_critical_answer, is_selcuk_related
 from prompts import build_rag_system_prompt, rag_no_source_message
@@ -27,6 +42,7 @@ from rag_guard import apply_rag_guard, is_context_relevant
 from rag_service import rag_service
 from response_cleaner import StreamingResponseCleaner, clean_text
 from schemas import ChatRequest, ChatResponse, UsageInfo
+from exceptions import DogrulamaHatasi, SunucuHatasi, ZamanAsimiHatasi
 from utils import (
     clamp_max_tokens,
     normalize_messages,
@@ -38,6 +54,7 @@ from utils import (
 logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Selçuk AI Asistanı Backend")
+register_error_handlers(app)
 
 default_dev_origins = [
     "http://localhost",
@@ -258,7 +275,7 @@ async def chat(request: ChatRequest, http_request: Request) -> ChatResponse:
     resolved = model_registry.resolve(request.model)
     provider = providers.get(resolved.provider)
     if not provider:
-        raise HTTPException(status_code=400, detail="Bilinmeyen model sağlayıcısı.")
+        raise DogrulamaHatasi(detay=mesajlar.MODEL_SAGLAYICI_BULUNAMADI)
 
     rag_enabled = request.rag_enabled and Config.RAG_ENABLED
     rag_strict = (
@@ -295,7 +312,7 @@ async def chat(request: ChatRequest, http_request: Request) -> ChatResponse:
         try:
             rag_context, citations = rag_service.get_context(question, top_k=rag_top_k)
         except RuntimeError as exc:
-            raise HTTPException(status_code=503, detail=str(exc)) from exc
+            raise SunucuHatasi(detay=mesajlar.RAG_HAZIR_DEGIL) from exc
         if not rag_context:
             answer = rag_no_source_message(language)
             return ChatResponse(
@@ -336,11 +353,9 @@ async def chat(request: ChatRequest, http_request: Request) -> ChatResponse:
                 request_id=request_id,
             )
     except TimeoutError as exc:
-        raise HTTPException(
-            status_code=504, detail="İstek zaman aşımına uğradı."
-        ) from exc
+        raise ZamanAsimiHatasi() from exc
     except RuntimeError as exc:
-        raise HTTPException(status_code=500, detail=str(exc)) from exc
+        raise SunucuHatasi(detay=mesajlar.MODEL_HATASI) from exc
 
     answer = clean_text(result.text, language=language)
     rag_guarded = False
@@ -402,7 +417,7 @@ async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingR
     resolved = model_registry.resolve(request.model)
     provider = providers.get(resolved.provider)
     if not provider:
-        raise HTTPException(status_code=400, detail="Bilinmeyen model sağlayıcısı.")
+        raise DogrulamaHatasi(detay=mesajlar.MODEL_SAGLAYICI_BULUNAMADI)
 
     rag_enabled = request.rag_enabled and Config.RAG_ENABLED
     rag_strict = (
@@ -693,13 +708,28 @@ async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingR
             yield sse_event(
                 {
                     "type": "error",
-                    "message": "İstek zaman aşımına uğradı.",
+                    "message": mesajlar.ZAMAN_ASIMI,
                     "request_id": request_id,
                 }
             )
         except HTTPException as exc:
             cancel_token.cancel()
-            message = exc.detail if isinstance(exc.detail, str) else "Beklenmeyen hata."
+            if exc.status_code == 400:
+                message = mesajlar.DOGRULAMA_HATASI
+            elif exc.status_code == 401:
+                message = mesajlar.YETKISIZ
+            elif exc.status_code == 403:
+                message = mesajlar.ERISIM_ENGELLENDI
+            elif exc.status_code == 404:
+                message = mesajlar.KAYNAK_BULUNAMADI
+            elif exc.status_code == 422:
+                message = mesajlar.DOGRULAMA_HATASI
+            elif exc.status_code == 503:
+                message = mesajlar.BAGLANTI_HATASI
+            elif exc.status_code == 504:
+                message = mesajlar.ZAMAN_ASIMI
+            else:
+                message = mesajlar.SUNUCU_HATASI
             yield sse_event(
                 {
                     "type": "error",
@@ -712,7 +742,7 @@ async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingR
             yield sse_event(
                 {
                     "type": "error",
-                    "message": str(exc),
+                    "message": mesajlar.BEKLENMEYEN_HATA,
                     "request_id": request_id,
                 }
             )

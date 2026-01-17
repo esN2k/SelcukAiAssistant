@@ -1,3 +1,11 @@
+/// DOSYA ADI: settings_screen.dart
+/// AMAÇ: Uygulama ayarlarını yönetmek.
+/// NE YAPAR:
+///   - Tema, dil ve model seçeneklerini sunar.
+///   - Sunucu URL'si ve sohbet ayarlarını düzenler.
+/// BAĞIMLILIKLAR:
+///   - settings_controller.dart: ayar state yönetimi
+/// SON DEĞİŞİKLİK: 17.01.2026
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -252,6 +260,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           )
                         : const Icon(Icons.arrow_forward_ios, size: 16),
                     onTap: _controller.models.isEmpty ? null : _openModelPicker,
+                  );
+                },
+              ),
+              Obx(
+                () {
+                  final error = _controller.modelErrorMessage.value;
+                  if (error.isEmpty) {
+                    return const SizedBox.shrink();
+                  }
+                  return Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                    child: Text(
+                      error,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                        fontSize: 12,
+                      ),
+                    ),
                   );
                 },
               ),

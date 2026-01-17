@@ -1,7 +1,17 @@
+/// DOSYA ADI: login_screen.dart
+/// AMAÇ: Kullanıcının oturum açmasını sağlamak.
+/// NE YAPAR:
+///   - E-posta ve şifre ile giriş yapar.
+///   - Hata durumlarını Türkçe gösterir.
+/// BAĞIMLILIKLAR:
+///   - appwrite_service.dart: oturum yönetimi
+///   - error_handler.dart: hata mesajı dönüşümü
+/// SON DEĞİŞİKLİK: 17.01.2026
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:selcukaiassistant/core/errors/error_handler.dart';
 import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/screen/auth/register_screen.dart';
 import 'package:selcukaiassistant/screen/feature/new_chat_screen.dart';
@@ -23,12 +33,18 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscurePassword = true;
 
   @override
+  /// Giriş: yok.
+  /// Çıkış: yok.
+  /// İşleyiş: Controller'ları serbest bırakır.
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
+  /// Giriş: yok.
+  /// Çıkış: yok.
+  /// İşleyiş: Appwrite ile giriş yapıp sonucu kullanıcıya bildirir.
   Future<void> _login() async {
     final l10n = context.l10n;
     if (!_formKey.currentState!.validate()) return;
@@ -50,9 +66,10 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } on Exception catch (e) {
       if (mounted) {
+        final message = ErrorHandler.fromException(e);
         Get.snackbar(
           l10n.loginErrorTitle,
-          e.toString().replaceAll('Exception: ', ''),
+          message,
           backgroundColor: Colors.red,
           colorText: Colors.white,
           snackPosition: SnackPosition.BOTTOM,
@@ -65,6 +82,9 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  /// Giriş: BuildContext.
+  /// Çıkış: Arka plan widget'ı.
+  /// İşleyiş: Tema moduna göre arka planı hazırlar.
   Widget _buildBackground(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
@@ -115,6 +135,9 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
+  /// Giriş: BuildContext.
+  /// Çıkış: Login ekranı.
+  /// İşleyiş: Form ve giriş akışını oluşturur.
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final theme = Theme.of(context);

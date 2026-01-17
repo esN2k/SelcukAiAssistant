@@ -1,3 +1,12 @@
+/// DOSYA ADI: conversation_list_drawer.dart
+/// AMAÇ: Konuşma listesini çekmece olarak sunmak.
+/// NE YAPAR:
+///   - Konuşma arama, silme ve yeniden adlandırma işlemlerini yapar.
+///   - Sabitleme ve arşivleme akışını yönetir.
+/// BAĞIMLILIKLAR:
+///   - conversation_service.dart: konuşma işlemleri
+///   - l10n: metinler
+/// SON DEĞİŞİKLİK: 17.01.2026
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -34,6 +43,9 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
     _loadConversations();
   }
 
+  /// Giriş: yok.
+  /// Çıkış: yok.
+  /// İşleyiş: Arama durumuna göre konuşmaları yükler.
   void _loadConversations() {
     setState(() {
       final query = _searchController.text.trim();
@@ -48,6 +60,9 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
     });
   }
 
+  /// Giriş: Arama sorgusu.
+  /// Çıkış: yok.
+  /// İşleyiş: Sorguya göre konuşma listesini filtreler.
   void _searchConversations(String query) {
     setState(() {
       if (query.isEmpty) {
@@ -61,6 +76,9 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
     });
   }
 
+  /// Giriş: Konuşma kimliği.
+  /// Çıkış: yok.
+  /// İşleyiş: Silme onayı alıp konuşmayı siler.
   Future<void> _deleteConversation(String id) async {
     final l10n = context.l10n;
     final confirmed = await Get.dialog<bool>(
@@ -87,7 +105,7 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
       await ConversationService.deleteConversation(id);
       _loadConversations();
 
-      // If deleted conversation was current, start a new chat
+      // Silinen konuşma aktifse yeni konuşma başlatılır.
       if (id == widget.currentConversationId) {
         final newConversation = await ConversationService.createConversation();
         widget.onConversationSelected(newConversation.id);
@@ -95,6 +113,9 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
     }
   }
 
+  /// Giriş: Konuşma nesnesi.
+  /// Çıkış: yok.
+  /// İşleyiş: Yeni başlık alıp konuşmayı günceller.
   Future<void> _renameConversation(Conversation conversation) async {
     final l10n = context.l10n;
     final controller = TextEditingController(text: conversation.title);
@@ -133,6 +154,9 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
     }
   }
 
+  /// Giriş: Konuşma ve sabitlenme durumu.
+  /// Çıkış: yok.
+  /// İşleyiş: Konuşmayı sabitler veya sabitlemeyi kaldırır.
   Future<void> _setPinned(Conversation conversation, bool pinned) async {
     await ConversationService.setPinned(
       conversation.id,
@@ -141,6 +165,9 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
     _loadConversations();
   }
 
+  /// Giriş: Konuşma ve arşiv durumu.
+  /// Çıkış: yok.
+  /// İşleyiş: Konuşmayı arşivler veya arşivden çıkarır.
   Future<void> _setArchived(Conversation conversation, bool archived) async {
     await ConversationService.setArchived(
       conversation.id,
@@ -154,6 +181,9 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
     }
   }
 
+  /// Giriş: Tarih ve yerelleştirme.
+  /// Çıkış: Gösterim metni.
+  /// İşleyiş: Geçen süreyi kullanıcıya uygun formatlar.
   String _formatDate(DateTime date, AppLocalizations l10n) {
     final now = DateTime.now();
     final difference = now.difference(date);
@@ -176,14 +206,19 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
     }
   }
 
+  /// Giriş: Başlık metni.
+  /// Çıkış: Gösterilecek başlık.
+  /// İşleyiş: Varsayılan başlıkları Türkçe gösterir.
   String _displayTitle(AppLocalizations l10n, String title) {
-    const defaults = {'New Chat', 'Yeni Sohbet', 'Yeni sohbet'};
-    if (defaults.contains(title)) {
+    if (ConversationService.isDefaultTitle(title)) {
       return l10n.newChat;
     }
     return title;
   }
 
+  /// Giriş: Yerelleştirme ve başlık.
+  /// Çıkış: Bölüm başlığı widget'ı.
+  /// İşleyiş: Liste bölümlerini biçimlendirir.
   Widget _buildSectionHeader(AppLocalizations l10n, String title) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 6),
@@ -202,6 +237,9 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
     );
   }
 
+  /// Giriş: Yerelleştirme ve konuşma.
+  /// Çıkış: Liste öğesi.
+  /// İşleyiş: Konuşma bilgisini tek satırda gösterir.
   Widget _buildConversationTile(
     AppLocalizations l10n,
     Conversation conversation,

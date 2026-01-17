@@ -1,7 +1,16 @@
+/// DOSYA ADI: model_picker_screen.dart
+/// AMAÇ: Kullanıcının model seçmesini sağlamak.
+/// NE YAPAR:
+///   - Model listesini gösterir.
+///   - Seçilen modeli kaydeder.
+/// BAĞIMLILIKLAR:
+///   - model_service.dart: model listesini alır
+/// SON DEĞİŞİKLİK: 17.01.2026
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:selcukaiassistant/core/errors/error_handler.dart';
 import 'package:selcukaiassistant/helper/pref.dart';
 import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/model/model_info.dart';
@@ -41,14 +50,26 @@ class _ModelPickerScreenState extends State<ModelPickerScreen> {
   }
 
   Future<void> _loadModels() async {
-    final models = widget.initialModels ?? await ModelService.fetchModels();
-    if (!mounted) {
-      return;
+    try {
+      final models = widget.initialModels ?? await ModelService.fetchModels();
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _models = models;
+        _loading = false;
+      });
+    } on Exception catch (e) {
+      if (!mounted) return;
+      final message = ErrorHandler.fromException(e);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+      setState(() {
+        _models = [];
+        _loading = false;
+      });
     }
-    setState(() {
-      _models = models;
-      _loading = false;
-    });
   }
 
   void _onSearchChanged() {

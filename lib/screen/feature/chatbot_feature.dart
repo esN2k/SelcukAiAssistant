@@ -1,3 +1,13 @@
+/// DOSYA ADI: chatbot_feature.dart
+/// AMAÇ: Basit sohbet ekranını göstermek.
+/// NE YAPAR:
+///   - Sohbet akışını ve sesli girişi yönetir.
+///   - Appwrite bağlantı kontrolü sağlar.
+/// BAĞIMLILIKLAR:
+///   - chat_controller.dart: sohbet akışı
+///   - appwrite_service.dart: oturum yönetimi
+///   - error_handler.dart: hata mesajı dönüşümü
+/// SON DEĞİŞİKLİK: 17.01.2026
 // Geçici olarak Material 2 API'lerindeki withOpacity kullanımını sürdürüyoruz.
 // ignore_for_file: deprecated_member_use
 
@@ -5,6 +15,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:selcukaiassistant/core/errors/error_handler.dart';
 import 'package:selcukaiassistant/controller/chat_controller.dart';
 import 'package:selcukaiassistant/helper/global.dart';
 import 'package:selcukaiassistant/helper/pref.dart';
@@ -31,6 +42,9 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
     _isDarkMode.value = Get.isDarkMode;
   }
 
+  /// Giriş: yok.
+  /// Çıkış: yok.
+  /// İşleyiş: Appwrite bağlantısını test eder.
   Future<void> _sendPing() async {
     final l10n = context.l10n;
     try {
@@ -55,7 +69,7 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
       }
     } on Exception catch (e) {
       if (mounted) {
-        final errorMessage = e.toString().replaceAll('Exception: ', '');
+        final errorMessage = ErrorHandler.fromException(e);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(l10n.appwritePingError(errorMessage)),
@@ -66,6 +80,9 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
     }
   }
 
+  /// Giriş: yok.
+  /// Çıkış: yok.
+  /// İşleyiş: Oturumu kapatır ve giriş ekranına yönlendirir.
   Future<void> _logout() async {
     final l10n = context.l10n;
     try {
@@ -82,9 +99,10 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
       }
     } on Exception catch (e) {
       if (mounted) {
+        final message = ErrorHandler.fromException(e);
         Get.snackbar(
           l10n.errorTitle,
-          e.toString().replaceAll('Exception: ', ''),
+          message,
           backgroundColor: Colors.red,
           colorText: Colors.white,
           snackPosition: SnackPosition.BOTTOM,
@@ -94,6 +112,9 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
   }
 
   @override
+  /// Giriş: BuildContext.
+  /// Çıkış: Sohbet ekranı.
+  /// İşleyiş: UI bileşenlerini oluşturur.
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return Scaffold(
@@ -102,15 +123,14 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
         centerTitle: true,
         elevation: 1,
         actions: [
-          // Appwrite ping button
-          // Appwrite bağlantı testi
+          // Appwrite bağlantı testi.
           IconButton(
             padding: const EdgeInsets.only(right: 10),
             onPressed: _sendPing,
             icon: const Icon(Icons.wifi_rounded, size: 24),
             tooltip: l10n.sendPingTooltip,
           ),
-          // Koyu/açık tema geçişi
+          // Koyu/açık tema geçişi.
           IconButton(
             padding: const EdgeInsets.only(right: 10),
             onPressed: () {
@@ -129,7 +149,7 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
               ),
             ),
           ),
-          // Çıkış işlemi
+          // Çıkış işlemi.
           IconButton(
             padding: const EdgeInsets.only(right: 10),
             onPressed: _logout,

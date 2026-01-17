@@ -1,3 +1,11 @@
+/// DOSYA ADI: settings_controller.dart
+/// AMAÇ: Ayar ekranı için durum yönetimi sağlamak.
+/// NE YAPAR:
+///   - Tema, dil ve model seçimlerini yönetir.
+///   - Backend URL ve sohbet ayarlarını saklar.
+/// BAĞIMLILIKLAR:
+///   - Pref: kalıcı ayar saklama
+/// SON DEĞİŞİKLİK: 17.01.2026
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -5,6 +13,7 @@ import 'package:get/get.dart';
 import 'package:selcukaiassistant/helper/pref.dart';
 import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/model/model_info.dart';
+import 'package:selcukaiassistant/core/errors/error_handler.dart';
 import 'package:selcukaiassistant/services/model_service.dart';
 
 class SettingsController extends GetxController {
@@ -24,6 +33,7 @@ class SettingsController extends GetxController {
   final RxString backendUrlOverride = (Pref.backendUrlOverride ?? '').obs;
   final RxList<ModelInfo> models = <ModelInfo>[].obs;
   final RxBool isLoadingModels = false.obs;
+  final RxString modelErrorMessage = ''.obs;
 
   @override
   void onInit() {
@@ -33,10 +43,17 @@ class SettingsController extends GetxController {
 
   Future<void> loadModels() async {
     isLoadingModels.value = true;
-    final fetched = await _fetchModels();
-    models.assignAll(fetched);
-    isLoadingModels.value = false;
-    ensureSelectedModel();
+    modelErrorMessage.value = '';
+    try {
+      final fetched = await _fetchModels();
+      models.assignAll(fetched);
+    } on Exception catch (e) {
+      modelErrorMessage.value = ErrorHandler.fromException(e);
+      models.clear();
+    } finally {
+      isLoadingModels.value = false;
+      ensureSelectedModel();
+    }
   }
 
   void ensureSelectedModel() {

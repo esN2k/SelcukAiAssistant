@@ -9,6 +9,7 @@ from typing import Any, AsyncIterator, Optional
 import httpx
 from fastapi import HTTPException
 
+from api import error_messages as mesajlar
 from config import Config
 
 logger = logging.getLogger(__name__)
@@ -40,7 +41,7 @@ class OllamaService:
         self.api_url = f"{self.base_url}/api/chat"
 
         logger.info(
-            "Initialized Ollama service: url=%s timeout=%ss max_retries=%s",
+            "Ollama servisi başlatıldı: url=%s timeout=%ss max_retries=%s",
             self.api_url,
             self.timeout,
             self.max_retries,
@@ -54,7 +55,9 @@ class OllamaService:
         İşleyiş: Boş listeyi engeller.
         """
         if not messages:
-            raise HTTPException(status_code=400, detail="Mesaj listesi boş olamaz.")
+            raise HTTPException(
+                status_code=400, detail=mesajlar.MESAJ_LISTESI_BOS
+            )
 
     @staticmethod
     def _clean_reasoning_artifacts(text: str) -> str:
@@ -113,6 +116,7 @@ class OllamaService:
         İşleyiş: `/api/chat` çağrısı yapar.
         """
         self._validate_messages(messages)
+        model = model or Config.OLLAMA_MODEL
 
         async with httpx.AsyncClient(timeout=self.timeout) as client:
             for attempt in range(self.max_retries):
@@ -141,7 +145,7 @@ class OllamaService:
                         error_detail = self._parse_error_response(response)
                         raise HTTPException(
                             status_code=response.status_code,
-                            detail=f"Ollama API hatası: {error_detail}",
+                            detail=f"{mesajlar.OLLAMA_API_HATA}: {error_detail}",
                         )
 
                     data = response.json()
@@ -149,7 +153,7 @@ class OllamaService:
                     answer = message.get("content", "")
                     if not answer:
                         return {
-                            "text": "Üzgünüm, bir yanıt oluşturulamadı.",
+                            "text": mesajlar.OLLAMA_YANIT_YOK,
                             "usage": None,
                         }
 
@@ -166,7 +170,7 @@ class OllamaService:
                         continue
                     raise HTTPException(
                         status_code=504,
-                        detail="Ollama isteği zaman aşımına uğradı.",
+                        detail=mesajlar.OLLAMA_ZAMAN_ASIMI,
                     )
                 except httpx.RequestError as exc:
                     if attempt < self.max_retries - 1:
@@ -174,10 +178,10 @@ class OllamaService:
                         continue
                     raise HTTPException(
                         status_code=503,
-                        detail=f"Ollama servisine bağlanılamadı: {exc}",
+                        detail=f"{mesajlar.OLLAMA_BAGLANTI}: {exc}",
                     )
 
-        raise HTTPException(status_code=500, detail="Ollama hatası")
+        raise HTTPException(status_code=500, detail=mesajlar.OLLAMA_GENEL)
 
     async def generate_stream(
         self,
@@ -193,6 +197,7 @@ class OllamaService:
         İşleyiş: Stream çağrısı yapar.
         """
         self._validate_messages(messages)
+        model = model or Config.OLLAMA_MODEL
 
         payload = {
             "model": model,
@@ -218,7 +223,10 @@ class OllamaService:
                     if response.status_code != 200:
                         raise HTTPException(
                             status_code=response.status_code,
-                            detail=f"Ollama API hatası: HTTP {response.status_code}",
+                            detail=(
+                                f"{mesajlar.OLLAMA_API_HATA}: "
+                                f"HTTP {response.status_code}"
+                            ),
                         )
 
                     async for line in response.aiter_lines():
@@ -242,12 +250,12 @@ class OllamaService:
         except httpx.ReadTimeout as exc:
             raise HTTPException(
                 status_code=504,
-                detail="Ollama isteği zaman aşımına uğradı.",
+                detail=mesajlar.OLLAMA_ZAMAN_ASIMI,
             ) from exc
         except httpx.RequestError as exc:
             raise HTTPException(
                 status_code=503,
-                detail=f"Ollama servisine bağlanılamadı: {exc}",
+                detail=f"{mesajlar.OLLAMA_BAGLANTI}: {exc}",
             ) from exc
 
     async def health_check(self, model: Optional[str] = None) -> dict[str, Any]:
@@ -283,7 +291,7 @@ class OllamaService:
                 "status": "unhealthy",
                 "ollama_url": self.base_url,
                 "model": model,
-                "error": "Bağlantı başarısız",
+                "error": mesajlar.OLLAMA_BAGLANTI_BASARISIZ,
             }
 
     async def list_model_names(self) -> list[str]:

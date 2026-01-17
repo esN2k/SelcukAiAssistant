@@ -1,3 +1,12 @@
+/// DOSYA ADI: new_chat_screen.dart
+/// AMAÇ: Gelişmiş sohbet ekranını sunmak.
+/// NE YAPAR:
+///   - Sohbet akışını ve mesaj girişini yönetir.
+///   - Sesli giriş ve görsel eklemeyi destekler.
+/// BAĞIMLILIKLAR:
+///   - enhanced_chat_controller.dart: sohbet kontrolü
+///   - error_handler.dart: hata mesajı dönüşümü
+/// SON DEĞİŞİKLİK: 17.01.2026
 // Geçici olarak Material 2 API'lerindeki withOpacity kullanımını sürdürüyoruz.
 // ignore_for_file: deprecated_member_use
 
@@ -5,6 +14,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:selcukaiassistant/core/errors/error_handler.dart';
 import 'package:selcukaiassistant/controller/enhanced_chat_controller.dart';
 import 'package:selcukaiassistant/helper/pref.dart';
 import 'package:selcukaiassistant/l10n/l10n.dart';
@@ -29,6 +39,9 @@ class _NewChatScreenState extends State<NewChatScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
+  /// Giriş: yok.
+  /// Çıkış: yok.
+  /// İşleyiş: Controller'ı ve görünüm durumunu hazırlar.
   void initState() {
     super.initState();
     _controller = Get.put<EnhancedChatController>(
@@ -40,18 +53,23 @@ class _NewChatScreenState extends State<NewChatScreen> {
     unawaited(ConversationService.init());
   }
 
+  /// Giriş: BuildContext ve başlık.
+  /// Çıkış: Görüntülenecek başlık.
+  /// İşleyiş: Varsayılan başlığı Türkçe döndürür.
   String _displayTitle(BuildContext context, String? title) {
     final l10n = context.l10n;
     if (title == null || title.trim().isEmpty) {
       return l10n.newChat;
     }
-    const defaults = {'New Chat', 'Yeni sohbet'};
-    if (defaults.contains(title)) {
+    if (ConversationService.isDefaultTitle(title)) {
       return l10n.newChat;
     }
     return title;
   }
 
+  /// Giriş: yok.
+  /// Çıkış: yok.
+  /// İşleyiş: Oturumu kapatır ve giriş ekranına yönlendirir.
   Future<void> _logout() async {
     final l10n = L10n.current();
     try {
@@ -68,9 +86,10 @@ class _NewChatScreenState extends State<NewChatScreen> {
       }
     } on Exception catch (e) {
       if (mounted) {
+        final message = ErrorHandler.fromException(e);
         Get.snackbar(
           l10n?.logoutErrorTitle ?? 'Hata',
-          e.toString().replaceAll('Exception: ', ''),
+          message,
           backgroundColor: Colors.red,
           colorText: Colors.white,
           snackPosition: SnackPosition.BOTTOM,
@@ -80,6 +99,9 @@ class _NewChatScreenState extends State<NewChatScreen> {
   }
 
   @override
+  /// Giriş: BuildContext.
+  /// Çıkış: Sohbet ekranı.
+  /// İşleyiş: UI bileşenlerini oluşturur.
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return Scaffold(

@@ -11,6 +11,7 @@ from typing import Any, Optional, Sequence
 
 import numpy as np
 
+from api import error_messages as mesajlar
 from config import Config
 
 logger = logging.getLogger(__name__)
@@ -89,7 +90,7 @@ class SentenceTransformerBackend(EmbeddingBackend):
         self._batch_size = max(1, batch_size)
         dimension = self._model.get_sentence_embedding_dimension()
         if dimension is None:
-            raise RuntimeError("Gömleme boyutu alınamadı.")
+            raise RuntimeError(mesajlar.RAG_GOMLEME_BOYUTU_ALINAMADI)
         self._dimension = int(dimension)
 
     @staticmethod
@@ -109,13 +110,13 @@ class SentenceTransformerBackend(EmbeddingBackend):
         except Exception:
             return device
         if device == "cuda" and not torch.cuda.is_available():
-            logger.warning("RAG_EMBEDDING_DEVICE=cuda ancak CUDA yok; cpu kullanılıyor.")
+            logger.warning(mesajlar.RAG_CUDA_YOK)
             return "cpu"
         if device == "mps" and not (
             getattr(torch.backends, "mps", None)
             and torch.backends.mps.is_available()
         ):
-            logger.warning("RAG_EMBEDDING_DEVICE=mps ancak MPS yok; cpu kullanılıyor.")
+            logger.warning(mesajlar.RAG_MPS_YOK)
             return "cpu"
         return device
 
@@ -223,7 +224,7 @@ class RagIndex:
         İşleyiş: Dosya yollarını ve gömleyiciyi hazırlar.
         """
         if faiss is None:
-            raise RuntimeError("faiss-cpu yüklü değil.")
+            raise RuntimeError(mesajlar.RAG_FAISS_EKSIK)
         self.root = root
         self.embedder = embedder
         self.index_path = self.root / "index.faiss"
@@ -247,12 +248,14 @@ class RagIndex:
             try:
                 self.metadata = json.loads(self.meta_path.read_text(encoding="utf-8"))
             except json.JSONDecodeError as exc:
-                raise RuntimeError("RAG metadata dosyası okunamadı.") from exc
+                raise RuntimeError(mesajlar.RAG_METADATA_OKUNAMADI) from exc
         if self.index is not None and self.metadata:
             if self.index.ntotal != len(self.metadata):
                 raise RuntimeError(
-                    "İndeks/metadata tutarsız: "
-                    f"{self.index.ntotal} vs {len(self.metadata)}"
+                    mesajlar.RAG_INDEKS_TUTARSIZ.format(
+                        index_total=self.index.ntotal,
+                        meta_total=len(self.metadata),
+                    )
                 )
 
     def _ensure_index(self) -> None:
@@ -399,15 +402,15 @@ class RAGService:
         self._index: Optional[RagIndex] = None
 
         if not self.enabled:
-            logger.info("RAG servisi devre dışı (RAG_ENABLED=false)")
+            logger.info(mesajlar.RAG_DEVRE_DISI)
             return
 
         if not self.vector_db_path:
-            self.error_message = "RAG etkin ama RAG_VECTOR_DB_PATH ayarlanmamış."
+            self.error_message = mesajlar.RAG_PATH_EKSIK
             logger.warning(self.error_message)
             return
         if faiss is None:
-            self.error_message = "RAG için faiss-cpu kütüphanesi gerekli."
+            self.error_message = mesajlar.RAG_FAISS_EKSIK
             logger.warning(self.error_message)
             return
 
@@ -424,13 +427,13 @@ class RAGService:
             )
             self.available = True
             logger.info(
-                "RAG service initialized: path=%s collection=%s model=%s",
+                "RAG servisi başlatıldı: path=%s collection=%s model=%s",
                 self.vector_db_path,
                 self.collection_name,
                 self.embedding_model,
             )
         except Exception as exc:
-            self.error_message = f"RAG servisi başlatılamadı: {exc}"
+            self.error_message = f"{mesajlar.RAG_BASLATILAMADI}: {exc}"
             logger.exception(self.error_message)
 
     def search(self, query: str, top_k: Optional[int] = None) -> list[Document]:
@@ -442,7 +445,7 @@ class RAGService:
         if not self.enabled:
             return []
         if not self.available or self._index is None:
-            raise RuntimeError(self.error_message or "RAG servisi hazır değil.")
+            raise RuntimeError(self.error_message or mesajlar.RAG_HAZIR_DEGIL)
         return self._index.search(query, top_k or self.top_k)
 
     def get_context(
@@ -458,7 +461,7 @@ class RAGService:
         if not self.enabled:
             return "", []
         if not self.available:
-            raise RuntimeError(self.error_message or "RAG servisi hazır değil.")
+            raise RuntimeError(self.error_message or mesajlar.RAG_HAZIR_DEGIL)
         docs = self.search(query, top_k=top_k)
         if not docs:
             return "", []
@@ -477,9 +480,9 @@ class RAGService:
         İşleyiş: İndeks üzerinden ekleme yapar.
         """
         if not self.enabled or self._index is None:
-            raise RuntimeError("RAG servisi etkin değil.")
+            raise RuntimeError(mesajlar.RAG_ETKIN_DEGIL)
         if not self.available:
-            raise RuntimeError(self.error_message or "RAG servisi hazır değil.")
+            raise RuntimeError(self.error_message or mesajlar.RAG_HAZIR_DEGIL)
         return self._index.add_documents(documents)
 
     def save_index(self, meta_info: Optional[dict[str, Any]] = None) -> None:
@@ -491,7 +494,7 @@ class RAGService:
         if not self.enabled or self._index is None:
             return
         if not self.available:
-            raise RuntimeError(self.error_message or "RAG servisi hazır değil.")
+            raise RuntimeError(self.error_message or mesajlar.RAG_HAZIR_DEGIL)
         self._index.save(meta_info=meta_info)
 
 

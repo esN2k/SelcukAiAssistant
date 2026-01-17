@@ -1,7 +1,17 @@
+/// DOSYA ADI: register_screen.dart
+/// AMAÇ: Yeni kullanıcı kaydı oluşturmak.
+/// NE YAPAR:
+///   - Kayıt ve oturum açma adımlarını yönetir.
+///   - Hataları Türkçe olarak gösterir.
+/// BAĞIMLILIKLAR:
+///   - appwrite_service.dart: kayıt/oturum yönetimi
+///   - error_handler.dart: hata mesajı dönüşümü
+/// SON DEĞİŞİKLİK: 17.01.2026
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:selcukaiassistant/core/errors/error_handler.dart';
 import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/screen/feature/new_chat_screen.dart';
 import 'package:selcukaiassistant/services/appwrite_service.dart';
@@ -25,6 +35,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _obscureConfirmPassword = true;
 
   @override
+  /// Giriş: yok.
+  /// Çıkış: yok.
+  /// İşleyiş: Controller'ları serbest bırakır.
   void dispose() {
     _nameController.dispose();
     _emailController.dispose();
@@ -33,6 +46,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
+  /// Giriş: yok.
+  /// Çıkış: yok.
+  /// İşleyiş: Kullanıcı kaydı ve oturum açma adımlarını yürütür.
   Future<void> _register() async {
     final l10n = context.l10n;
     if (!_formKey.currentState!.validate()) return;
@@ -59,9 +75,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
       }
     } on Exception catch (e) {
       if (mounted) {
+        final message = ErrorHandler.fromException(e);
         Get.snackbar(
           l10n.registerErrorTitle,
-          e.toString().replaceAll('Exception: ', ''),
+          message,
           backgroundColor: Colors.red,
           colorText: Colors.white,
           snackPosition: SnackPosition.BOTTOM,
@@ -74,6 +91,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
+  /// Giriş: BuildContext.
+  /// Çıkış: Arka plan widget'ı.
+  /// İşleyiş: Tema moduna göre arka planı hazırlar.
   Widget _buildBackground(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
@@ -124,6 +144,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   @override
+  /// Giriş: BuildContext.
+  /// Çıkış: Kayıt ekranı.
+  /// İşleyiş: Form ve kayıt akışını oluşturur.
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final theme = Theme.of(context);

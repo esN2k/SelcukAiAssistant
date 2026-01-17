@@ -1,3 +1,12 @@
+/// DOSYA ADI: enhanced_chat_controller.dart
+/// AMAÇ: Gelişmiş sohbet akışını ve akışlı cevapları yönetmek.
+/// NE YAPAR:
+///   - SSE üzerinden akışlı yanıt alır.
+///   - Konuşma geçmişini ve dışa aktarmayı yönetir.
+/// BAĞIMLILIKLAR:
+///   - conversation_service.dart: sohbet verisi
+///   - sse_client.dart: akış bağlantısı
+/// SON DEĞİŞİKLİK: 17.01.2026
 import 'dart:async';
 import 'dart:convert';
 
@@ -6,6 +15,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:selcukaiassistant/apis/apis.dart';
+import 'package:selcukaiassistant/core/errors/error_handler.dart';
 import 'package:selcukaiassistant/helper/my_dialog.dart';
 import 'package:selcukaiassistant/helper/pref.dart';
 import 'package:selcukaiassistant/l10n/l10n.dart';
@@ -228,8 +238,9 @@ class EnhancedChatController extends GetxController {
       if (_stopRequested) {
         return;
       }
+      final errorMessage = ErrorHandler.fromException(e);
       aiMessage
-        ..error = e.toString()
+        ..error = errorMessage
         ..errorCode = 'stream_error';
       if (aiMessage.content.isEmpty) {
         final fallback = await APIs.sendChat(
@@ -250,7 +261,7 @@ class EnhancedChatController extends GetxController {
       );
       Get.snackbar(
         l10n?.streamErrorTitle ?? 'Akış hatası',
-        e.toString(),
+        errorMessage,
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -428,7 +439,7 @@ class EnhancedChatController extends GetxController {
       citations = message.citations;
     } on Exception catch (e) {
       if (!_stopRequested) {
-        errorMessage = e.toString();
+        errorMessage = ErrorHandler.fromException(e);
         errorCode = 'stream_error';
         message
           ..error = errorMessage
@@ -436,7 +447,7 @@ class EnhancedChatController extends GetxController {
         messages.refresh();
         Get.snackbar(
           l10n?.streamErrorTitle ?? 'Akış hatası',
-          e.toString(),
+          errorMessage ?? '',
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
           colorText: Colors.white,
@@ -601,9 +612,10 @@ class EnhancedChatController extends GetxController {
         duration: const Duration(seconds: 4),
       );
     } on Exception catch (e) {
+      final message = ErrorHandler.fromException(e);
       Get.snackbar(
         l10n?.exportFailedTitle ?? 'Dışa aktarma başarısız',
-        '$e',
+        message,
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,
