@@ -14,7 +14,7 @@
 # SON DEĞİŞİKLİK: 17.01.2026
 # ============================================================
 
-set -e  # Hata durumunda dur
+set -euo pipefail  # Exit on error, undefined vars, and pipeline failures
 
 # Renkli output
 RED='\033[0;31m'

@@ -55,9 +55,9 @@ def test_model(model_name: str, question: str) -> Dict:
             "error": str or None
         }
     """
-    # Validate model_name to prevent command injection
-    # Only allow alphanumeric, hyphens, underscores, and dots
-    if not all(c.isalnum() or c in '-_.' for c in model_name):
+    # Validate model_name to prevent command injection and path traversal
+    # Only allow alphanumeric, hyphens, and underscores (no dots or slashes)
+    if not all(c.isalnum() or c in '-_' for c in model_name):
         return {
             "answer": "",
             "response_time": 0,
