@@ -17,6 +17,10 @@ from providers.base import CancellationToken, ModelProvider, Usage
 from providers.huggingface_provider import HuggingFaceProvider
 from providers.ollama_provider import OllamaProvider
 from providers.registry import ModelRegistry
+from api.endpoints.admin import router as admin_router
+from api.endpoints.translate import router as translate_router
+from analytics_service import analytics_service
+from cache_service import cache_service
 from critical_facts import apply_guard, get_critical_answer, is_selcuk_related
 from prompts import build_rag_system_prompt, rag_no_source_message
 from rag_guard import apply_rag_guard, is_context_relevant
@@ -68,6 +72,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(translate_router, prefix="/api", tags=["translation"])
+app.include_router(admin_router, prefix="/admin", tags=["admin"])
 
 ollama_provider = OllamaProvider()
 huggingface_provider = HuggingFaceProvider()
@@ -274,6 +281,13 @@ async def chat(request: ChatRequest, http_request: Request) -> ChatResponse:
             usage=None,
             citations=None,
         )
+
+    cached = cache_service.get_cached_response(
+        question, request.model, rag_enabled
+    )
+    if cached:
+        logger.info("request_id=%s event=cache_hit", request_id)
+        return ChatResponse(**cached)
     rag_context = ""
     citations: list[str] = []
 
@@ -340,19 +354,21 @@ async def chat(request: ChatRequest, http_request: Request) -> ChatResponse:
     answer, guard_applied = apply_guard(question, answer, language)
     if guard_applied or rag_guarded:
         citations = []
-    _log_chat_to_appwrite(
+    _log_chat_to_appwrite(question=question, answer=answer)
+
+    latency_ms = (time.perf_counter() - start_time) * 1000
+    await analytics_service.log_request(
+        request_id=request_id,
         question=question,
         answer=answer,
+        model=resolved.model_id,
+        provider=resolved.provider,
+        latency_ms=latency_ms,
+        rag_enabled=rag_enabled,
+        success=True,
     )
 
-    logger.info(
-        "request_id=%s event=chat_done model=%s provider=%s latency_s=%.3f",
-        request_id,
-        resolved.model_id,
-        resolved.provider,
-        time.perf_counter() - start_time,
-    )
-    return ChatResponse(
+    response = ChatResponse(
         answer=answer,
         request_id=request_id,
         provider=resolved.provider,
@@ -360,6 +376,18 @@ async def chat(request: ChatRequest, http_request: Request) -> ChatResponse:
         usage=_usage_to_schema(result.usage),
         citations=citations or None,
     )
+    cache_service.set_cached_response(
+        question, request.model, rag_enabled, response.model_dump()
+    )
+
+    logger.info(
+        "request_id=%s event=chat_done model=%s provider=%s latency_s=%.3f",
+        request_id,
+        resolved.model_id,
+        resolved.provider,
+        latency_ms / 1000,
+    )
+    return response
 
 
 @app.post("/chat/stream")

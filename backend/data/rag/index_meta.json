@@ -1,7 +1,0 @@
-{
-  "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
-  "dimension": 384,
-  "chunk_size": 500,
-  "chunk_overlap": 50,
-  "documents": 76
-}

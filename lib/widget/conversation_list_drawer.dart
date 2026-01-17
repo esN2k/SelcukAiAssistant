@@ -6,6 +6,7 @@ import 'package:selcukaiassistant/l10n/app_localizations.dart';
 import 'package:selcukaiassistant/l10n/l10n.dart';
 import 'package:selcukaiassistant/model/conversation.dart';
 import 'package:selcukaiassistant/screen/settings_screen.dart';
+import 'package:selcukaiassistant/screen/translate_screen.dart';
 import 'package:selcukaiassistant/services/conversation_service.dart';
 
 class ConversationListDrawer extends StatefulWidget {
@@ -585,6 +586,17 @@ class _ConversationListDrawerState extends State<ConversationListDrawer> {
                       : ListView(
                           children: _buildGroupedChildren(l10n),
                         ),
+            ),
+
+            const Divider(height: 1),
+            ListTile(
+              leading: const Icon(Icons.translate),
+              title: const Text('Translate'),
+              subtitle: const Text('55 language support'),
+              onTap: () {
+                Navigator.pop(context);
+                unawaited(Get.to<void>(() => const TranslateScreen()));
+              },
             ),
 
             // Alt kısım: istatistikler ve ayarlar

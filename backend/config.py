@@ -122,6 +122,17 @@ class Config:
     HF_DEVICE: str = os.getenv("HF_DEVICE", "auto")
     HF_DTYPE: str = os.getenv("HF_DTYPE", "float16")
     HF_ATTENTION_IMPL: str = os.getenv("HF_ATTENTION_IMPL", "sdpa")
+    HF_TOKEN: Optional[str] = os.getenv("HF_TOKEN") or None
+    TRANSLATE_MODEL_NAME: str = os.getenv(
+        "TRANSLATE_MODEL_NAME", "google/translategemma-4b-it"
+    )
+
+    # Cache configuration
+    REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+    CACHE_TTL_SECONDS: int = int(os.getenv("CACHE_TTL_SECONDS", "3600"))
+
+    # Analytics configuration
+    POSTGRES_DSN: Optional[str] = os.getenv("POSTGRES_DSN") or None
 
     # Guardrails
     MAX_CONTEXT_TOKENS: int = int(os.getenv("MAX_CONTEXT_TOKENS", "4096"))
@@ -186,6 +197,8 @@ class Config:
             errors.append("MAX_OUTPUT_TOKENS en az 1 olmalı.")
         if cls.REQUEST_TIMEOUT < 1:
             errors.append("REQUEST_TIMEOUT en az 1 saniye olmalı.")
+        if cls.CACHE_TTL_SECONDS < 1:
+            errors.append("CACHE_TTL_SECONDS en az 1 olmalı.")
 
         if cls.RAG_ENABLED:
             if not cls.RAG_VECTOR_DB_PATH:

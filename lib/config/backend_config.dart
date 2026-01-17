@@ -31,6 +31,10 @@ class BackendConfig {
   static String get chatEndpoint => '$baseUrl/chat';
   static String get chatStreamEndpoint => '$baseUrl/chat/stream';
   static String get modelsEndpoint => '$baseUrl/models';
+  static String get translateEndpoint => '$baseUrl/api/translate';
+  static String get translateTextEndpoint => '$baseUrl/api/translate';
+  static String get translateImageEndpoint => '$baseUrl/api/translate/image';
+  static String get translateLanguagesEndpoint => '$baseUrl/api/translate/languages';
 
   static Future<bool> testConnection() async {
     try {
