@@ -73,3 +73,21 @@ tools/.tmp/
 
 # RAG data
 /data/
+
+# Local uncommitted artifacts
+backend/api/
+backend/analytics_service.py
+backend/cache_service.py
+backend/providers/translate_provider.py
+backend/scrapers/
+backend/scripts/
+backend/migrations/
+backend/data/scraped/
+backend/data/rag/scraped/metadata.jsonl
+backend/data/rag/scraped/metadata.summary.json
+backend/logs/
+continue_pipeline.sh
+master_pipeline.sh
+pipeline_watch.out
+pipeline_watch.sh
+lib/screen/translate_screen.dart
