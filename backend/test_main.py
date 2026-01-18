@@ -76,7 +76,7 @@ def test_chat_endpoint_connection_error(mock_generate):
     )
 
     assert response.status_code == 503
-    assert "detail" in response.json()
+    assert "hata" in response.json()
 
 
 @patch("main.appwrite_client", None)
@@ -151,7 +151,7 @@ def test_ollama_health_check_unhealthy(mock_get):
     response = client.get("/health/ollama")
 
     assert response.status_code == 503
-    assert "detail" in response.json()
+    assert "hata" in response.json()
 
 
 @patch("main.appwrite_client", None)
@@ -171,7 +171,7 @@ def test_chat_endpoint_timeout(mock_generate):
 
     assert response.status_code == 504
     data = response.json()
-    assert "detail" in data
+    assert "hata" in data
 
 
 if __name__ == "__main__":

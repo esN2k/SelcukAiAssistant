@@ -32,8 +32,10 @@ Future<void> main() async {
   // Load environment variables
   await dotenv.load();
 
-  // Mobile-only initializations
-  if (!kIsWeb) {
+  // Mobile-only initializations (Android & iOS)
+  if (!kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.android ||
+          defaultTargetPlatform == TargetPlatform.iOS)) {
     // Initialize facebook ads sdk
     AdHelper.init();
 

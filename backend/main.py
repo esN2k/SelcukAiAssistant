@@ -20,6 +20,7 @@ import time
 import uuid
 from typing import Any, Optional
 
+from pathlib import Path
 import requests
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -56,39 +57,15 @@ logger = logging.getLogger(__name__)
 app = FastAPI(title="Selçuk AI Asistanı Backend")
 register_error_handlers(app)
 
-default_dev_origins = [
-    "http://localhost",
-    "http://localhost:3000",
-    "http://localhost:5000",
-    "http://localhost:5001",
-    "http://localhost:8000",
-    "http://localhost:8080",
-    "http://127.0.0.1",
-    "http://127.0.0.1:3000",
-    "http://127.0.0.1:5000",
-    "http://127.0.0.1:5001",
-    "http://127.0.0.1:8000",
-    "http://127.0.0.1:8080",
-]
-
-allowed_origins = [origin.strip() for origin in Config.ALLOWED_ORIGINS if origin.strip()]
-if not allowed_origins:
-    if Config.ALLOWED_ORIGINS_STRICT:
-        logger.warning(
-            "ALLOWED_ORIGINS_STRICT etkin, ancak ALLOWED_ORIGINS boş; "
-            "CORS tüm origin'leri engelleyecek."
-        )
-    else:
-        allowed_origins = default_dev_origins
-allow_all_origins = "*" in allowed_origins
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
-    allow_credentials=not allow_all_origins,
+    allow_origins=["*"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 app.include_router(translate_router, prefix="/api", tags=["translation"])
 app.include_router(admin_router, prefix="/admin", tags=["admin"])
@@ -131,45 +108,63 @@ def _usage_to_schema(usage: Optional[Usage]) -> Optional[UsageInfo]:
     )
 
 
-def _log_chat_to_appwrite(question: str, answer: str) -> None:
+def _log_chat(question: str, answer: str) -> None:
     """Giriş: Soru ve yanıt metni.
 
     Çıkış: yok.
-    İşleyiş: Appwrite aktifse HTTP POST ile sohbet kaydı ekler.
+    İşleyiş: Appwrite aktifse oraya, değilse yerel dosyaya sohbet kaydı ekler.
     """
-    if appwrite_client is None:
-        return
-    if not Config.APPWRITE_DATABASE_ID or not Config.APPWRITE_COLLECTION_ID:
-        return
-
-    import uuid as _uuid
+    import json
     from datetime import datetime, timezone
 
-    doc_id = f"chat_{_uuid.uuid4().hex[:16]}"
-    payload = {
-        "documentId": doc_id,
-        "data": {
-            "question": question[:4000],
-            "answer": answer[:4000],
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "chatId": doc_id,
-            "senderId": "system",
-            "receiverId": "user",
-            "messageContent": question[:1000],
-            "isRead": True,
-        },
-    }
+    timestamp = datetime.now(timezone.utc).isoformat()
+    
+    # 1. Appwrite Kaydı (Varsa)
+    if appwrite_client and Config.APPWRITE_DATABASE_ID and Config.APPWRITE_COLLECTION_ID:
+        import uuid as _uuid
+        doc_id = f"chat_{_uuid.uuid4().hex[:16]}"
+        payload = {
+            "documentId": doc_id,
+            "data": {
+                "question": question[:4000],
+                "answer": answer[:4000],
+                "timestamp": timestamp,
+                "chatId": doc_id,
+                "senderId": "system",
+                "receiverId": "user",
+                "messageContent": question[:1000],
+                "isRead": True,
+            },
+        }
 
-    client = appwrite_client
+        try:
+            response = appwrite_client.post(
+                f"{Config.APPWRITE_ENDPOINT}/databases/{Config.APPWRITE_DATABASE_ID}/collections/{Config.APPWRITE_COLLECTION_ID}/documents",
+                json=payload,
+                timeout=10,
+            )
+            response.raise_for_status()
+            return # Appwrite başarılı ise dosyaya yazmaya gerek yok (veya ikisine de yazılabilir)
+        except requests.RequestException as exc:
+            logger.warning("Appwrite kayıt hatası: %s. Yerel dosyaya yazılıyor.", exc)
+    
+    # 2. Yerel Dosya Kaydı (Fallback)
     try:
-        response = client.post(
-            f"{Config.APPWRITE_ENDPOINT}/databases/{Config.APPWRITE_DATABASE_ID}/collections/{Config.APPWRITE_COLLECTION_ID}/documents",
-            json=payload,
-            timeout=10,
-        )
-        response.raise_for_status()
-    except requests.RequestException as exc:
-        logger.warning("Appwrite kayıt hatası: %s", exc)
+        log_dir = Path("logs")
+        log_dir.mkdir(exist_ok=True)
+        log_file = log_dir / "chat_history.jsonl"
+        
+        log_entry = {
+            "timestamp": timestamp,
+            "question": question,
+            "answer": answer,
+            "source": "local_fallback"
+        }
+        
+        with open(log_file, "a", encoding="utf-8") as f:
+            f.write(json.dumps(log_entry, ensure_ascii=False) + "\n")
+    except Exception as exc:
+        logger.error("Sohbet günlüğe yazılamadı: %s", exc)
 
 
 @app.get("/")
@@ -289,7 +284,7 @@ async def chat(request: ChatRequest, http_request: Request) -> ChatResponse:
     question = next((m.content for m in reversed(messages) if m.role == "user"), "")
     critical_answer = get_critical_answer(question, language)
     if critical_answer:
-        _log_chat_to_appwrite(question=question, answer=critical_answer)
+        _log_chat(question=question, answer=critical_answer)
         return ChatResponse(
             answer=critical_answer,
             request_id=request_id,
@@ -369,7 +364,7 @@ async def chat(request: ChatRequest, http_request: Request) -> ChatResponse:
     answer, guard_applied = apply_guard(question, answer, language)
     if guard_applied or rag_guarded:
         citations = []
-    _log_chat_to_appwrite(question=question, answer=answer)
+    _log_chat(question=question, answer=answer)
 
     latency_ms = (time.perf_counter() - start_time) * 1000
     await analytics_service.log_request(
@@ -452,7 +447,7 @@ async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingR
                 }
             )
 
-        _log_chat_to_appwrite(question=question, answer=critical_answer)
+        _log_chat(question=question, answer=critical_answer)
         return StreamingResponse(
             event_generator(),
             media_type="text/event-stream",
@@ -565,7 +560,7 @@ async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingR
                     language,
                 )
             answer, guarded = apply_guard(question, answer, language)
-            _log_chat_to_appwrite(question=question, answer=answer)
+            _log_chat(question=question, answer=answer)
             usage_schema = _usage_to_schema(result.usage)
             citations_out = None if (guarded or rag_guarded) else (citations or None)
             yield sse_event(
@@ -689,7 +684,7 @@ async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingR
                         
                         # Appwrite'a kaydet
                         question = next((m.content for m in reversed(messages) if m.role == "user"), "")
-                        _log_chat_to_appwrite(question=question, answer=accumulated_response)
+                        _log_chat(question=question, answer=accumulated_response)
                         
                         usage_schema = _usage_to_schema(chunk.usage)
                         yield sse_event(

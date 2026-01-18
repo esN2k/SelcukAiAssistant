@@ -42,5 +42,32 @@ services:
       OLLAMA_HOST: 0.0.0.0
     restart: unless-stopped
 
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+  # Not: Tam Appwrite kurulumu için https://appwrite.io/docs/self-hosting#install adresindeki 
+  # komutu çalıştırmanız önerilir. Bu sadece temel servistir ve bağımlılıkları eksik olabilir.
+  # Ancak kullanıcı isteği üzerine eklenmiştir.
+  appwrite:
+    image: appwrite/appwrite:latest
+    container_name: appwrite
+    restart: unless-stopped
+    networks:
+      - appwrite
+    ports:
+      - "8080:80"
+      - "443:443"
+    environment:
+      - _APP_ENV=production
+      - _APP_DB_SCHEMA=mysql # Veya mariadb, appwrite'ın veritabanı ihtiyacı var
+      # Basitleştirilmiş kurulumda veritabanı olmadığı için bu servis tek başına çalışmayabilir.
+      # Tam kurulum docker run komutu ile yapılmalıdır.
+
 volumes:
   ollama-data:
+
+networks:
+  appwrite:
