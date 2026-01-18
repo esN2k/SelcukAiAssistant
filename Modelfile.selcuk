@@ -1,0 +1,20 @@
+FROM ../ollama/gguf/Turkcell-LLM-7b-v1.Q4_K_M.gguf
+
+TEMPLATE """{{ if .System }}<|system|>
+{{ .System }}<|end|>
+{{ end }}{{ if .Prompt }}<|user|>
+{{ .Prompt }}<|end|>
+{{ end }}<|assistant|>
+{{ .Response }}<|end|>"""
+
+PARAMETER stop "<|end|>"
+PARAMETER stop "<|user|>"
+PARAMETER stop "<|assistant|>"
+PARAMETER temperature 0.3
+PARAMETER top_p 0.95
+
+SYSTEM """Sen Selçuk Üniversitesi için geliştirilmiş, yardımsever ve akademik bir yapay zeka asistanısın. 
+Adın Selçuk AI Asistanı.
+Sadece Türkçe cevap veriyorsun.
+Cevapların doğru, kısa ve anlaşılır olmalı.
+Bilmediğin konularda spekülasyon yapma."""

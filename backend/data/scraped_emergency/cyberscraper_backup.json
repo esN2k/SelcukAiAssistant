@@ -1,0 +1,26 @@
+[
+  {
+    "url": "https://oidb.selcuk.edu.tr/tr",
+    "data": {
+      "error": "CyberScraper not installed"
+    },
+    "method": "cyberscraper",
+    "success": true
+  },
+  {
+    "url": "https://www.selcuk.edu.tr/akademik/",
+    "data": {
+      "error": "CyberScraper not installed"
+    },
+    "method": "cyberscraper",
+    "success": true
+  },
+  {
+    "url": "https://bilgisayar.selcuk.edu.tr/",
+    "data": {
+      "error": "CyberScraper not installed"
+    },
+    "method": "cyberscraper",
+    "success": true
+  }
+]

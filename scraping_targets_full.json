@@ -1,0 +1,52 @@
+{
+  "academic_calendar": [
+    "https://www.selcuk.edu.tr/akademik/Sayfalar/akademik_takvim.aspx",
+    "https://oidb.selcuk.edu.tr/tr",
+    "https://ogr.selcuk.edu.tr/tr/ogrenci-portali"
+  ],
+  "computer_engineering": [
+    "https://bologna.selcuk.edu.tr/tr/dersler/teknoloji-bilgisayar_muhendisligi-bilgisayar_muhendisligi-lisans",
+    "https://bilgisayar.selcuk.edu.tr/",
+    "https://bilgisayar.selcuk.edu.tr/tr/akademik",
+    "https://bilgisayar.selcuk.edu.tr/tr/dersler",
+    "https://bilgisayar.selcuk.edu.tr/tr/ogretim-uyeleri",
+    "https://teknoloji.selcuk.edu.tr/tr/bilgisayar-muhendisligi"
+  ],
+  "departments_faculties": [
+    "https://www.selcuk.edu.tr/Page/BolumListesi",
+    "https://www.selcuk.edu.tr/muhendislik_mimarlik/",
+    "https://teknoloji.selcuk.edu.tr/",
+    "https://www.selcuk.edu.tr/fen/",
+    "https://www.selcuk.edu.tr/egitim/",
+    "https://tip.selcuk.edu.tr/"
+  ],
+  "student_services": [
+    "https://www.selcuk.edu.tr/ogrenci_isleri/",
+    "https://oidb.selcuk.edu.tr/tr",
+    "https://yemek.selcuk.edu.tr/",
+    "https://kyk.gsb.gov.tr/HaberDetay.aspx?id=23",
+    "https://www.selcuk.edu.tr/ogrenci/",
+    "https://obs.selcuk.edu.tr/"
+  ],
+  "library": [
+    "https://kutuphane.selcuk.edu.tr/",
+    "https://kutuphane.selcuk.edu.tr/tr/hakkimizda",
+    "https://kutuphane.selcuk.edu.tr/tr/katalog"
+  ],
+  "campus_facilities": [
+    "https://www.selcuk.edu.tr/kampus",
+    "https://www.selcuk.edu.tr/ulasim/",
+    "https://www.selcuk.edu.tr/hakkinda/kampus-hayati",
+    "https://skscafe.selcuk.edu.tr/"
+  ],
+  "administrative": [
+    "https://www.selcuk.edu.tr/iletisim",
+    "https://www.selcuk.edu.tr/hakkinda/",
+    "https://www.selcuk.edu.tr/Page/Telefonlar",
+    "https://www.turkiye.gov.tr/selcuk-universitesi"
+  ],
+  "exam_schedule": [
+    "https://oidb.selcuk.edu.tr/tr/duyuru",
+    "https://www.selcuk.edu.tr/akademik/sinav-takvimi"
+  ]
+}

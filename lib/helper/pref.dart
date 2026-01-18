@@ -64,21 +64,9 @@ class Pref {
     return ThemeMode.light;
   }
 
-  static String? get selectedModel {
-    final stored = modelBox.get(defaultModelPreferenceId)?.selectedModelId;
-    if (stored != null && stored.isNotEmpty) {
-      return stored;
-    }
-    final legacy = box.get('selectedModel') as String?;
-    if (legacy != null && legacy.isNotEmpty) {
-      final pref = ModelPreference(
-        id: defaultModelPreferenceId,
-        selectedModelId: legacy,
-      );
-      unawaited(modelBox.put(defaultModelPreferenceId, pref));
-    }
-    return legacy;
-  }
+  static String? get selectedModel =>
+      _box.get('selected_model', defaultValue: 'selcuk-assistant-v1');
+
 
   static set selectedModel(String? value) {
     final trimmed = value?.trim();
