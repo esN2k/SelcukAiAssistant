@@ -1,0 +1,42 @@
+[
+  {
+    "question": "Merhaba, sen kimsin?",
+    "expected_keywords": ["Selçuk", "asistan", "yardımcı", "üniversite"]
+  },
+  {
+    "question": "Selçuk Üniversitesi hangi yıl kuruldu?",
+    "expected_keywords": ["1975", "kuruldu", "Selçuk"]
+  },
+  {
+    "question": "Bilgisayar Mühendisliği bölümü nerede?",
+    "expected_keywords": ["Bilgisayar", "Mühendislik", "Teknoloji", "Fakülte"]
+  },
+  {
+    "question": "Final sınavları ne zaman başlıyor?",
+    "expected_keywords": ["final", "sınav", "tarih"]
+  },
+  {
+    "question": "Öğrenci işleri ofisine nasıl ulaşabilirim?",
+    "expected_keywords": ["öğrenci işleri", "iletişim", "telefon", "adres"]
+  },
+  {
+    "question": "Selçuk Üniversitesi nerede bulunuyor?",
+    "expected_keywords": ["Konya", "Selçuk", "Türkiye"]
+  },
+  {
+    "question": "Rektör kimdir?",
+    "expected_keywords": ["rektör", "Selçuk"]
+  },
+  {
+    "question": "Yurt başvurusu nasıl yapılır?",
+    "expected_keywords": ["yurt", "başvuru", "öğrenci"]
+  },
+  {
+    "question": "Kütüphane çalışma saatleri nedir?",
+    "expected_keywords": ["kütüphane", "saat", "çalışma"]
+  },
+  {
+    "question": "Burs imkanları nelerdir?",
+    "expected_keywords": ["burs", "öğrenci", "destek"]
+  }
+]
