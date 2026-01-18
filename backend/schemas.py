@@ -1,4 +1,41 @@
-"""Sohbet endpoint'leri için Pydantic şemaları."""
+"""
+╔════════════════════════════════════════════════════════════════════════════════╗
+║  DOSYA ADI: schemas.py                                                         ║
+║  AMAÇ: API istek ve yanıt veri modelleri (Pydantic şemaları)                  ║
+║  KULLANIM: from schemas import ChatRequest, ChatResponse                       ║
+║  BAĞIMLILIKLAR: pydantic                                                       ║
+║  YAZAN: esN2k - Selçuk Üniversitesi                                           ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+DETAYLI AÇIKLAMA:
+─────────────────
+Bu dosya, FastAPI endpoint'leri için Pydantic veri modellerini tanımlar.
+Pydantic, gelen verileri otomatik olarak doğrular ve hata mesajları üretir.
+
+TANIMLI MODELLER:
+• ChatMessage: Tek bir sohbet mesajı (rol + içerik)
+• ChatRequest: /chat endpoint'ine gelen istek
+• ChatResponse: /chat endpoint'inden dönen yanıt
+• UsageInfo: Token kullanım bilgileri
+
+VERİ DOĞRULAMA:
+• Rol: "system", "user" veya "assistant" olmalı
+• İçerik: 1-10000 karakter, XSS içermemeli
+• Temperature: 0.0-2.0 arası
+• max_tokens: 1-8192 arası
+
+ÖRNEK KULLANIM:
+──────────────
+from schemas import ChatRequest, ChatMessage
+
+istek = ChatRequest(
+    messages=[
+        ChatMessage(role="user", content="Selçuk Üniversitesi nerede?")
+    ],
+    temperature=0.2,
+    rag_enabled=True
+)
+"""
 from __future__ import annotations
 
 from typing import Optional

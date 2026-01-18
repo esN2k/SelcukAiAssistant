@@ -1,4 +1,36 @@
-"""Selçuk AI Asistanı backend yapılandırması."""
+"""
+╔════════════════════════════════════════════════════════════════════════════════╗
+║  DOSYA ADI: config.py                                                          ║
+║  AMAÇ: Backend yapılandırma yönetimi ve ortam değişkenleri                    ║
+║  KULLANIM: from config import Config şeklinde import edilir                   ║
+║  BAĞIMLILIKLAR: python-dotenv (opsiyonel), logging                            ║
+║  YAZAN: esN2k - Selçuk Üniversitesi                                           ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+DETAYLI AÇIKLAMA:
+─────────────────
+Bu dosya, backend uygulamasının tüm yapılandırma ayarlarını merkezi olarak yönetir.
+Ortam değişkenleri (.env dosyası veya sistem değişkenleri) okunur ve doğrulanır.
+
+YAPILANDIRMA KATEGORİLERİ:
+• Sunucu ayarları (HOST, PORT)
+• CORS ayarları (ALLOWED_ORIGINS)
+• Ollama ayarları (OLLAMA_BASE_URL, OLLAMA_MODEL, timeout, retry)
+• HuggingFace ayarları (HF_MODEL_NAME, HF_DEVICE, vb.)
+• RAG ayarları (RAG_ENABLED, vektör DB yolu, embedding modeli)
+• Appwrite ayarları (opsiyonel, sohbet kaydı için)
+• Güvenlik sınırları (MAX_CONTEXT_TOKENS, MAX_OUTPUT_TOKENS)
+
+DOĞRULAMA:
+Config.validate() metodu kritik ayarları doğrular ve hatalıysa ValueError fırlatır.
+
+ÖRNEK KULLANIM:
+──────────────
+from config import Config
+
+print(Config.OLLAMA_BASE_URL)  # http://localhost:11434
+print(Config.RAG_ENABLED)       # True veya False
+"""
 from __future__ import annotations
 
 import logging

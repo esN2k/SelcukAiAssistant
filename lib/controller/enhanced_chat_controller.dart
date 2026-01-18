@@ -1,14 +1,3 @@
-/// DOSYA ADI: enhanced_chat_controller.dart
-/// AMAÇ: Gelişmiş sohbet akışını ve akışlı cevapları yönetmek.
-/// NE YAPAR:
-///   - SSE üzerinden akışlı yanıt alır.
-///   - Konuşma geçmişini ve dışa aktarmayı yönetir.
-/// BAĞIMLILIKLAR:
-///   - conversation_service.dart: sohbet verisi
-///   - sse_client.dart: akış bağlantısı
-/// SON DEĞİŞİKLİK: 17.01.2026
-library;
-
 import 'dart:async';
 import 'dart:convert';
 
@@ -17,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:selcukaiassistant/apis/apis.dart';
-import 'package:selcukaiassistant/core/errors/error_handler.dart';
 import 'package:selcukaiassistant/helper/my_dialog.dart';
 import 'package:selcukaiassistant/helper/pref.dart';
 import 'package:selcukaiassistant/l10n/l10n.dart';
@@ -60,6 +48,21 @@ class EnhancedChatController extends GetxController {
 
   String _speechLocaleId() {
     return _languageCode() == 'en' ? 'en_US' : 'tr_TR';
+  }
+
+  String _systemPrompt() {
+    if (_languageCode() == 'en') {
+      return 'You are a helpful assistant for Selçuk University. '
+          'Reply in English. Do not reveal reasoning or internal thoughts. '
+          'If the user greets vaguely (e.g. "Hello"), ask what they need about '
+          'Selçuk University.';
+    }
+    return 'Sel\u00e7uk \u00dcniversitesi i\u00e7in yard\u0131mc\u0131 bir '
+        'asistans\u0131n. Yan\u0131tlar\u0131n\u0131 T\u00fcrk\u00e7e ver. '
+        'Ak\u0131l y\u00fcr\u00fctme veya i\u00e7 konu\u015fma '
+        'payla\u015fma. Kullan\u0131c\u0131 genel bir selam verirse '
+        '(\u00f6r. "Merhaba"), Sel\u00e7uk \u00dcniversitesi ile ilgili '
+        'neye ihtiya\u00e7 duydu\u011funu sor.';
   }
 
   Future<void> _initializeConversation() async {
@@ -204,7 +207,8 @@ class EnhancedChatController extends GetxController {
       ..errorCode = null;
 
     final payloadMessages = _buildPayloadMessages();
-    // Model seçimi - geçersiz model varsa null gönder (backend varsayılanı)
+    // Model seçimi - geçersiz model varsa null gönder
+    // (backend varsayılanı kullanır)
     var selectedModel = Pref.selectedModel;
     if (selectedModel == 'selcuk_ai_assistant') {
       // Eski model ismi - backend'de artık yok, null gönder
@@ -239,9 +243,8 @@ class EnhancedChatController extends GetxController {
       if (_stopRequested) {
         return;
       }
-      final errorMessage = ErrorHandler.fromException(e);
       aiMessage
-        ..error = errorMessage
+        ..error = e.toString()
         ..errorCode = 'stream_error';
       if (aiMessage.content.isEmpty) {
         final fallback = await APIs.sendChat(
@@ -262,7 +265,7 @@ class EnhancedChatController extends GetxController {
       );
       Get.snackbar(
         l10n?.streamErrorTitle ?? 'Akış hatası',
-        errorMessage,
+        e.toString(),
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -290,6 +293,10 @@ class EnhancedChatController extends GetxController {
         : history;
 
     final payload = <Map<String, String>>[
+      {
+        'role': 'system',
+        'content': _systemPrompt(),
+      },
       ...recent.map(
         (msg) => {
           'role': msg.isUser ? 'user' : 'assistant',
@@ -440,7 +447,7 @@ class EnhancedChatController extends GetxController {
       citations = message.citations;
     } on Exception catch (e) {
       if (!_stopRequested) {
-        errorMessage = ErrorHandler.fromException(e);
+        errorMessage = e.toString();
         errorCode = 'stream_error';
         message
           ..error = errorMessage
@@ -448,7 +455,7 @@ class EnhancedChatController extends GetxController {
         messages.refresh();
         Get.snackbar(
           l10n?.streamErrorTitle ?? 'Akış hatası',
-          errorMessage,
+          e.toString(),
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
           colorText: Colors.white,
@@ -613,10 +620,9 @@ class EnhancedChatController extends GetxController {
         duration: const Duration(seconds: 4),
       );
     } on Exception catch (e) {
-      final message = ErrorHandler.fromException(e);
       Get.snackbar(
         l10n?.exportFailedTitle ?? 'Dışa aktarma başarısız',
-        message,
+        '$e',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,

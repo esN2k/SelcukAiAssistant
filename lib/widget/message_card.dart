@@ -1,12 +1,32 @@
-/// DOSYA ADI: message_card.dart
-/// AMAÇ: Sohbet mesaj kartını göstermek.
-/// NE YAPAR:
-///   - Kullanıcı ve bot mesajlarını biçimlendirir.
-/// BAĞIMLILIKLAR:
-///   - flutter_markdown_plus
-/// SON DEĞİŞİKLİK: 17.01.2026
-library;
-// withValues'e geçilene kadar withOpacity kullanımını sürdürüyoruz.
+// ════════════════════════════════════════════════════════════════════
+// DOSYA ADI: message_card.dart
+// AMAÇ: Sohbet mesajı kartı widget'ı
+// KULLANIM: ChatBotFeature ListView'ında kullanılır
+// İLGİLİ EKRANLAR: ChatBotFeature, NewChatScreen
+// YAZAN: esN2k - Selçuk Üniversitesi
+// ════════════════════════════════════════════════════════════════════
+//
+// DETAYLI AÇIKLAMA:
+// Bu widget, sohbet ekranında gösterilen mesaj balonlarını
+// oluşturur.
+//
+// ÖZELLİKLER:
+// • Kullanıcı mesajları sağda, bot mesajları solda
+// • Bot mesajları robot ikonu ile gösterilir
+// • Markdown formatı desteklenir
+// • Boş mesajlar için typing indicator gösterilir
+//
+// UI YAPISI:
+// Bot mesajı:    [Avatar] [Mesaj Balonu    ]
+// Kullanıcı:               [    Mesaj Balonu]
+//
+// ÖRNEK KULLANIM:
+// MessageCard(
+//   message: Message(msg: "Merhaba", msgType: MessageType.user),
+// )
+// ════════════════════════════════════════════════════════════════════
+
+// Using deprecated withOpacity API until migrated to withValues
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
@@ -22,9 +42,6 @@ class MessageCard extends StatelessWidget {
   final Message message;
 
   @override
-  /// Giriş: BuildContext.
-  /// Çıkış: Mesaj kartı.
-  /// İşleyiş: Mesaj tipine göre UI üretir.
   Widget build(BuildContext context) {
     const r = Radius.circular(15);
     final markdownEnabled = Pref.markdownEnabled;

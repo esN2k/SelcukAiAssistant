@@ -1,19 +1,45 @@
-/// DOSYA ADI: chat_controller.dart
-/// AMAÇ: Basit sohbet akışını yönetmek.
-/// NE YAPAR:
-///   - Mesaj gönderme ve sesli giriş işlemlerini yürütür.
-///   - UI mesaj listesini günceller.
-/// BAĞIMLILIKLAR:
-///   - APIs: backend iletişimi
-/// SON DEĞİŞİKLİK: 17.01.2026
-library;
+// ════════════════════════════════════════════════════════════════════
+// DOSYA ADI: chat_controller.dart
+// AMAÇ: Sohbet ekranı state (durum) yönetimi
+// KULLANIM: ChatBotFeature ekranında kullanılır
+// İLGİLİ EKRANLAR: ChatBotFeature, NewChatScreen
+// YAZAN: esN2k - Selçuk Üniversitesi
+// ════════════════════════════════════════════════════════════════════
+//
+// DETAYLI AÇIKLAMA:
+// Bu controller, sohbet ekranının tüm durumunu yönetir.
+// GetX paketi ile reaktif state management sağlar.
+//
+// YÖNETİLEN DURUMLAR:
+// • list: Sohbet mesajları listesi (RxList)
+// • isListening: Mikrofon dinleme durumu
+// • speechEnabled: Konuşma tanıma kullanılabilirliği
+// • recognizedText: Tanınan ses metni
+//
+// ANA FONKSİYONLAR:
+// • askQuestion(): Kullanıcı sorusunu backend'e gönderir
+// • startListening(): Sesli giriş başlatır
+// • stopListening(): Sesli girişi durdurur
+//
+// VERİ AKIŞI:
+// 1. Kullanıcı textC (TextField) üzerinden mesaj yazar
+// 2. askQuestion() mesajı APIs sınıfına gönderir
+// 3. Yanıt ResponseCleaner ile temizlenir
+// 4. list güncellenir ve UI otomatik yenilenir
+//
+// ÖRNEK KULLANIM:
+// final controller = ChatController();
+// controller.textC.text = "Selçuk Üniversitesi nerede?";
+// await controller.askQuestion();
+// print(controller.list.last.msg);  // Yanıt
+// ════════════════════════════════════════════════════════════════════
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:selcukaiassistant/apis/apis.dart';
-import 'package:selcukaiassistant/core/errors/error_handler.dart';
 import 'package:selcukaiassistant/helper/my_dialog.dart';
 import 'package:selcukaiassistant/helper/pref.dart';
 import 'package:selcukaiassistant/l10n/l10n.dart';
@@ -57,6 +83,20 @@ class ChatController extends GetxController {
     return _languageCode() == 'en' ? 'en_US' : 'tr_TR';
   }
 
+  String _systemPrompt() {
+    if (_languageCode() == 'en') {
+      return 'You are a helpful assistant for Selçuk University. '
+          'Reply in English. Do not reveal reasoning or internal thoughts. '
+          'If the user greets vaguely (e.g. "Hello"), ask what they need about '
+          'Selçuk University.';
+    }
+    return 'Sel\u00e7uk \u00dcniversitesi i\u00e7in yard\u0131mc\u0131 bir '
+        'asistans\u0131n. Yan\u0131tlar\u0131n\u0131 T\u00fcrk\u00e7e ver. '
+        'Ak\u0131l y\u00fcr\u00fctme veya i\u00e7 konu\u015fma '
+        'payla\u015fma. Kullan\u0131c\u0131 genel bir selam verirse '
+        '(\u00f6r. "Merhaba"), Sel\u00e7uk \u00dcniversitesi ile ilgili '
+        'neye ihtiya\u00e7 duydu\u011funu sor.';
+  }
 
   Future<void> _initSpeech() async {
     speechEnabled.value = await _speechToText.initialize(
@@ -132,6 +172,7 @@ class ChatController extends GetxController {
       textC.text = '';
 
       final payload = [
+        {'role': 'system', 'content': _systemPrompt()},
         {'role': 'user', 'content': question},
       ];
 
@@ -150,13 +191,13 @@ class ChatController extends GetxController {
             ),
           );
         _scrollDown();
-      } on Exception catch (e) {
-        final message = ErrorHandler.fromException(e);
+      } on Exception {
         list
           ..removeLast()
           ..add(
             Message(
-              msg: l10n?.errorUnexpected ?? message,
+              msg: l10n?.errorUnexpected ??
+                  'Hata: Beklenmeyen bir hata oluştu.',
               msgType: MessageType.bot,
             ),
           );

@@ -1,4 +1,38 @@
-"""Sunucu tarafında sohbet çıktılarının temizlenmesi için yardımcılar."""
+"""
+╔════════════════════════════════════════════════════════════════════════════════╗
+║  DOSYA ADI: response_cleaner.py                                                ║
+║  AMAÇ: LLM yanıtlarından gereksiz meta içeriği temizleme                      ║
+║  KULLANIM: from response_cleaner import clean_text, StreamingResponseCleaner  ║
+║  BAĞIMLILIKLAR: re, utils                                                      ║
+║  YAZAN: esN2k - Selçuk Üniversitesi                                           ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+DETAYLI AÇIKLAMA:
+─────────────────
+LLM'ler bazen "iç düşüncelerini" (chain-of-thought) veya meta içerik
+üretebilir. Bu dosya, bu tür içerikleri temizler.
+
+TEMİZLENEN İÇERİKLER:
+• "Let me think about this..." gibi düşünme ifadeleri
+• "Okay, I need to respond..." gibi planlama notları
+• "Final answer:" gibi meta etiketler
+• Türkçe karşılıkları: "Tamam, düşünüyorum..." vb.
+
+SINIFLAR:
+• StreamingResponseCleaner: Akış halinde gelen yanıtları temizler
+
+FONKSİYONLAR:
+• clean_text(text, language): Tam yanıtı temizler
+• clean_block(text): Tek bloğu temizler
+
+ÖRNEK KULLANIM:
+──────────────
+from response_cleaner import clean_text
+
+kirli_yanit = "Let me think... The answer is 42."
+temiz_yanit = clean_text(kirli_yanit, "en")
+print(temiz_yanit)  # "The answer is 42."
+"""
 from __future__ import annotations
 
 from dataclasses import dataclass, field

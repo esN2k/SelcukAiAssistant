@@ -1,12 +1,29 @@
-/// DOSYA ADI: settings_screen.dart
-/// AMAÇ: Uygulama ayarlarını yönetmek.
-/// NE YAPAR:
-///   - Tema, dil ve model seçeneklerini sunar.
-///   - Sunucu URL'si ve sohbet ayarlarını düzenler.
-/// BAĞIMLILIKLAR:
-///   - settings_controller.dart: ayar state yönetimi
-/// SON DEĞİŞİKLİK: 17.01.2026
-library;
+// ════════════════════════════════════════════════════════════════════
+// DOSYA ADI: settings_screen.dart
+// AMAÇ: Uygulama ayarları ekranı
+// KULLANIM: HomeScreen'den açılır
+// İLGİLİ EKRANLAR: ModelPickerScreen, DiagnosticsScreen
+// YAZAN: esN2k - Selçuk Üniversitesi
+// ════════════════════════════════════════════════════════════════════
+//
+// DETAYLI AÇIKLAMA:
+// Bu ekran, kullanıcı tercihlerini yönetmek için kullanılır.
+//
+// YÖNETİLEN AYARLAR:
+// • Tema seçimi (açık/koyu mod)
+// • Dil seçimi (Türkçe/İngilizce)
+// • Model seçimi (Llama 3.1, Qwen, vb.)
+// • Sesli giriş ayarları
+// • Backend URL yapılandırması
+// • Sohbet geçmişi temizleme
+//
+// KULLANILAN CONTROLLER:
+// SettingsController (GetX)
+//
+// ÖRNEK KULLANIM:
+// Get.to(() => const SettingsScreen());
+// ════════════════════════════════════════════════════════════════════
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -261,24 +278,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           )
                         : const Icon(Icons.arrow_forward_ios, size: 16),
                     onTap: _controller.models.isEmpty ? null : _openModelPicker,
-                  );
-                },
-              ),
-              Obx(
-                () {
-                  final error = _controller.modelErrorMessage.value;
-                  if (error.isEmpty) {
-                    return const SizedBox.shrink();
-                  }
-                  return Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                    child: Text(
-                      error,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.error,
-                        fontSize: 12,
-                      ),
-                    ),
                   );
                 },
               ),

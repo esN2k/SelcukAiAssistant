@@ -1,4 +1,41 @@
-"""RAG (Retrieval-Augmented Generation) servisi ve FAISS tabanlı indeks yönetimi."""
+"""
+╔════════════════════════════════════════════════════════════════════════════════╗
+║  DOSYA ADI: rag_service.py                                                     ║
+║  AMAÇ: RAG (Retrieval-Augmented Generation) servisi ve FAISS vektör araması   ║
+║  KULLANIM: from rag_service import rag_service şeklinde import edilir         ║
+║  BAĞIMLILIKLAR: faiss-cpu, sentence-transformers, numpy                       ║
+║  YAZAN: esN2k - Selçuk Üniversitesi                                           ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+DETAYLI AÇIKLAMA:
+─────────────────
+RAG (Retrieval-Augmented Generation), yapay zeka yanıtlarını belgelerle
+destekleyerek doğruluğu artıran bir tekniktir.
+
+NASIL ÇALIŞIR:
+1. Belgeler parçalara (chunk) ayrılır
+2. Her parça vektöre (embedding) dönüştürülür
+3. Vektörler FAISS indeksine eklenir
+4. Sorgu geldiğinde, en benzer parçalar bulunur
+5. Bulunan parçalar LLM'e bağlam olarak verilir
+6. LLM kaynaklı yanıt üretir
+
+ANA SINIFLAR:
+• Document: Belge veri modeli (içerik, metadata, skor)
+• EmbeddingBackend: Gömleme arayüzü (abstract)
+• SentenceTransformerBackend: HuggingFace sentence-transformers entegrasyonu
+• RagIndex: FAISS indeks yönetimi
+• RAGService: Ana RAG servisi
+
+ÖRNEK KULLANIM:
+──────────────
+from rag_service import rag_service
+
+# Sorgu yap ve bağlam al
+context, citations = rag_service.get_context("Selçuk Üniversitesi nerede?")
+print(context)  # İlgili belge parçaları
+print(citations)  # Kaynak listesi
+"""
 from __future__ import annotations
 
 import json

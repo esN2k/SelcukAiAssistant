@@ -1,14 +1,36 @@
-/// DOSYA ADI: chatbot_feature.dart
-/// AMAÇ: Basit sohbet ekranını göstermek.
-/// NE YAPAR:
-///   - Sohbet akışını ve sesli girişi yönetir.
-///   - Appwrite bağlantı kontrolü sağlar.
-/// BAĞIMLILIKLAR:
-///   - chat_controller.dart: sohbet akışı
-///   - appwrite_service.dart: oturum yönetimi
-///   - error_handler.dart: hata mesajı dönüşümü
-/// SON DEĞİŞİKLİK: 17.01.2026
-library;
+// ════════════════════════════════════════════════════════════════════
+// DOSYA ADI: chatbot_feature.dart
+// AMAÇ: Ana sohbet ekranı widget'ı
+// KULLANIM: HomeScreen'den yönlendirme ile açılır
+// İLGİLİ EKRANLAR: HomeScreen, SettingsScreen, LoginScreen
+// YAZAN: esN2k - Selçuk Üniversitesi
+// ════════════════════════════════════════════════════════════════════
+//
+// DETAYLI AÇIKLAMA:
+// Bu widget, kullanıcının AI asistanıyla sohbet ettiği ana ekranı
+// oluşturur.
+//
+// ÖZELLİKLER:
+// • Mesaj listesi gösterimi (ListView)
+// • Mesaj gönderme (TextField + Send button)
+// • Sesli giriş (mikrofon butonu)
+// • Tema değiştirme (açık/koyu mod)
+// • Appwrite bağlantı testi (ping butonu)
+// • Çıkış yapma
+//
+// UI BİLEŞENLERİ:
+// • AppBar: Başlık, ping, tema ve çıkış butonları
+// • ListView: Mesaj kartları
+// • BottomNavigationBar: Mikrofon, TextField, Gönder butonu
+//
+// STATE YÖNETİMİ:
+// GetX ChatController kullanılır.
+// Obx widget'ı ile reaktif güncelleme yapılır.
+//
+// ÖRNEK KULLANIM:
+// Get.to(() => const ChatBotFeature());
+// ════════════════════════════════════════════════════════════════════
+
 // Geçici olarak Material 2 API'lerindeki withOpacity kullanımını sürdürüyoruz.
 // ignore_for_file: deprecated_member_use
 
@@ -17,7 +39,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:selcukaiassistant/controller/chat_controller.dart';
-import 'package:selcukaiassistant/core/errors/error_handler.dart';
 import 'package:selcukaiassistant/helper/global.dart';
 import 'package:selcukaiassistant/helper/pref.dart';
 import 'package:selcukaiassistant/l10n/l10n.dart';
@@ -43,9 +64,6 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
     _isDarkMode.value = Get.isDarkMode;
   }
 
-  /// Giriş: yok.
-  /// Çıkış: yok.
-  /// İşleyiş: Appwrite bağlantısını test eder.
   Future<void> _sendPing() async {
     final l10n = context.l10n;
     try {
@@ -70,7 +88,7 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
       }
     } on Exception catch (e) {
       if (mounted) {
-        final errorMessage = ErrorHandler.fromException(e);
+        final errorMessage = e.toString().replaceAll('Exception: ', '');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(l10n.appwritePingError(errorMessage)),
@@ -81,9 +99,6 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
     }
   }
 
-  /// Giriş: yok.
-  /// Çıkış: yok.
-  /// İşleyiş: Oturumu kapatır ve giriş ekranına yönlendirir.
   Future<void> _logout() async {
     final l10n = context.l10n;
     try {
@@ -100,10 +115,9 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
       }
     } on Exception catch (e) {
       if (mounted) {
-        final message = ErrorHandler.fromException(e);
         Get.snackbar(
           l10n.errorTitle,
-          message,
+          e.toString().replaceAll('Exception: ', ''),
           backgroundColor: Colors.red,
           colorText: Colors.white,
           snackPosition: SnackPosition.BOTTOM,
@@ -113,9 +127,6 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
   }
 
   @override
-  /// Giriş: BuildContext.
-  /// Çıkış: Sohbet ekranı.
-  /// İşleyiş: UI bileşenlerini oluşturur.
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return Scaffold(
@@ -124,14 +135,15 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
         centerTitle: true,
         elevation: 1,
         actions: [
-          // Appwrite bağlantı testi.
+          // Appwrite ping button
+          // Appwrite bağlantı testi
           IconButton(
             padding: const EdgeInsets.only(right: 10),
             onPressed: _sendPing,
             icon: const Icon(Icons.wifi_rounded, size: 24),
             tooltip: l10n.sendPingTooltip,
           ),
-          // Koyu/açık tema geçişi.
+          // Koyu/açık tema geçişi
           IconButton(
             padding: const EdgeInsets.only(right: 10),
             onPressed: () {
@@ -150,7 +162,7 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
               ),
             ),
           ),
-          // Çıkış işlemi.
+          // Çıkış işlemi
           IconButton(
             padding: const EdgeInsets.only(right: 10),
             onPressed: _logout,

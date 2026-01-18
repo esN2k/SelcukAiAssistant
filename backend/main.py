@@ -1,17 +1,35 @@
 """
-DOSYA ADI: main.py
-AMAÇ: Backend FastAPI uygulamasının ana giriş noktası.
-NE YAPAR:
-  - API endpoint'lerini tanımlar.
-  - CORS ayarlarını yapar.
-  - Model sağlayıcılarını başlatır.
-  - Merkezi hata yakalayıcılarını kaydeder.
-BAĞIMLILIKLAR:
-  - error_handlers.py: merkezi hata yönetimi
-  - providers/: model sağlayıcıları
-  - rag_service.py: bilgi tabanı sorguları
-SON DEĞİŞİKLİK: 17.01.2026
+╔════════════════════════════════════════════════════════════════════════════════╗
+║  DOSYA ADI: main.py                                                            ║
+║  AMAÇ: FastAPI backend uygulamasının ana giriş noktası                        ║
+║  KULLANIM: uvicorn main:app --reload --host 0.0.0.0 --port 8000               ║
+║  BAĞIMLILIKLAR: fastapi, uvicorn, pydantic, requests                          ║
+║  YAZAN: esN2k - Selçuk Üniversitesi                                           ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+DETAYLI AÇIKLAMA:
+─────────────────
+Bu dosya, Selçuk AI Akademik Asistan projesinin FastAPI backend'inin ana giriş
+noktasıdır. HTTP endpoint'leri burada tanımlanır ve istemci istekleri işlenir.
+
+ANA ENDPOINT'LER:
+• GET  /          → Basit sağlık kontrolü
+• GET  /health    → Sağlık durumu
+• GET  /health/ollama → Ollama sağlık kontrolü
+• GET  /health/hf → HuggingFace sağlık kontrolü
+• GET  /models    → Kullanılabilir modellerin listesi
+• POST /chat      → Senkron sohbet isteği
+• POST /chat/stream → SSE tabanlı akış yanıtı
+
+VERİ AKIŞI:
+1. İstemci HTTP isteği gönderir
+2. Mesajlar normalize edilir (sistem promptu eklenir)
+3. RAG aktifse, ilgili belgeler aranır
+4. LLM sağlayıcısı (Ollama/HuggingFace) çağrılır
+5. Yanıt temizlenir ve doğruluk kontrolü yapılır
+6. Sonuç istemciye döndürülür
 """
+
 from __future__ import annotations
 
 import asyncio

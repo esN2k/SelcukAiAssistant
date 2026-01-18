@@ -1,4 +1,40 @@
-"""İstek işleme ve akışa yönelik yardımcı fonksiyonlar."""
+"""
+╔════════════════════════════════════════════════════════════════════════════════╗
+║  DOSYA ADI: utils.py                                                           ║
+║  AMAÇ: İstek işleme ve akış için yardımcı fonksiyonlar                        ║
+║  KULLANIM: from utils import normalize_messages, pick_language                 ║
+║  BAĞIMLILIKLAR: prompts, schemas                                               ║
+║  YAZAN: esN2k - Selçuk Üniversitesi                                           ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+DETAYLI AÇIKLAMA:
+─────────────────
+Bu dosya, backend'de sıkça kullanılan yardımcı fonksiyonları içerir.
+
+FONKSİYONLAR:
+• pick_language(accept_language): HTTP başlığından dil seçer
+• build_default_system_message(language): Varsayılan sistem mesajı oluşturur
+• normalize_messages(messages, language): Mesaj listesini normalize eder
+• trim_messages_for_context(messages, max_tokens): Bağlam sınırına göre kırpar
+• clamp_max_tokens(value, max_limit): Token sayısını sınırlar
+• sse_event(data): SSE formatında olay üretir
+
+KULLANIM ALANLARI:
+• Dil algılama ve seçimi
+• Mesaj ön işleme
+• Token yönetimi
+• Server-Sent Events (SSE) akışı
+
+ÖRNEK KULLANIM:
+──────────────
+from utils import pick_language, normalize_messages
+
+# Dil seçimi
+lang = pick_language("tr-TR,en-US;q=0.8")  # "tr" döner
+
+# Mesaj normalizasyonu
+messages = normalize_messages([msg], "tr")
+"""
 from __future__ import annotations
 
 import json

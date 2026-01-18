@@ -1,4 +1,41 @@
-"""Selçuk AI Asistanı için prompt şablonları."""
+"""
+╔════════════════════════════════════════════════════════════════════════════════╗
+║  DOSYA ADI: prompts.py                                                         ║
+║  AMAÇ: LLM için sistem prompt şablonları                                      ║
+║  KULLANIM: from prompts import build_default_system_prompt                     ║
+║  BAĞIMLILIKLAR: yok                                                            ║
+║  YAZAN: esN2k - Selçuk Üniversitesi                                           ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+DETAYLI AÇIKLAMA:
+─────────────────
+Bu dosya, LLM'e gönderilen sistem promptlarını tanımlar. Sistem promptu,
+yapay zekaya nasıl davranması gerektiğini söyler.
+
+İÇERİK:
+• SELCUK_CORE_FACTS: Selçuk Üniversitesi'nin kritik bilgileri
+• SELCUK_UNIVERSITY_SYSTEM_PROMPT: Türkçe sistem promptu
+• DEFAULT_SYSTEM_PROMPT_EN: İngilizce sistem promptu
+• RAG_RULES_TR/EN: RAG modu kuralları
+
+KRİTİK BİLGİLER (prompt içinde vurgulanır):
+• Konum: Konya (İzmir DEĞİL!)
+• Kuruluş: 1975
+• Kampüsler: Alaeddin Keykubat ve Ardıçlı
+• Öğrenci sayısı: 100,000+
+
+FONKSİYONLAR:
+• build_default_system_prompt(language): Temel sistem promptunu oluşturur
+• build_rag_system_prompt(...): RAG bağlamıyla prompt oluşturur
+• rag_no_source_message(language): "Kaynak bulunamadı" mesajı
+
+ÖRNEK KULLANIM:
+──────────────
+from prompts import build_default_system_prompt
+
+prompt_tr = build_default_system_prompt("tr")
+prompt_en = build_default_system_prompt("en")
+"""
 
 # Core facts about Selçuk University that must be accurate
 SELCUK_CORE_FACTS = """

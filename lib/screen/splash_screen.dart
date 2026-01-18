@@ -1,12 +1,25 @@
-/// DOSYA ADI: splash_screen.dart
-/// AMAÇ: Açılışta kısa süreli yükleme ekranı göstermek.
-/// NE YAPAR:
-///   - Kullanıcıyı onboarding veya ana ekrana yönlendirir.
-/// BAĞIMLILIKLAR:
-///   - pref.dart: onboarding durumu
-///   - custom_loading.dart: yükleme animasyonu
-/// SON DEĞİŞİKLİK: 17.01.2026
-library;
+// ════════════════════════════════════════════════════════════════════
+// DOSYA ADI: splash_screen.dart
+// AMAÇ: Uygulama açılış ekranı (splash screen)
+// KULLANIM: main.dart'tan ilk açılan ekran
+// İLGİLİ EKRANLAR: OnboardingScreen, HomeScreen
+// YAZAN: esN2k - Selçuk Üniversitesi
+// ════════════════════════════════════════════════════════════════════
+//
+// DETAYLI AÇIKLAMA:
+// Bu ekran, uygulama açıldığında 2 saniye gösterilen karşılama
+// ekranıdır. Logo ve yükleme göstergesi içerir.
+//
+// AKIŞ:
+// 1. Uygulama açılır → SplashScreen görünür
+// 2. 2 saniye beklenir
+// 3. İlk kullanımsa → OnboardingScreen'e yönlendir
+// 4. Değilse → HomeScreen'e yönlendir
+//
+// ÖRNEK KULLANIM:
+// home: const SplashScreen(),
+// ════════════════════════════════════════════════════════════════════
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -27,13 +40,10 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
-  /// Giriş: yok.
-  /// Çıkış: yok.
-  /// İşleyiş: Kısa bekleme sonrası uygun ekrana geçer.
   void initState() {
     super.initState();
 
-    // Kısa süre bekleyip sonraki ekrana geçilir.
+    // wait for some time on splash & then move to next screen
     Future.delayed(const Duration(seconds: 2), () {
       unawaited(
         Get.off<Widget>(
@@ -46,11 +56,8 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   @override
-  /// Giriş: BuildContext.
-  /// Çıkış: Splash ekranı.
-  /// İşleyiş: Logo ve yükleme bileşenlerini gösterir.
   Widget build(BuildContext context) {
-    // Cihaz boyutu alınır.
+    // initializing device size
     Global.mq = MediaQuery.sizeOf(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final maxLogoSize = Global.mq.width * 0.3; // Daha küçük logo
