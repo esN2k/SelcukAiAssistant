@@ -19,3 +19,11 @@ certifi>=2024.0.0
 tenacity>=8.0.0
 aiohttp>=3.9.0
 python-multipart==0.0.9
+
+# TranslateGemma (4B model için çok dilli çeviri)
+transformers>=4.46.0
+torch>=2.2.0
+accelerate==0.34.0
+bitsandbytes==0.44.0
+sentencepiece==0.2.0
+

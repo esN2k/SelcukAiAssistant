@@ -70,6 +70,9 @@ from utils import (
     trim_messages_for_context,
 )
 
+# Translation router import
+from api.endpoints.translate import router as translate_router
+
 logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Selçuk AI Asistanı Backend")
