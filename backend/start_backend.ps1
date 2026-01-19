@@ -7,7 +7,8 @@ $OutputEncoding = $utf8
 Write-Host "=== Backend testi ===" -ForegroundColor Cyan
 
 # Backend dizinine geç
-cd D:\Projects\SelcukAiAssistant\backend
+$scriptPath = $PSScriptRoot
+Set-Location "$scriptPath"
 
 # Python kontrolü
 Write-Host "Python sürümü:" -ForegroundColor Yellow
