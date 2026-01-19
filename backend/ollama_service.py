@@ -129,9 +129,10 @@ class OllamaService:
                             "temperature": temperature,
                             "top_p": top_p,
                             "top_k": 40,
-                            "repeat_penalty": 1.1,
+                            "repeat_penalty": 1.2,
                             "num_predict": max_tokens,
                         },
+                        "stop": ["\n\n\n", "Selçuk Üniversitesi'nin ana kampüsü"],
                     }
 
                     response = await client.post(
@@ -207,9 +208,10 @@ class OllamaService:
                 "temperature": temperature,
                 "top_p": top_p,
                 "top_k": 40,
-                "repeat_penalty": 1.1,
+                "repeat_penalty": 1.2,
                 "num_predict": max_tokens,
             },
+            "stop": ["\n\n\n", "Selçuk Üniversitesi'nin ana kampüsü"],
         }
 
         try:

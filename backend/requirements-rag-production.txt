@@ -1,0 +1,50 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# Production-Grade RAG System Dependencies
+# Selçuk AI Assistant v2.0
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# Core ML & Embeddings
+sentence-transformers>=2.2.0
+torch>=2.0.0
+faiss-cpu>=1.7.4
+numpy>=1.24.0
+
+# Document Processing
+pypdf>=3.0.0
+pdfplumber>=0.10.0
+python-docx>=1.0.0
+openpyxl>=3.1.0
+python-pptx>=0.6.21
+beautifulsoup4>=4.12.0
+lxml>=4.9.0
+chardet>=5.0.0
+
+# Web Scraping
+httpx>=0.25.0
+aiohttp>=3.9.0
+playwright>=1.40.0
+tenacity>=8.2.0
+
+# Search & Retrieval
+rank-bm25>=0.2.2
+
+# AI & LLM
+google-generativeai>=0.3.0
+
+# Caching
+redis>=5.0.0
+
+# NLP
+nltk>=3.8.0
+
+# Utilities
+tqdm>=4.65.0
+pydantic>=2.0.0
+
+# Testing & Evaluation
+pytest>=7.0.0
+pytest-asyncio>=0.21.0
+
+# Optional: GPU support (uncomment if needed)
+# faiss-gpu>=1.7.4
+# torch[cuda]>=2.0.0

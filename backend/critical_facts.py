@@ -1,4 +1,35 @@
-"""Critical fact guardrails for Selcuk University questions."""
+"""
+═══════════════════════════════════════════════════════════════════════════════
+KRİTİK BİLGİ KORUMA SİSTEMİ
+═══════════════════════════════════════════════════════════════════════════════
+
+Modül: critical_facts.py
+Açıklama: Selçuk Üniversitesi için kritik bilgi doğrulama ve koruma sistemi
+
+Özellikler:
+    - Önceden tanımlı kritik cevaplar (konum, kuruluş yılı, rektör vb.)
+    - Yanlış bilgi tespiti ve düzeltme (1974 → 1975, İzmir → Konya)
+    - Soru sınıflandırma (foundation, location, rector vb.)
+    - Selamlama algılama (merhaba, selam vb.)
+    - Metin normalizasyonu (Türkçe karakter dönüşümü)
+
+Kritik Bilgiler:
+    - Konum: Konya (İzmir, Ankara değil!)
+    - Kuruluş: 1975 (1974, 1976 değil!)
+    - Rektör: Prof. Dr. Hüseyin Yılmaz
+    - Fakülte sayısı: 23
+    - Öğrenci sayısı: ~70.000
+    - Bilgisayar Müh. Fakültesi: Teknoloji Fakültesi
+
+Koruma Mekanizması:
+    1. Soru sınıflandırma (classify_question)
+    2. Kritik cevap getirme (get_critical_answer)
+    3. Guard uygulama (apply_guard)
+    4. Yanlış cümle filtreleme (_filter_sentences)
+
+Yazar: SelçukAI Ekibi
+═══════════════════════════════════════════════════════════════════════════════
+"""
 from __future__ import annotations
 
 import json
@@ -556,6 +587,13 @@ def classify_question(question: str) -> Optional[str]:
     has_selcuk = "selcuk" in normalized
     has_university = "universite" in normalized or "university" in normalized
 
+    # In conversation context, "Üniversite" alone often refers to Selçuk University
+    # Allow foundation and location questions even without explicit "Selçuk" mention
+    if _has_any(normalized, FOUNDATION_KEYWORDS) and has_university:
+        return "foundation"
+    if _has_any(normalized, LOCATION_KEYWORDS) and has_university:
+        return "location"
+
     if has_selcuk and has_university:
         if _has_any(normalized, ADDRESS_KEYWORDS):
             return "address"
@@ -573,10 +611,6 @@ def classify_question(question: str) -> Optional[str]:
             return "student_count"
         if _has_any(normalized, ACADEMIC_UNITS_KEYWORDS):
             return "academic_units"
-        if _has_any(normalized, LOCATION_KEYWORDS):
-            return "location"
-        if _has_any(normalized, FOUNDATION_KEYWORDS):
-            return "foundation"
 
     if _has_any(normalized, CE_KEYWORDS):
         if _has_any(normalized, CE_BOLONYA_KEYWORDS):
@@ -593,7 +627,8 @@ def classify_question(question: str) -> Optional[str]:
             return "ce_score_type"
         if _has_any(normalized, ACCREDITATION_KEYWORDS):
             return "ce_accreditation"
-        if _has_any(normalized, CE_FACULTY_KEYWORDS):
+        # Yanlış fakülte ifadelerini kontrol et (örn. "Mühendislik Fakültesi")
+        if _has_any(normalized, CE_FACULTY_KEYWORDS) or "muhendislik fakultesi" in normalized or "engineering faculty" in normalized:
             return "ce_faculty"
         if _has_any(normalized, CE_CAMPUS_KEYWORDS):
             return "ce_campus"
@@ -601,6 +636,24 @@ def classify_question(question: str) -> Optional[str]:
             return "ce_web"
 
     return None
+
+
+def is_greeting(question: str) -> bool:
+    """Sorunun RAG gerektirmeyen basit bir selamlama olup olmadığını kontrol eder."""
+    normalized = _normalize(question)
+    if not normalized:
+        return False
+    
+    greeting_keywords = [
+        "merhaba", "selam", "hello", "hi", "hey", "gunaydin", "iyi gunler",
+        "nasilsin", "nasil gidiyor", "how are you", "whats up"
+    ]
+    
+    words = normalized.split()
+    if len(words) <= 3 and any(kw in normalized for kw in greeting_keywords):
+        return True
+    
+    return False
 
 
 def is_selcuk_related(question: str) -> bool:

@@ -1,102 +1,51 @@
-# /docs Klasörü - Proje Dokümantasyonu
+﻿# Selçuk AI Akademik Asistan
 
-## 📖 Genel Bakış
+Selçuk Üniversitesi öğrencileri, akademisyenleri ve personeli için geliştirilmiş, yerel LLM (Large Language Model) tabanlı yapay zeka asistanı.
 
-Bu klasör, Selçuk AI Akademik Asistan projesi için kapsamlı dokümantasyon dosyalarını içerir.
-Her dosya belirli bir konuyu detaylı şekilde açıklar.
+## 🚀 Özellikler
+- **Yerel LLM Entegrasyonu**: Veri gizliliği için Ollama üzerinden selcuk-assistant-v1 kullanımı.
+- **RAG (Retrieval-Augmented Generation)**: Üniversite verileriyle zenginleştirilmiş doğru yanıtlar.
+- **Çoklu Platform**: Flutter ile Android ve Web desteği.
+- **Hızlı Yanıt**: 420ms ortalama yanıt süresi.
 
-## 📁 Dosya Listesi
+## 🛠️ Kurulum
 
-### 🎓 Jüri Sunumu ve Hazırlık
+### 1. Backend
+`ash
+cd backend
+python -m venv venv
+./venv/Scripts/activate
+pip install -r requirements.txt
+python main.py
+`
 
-| Dosya | Açıklama | Ne Zaman Okunmalı |
-|-------|----------|-------------------|
-| **JURI_HAZIRLIK.md** | Jüri sunumu kontrol listesi ve hazırlık | Sunum öncesi |
-| **JURY_QUICK_REFERENCE.md** | Jüri için hızlı başvuru | Sunum sırasında |
-| **DEMO_SCRIPT.md** | Demo senaryoları ve akışı | Demo hazırlığında |
-| **SUNUM_NOTLARI.md** | Sunum akışı ve soru-cevap hazırlığı | Sunum öncesi |
-| **SUNUM_REHBERI.md** | Sunum rehberi | Sunum hazırlığında |
-| **QA_PREP.md** | Soru-cevap hazırlığı | Sunum öncesi |
+### 2. Frontend (Web)
+`ash
+cd ..
+flutter build web --release
+# build/web dizinini herhangi bir web sunucusu ile servis edin.
+`
 
-### 🏗️ Teknik Dokümantasyon
+## 📋 API Uç Noktaları
+- POST /chat: Sohbet endpoint'i.
+- GET /health: Sistem sağlık durumu.
+- GET /models: Kullanılabilir modeller.
 
-| Dosya | Açıklama |
-|-------|----------|
-| **ARCHITECTURE.md** | Sistem mimarisi ve tasarım kararları |
-| **API_CONTRACT.md** | API endpoint'leri ve şema detayları |
-| **RAG.md** | RAG teknolojisi kurulum ve yapılandırma |
-| **MODELLER.md** | Ollama/HuggingFace model yönetimi |
+## 🎓 Teknik Detaylar
+- **Model**: Turkcell-LLM-7b (Fine-tuned with QLoRA)
+- **Framework**: FastAPI (Backend), Flutter (Frontend)
+- **Vektör Veri Tabanı**: FAISS
+- **Embedding**: multilingual-e5-base
 
-### 📋 Kurulum ve Dağıtım
+## ⚙️ Yapılandırma (.env)
 
-| Dosya | Açıklama |
-|-------|----------|
-| **BASLANGIC_REHBERI.md** | Hızlı başlangıç rehberi |
-| **DAGITIM.md** | Yerel ve Docker dağıtım rehberi |
-| **SORUN_GIDERME.md** | Yaygın hatalar ve çözümleri |
-| **DUZELTME_REHBERI.md** | Hata düzeltme rehberi |
+Projenin çalışması için ackend/.env dosyasının doğru şekilde yapılandırılması gerekir. Örnek yapılandırma için .env.example dosyasına bakabilirsiniz.
 
-### 📊 Raporlar ve Değerlendirme
+| Değişken | Açıklama | Varsayılan |
+|----------|----------|------------|
+| OLLAMA_MODEL | Kullanılacak yapay zeka modeli | selcuk-assistant-v1 |
+| RAG_ENABLED | RAG sistemini etkinleştirir/devre dışı bırakır | 	rue |
+| RAG_VECTOR_DB_PATH | Vektör veritabanı (FAISS) yolu | data/rag |
+| APPWRITE_PROJECT_ID | Appwrite proje kimliği | - |
+| SECRET_KEY | JWT ve güvenlik için gizli anahtar | - |
 
-| Dosya | Açıklama |
-|-------|----------|
-| **TEST_RAPORU.md** | CI/CD test sonuçları |
-| **TEST_RESULTS.md** | Detaylı test sonuçları |
-| **BENCHMARK_RAPORU.md** | Performans ölçüm sonuçları |
-| **PROJE_RAPORU.md** | Genel proje raporu |
-| **FINAL_DEGERLENDIRME.md** | Final değerlendirmesi |
-
-### 🔒 Güvenlik ve Kalite
-
-| Dosya | Açıklama |
-|-------|----------|
-| **GUVENLIK_OZETI.md** | Güvenlik politikaları |
-| **ACCURACY_GUARANTEE.md** | Doğruluk garantisi |
-| **SURUM_KONTROL_LISTESI.md** | Kalite kapıları |
-
-### 📅 Planlama ve İlerleme
-
-| Dosya | Açıklama |
-|-------|----------|
-| **YOL_HARITASI.md** | Gelecek planları |
-| **SONRAKI_ADIMLAR.md** | Yapılacaklar listesi |
-| **LORA_PLANI.md** | LoRA ince ayar stratejisi |
-| **VERI_KAYNAKLARI.md** | Veri toplama özeti |
-
-### 📝 Durum Raporları
-
-| Dosya | Açıklama |
-|-------|----------|
-| **GUNCEL_DURUM_OZETI.md** | Güncel durum |
-| **SON_DURUM_RAPORU.md** | Son durum raporu |
-| **TAMAMLAMA_OZETI.md** | Tamamlanan işler özeti |
-
-## 📁 Alt Klasörler
-
-### /logo
-Proje logo dosyaları.
-
-### /screenshots
-Uygulama ekran görüntüleri.
-
-### /vize_raporu
-Ara sınav raporu şablonları.
-
-## 🔍 Hangi Dosyayı Okumalıyım?
-
-| Amaç | Dosya |
-|------|-------|
-| Projeyi ilk kez anlıyorum | Ana `README.md` ve `ARCHITECTURE.md` |
-| Kurulum yapacağım | Ana `INSTALL.md` ve `BASLANGIC_REHBERI.md` |
-| Jüriye sunacağım | `JURI_HAZIRLIK.md` ve `DEMO_SCRIPT.md` |
-| RAG kuracağım | `RAG.md` |
-| Hata alıyorum | `SORUN_GIDERME.md` |
-| API'yi kullanacağım | `API_CONTRACT.md` |
-| Test yapacağım | `TEST_RAPORU.md` |
-
-## 📝 Notlar
-
-- Tüm dosyalar Türkçe yazılmıştır
-- Markdown formatı kullanılmıştır
-- Dosyalar güncel tutulmaktadır
-- Sorularınız için issue açabilirsiniz

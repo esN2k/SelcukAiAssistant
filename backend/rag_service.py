@@ -341,18 +341,27 @@ class RagIndex:
         İşleyiş: FAISS indeksinde arama yapar.
         """
         if not query.strip() or self.index is None or self.index.ntotal == 0:
+            logger.warning("RAG search skipped: query=%s, index_exists=%s, index_total=%s", 
+                          bool(query.strip()), self.index is not None, 
+                          self.index.ntotal if self.index else 0)
             return []
         top_k = max(1, min(top_k, self.index.ntotal))
         embeddings = self.embedder.embed([query])
         if embeddings.size == 0:
+            logger.warning("RAG search: empty embeddings for query: %s", query)
             return []
         embeddings = np.ascontiguousarray(embeddings, dtype="float32")
         scores, indices = self.index.search(embeddings, top_k)
+        logger.info("RAG search: query='%s', top_k=%d, scores=%s", 
+                   query[:50], top_k, scores[0].tolist() if len(scores) > 0 else [])
         results: list[Document] = []
         for score, idx in zip(scores[0], indices[0]):
             if idx < 0 or idx >= len(self.metadata):
                 continue
             meta = self.metadata[idx]
+            content_preview = meta.get("content", "")[:100]
+            logger.debug("RAG result: idx=%d, score=%.4f, content_preview='%s...'", 
+                        idx, score, content_preview)
             results.append(
                 Document(
                     content=meta.get("content", ""),
@@ -361,6 +370,7 @@ class RagIndex:
                     score=float(score),
                 )
             )
+        logger.info("RAG search returned %d documents", len(results))
         return results
 
     def save(self, meta_info: Optional[dict[str, Any]] = None) -> None:
@@ -496,11 +506,13 @@ class RAGService:
         İşleyiş: Sorgu sonuçlarını numaralı bağlam haline getirir.
         """
         if not self.enabled:
+            logger.debug("RAG get_context: RAG disabled")
             return "", []
         if not self.available:
             raise RuntimeError(self.error_message or mesajlar.RAG_HAZIR_DEGIL)
         docs = self.search(query, top_k=top_k)
         if not docs:
+            logger.warning("RAG get_context: No documents found for query: %s", query)
             return "", []
 
         context_parts: list[str] = []
@@ -508,7 +520,11 @@ class RAGService:
         for idx, doc in enumerate(docs, 1):
             citations.append(_citation_label(doc.metadata))
             context_parts.append(f"[{idx}] {doc.content}")
-        return "\n\n".join(context_parts), citations
+        
+        context = "\n\n".join(context_parts)
+        logger.info("RAG get_context: Returning %d documents, %d chars of context", 
+                   len(docs), len(context))
+        return context, citations
 
     def add_documents(self, documents: Sequence[Document]) -> int:
         """Giriş: Doküman listesi.

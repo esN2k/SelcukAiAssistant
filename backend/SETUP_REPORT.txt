@@ -1,0 +1,38 @@
+======================================================================
+SELCUK UNIVERSITESI RAG SYSTEM - SETUP REPORT
+======================================================================
+
+Date: 2026-01-19 02:38:20
+
+DOCUMENTS INDEXED:
+----------------------------------------------------------------------
+Total Documents: 663
+Web Pages: 645
+PDFs: 18
+DOCX: 0
+
+RAG INDEX:
+----------------------------------------------------------------------
+Total Vectors: 14890
+Embedding Model: LaBSE (768-dim)
+Search Type: Hybrid (FAISS + BM25)
+
+GUARD SYSTEM:
+----------------------------------------------------------------------
+Layers: 5 (Token + Semantic + Entity + Intent + Cross-Encoder)
+Status: Active
+
+EVALUATION RESULTS:
+----------------------------------------------------------------------
+Test Queries: 6
+Successful: 6/6 (100.0%)
+
+NEXT STEPS:
+----------------------------------------------------------------------
+1. Test queries in your application
+2. Monitor accuracy and adjust thresholds
+3. Add more documents as needed
+
+======================================================================
+SYSTEM READY FOR PRODUCTION
+======================================================================

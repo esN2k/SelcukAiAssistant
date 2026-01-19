@@ -1,0 +1,152 @@
+[
+  {
+    "url": "https://oidb.selcuk.edu.tr/tr",
+    "error": "Failed to scrape after 1 attempts: BrowserType.launch: Executable doesn't exist at C:\\Users\\Esen\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "success": false
+  },
+  {
+    "url": "https://www.selcuk.edu.tr/akademik/",
+    "error": "Failed to scrape after 1 attempts: BrowserType.launch: Executable doesn't exist at C:\\Users\\Esen\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "success": false
+  },
+  {
+    "url": "https://obs.selcuk.edu.tr/",
+    "error": "Failed to scrape after 1 attempts: BrowserType.launch: Executable doesn't exist at C:\\Users\\Esen\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "success": false
+  },
+  {
+    "url": "https://bologna.selcuk.edu.tr/tr/dersler/teknoloji-bilgisayar_muhendisligi-bilgisayar_muhendisligi-lisans",
+    "error": "Failed to scrape after 1 attempts: BrowserType.launch: Executable doesn't exist at C:\\Users\\Esen\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "success": false
+  },
+  {
+    "url": "https://akts.selcuk.edu.tr/",
+    "error": "Failed to scrape after 1 attempts: BrowserType.launch: Executable doesn't exist at C:\\Users\\Esen\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "success": false
+  },
+  {
+    "url": "https://yokatlas.yok.gov.tr/lisans.php?y=108911205",
+    "error": "Failed to scrape after 1 attempts: BrowserType.launch: Executable doesn't exist at C:\\Users\\Esen\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "success": false
+  },
+  {
+    "url": "https://www.selcuk.edu.tr/akademik/fakulteler",
+    "error": "Failed to scrape after 1 attempts: BrowserType.launch: Executable doesn't exist at C:\\Users\\Esen\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "success": false
+  },
+  {
+    "url": "https://www.selcuk.edu.tr/akademik/enstituler",
+    "error": "Failed to scrape after 1 attempts: BrowserType.launch: Executable doesn't exist at C:\\Users\\Esen\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "success": false
+  },
+  {
+    "url": "https://muhendislik.selcuk.edu.tr/",
+    "error": "Failed to scrape after 1 attempts: BrowserType.launch: Executable doesn't exist at C:\\Users\\Esen\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "success": false
+  },
+  {
+    "url": "https://fen.selcuk.edu.tr/",
+    "error": "Failed to scrape after 1 attempts: BrowserType.launch: Executable doesn't exist at C:\\Users\\Esen\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "success": false
+  },
+  {
+    "url": "https://yemek.selcuk.edu.tr/",
+    "error": "Failed to scrape after 1 attempts: BrowserType.launch: Executable doesn't exist at C:\\Users\\Esen\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "success": false
+  },
+  {
+    "url": "https://sksdb.selcuk.edu.tr/",
+    "error": "Failed to scrape after 1 attempts: BrowserType.launch: Executable doesn't exist at C:\\Users\\Esen\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "success": false
+  },
+  {
+    "url": "https://ogrenci.selcuk.edu.tr/",
+    "error": "Failed to scrape after 1 attempts: BrowserType.launch: Executable doesn't exist at C:\\Users\\Esen\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "success": false
+  },
+  {
+    "url": "https://www.selcuk.edu.tr/kampus",
+    "error": "Failed to scrape after 1 attempts: BrowserType.launch: Executable doesn't exist at C:\\Users\\Esen\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "success": false
+  },
+  {
+    "url": "https://www.selcuk.edu.tr/hakkinda/kampus-hayati",
+    "error": "Failed to scrape after 1 attempts: BrowserType.launch: Executable doesn't exist at C:\\Users\\Esen\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "success": false
+  },
+  {
+    "url": "https://skscafe.selcuk.edu.tr/",
+    "error": "Failed to scrape after 1 attempts: BrowserType.launch: Executable doesn't exist at C:\\Users\\Esen\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "success": false
+  },
+  {
+    "url": "https://sosyaltesis.selcuk.edu.tr/",
+    "error": "Failed to scrape after 1 attempts: BrowserType.launch: Executable doesn't exist at C:\\Users\\Esen\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "success": false
+  },
+  {
+    "url": "https://ktp.selcuk.edu.tr/",
+    "error": "Failed to scrape after 1 attempts: BrowserType.launch: Executable doesn't exist at C:\\Users\\Esen\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "success": false
+  },
+  {
+    "url": "https://www.selcuk.edu.tr/kutuphane",
+    "error": "Failed to scrape after 1 attempts: BrowserType.launch: Executable doesn't exist at C:\\Users\\Esen\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "success": false
+  },
+  {
+    "url": "https://www.selcuk.edu.tr/iletisim",
+    "error": "Failed to scrape after 1 attempts: BrowserType.launch: Executable doesn't exist at C:\\Users\\Esen\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "success": false
+  },
+  {
+    "url": "https://www.selcuk.edu.tr/hakkinda/yonetim",
+    "error": "Failed to scrape after 1 attempts: BrowserType.launch: Executable doesn't exist at C:\\Users\\Esen\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "success": false
+  },
+  {
+    "url": "https://www.turkiye.gov.tr/selcuk-universitesi",
+    "error": "Failed to scrape after 1 attempts: BrowserType.launch: Executable doesn't exist at C:\\Users\\Esen\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "success": false
+  },
+  {
+    "url": "https://www.selcuk.edu.tr/duyuru",
+    "error": "Failed to scrape after 1 attempts: BrowserType.launch: Executable doesn't exist at C:\\Users\\Esen\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "success": false
+  },
+  {
+    "url": "https://www.selcuk.edu.tr/haber",
+    "error": "Failed to scrape after 1 attempts: BrowserType.launch: Executable doesn't exist at C:\\Users\\Esen\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "success": false
+  },
+  {
+    "url": "https://www.selcuk.edu.tr/etkinlik",
+    "error": "Failed to scrape after 1 attempts: BrowserType.launch: Executable doesn't exist at C:\\Users\\Esen\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "success": false
+  },
+  {
+    "url": "https://arastirma.selcuk.edu.tr/",
+    "error": "Failed to scrape after 1 attempts: BrowserType.launch: Executable doesn't exist at C:\\Users\\Esen\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "success": false
+  },
+  {
+    "url": "https://kolezyum.selcuk.edu.tr/",
+    "error": "Failed to scrape after 1 attempts: BrowserType.launch: Executable doesn't exist at C:\\Users\\Esen\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "success": false
+  },
+  {
+    "url": "https://uio.selcuk.edu.tr/",
+    "error": "Failed to scrape after 1 attempts: BrowserType.launch: Executable doesn't exist at C:\\Users\\Esen\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "success": false
+  },
+  {
+    "url": "https://erasmus.selcuk.edu.tr/",
+    "error": "Failed to scrape after 1 attempts: BrowserType.launch: Executable doesn't exist at C:\\Users\\Esen\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "success": false
+  },
+  {
+    "url": "https://bilgisayar.selcuk.edu.tr/",
+    "error": "Failed to scrape after 1 attempts: BrowserType.launch: Executable doesn't exist at C:\\Users\\Esen\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔════════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
+    "success": false
+  }
+]

@@ -3,11 +3,14 @@
 /// NE YAPAR:
 ///   - Kayıt, oturum açma ve çıkış işlemlerini yürütür.
 ///   - Mevcut kullanıcı bilgisini döndürür.
+///   - Heartbeat ile bağlantıyı canlı tutar.
 /// BAĞIMLILIKLAR:
 ///   - appwrite
 ///   - flutter_dotenv
-/// SON DEĞİŞİKLİK: 17.01.2026
+/// SON DEĞİŞİKLİK: 18.01.2026
 library;
+
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:appwrite/appwrite.dart';
@@ -35,11 +38,53 @@ class AppwriteService {
       ..setProject(projectId);
 
     account = Account(client!);
+
+    // Heartbeat başlat - her 5 dakikada bir bağlantıyı kontrol et
+    _startHeartbeat();
   }
 
   // İstemci ve account opsiyoneldir; başlatılmamış olabilir.
   Client? client;
   Account? account;
+  Timer? _heartbeatTimer;
+
+  /// Giriş: yok.
+  /// Çıkış: yok.
+  /// İşleyiş: Periyodik heartbeat başlatır, bağlantıyı canlı tutar.
+  void _startHeartbeat() {
+    _heartbeatTimer?.cancel();
+    _heartbeatTimer = Timer.periodic(const Duration(minutes: 5), (_) async {
+      await _performHeartbeat();
+    });
+  }
+
+  /// Giriş: yok.
+  /// Çıkış: yok.
+  /// İşleyiş: Appwrite bağlantısını test eder, hata varsa loglar.
+  Future<void> _performHeartbeat() async {
+    if (account == null) return;
+
+    try {
+      await account!.get();
+      log('✓ Appwrite heartbeat OK');
+    } on AppwriteException catch (e) {
+      log('✗ Appwrite heartbeat failed: ${e.message}');
+      // Bağlantı kopmuşsa yeniden bağlanmayı dene
+      if (e.code == 401 || e.code == 403) {
+        log('Appwrite session expired, reconnection may be needed');
+      }
+    } on Exception catch (e) {
+      log('✗ Appwrite heartbeat error: $e');
+    }
+  }
+
+  /// Giriş: yok.
+  /// Çıkış: yok.
+  /// İşleyiş: Heartbeat timer'ı durdurur.
+  void dispose() {
+    _heartbeatTimer?.cancel();
+    _heartbeatTimer = null;
+  }
 
   /// Giriş: Kullanıcı bilgileri.
   /// Çıkış: Oluşturulan kullanıcı nesnesi.

@@ -65,7 +65,7 @@ class Pref {
   }
 
   static String? get selectedModel =>
-      _box.get('selected_model', defaultValue: 'selcuk-assistant-v1');
+      box.get('selected_model', defaultValue: 'selcuk-assistant-v1') as String?;
 
 
   static set selectedModel(String? value) {

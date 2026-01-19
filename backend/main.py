@@ -55,11 +55,16 @@ from api.endpoints.translate import router as translate_router
 from analytics_service import analytics_service
 from api import error_messages as mesajlar
 from cache_service import cache_service
-from critical_facts import apply_guard, get_critical_answer, is_selcuk_related
+from critical_facts import apply_guard, get_critical_answer, is_selcuk_related, is_greeting
 from prompts import build_rag_system_prompt, rag_no_source_message
 from rag_guard import apply_rag_guard, is_context_relevant
-from rag_service import rag_service
+from rag_service_improved import ImprovedRAGService
+from rag_guard_improved import ImprovedRAGGuard
+from quality.entegrasyon import KaliteliRAGPipeline
+from quality.quality_tester import KaliteTesti
+from knowledge.domain_knowledge import boost_priority_documents
 from response_cleaner import StreamingResponseCleaner, clean_text
+from repetition_detector import RepetitionDetector
 from schemas import ChatRequest, ChatResponse, UsageInfo
 from exceptions import DogrulamaHatasi, SunucuHatasi, ZamanAsimiHatasi
 from utils import (
@@ -100,6 +105,14 @@ providers: dict[str, ModelProvider] = {
 }
 model_registry = ModelRegistry(providers)
 
+improved_rag_service: Optional[ImprovedRAGService] = None
+improved_rag_guard: Optional[ImprovedRAGGuard] = None
+rag_system_ready = False
+
+# Kalite modülü değişkenleri
+kaliteli_pipeline: Optional[KaliteliRAGPipeline] = None
+kalite_modu: bool = True  # Kalite modunu aktif et
+
 appwrite_client: Optional[requests.Session] = None
 if Config.APPWRITE_ENDPOINT and Config.APPWRITE_PROJECT_ID and Config.APPWRITE_API_KEY:
     appwrite_client = requests.Session()
@@ -112,6 +125,98 @@ if Config.APPWRITE_ENDPOINT and Config.APPWRITE_PROJECT_ID and Config.APPWRITE_A
     )
 else:
     logger.info("Appwrite yapılandırılmadı; sohbet kaydı atlandı.")
+
+
+@app.on_event("startup")
+async def startup_event():
+    """Başlangıçta geliştirilmiş RAG sistemini ve kalite pipeline'ını yükler."""
+    global improved_rag_service, improved_rag_guard, rag_system_ready, kaliteli_pipeline, kalite_modu
+    
+    logger.info("="*60)
+    logger.info("🚀 SELÇUK AI ASISTAN - BAŞLATILIYOR")
+    logger.info("="*60)
+    
+    try:
+        logger.info("🔄 Geliştirilmiş RAG sistemi LaBSE ile yükleniyor...")
+        rag_data_path = Path("data/rag")
+        
+        improved_rag_service = ImprovedRAGService(rag_data_path)
+        
+        faiss_path = rag_data_path / "index_labse.faiss"
+        metadata_path = rag_data_path / "metadata_labse.pkl"
+        
+        if faiss_path.exists() and metadata_path.exists():
+            import faiss
+            import pickle
+            from rank_bm25 import BM25Okapi
+            
+            improved_rag_service.faiss_index = faiss.read_index(str(faiss_path))
+            
+            with open(metadata_path, 'rb') as f:
+                data = pickle.load(f)
+                improved_rag_service.documents = data['documents']
+                improved_rag_service.metadata = data['metadata']
+            
+            tokenized_docs = [doc.lower().split() for doc in improved_rag_service.documents]
+            improved_rag_service.bm25 = BM25Okapi(tokenized_docs)
+            
+            logger.info(f"✅ Geliştirilmiş RAG yüklendi: {improved_rag_service.faiss_index.ntotal} vektör (LaBSE 768-dim)")
+            
+            improved_rag_guard = ImprovedRAGGuard()
+            logger.info("✅ Geliştirilmiş RAG Guard başlatıldı (5 katman)")
+            
+            rag_system_ready = True
+            logger.info("✅ Geliştirilmiş RAG sistemi üretime hazır")
+            
+            # Kaliteli pipeline oluştur
+            if kalite_modu:
+                logger.info("🎯 Kaliteli RAG pipeline başlatılıyor...")
+                kaliteli_pipeline = KaliteliRAGPipeline()
+                logger.info("✅ Kaliteli pipeline hazır!")
+                
+                # Kalite testlerini çalıştır (opsiyonel - başlangıçta)
+                try:
+                    logger.info("🧪 Hızlı kalite kontrolü yapılıyor...")
+                    
+                    def test_query_func(sorgu: str) -> str:
+                        """Test için basit query fonksiyonu"""
+                        try:
+                            contexts = improved_rag_service.hybrid_search(sorgu, top_k=5)
+                            validated = improved_rag_guard.validate_and_rerank(sorgu, contexts)
+                            
+                            if not validated:
+                                return "Bu konuda bilgim yok."
+                            
+                            cevap = f"Bulunan bilgiler:\n"
+                            for i, ctx in enumerate(validated[:3], 1):
+                                cevap += f"{i}. {ctx['content'][:200]}...\n"
+                                cevap += f"   [Kaynak: {ctx.get('metadata', {}).get('source', 'Bilinmiyor')}]\n"
+                            return cevap
+                        except Exception as e:
+                            return f"Bir hata oluştu: {e}"
+                    
+                    # Sadece öncelikli testleri çalıştır (hızlı başlangıç için)
+                    tester = KaliteTesti(test_query_func)
+                    rapor = tester.testleri_calistir(max_oncelik=1)
+                    
+                    logger.info("="*60)
+                    logger.info("📊 KALİTE HIZLI TEST SONUÇLARI")
+                    logger.info("="*60)
+                    logger.info(f"✅ Başarılı: {rapor.basarili}/{rapor.toplam}")
+                    logger.info(f"📈 Başarı Oranı: %{rapor.basari_orani*100:.1f}")
+                    logger.info("="*60)
+                except Exception as e:
+                    logger.warning(f"⚠️ Kalite testi atlandı: {e}")
+        else:
+            logger.warning(f"⚠️ RAG indeks dosyaları bulunamadı: {rag_data_path}")
+            logger.warning(f"   Beklenen dosyalar: {faiss_path} ve {metadata_path}")
+        
+        logger.info("✅ Sistem tamamen hazır!")
+            
+    except Exception as e:
+        logger.error(f"❌ Geliştirilmiş RAG sistemi yüklenemedi: {e}")
+        import traceback
+        traceback.print_exc()
 
 
 def _usage_to_schema(usage: Optional[Usage]) -> Optional[UsageInfo]:
@@ -199,13 +304,23 @@ async def root() -> dict[str, str]:
 
 
 @app.get("/health")
-async def health() -> dict[str, str]:
+async def health() -> dict[str, Any]:
     """Giriş: yok.
 
     Çıkış: Durum sözlüğü.
     İşleyiş: Sağlık kontrolü için kısa mesaj döndürür.
     """
-    return {"status": "ok", "message": "Selçuk AI Asistanı arka uç çalışıyor"}
+    health_info = {
+        "status": "ok", 
+        "message": "Selçuk AI Asistanı arka uç çalışıyor",
+        "rag_system": {
+            "enabled": rag_system_ready,
+            "type": "improved_labse" if rag_system_ready else "legacy",
+            "vectors": improved_rag_service.faiss_index.ntotal if (rag_system_ready and improved_rag_service) else 0,
+            "documents": len(improved_rag_service.documents) if (rag_system_ready and improved_rag_service) else 0
+        }
+    }
+    return health_info
 
 
 @app.get("/health/ollama")
@@ -303,6 +418,24 @@ async def chat(request: ChatRequest, http_request: Request) -> ChatResponse:
 
     messages = normalize_messages(request.messages, language)
     question = next((m.content for m in reversed(messages) if m.role == "user"), "")
+    
+    # Handle simple greetings with immediate response
+    if is_greeting(question):
+        greeting_response = (
+            "Merhaba! Ben Selçuk AI Asistanı. Selçuk Üniversitesi hakkında "
+            "size nasıl yardımcı olabilirim?" if language == "tr" else
+            "Hello! I'm Selçuk AI Assistant. How can I help you with Selçuk University?"
+        )
+        _log_chat(question=question, answer=greeting_response)
+        return ChatResponse(
+            answer=greeting_response,
+            request_id=request_id,
+            provider=resolved.provider,
+            model=resolved.model_id,
+            usage=None,
+            citations=None,
+        )
+    
     critical_answer = get_critical_answer(question, language)
     if critical_answer:
         _log_chat(question=question, answer=critical_answer)
@@ -326,10 +459,33 @@ async def chat(request: ChatRequest, http_request: Request) -> ChatResponse:
 
     if rag_enabled:
         try:
-            rag_context, citations = rag_service.get_context(question, top_k=rag_top_k)
+            if rag_system_ready and improved_rag_service and improved_rag_guard:
+                logger.info("request_id=%s Geliştirilmiş RAG sistemi kullanılıyor (LaBSE + Hibrit)", request_id)
+                contexts = improved_rag_service.hybrid_search(question, top_k=rag_top_k)
+                contexts = boost_priority_documents(question, contexts)
+                validated_contexts = improved_rag_guard.validate_and_rerank(question, contexts)
+                
+                if validated_contexts:
+                    rag_context = "\n\n---\n\n".join([
+                        f"[Kaynak: {Path(c['metadata']['source']).stem}]\n{c['content']}"
+                        for c in validated_contexts[:3]
+                    ])
+                    citations = [Path(c['metadata']['source']).name for c in validated_contexts[:3]]
+                    logger.info("request_id=%s Geliştirilmiş RAG: %d bağlam, %d kaynak", 
+                               request_id, len(validated_contexts), len(citations))
+                else:
+                    logger.warning("request_id=%s Geliştirilmiş RAG: Tüm bağlamlar guard tarafından reddedildi", request_id)
+                    rag_context = ""
+                    citations = []
+            else:
+                logger.warning("request_id=%s Geliştirilmiş RAG hazır değil, eski sisteme geçiliyor", request_id)
+                from rag_service import rag_service
+                rag_context, citations = rag_service.get_context(question, top_k=rag_top_k)
         except RuntimeError as exc:
             raise SunucuHatasi(detay=mesajlar.RAG_HAZIR_DEGIL) from exc
+        
         if not rag_context:
+            logger.warning("request_id=%s RAG boş bağlam döndürdü, soru: %s", request_id, question)
             answer = rag_no_source_message(language)
             return ChatResponse(
                 answer=answer,
@@ -339,16 +495,23 @@ async def chat(request: ChatRequest, http_request: Request) -> ChatResponse:
                 usage=None,
                 citations=None,
             )
-        if not is_context_relevant(question, rag_context, language):
-            answer = rag_no_source_message(language)
-            return ChatResponse(
-                answer=answer,
-                request_id=request_id,
-                provider=resolved.provider,
-                model=resolved.model_id,
-                usage=None,
-                citations=None,
-            )
+        
+        if not rag_system_ready:
+            context_relevant = is_context_relevant(question, rag_context, language)
+            logger.info("request_id=%s RAG context_relevant=%s, context_len=%d, citations=%d", 
+                       request_id, context_relevant, len(rag_context), len(citations))
+            if not context_relevant:
+                logger.warning("request_id=%s RAG bağlamı alakalı değil. Soru: %s, Bağlam önizleme: %s", 
+                              request_id, question, rag_context[:200])
+                answer = rag_no_source_message(language)
+                return ChatResponse(
+                    answer=answer,
+                    request_id=request_id,
+                    provider=resolved.provider,
+                    model=resolved.model_id,
+                    usage=None,
+                    citations=None,
+                )
         messages[0].content = build_rag_system_prompt(
             messages[0].content,
             rag_context,
@@ -445,6 +608,43 @@ async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingR
 
     messages = normalize_messages(request.messages, language)
     question = next((m.content for m in reversed(messages) if m.role == "user"), "")
+    
+    # Basit selamlamalara anında yanıt ver
+    if is_greeting(question):
+        greeting_response = (
+            "Merhaba! Ben Selçuk AI Asistanı. Selçuk Üniversitesi hakkında "
+            "size nasıl yardımcı olabilirim?" if language == "tr" else
+            "Hello! I'm Selçuk AI Assistant. How can I help you with Selçuk University?"
+        )
+        
+        async def greeting_generator() -> Any:
+            yield sse_event(
+                {
+                    "type": "token",
+                    "token": greeting_response,
+                    "request_id": request_id,
+                }
+            )
+            yield sse_event(
+                {
+                    "type": "end",
+                    "usage": None,
+                    "request_id": request_id,
+                    "citations": None,
+                }
+            )
+        
+        _log_chat(question=question, answer=greeting_response)
+        return StreamingResponse(
+            greeting_generator(),
+            media_type="text/event-stream",
+            headers={
+                "Cache-Control": "no-cache",
+                "Connection": "keep-alive",
+                "X-Accel-Buffering": "no",
+            },
+        )
+    
     critical_answer = get_critical_answer(question, language)
     citations: list[str] = []
     rag_context = ""
@@ -481,7 +681,24 @@ async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingR
 
     if rag_enabled:
         try:
-            rag_context, citations = rag_service.get_context(question, top_k=rag_top_k)
+            if rag_system_ready and improved_rag_service and improved_rag_guard:
+                contexts = improved_rag_service.hybrid_search(question, top_k=rag_top_k)
+                from knowledge.domain_knowledge import boost_priority_documents
+                contexts = boost_priority_documents(question, contexts)
+                validated_contexts = improved_rag_guard.validate_and_rerank(question, contexts)
+                
+                if validated_contexts:
+                    rag_context = "\n\n---\n\n".join([
+                        f"[Kaynak: {Path(c['metadata']['source']).stem}]\n{c['content']}"
+                        for c in validated_contexts[:3]
+                    ])
+                    citations = [Path(c['metadata']['source']).name for c in validated_contexts[:3]]
+                else:
+                    rag_context = ""
+                    citations = []
+            else:
+                from rag_service import rag_service
+                rag_context, citations = rag_service.get_context(question, top_k=rag_top_k)
         except RuntimeError as exc:
             rag_error = str(exc)
         if rag_context:
@@ -664,6 +881,7 @@ async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingR
             return
 
         cleaner = StreamingResponseCleaner(language=language)
+        repetition_detector = RepetitionDetector(window_size=5, similarity_threshold=0.8)
         accumulated_response = ""
         try:
             async with asyncio.timeout(Config.REQUEST_TIMEOUT):
@@ -683,6 +901,12 @@ async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingR
                     if chunk.token:
                         cleaned = cleaner.feed(chunk.token)
                         if cleaned:
+                            # Tekrarlama kontrolü
+                            if repetition_detector.feed(cleaned):
+                                logger.warning("request_id=%s Tekrarlama tespit edildi, akış durduruluyor", request_id)
+                                cancel_token.cancel()
+                                break
+                            
                             accumulated_response += cleaned
                             yield sse_event(
                                 {
@@ -774,8 +998,144 @@ async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingR
     )
 
 
+@app.get("/rag/status")
+async def rag_status() -> dict[str, Any]:
+    """Detaylı RAG sistemi durumunu döndürür."""
+    if not rag_system_ready:
+        return {
+            "enabled": False, 
+            "reason": "Geliştirilmiş RAG sistemi yüklenemedi",
+            "fallback": "legacy_rag_available"
+        }
+    
+    return {
+        "enabled": True,
+        "type": "improved",
+        "embedding_model": "LaBSE (768-dim)",
+        "search_type": "Hybrid (FAISS + BM25)",
+        "guard_layers": 5,
+        "vectors": improved_rag_service.faiss_index.ntotal if improved_rag_service else 0,
+        "documents": len(improved_rag_service.documents) if improved_rag_service else 0,
+        "metadata_count": len(improved_rag_service.metadata) if improved_rag_service else 0,
+        "index_file": "index_labse.faiss",
+        "features": [
+            "Semantic search (FAISS)",
+            "Keyword search (BM25)",
+            "Domain knowledge boosting",
+            "Multi-layer guard validation",
+            "Cross-encoder re-ranking"
+        ]
+    }
+
+
+@app.post("/rag/test")
+async def test_rag(query: str) -> dict[str, Any]:
+    """LLM olmadan RAG aramasını test eder."""
+    if not rag_system_ready or not improved_rag_service or not improved_rag_guard:
+        return {
+            "error": "Geliştirilmiş RAG sistemi hazır değil",
+            "rag_system_ready": rag_system_ready
+        }
+    
+    try:
+        logger.info(f"🧪 RAG sorgu ile test ediliyor: {query}")
+        
+        # Hibrit arama
+        contexts = improved_rag_service.hybrid_search(query, top_k=5)
+        logger.info(f"   Hibrit aramadan {len(contexts)} bağlam bulundu")
+        
+        # Alan önceliklendirme
+        contexts = boost_priority_documents(query, contexts)
+        logger.info(f"   Alan önceliklendirme uygulandı")
+        
+        # Guard doğrulama
+        validated = improved_rag_guard.validate_and_rerank(query, contexts)
+        logger.info(f"   Doğrulama: {len(validated)} bağlam guard'ı geçti")
+        
+        return {
+            "query": query,
+            "total_found": len(contexts),
+            "validated_count": len(validated),
+            "rejected_count": len(contexts) - len(validated),
+            "results": [
+                {
+                    "source": Path(c['metadata']['source']).name,
+                    "score": round(c.get('rerank_score', c.get('guard_score', c['score'])), 3),
+                    "content_preview": c['content'][:200] + "..." if len(c['content']) > 200 else c['content'],
+                    "metadata": {
+                        "type": c['metadata'].get('type', 'unknown'),
+                        "chunk_id": c['metadata'].get('chunk_id', 0),
+                        "priority": c['metadata'].get('priority', 1.0)
+                    }
+                }
+                for c in validated[:3]
+            ]
+        }
+    except Exception as e:
+        logger.error(f"❌ RAG test hatası: {e}")
+        import traceback
+        traceback.print_exc()
+        return {"error": str(e)}
+
+
+@app.get("/quality/status")
+async def quality_status() -> dict[str, Any]:
+    """
+    Kalite modülü durumu
+    """
+    return {
+        "quality_mode_enabled": kalite_modu,
+        "quality_pipeline_loaded": kaliteli_pipeline is not None,
+        "rag_enabled": rag_system_ready,
+        "modules": {
+            "document_validator": True,
+            "chunk_optimizer": True,
+            "retrieval_quality_gate": True,
+            "response_validator": True,
+            "quality_tester": True
+        }
+    }
+
+
+@app.post("/quality/test")
+async def run_quality_tests() -> dict[str, Any]:
+    """
+    Kalite testlerini manuel çalıştır
+    """
+    if not kaliteli_pipeline:
+        raise HTTPException(status_code=503, detail="Kalite modülü yüklü değil")
+    
+    if not improved_rag_service or not improved_rag_guard:
+        raise HTTPException(status_code=503, detail="RAG sistemi hazır değil")
+    
+    def test_func(sorgu: str) -> str:
+        contexts = improved_rag_service.hybrid_search(sorgu, top_k=5)
+        validated = improved_rag_guard.validate_and_rerank(sorgu, contexts)
+        
+        if not validated:
+            return "Bu konuda bilgim yok."
+        
+        cevap = f"Bulunan bilgiler:\n"
+        for i, ctx in enumerate(validated[:3], 1):
+            cevap += f"{i}. {ctx['content'][:200]}...\n"
+            cevap += f"   [Kaynak: {ctx.get('metadata', {}).get('source', 'Bilinmiyor')}]\n"
+        return cevap
+    
+    tester = KaliteTesti(test_func)
+    rapor = tester.testleri_calistir()
+    
+    return {
+        "test_results": rapor.ozet(),
+        "total_tests": rapor.toplam,
+        "passed": rapor.basarili,
+        "failed": rapor.basarisiz,
+        "success_rate": rapor.basari_orani,
+        "average_response_time_ms": rapor.ortalama_sure
+    }
+
+
 if __name__ == "__main__":
     import uvicorn
 
-    logger.info("Starting server on %s:%s", Config.HOST, Config.PORT)
+    logger.info("Sunucu başlatılıyor: %s:%s", Config.HOST, Config.PORT)
     uvicorn.run(app, host=Config.HOST, port=Config.PORT)

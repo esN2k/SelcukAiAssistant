@@ -91,7 +91,7 @@ def normalize_messages(
         normalized.insert(0, build_default_system_message(language))
         return normalized
 
-    # Always prepend the official Selcuk system prompt so core facts are present.
+    # Temel bilgilerin mevcut olması için resmi Selçuk sistem promptunu her zaman başa ekle.
     primary_index = system_indices[0]
     merged_parts: list[str] = []
     primary_content = normalized[primary_index].content

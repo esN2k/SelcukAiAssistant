@@ -1,0 +1,116 @@
+======================================================================
+📊 SELÇUK AI BACKEND - COMPREHENSIVE TEST REPORT
+======================================================================
+
+📅 Date: 2026-01-19 01:17:43
+🖥️ System: E:/SelcukAiAssistant/repo/backend
+
+======================================================================
+1. SYSTEM HEALTH CHECK
+======================================================================
+
+✅ Passed Tests: 21
+❌ Failed Tests: 0
+⚠️ Warnings: 3
+
+Passed:
+  ✓ Python 3.12.10
+  ✓ Package: fastapi
+  ✓ Package: uvicorn
+  ✓ Package: pydantic
+  ✓ Package: sentence_transformers
+  ✓ Package: faiss
+  ✓ Package: rank_bm25
+  ✓ Package: pymupdf
+  ✓ Package: python-docx
+  ✓ Package: aiohttp
+  ✓ File: main.py
+  ✓ File: rag_service_improved.py
+  ✓ File: rag_guard_improved.py
+  ✓ File: knowledge/domain_knowledge.py
+  ✓ RAG file: data/rag/index_labse.faiss (41.46 MB)
+
+Warnings:
+  ⚠ psutil not installed - skipping resource check
+  ⚠ Port 8000 already in use
+  ⚠ No GPU (using CPU)
+
+======================================================================
+2. RAG SYSTEM TESTS
+======================================================================
+
+✅ Passed Tests: 8
+❌ Failed Tests: 0
+⚠️ Warnings: 0
+
+  ✓ RAG service instantiated
+  ✓ FAISS loaded: 14151 vectors
+  ✓ Metadata loaded: 14151 documents
+  ✓ BM25 index built
+  ✓ Semantic search: 5 results
+  ✓ Keyword search: 5 results
+  ✓ Hybrid search: 5 results
+  ✓ Avg results per query: 3.0
+
+======================================================================
+3. GUARD SYSTEM TESTS
+======================================================================
+
+✅ Passed Tests: 4
+❌ Failed Tests: 3
+⚠️ Warnings: 0
+
+  ✓ Guard instantiated
+  ✓ Relevant context accepted (score: 0.542)
+  ✓ Irrelevant context rejected (score: 0.062)
+  ✓ Guard filtered: 5 → 1
+
+Failed:
+  ✗ Semantic Similarity failed
+  ✗ Entity Matching failed
+  ✗ Intent Validation failed
+
+======================================================================
+4. API ENDPOINT TESTS
+======================================================================
+
+✅ Passed Tests: 8
+❌ Failed Tests: 0
+⚠️ Warnings: 0
+
+  ✓ Server running
+  ✓ Health: RAG enabled
+  ✓ Health endpoint: 200
+  ✓ RAG status: 14151 vectors
+  ✓ RAG test: 3 contexts for 'Selçuk Üniversitesi sınavları '
+  ✓ RAG test: 2 contexts for 'Bilgisayar mühendisliği müfred'
+  ✓ Response time: 2.48s (good)
+  ✓ Models endpoint: 14 models
+
+======================================================================
+📈 OVERALL TEST SUMMARY
+======================================================================
+
+Total Tests Run: 47
+✅ Passed: 41 (87.2%)
+❌ Failed: 3 (6.4%)
+⚠️ Warnings: 3 (6.4%)
+
+Success Rate: 87.2%
+
+======================================================================
+🎯 PRODUCTION READINESS
+======================================================================
+
+❌ SYSTEM NEEDS ATTENTION
+   Critical issues detected. Fix failures before deployment.
+
+======================================================================
+📋 RECOMMENDATIONS
+======================================================================
+
+✅ No critical issues - system is healthy!
+
+======================================================================
+END OF REPORT
+======================================================================

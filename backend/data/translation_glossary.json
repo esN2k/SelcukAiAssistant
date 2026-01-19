@@ -1,0 +1,174 @@
+{
+  "comment": "Selçuk Üniversitesi Akademik Terim Sözlüğü - Türkçe ↔ İngilizce",
+  "version": "1.0.0",
+  "last_updated": "2026-01-18",
+  
+  "university_names": {
+    "Selçuk Üniversitesi": {"en": "Selcuk University"},
+    "Selcuk University": {"tr": "Selçuk Üniversitesi"}
+  },
+  
+  "faculties": {
+    "Teknoloji Fakültesi": {"en": "Faculty of Technology"},
+    "Faculty of Technology": {"tr": "Teknoloji Fakültesi"},
+    "Mühendislik Fakültesi": {"en": "Faculty of Engineering"},
+    "Faculty of Engineering": {"tr": "Mühendislik Fakültesi"},
+    "Fen Fakültesi": {"en": "Faculty of Science"},
+    "Faculty of Science": {"tr": "Fen Fakültesi"},
+    "Tıp Fakültesi": {"en": "Faculty of Medicine"},
+    "Faculty of Medicine": {"tr": "Tıp Fakültesi"},
+    "Hukuk Fakültesi": {"en": "Faculty of Law"},
+    "Faculty of Law": {"tr": "Hukuk Fakültesi"},
+    "İktisadi ve İdari Bilimler Fakültesi": {"en": "Faculty of Economics and Administrative Sciences"},
+    "Faculty of Economics and Administrative Sciences": {"tr": "İktisadi ve İdari Bilimler Fakültesi"}
+  },
+  
+  "departments": {
+    "Bilgisayar Mühendisliği": {"en": "Computer Engineering"},
+    "Computer Engineering": {"tr": "Bilgisayar Mühendisliği"},
+    "Bilgisayar Mühendisliği Bölümü": {"en": "Computer Engineering Department"},
+    "Computer Engineering Department": {"tr": "Bilgisayar Mühendisliği Bölümü"},
+    
+    "Elektrik-Elektronik Mühendisliği": {"en": "Electrical and Electronics Engineering"},
+    "Electrical and Electronics Engineering": {"tr": "Elektrik-Elektronik Mühendisliği"},
+    
+    "Makine Mühendisliği": {"en": "Mechanical Engineering"},
+    "Mechanical Engineering": {"tr": "Makine Mühendisliği"},
+    
+    "Otomotiv Mühendisliği": {"en": "Automotive Engineering"},
+    "Automotive Engineering": {"tr": "Otomotiv Mühendisliği"},
+    
+    "Endüstri Mühendisliği": {"en": "Industrial Engineering"},
+    "Industrial Engineering": {"tr": "Endüstri Mühendisliği"},
+    
+    "İnşaat Mühendisliği": {"en": "Civil Engineering"},
+    "Civil Engineering": {"tr": "İnşaat Mühendisliği"}
+  },
+  
+  "academic_terms": {
+    "Yapay Zeka": {"en": "Artificial Intelligence"},
+    "Artificial Intelligence": {"tr": "Yapay Zeka"},
+    
+    "Makine Öğrenmesi": {"en": "Machine Learning"},
+    "Machine Learning": {"tr": "Makine Öğrenmesi"},
+    
+    "Derin Öğrenme": {"en": "Deep Learning"},
+    "Deep Learning": {"tr": "Derin Öğrenme"},
+    
+    "Doğal Dil İşleme": {"en": "Natural Language Processing"},
+    "Natural Language Processing": {"tr": "Doğal Dil İşleme"},
+    
+    "Veri Bilimi": {"en": "Data Science"},
+    "Data Science": {"tr": "Veri Bilimi"},
+    
+    "Bilgisayar Görüşü": {"en": "Computer Vision"},
+    "Computer Vision": {"tr": "Bilgisayar Görüşü"},
+    
+    "Yazılım Mühendisliği": {"en": "Software Engineering"},
+    "Software Engineering": {"tr": "Yazılım Mühendisliği"},
+    
+    "Veri Tabanı": {"en": "Database"},
+    "Database": {"tr": "Veri Tabanı"},
+    
+    "Algoritma": {"en": "Algorithm"},
+    "Algorithm": {"tr": "Algoritma"},
+    
+    "Veri Yapıları": {"en": "Data Structures"},
+    "Data Structures": {"tr": "Veri Yapıları"}
+  },
+  
+  "academic_positions": {
+    "Öğretim Üyesi": {"en": "Faculty Member"},
+    "Faculty Member": {"tr": "Öğretim Üyesi"},
+    
+    "Profesör": {"en": "Professor"},
+    "Professor": {"tr": "Profesör"},
+    
+    "Doçent": {"en": "Associate Professor"},
+    "Associate Professor": {"tr": "Doçent"},
+    
+    "Yardımcı Doçent": {"en": "Assistant Professor"},
+    "Assistant Professor": {"tr": "Yardımcı Doçent"},
+    
+    "Araştırma Görevlisi": {"en": "Research Assistant"},
+    "Research Assistant": {"tr": "Araştırma Görevlisi"},
+    
+    "Öğrenci": {"en": "Student"},
+    "Student": {"tr": "Öğrenci"},
+    
+    "Lisans Öğrencisi": {"en": "Undergraduate Student"},
+    "Undergraduate Student": {"tr": "Lisans Öğrencisi"},
+    
+    "Yüksek Lisans Öğrencisi": {"en": "Graduate Student"},
+    "Graduate Student": {"tr": "Yüksek Lisans Öğrencisi"},
+    
+    "Doktora Öğrencisi": {"en": "PhD Student"},
+    "PhD Student": {"tr": "Doktora Öğrencisi"}
+  },
+  
+  "academic_activities": {
+    "Ders": {"en": "Course"},
+    "Course": {"tr": "Ders"},
+    
+    "Sınav": {"en": "Exam"},
+    "Exam": {"tr": "Sınav"},
+    
+    "Vize": {"en": "Midterm"},
+    "Midterm": {"tr": "Vize"},
+    
+    "Final": {"en": "Final Exam"},
+    "Final Exam": {"tr": "Final"},
+    
+    "Proje": {"en": "Project"},
+    "Project": {"tr": "Proje"},
+    
+    "Ödev": {"en": "Homework"},
+    "Homework": {"tr": "Ödev"},
+    
+    "Laboratuvar": {"en": "Laboratory"},
+    "Laboratory": {"tr": "Laboratuvar"},
+    
+    "Staj": {"en": "Internship"},
+    "Internship": {"tr": "Staj"},
+    
+    "Mezuniyet": {"en": "Graduation"},
+    "Graduation": {"tr": "Mezuniyet"},
+    
+    "Diploma": {"en": "Diploma"}
+  },
+  
+  "locations": {
+    "Konya": {"en": "Konya"},
+    "Türkiye": {"en": "Turkey"},
+    "Turkey": {"tr": "Türkiye"},
+    "Kampüs": {"en": "Campus"},
+    "Campus": {"tr": "Kampüs"},
+    "Kütüphane": {"en": "Library"},
+    "Library": {"tr": "Kütüphane"},
+    "Yemekhane": {"en": "Cafeteria"},
+    "Cafeteria": {"tr": "Yemekhane"}
+  },
+  
+  "administrative_terms": {
+    "Rektör": {"en": "Rector"},
+    "Rector": {"tr": "Rektör"},
+    
+    "Dekan": {"en": "Dean"},
+    "Dean": {"tr": "Dekan"},
+    
+    "Bölüm Başkanı": {"en": "Department Head"},
+    "Department Head": {"tr": "Bölüm Başkanı"},
+    
+    "Öğrenci İşleri": {"en": "Student Affairs"},
+    "Student Affairs": {"tr": "Öğrenci İşleri"},
+    
+    "Kayıt": {"en": "Registration"},
+    "Registration": {"tr": "Kayıt"},
+    
+    "Transkript": {"en": "Transcript"},
+    "Transcript": {"tr": "Transkript"},
+    
+    "Burs": {"en": "Scholarship"},
+    "Scholarship": {"tr": "Burs"}
+  }
+}
