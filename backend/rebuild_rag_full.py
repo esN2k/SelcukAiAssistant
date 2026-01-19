@@ -128,9 +128,18 @@ def main():
         import faiss
         import numpy as np
         from rank_bm25 import BM25Okapi
+        import torch
+
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        log(f"DONANIM DURUMU: {device.upper()} kullaniliyor.")
         
-        model = SentenceTransformer('sentence-transformers/LaBSE')
-        log("LaBSE yuklendi (768-dim)")
+        if device == "cpu":
+            log("UYARI: GPU bulunamadi! Islem cok yavas olabilir.")
+        else:
+            log(f"GPU: {torch.cuda.get_device_name(0)}")
+
+        model = SentenceTransformer('sentence-transformers/LaBSE', device=device)
+        log(f"LaBSE yuklendi (768-dim) - Device: {device}")
         
         # Chunk documents - DUZELTME: Cok kucuk chunk = 16,000+ vektor
         log("Dokumanlar parcalaniyor...")
@@ -160,17 +169,28 @@ def main():
         log(f"Toplam chunk: {len(all_chunks)}")
         
         # Embedding
-        log("Embedding hesaplaniyor (bu uzun surebilir)...")
-        batch_size = 32
+        log("Embedding hesaplaniyor (GPU MODU)...")
+        
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        
+        if device == "cuda":
+            batch_size = 512  # GPU icin yuksek batch
+            log(f"DONANIM: {torch.cuda.get_device_name(0)} (CUDA AKTIF!)")
+            log(f"Batch Size: {batch_size} (Hizli islem)")
+        else:
+            batch_size = 32
+            log("UYARI: GPU bulunamadi, CPU moduna gecildi.")
+        
         all_embeddings = []
         
+        # Standart siralama (GPU'da cok hizlidir, multi-process gerekmez)
         for i in range(0, len(all_chunks), batch_size):
             batch = all_chunks[i:i + batch_size]
-            embeddings = model.encode(batch, show_progress_bar=False)
+            embeddings = model.encode(batch, batch_size=batch_size, show_progress_bar=False, device=device)
             all_embeddings.extend(embeddings)
-            if (i + batch_size) % 500 == 0:
+            if (i + batch_size) % 1000 == 0 or (i + batch_size) >= len(all_chunks):
                 log(f"  Ilerleme: {min(i + batch_size, len(all_chunks))}/{len(all_chunks)}")
-        
+            
         embeddings_array = np.array(all_embeddings).astype('float32')
         log(f"Embedding tamamlandi: {embeddings_array.shape}")
         
