@@ -1,0 +1,49 @@
+[04:52:25] ============================================================
+[04:52:25] TAM RAG REBUILD BASLADI
+[04:52:25] ============================================================
+[04:52:25] TXT dosyalari: 645
+[04:52:25] MD dosyalari: 7
+[04:52:25]   + 01_akademik_takvim_2024_2025_DETAYLI.md
+[04:52:25]   + 02_staj_gereksinimleri_KAPSAMLI.md
+[04:52:25]   + akademik_takvim_2024_2025.md
+[04:52:25]   + akts_bilgisayar_muhendisligi.md
+[04:52:25]   + EKSIK_VERI_TOPLAMA_RAPORU.md
+[04:52:25]   + harc_katki_paylari.md
+[04:52:25]   + not_sistemi_yonetmelik.md
+[04:52:25] PDF dosyalari: 18
+[04:52:29] 
+TOPLAM DOKUMAN: 670
+[04:52:29]   Web: 645
+[04:52:29]   Markdown: 7
+[04:52:29]   PDF: 18
+[04:52:29] 
+============================================================
+[04:52:29] RAG INDEKSLEME BASLADI
+[04:52:29] ============================================================
+[04:52:29] LaBSE modeli yukleniyor...
+[04:52:46] LaBSE yuklendi (768-dim)
+[04:52:46] Dokumanlar parcalaniyor...
+[04:52:46] Toplam chunk: 1895
+[04:52:46] Embedding hesaplaniyor (bu uzun surebilir)...
+[04:57:34] Embedding tamamlandi: (1895, 768)
+[04:57:34] FAISS indeksi olusturuluyor...
+[04:57:34] FAISS indeksi: 1895 vektor
+[04:57:34] BM25 indeksi olusturuluyor...
+[04:57:35] BM25 tamamlandi
+[04:57:35] 
+Dosyalar kaydediliyor...
+[04:57:35]   FAISS kaydedildi
+[04:57:35]   Metadata kaydedildi
+[04:57:35]   BM25 kaydedildi
+[04:57:35] 
+============================================================
+[04:57:35] REBUILD TAMAMLANDI!
+[04:57:35] ============================================================
+[04:57:35] Toplam vektor: 1895
+[04:57:35] Dosya konumu: E:\SelcukAiAssistant\repo\backend\data\rag
+[04:57:35] 
+HIZLI TEST:
+[04:57:35]   'akademik takvim 2024' -> 01_akademik_takvim_2024_2025_DETAYLI.md (skor: 0.504)
+[04:57:35]   'harc ucreti' -> Bilgisayar_Muhendisligi_Proje_Sablonu.pd (skor: 0.308)
+[04:57:35]   'DD notu' -> selcuk.edu.tr_c4e7c90cb0.txt (skor: 0.321)
+[04:57:35]   'staj' -> YAPAY ZEKA DESTEKL─░ ├£N─░VERS─░TE B─░LG─░ AS─░ (skor: 0.394)

@@ -61,6 +61,31 @@ def load_existing_scraped_data():
         except Exception as e:
             logger.warning(f"Failed to load {txt_file.name}: {e}")
     
+    # Load all .md files (Markdown - akademik takvim, harç, not sistemi vb.)
+    md_files = list(scraped_dir.glob("*.md"))
+    logger.info(f"Found {len(md_files)} markdown files")
+    
+    for md_file in md_files:
+        try:
+            with open(md_file, 'r', encoding='utf-8') as f:
+                text = f.read()
+            
+            if len(text.strip()) > 100:
+                documents.append({
+                    'text': text,
+                    'source': str(md_file),
+                    'type': 'markdown',
+                    'metadata': {
+                        'chars': len(text),
+                        'filename': md_file.name,
+                        'domain': 'selcuk_ozel_veri',
+                        'priority': 'high'
+                    }
+                })
+                logger.info(f"Loaded MD: {md_file.name} ({len(text)} chars)")
+        except Exception as e:
+            logger.warning(f"Failed to load {md_file.name}: {e}")
+    
     # Load PDFs if any
     pdf_dir = scraped_dir / "pdfs"
     if pdf_dir.exists():
@@ -117,6 +142,7 @@ def load_existing_scraped_data():
     
     logger.info(f"\nTotal documents loaded: {len(documents)}")
     logger.info(f"  Web pages: {sum(1 for d in documents if d['type'] == 'web')}")
+    logger.info(f"  Markdown: {sum(1 for d in documents if d['type'] == 'markdown')}")
     logger.info(f"  PDFs: {sum(1 for d in documents if d['type'] == 'pdf')}")
     logger.info(f"  DOCX: {sum(1 for d in documents if d['type'] == 'docx')}")
     
