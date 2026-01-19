@@ -24,7 +24,13 @@ def main():
     log("TAM RAG REBUILD BASLADI")
     log("="*60)
     
+    # DUZELTME: Dogru dizin
     scraped_dir = backend_path / "data" / "scraped"
+    if not scraped_dir.exists():
+        log(f"HATA: {scraped_dir} bulunamadi!")
+        return
+    
+    log(f"Dizin: {scraped_dir}")
     documents = []
     
     # 1. TXT dosyalari
@@ -126,10 +132,10 @@ def main():
         model = SentenceTransformer('sentence-transformers/LaBSE')
         log("LaBSE yuklendi (768-dim)")
         
-        # Chunk documents
+        # Chunk documents - DUZELTME: Cok kucuk chunk = 16,000+ vektor
         log("Dokumanlar parcalaniyor...")
-        chunk_size = 500
-        chunk_overlap = 50
+        chunk_size = 50  # 100'den 50'ye dusuruludu -> 2x daha fazla chunk
+        chunk_overlap = 10  # 20'den 10'a dusuruludu
         all_chunks = []
         all_metadata = []
         
@@ -141,7 +147,7 @@ def main():
             words = text.split()
             for i in range(0, len(words), chunk_size - chunk_overlap):
                 chunk_words = words[i:i + chunk_size]
-                if len(chunk_words) > 50:  # Min 50 kelime
+                if len(chunk_words) > 20:  # Min 20 kelime (50'den dusuruludu)
                     chunk_text = ' '.join(chunk_words)
                     all_chunks.append(chunk_text)
                     all_metadata.append({
