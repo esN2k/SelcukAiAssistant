@@ -219,6 +219,9 @@ class Config:
     RAG_STRICT_DEFAULT: bool = (
         os.getenv("RAG_STRICT_DEFAULT", "true").lower() == "true"
     )
+    RAG_GUARD_ENABLED: bool = (
+        os.getenv("RAG_GUARD_ENABLED", "false").lower() == "true"
+    )
 
     # Appwrite configuration (optional)
     APPWRITE_ENDPOINT: Optional[str] = os.getenv("APPWRITE_ENDPOINT") or None

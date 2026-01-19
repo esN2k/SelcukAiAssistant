@@ -538,13 +538,15 @@ async def chat(request: ChatRequest, http_request: Request) -> ChatResponse:
 
     answer = clean_text(result.text, language=language)
     rag_guarded = False
-    if rag_enabled and rag_context:
+    # RAG guard Config.RAG_GUARD_ENABLED ile kontrol edilir
+    if Config.RAG_GUARD_ENABLED and rag_enabled and rag_context:
         answer, rag_guarded = apply_rag_guard(
             question,
             answer,
             rag_context,
             language,
         )
+    # Kritik guard her zaman aktif (yanlış bilgileri düzeltir)
     answer, guard_applied = apply_guard(question, answer, language)
     if guard_applied or rag_guarded:
         citations = []
@@ -790,7 +792,8 @@ async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingR
 
             answer = clean_text(result.text, language=language)
             rag_guarded = False
-            if rag_enabled and rag_context:
+            # RAG guard Config.RAG_GUARD_ENABLED ile kontrol edilir
+            if Config.RAG_GUARD_ENABLED and rag_enabled and rag_context:
                 answer, rag_guarded = apply_rag_guard(
                     question,
                     answer,
