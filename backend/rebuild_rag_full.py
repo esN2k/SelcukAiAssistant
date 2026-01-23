@@ -174,9 +174,9 @@ def main():
         device = "cuda" if torch.cuda.is_available() else "cpu"
         
         if device == "cuda":
-            batch_size = 512  # GPU icin yuksek batch
+            batch_size = 32  # DUSURULDU: 512 -> 32 (VRAM darboğazını önlemek için)
             log(f"DONANIM: {torch.cuda.get_device_name(0)} (CUDA AKTIF!)")
-            log(f"Batch Size: {batch_size} (Hizli islem)")
+            log(f"Batch Size: {batch_size} (Stabil Hiz)")
         else:
             batch_size = 32
             log("UYARI: GPU bulunamadi, CPU moduna gecildi.")
